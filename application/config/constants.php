@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+defined('BASE_URL') OR define('BASE_URL', 'http://127.0.0.1/app');
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace
