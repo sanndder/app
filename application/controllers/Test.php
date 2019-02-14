@@ -15,6 +15,7 @@ class Test extends MY_Controller {
 	{
 		parent::__construct();
 
+		$this->load->model('test2_model', 'test2');
 		$this->load->model('test_model', 'test');
 	}
 
@@ -24,7 +25,8 @@ class Test extends MY_Controller {
 	//--------------------------------------------------------------------------
 	public function index()
 	{
-
+		$this->test2->connect();
+		$this->test->go();
 
 	}
 

@@ -1,8 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 /**
+ *
  * @property Auth $auth auth class
  * @property Translation_model $translation class
+ * @property Smarty_class $smarty class
+ *
 **/
 
 
@@ -30,6 +34,13 @@ class MY_Controller extends CI_Controller
 }
 
 
+/**
+ *
+ * @property Translation_model $translation class
+ * @property Smarty_class $smarty class
+ *
+ **/
+
 /*
  * Controller voor pagina's zonder auth controlle
  */
@@ -45,7 +56,6 @@ class EX_Controller extends CI_Controller
 
 		//base_url naar smarty
 		$this->smarty->assign( 'base_url' , BASE_URL );
-
 	}
 
 }

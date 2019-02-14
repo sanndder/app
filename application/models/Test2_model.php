@@ -9,7 +9,7 @@
  *
 */
 
-class Test_model extends MY_Model
+class Test2_model extends MY_Model
 {
 
 	/*
@@ -24,12 +24,8 @@ class Test_model extends MY_Model
 
 	}
 
-	function go()
+	function connect()
 	{
 
-		$tijdvak = new models\Utils\Tijdvak( 'w' );
-		//show($tijdvak->getPeriode());
 	}
-
-
 }/* end of class */
