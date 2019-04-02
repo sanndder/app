@@ -2,10 +2,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * @property Auth_model $auth class
+ * Account en userbeheer
  */
 
-class Test extends MY_Controller {
+class Mijnaccount extends MY_Controller {
 
 
 	//--------------------------------------------------------------------------
@@ -15,18 +15,18 @@ class Test extends MY_Controller {
 	{
 		parent::__construct();
 
-		$this->load->model('test2_model', 'test2');
-		$this->load->model('test_model', 'test');
 	}
 
 
 	//--------------------------------------------------------------------------
-	// test method
+	// Overzicht
 	//--------------------------------------------------------------------------
 	public function index()
 	{
 
-		$this->smarty->display('index.tpl');
+		$this->smarty->display('mijnaccount/overzicht.tpl');
 	}
+
+
 
 }

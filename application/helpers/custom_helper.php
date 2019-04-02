@@ -399,6 +399,28 @@ if ( !function_exists('d2h'))
 	}
 }
 
+//=====================================================================
+/*** volledige url incl get waardes ***/
+//=====================================================================
+if ( ! function_exists('getFullUrl'))
+{
+	function getFullUrl()
+	{
+		$url = current_url();
+
+		if( isset($_GET) && count($_GET) > 0 )
+		{
+			$url .= '?';
+
+			foreach( $_GET as $k => $v )
+				$url .= $k .'=' . $v . '&';
+
+			$url = substr( $url, 0, -1);
+		}
+
+		return $url;
+	}
+}
 
 //=====================================================================
 /*** van H:M:S naar decimaal ***/
@@ -549,38 +571,5 @@ function decrypt( $data ){
 	return $return;
 }
 
-//=====================================================================
-/*** maak dataset voor maandelijkse grafiek ***/
-//=====================================================================
-if ( ! function_exists('createGraphData'))
-{
-	function createGraphData( $data )
-	{
-		$maand_label[1] = 'Januari';
-
-		$maanden = array();
-
-		foreach ($data as $maand) {
-			$maanden[$maand['maand_nummer']] = $maand;
-		}
-
-
-		for ($i=1;$i<=12;$i++) {
-			if (!isset($maanden[$i])) {
-				// convert month number to month name
-				$monthNum  = $i;
-				$dateObj   = DateTime::createFromFormat('!m', $monthNum);
-				$monthName = $dateObj->format('F');
-
-				$maanden[$i]['maand'] = $monthName;
-				$maanden[$i]['maand_nummer'] = $i;
-				$maanden[$i]['aantal'] = 0;
-			}
-		}
-		ksort($maanden);
-		return $maanden;
-
-	}
-}
 
 ?>

@@ -29,6 +29,8 @@ class Test_model extends MY_Model
 
 		$tijdvak = new models\Utils\Tijdvak( 'w' );
 		//show($tijdvak->getPeriode());
+
+		show($this->user->username);
 	}
 
 

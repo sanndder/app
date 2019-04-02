@@ -8,11 +8,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MY_Model extends CI_Model
 {
 	public $db_user = NULL;
+	public $db_admin = NULL;
 
 	public function __construct()
 	{
 		//call parent constructor
 		parent::__construct();
+
+		//connect to admin database
+		$this->db_admin = $this->load->database('admin', TRUE);
 
 		//try to connect to user database
 		$this->_connect();
@@ -42,7 +46,7 @@ class MY_Model extends CI_Model
 		$CI =& get_instance();
 
 		//check if connection exists
-		if( isset($CI->db_user) && is_object($CI->db_user) && ! empty($CI->db_user->conn_id) )
+		if( isset($CI->db_user) && is_object($CI->db_user) && !empty($CI->db_user->conn_id) )
 		{
 			//copy instance
 			$this->db_user = $CI->db_user;
