@@ -65,6 +65,11 @@ var BlockUi = function() {
                     color: '#fff',
                     padding: 0,
                     backgroundColor: 'transparent'
+                },
+                onBlock: function() {
+                    $(block).css({
+                        left: 0
+                    });
                 }
             });
         });

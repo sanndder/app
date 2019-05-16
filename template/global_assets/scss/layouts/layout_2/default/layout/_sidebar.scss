@@ -217,10 +217,10 @@
 		// Direction arrow
 		&:after {
 			@if $direction == 'LTR' {
-				content: '\e9c7';
+				content: $icon-menu-sub-arrow-ltr;
 			}
 			@else {
-				content: '\e9c4';
+				content: $icon-menu-sub-arrow-rtl;
 			}
 		    font-family: $icon-font-family;
 		    display: inline-block;

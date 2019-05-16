@@ -19,289 +19,225 @@ var FullCalendarAdvanced = function() {
 
     // External events
     var _componentFullCalendarEvents = function() {
-        if (!$().fullCalendar || typeof Switchery == 'undefined' || !$().draggable) {
-            console.warn('Warning - fullcalendar.min.js, switchery.min.js or jQuery UI is not loaded.');
+        if (typeof FullCalendar == 'undefined' || typeof Switchery == 'undefined') {
+            console.warn('Warning - Fullcalendar or Switchery files are not loaded.');
             return;
         }
 
 
-        // Add demo events
-        // ------------------------------
-
-        // Event colors
-        var eventColors = [
-            {
-                title: 'All Day Event',
-                start: '2014-11-01',
-                color: '#EF5350'
-            },
-            {
-                title: 'Long Event',
-                start: '2014-11-07',
-                end: '2014-11-10',
-                color: '#26A69A'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2014-11-09T16:00:00',
-                color: '#26A69A'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2014-11-16T16:00:00',
-                color: '#5C6BC0'
-            },
-            {
-                title: 'Conference',
-                start: '2014-11-11',
-                end: '2014-11-13',
-                color: '#546E7A'
-            },
-            {
-                title: 'Meeting',
-                start: '2014-11-12T10:30:00',
-                end: '2014-11-12T12:30:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Lunch',
-                start: '2014-11-12T12:00:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Meeting',
-                start: '2014-11-12T14:30:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Happy Hour',
-                start: '2014-11-12T17:30:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Dinner',
-                start: '2014-11-12T20:00:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Birthday Party',
-                start: '2014-11-13T07:00:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Click for Google',
-                url: 'http://google.com/',
-                start: '2014-11-28',
-                color: '#FF7043'
-            }
-        ];
-
+        //
         // External events
-        // ------------------------------
+        //
+
+        // Define components
+        var Calendar = FullCalendar.Calendar;
+        var Draggable = FullCalendarInteraction.Draggable;
+
+        // Define elements
+        var calendarEventsContainerElement = document.getElementById('external-events');
+        var calendarEventsElement = document.querySelector('.fullcalendar-external');
 
         // Add switcher for events removal
-        var remove = document.querySelector('.form-check-input-switchery');
-        var removeInit = new Switchery(remove);
+        var checkboxElement = document.getElementById('drop-remove');
+        var checkboxInit = new Switchery(checkboxElement);
 
-        // Initialize the calendar
-        $('.fullcalendar-external').fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            editable: true,
-            defaultDate: '2014-11-12',
-            events: eventColors,
-            locale: 'en',
-            droppable: true, // this allows things to be dropped onto the calendar
-                drop: function() {
-                if ($('#drop-remove').is(':checked')) { // is the "remove after drop" checkbox checked?
-                    $(this).remove(); // if so, remove the element from the "Draggable Events" list
+        // Use custom colors for external events
+        var two = calendarEventsContainerElement.querySelectorAll('.fc-event');
+        two.forEach(function(element) {
+            element.style.borderColor = element.getAttribute('data-color');
+            element.style.backgroundColor = element.getAttribute('data-color');
+        });
+
+        // Initialize
+        if(calendarEventsElement) {
+
+            // Initialize the external events
+            new Draggable(calendarEventsContainerElement, {
+                itemSelector: '.fc-event',
+                eventData: function(eventEl) {
+                    return {
+                        title: eventEl.innerText,
+                        color: eventEl.getAttribute('data-color'),
+                    };
                 }
-            },
-            isRTL: $('html').attr('dir') == 'rtl' ? true : false
-        });
-
-        // Initialize the external events
-        $('#external-events .fc-event').each(function() {
-
-            // Different colors for events
-            $(this).css({'backgroundColor': $(this).data('color'), 'borderColor': $(this).data('color')});
-
-            // Store data so the calendar knows to render an event upon drop
-            $(this).data('event', {
-                title: $.trim($(this).html()), // use the element's text as the event title
-                color: $(this).data('color'),
-                stick: true // maintain when user navigates (see docs on the renderEvent method)
             });
 
-            // Make the event draggable using jQuery UI
-            $(this).draggable({
-                zIndex: 999,
-                revert: true, // will cause the event to go back to its
-                revertDuration: 0 // original position after the drag
-            });
-        });
+
+            // Initialize the calendar
+            var calendarEventsInit = new Calendar(calendarEventsElement, {
+                plugins: [ 'interaction', 'dayGrid', 'timeGrid' ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                editable: true,
+                droppable: true, // this allows things to be dropped onto the calendar
+                defaultDate: '2014-11-12',
+                events: [
+                    {
+                        title: 'All Day Event',
+                        start: '2014-11-01',
+                        color: '#EF5350'
+                    },
+                    {
+                        title: 'Long Event',
+                        start: '2014-11-07',
+                        end: '2014-11-10',
+                        color: '#26A69A'
+                    },
+                    {
+                        id: 999,
+                        title: 'Repeating Event',
+                        start: '2014-11-09T16:00:00',
+                        color: '#26A69A'
+                    },
+                    {
+                        id: 999,
+                        title: 'Repeating Event',
+                        start: '2014-11-16T16:00:00',
+                        color: '#5C6BC0'
+                    },
+                    {
+                        title: 'Conference',
+                        start: '2014-11-11',
+                        end: '2014-11-13',
+                        color: '#546E7A'
+                    },
+                    {
+                        title: 'Meeting',
+                        start: '2014-11-12T10:30:00',
+                        end: '2014-11-12T12:30:00',
+                        color: '#546E7A'
+                    },
+                    {
+                        title: 'Lunch',
+                        start: '2014-11-12T12:00:00',
+                        color: '#546E7A'
+                    },
+                    {
+                        title: 'Meeting',
+                        start: '2014-11-12T14:30:00',
+                        color: '#546E7A'
+                    },
+                    {
+                        title: 'Happy Hour',
+                        start: '2014-11-12T17:30:00',
+                        color: '#546E7A'
+                    },
+                    {
+                        title: 'Dinner',
+                        start: '2014-11-12T20:00:00',
+                        color: '#546E7A'
+                    },
+                    {
+                        title: 'Birthday Party',
+                        start: '2014-11-13T07:00:00',
+                        color: '#546E7A'
+                    },
+                    {
+                        title: 'Click for Google',
+                        url: 'http://google.com/',
+                        start: '2014-11-28',
+                        color: '#FF7043'
+                    }
+                ],
+                drop: function(info) {
+                    if (checkboxElement.checked) {
+                        info.draggedEl.parentNode.removeChild(info.draggedEl);
+                    }
+                }
+            }).render();
+        }
     };
 
     // FullCalendar RTL direction
     var _componentFullCalendarRTL = function() {
-        if (!$().fullCalendar) {
-            console.warn('Warning - fullcalendar.min.js is not loaded.');
+        if (typeof FullCalendar == 'undefined') {
+            console.warn('Warning - Fullcalendar files are not loaded.');
             return;
         }
 
 
-        // Add demo events
-        // ------------------------------
-
-        // Default events
-        var events = [
-            {
-                title: 'All Day Event',
-                start: '2014-11-01'
-            },
-            {
-                title: 'Long Event',
-                start: '2014-11-07',
-                end: '2014-11-10'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2014-11-09T16:00:00'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2014-11-16T16:00:00'
-            },
-            {
-                title: 'Conference',
-                start: '2014-11-11',
-                end: '2014-11-13'
-            },
-            {
-                title: 'Meeting',
-                start: '2014-11-12T10:30:00',
-                end: '2014-11-12T12:30:00'
-            },
-            {
-                title: 'Lunch',
-                start: '2014-11-12T12:00:00'
-            },
-            {
-                title: 'Meeting',
-                start: '2014-11-12T14:30:00'
-            },
-            {
-                title: 'Happy Hour',
-                start: '2014-11-12T17:30:00'
-            },
-            {
-                title: 'Dinner',
-                start: '2014-11-12T20:00:00'
-            },
-            {
-                title: 'Birthday Party',
-                start: '2014-11-13T07:00:00'
-            },
-            {
-                title: 'Click for Google',
-                url: 'http://google.com/',
-                start: '2014-11-28'
-            }
-        ];
-
-        // Event colors
-        var eventColors = [
-            {
-                title: 'All Day Event',
-                start: '2014-11-01',
-                color: '#EF5350'
-            },
-            {
-                title: 'Long Event',
-                start: '2014-11-07',
-                end: '2014-11-10',
-                color: '#26A69A'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2014-11-09T16:00:00',
-                color: '#26A69A'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2014-11-16T16:00:00',
-                color: '#5C6BC0'
-            },
-            {
-                title: 'Conference',
-                start: '2014-11-11',
-                end: '2014-11-13',
-                color: '#546E7A'
-            },
-            {
-                title: 'Meeting',
-                start: '2014-11-12T10:30:00',
-                end: '2014-11-12T12:30:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Lunch',
-                start: '2014-11-12T12:00:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Meeting',
-                start: '2014-11-12T14:30:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Happy Hour',
-                start: '2014-11-12T17:30:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Dinner',
-                start: '2014-11-12T20:00:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Birthday Party',
-                start: '2014-11-13T07:00:00',
-                color: '#546E7A'
-            },
-            {
-                title: 'Click for Google',
-                url: 'http://google.com/',
-                start: '2014-11-28',
-                color: '#FF7043'
-            }
-        ];
-
-
+        //
         // RTL direction
-        // ------------------------------
+        //
 
-        $('.fullcalendar-rtl').fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            defaultDate: '2014-11-12',
-            editable: true,
-            isRTL: true,
-            locale: 'ar',
-            events: events
-        });
+        // Define element
+        var calendarRTLElement = document.querySelector('.fullcalendar-rtl');
+
+        // Initialize
+        if(calendarRTLElement) {
+            var calendarRTLInit = new FullCalendar.Calendar(calendarRTLElement, {
+                plugins: [ 'dayGrid', 'timeGrid', 'interaction' ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                defaultDate: '2014-11-12',
+                defaultView: 'dayGridMonth',
+                editable: true,
+                businessHours: true,
+                events: [
+                    {
+                        title: 'All Day Event',
+                        start: '2014-11-01'
+                    },
+                    {
+                        title: 'Long Event',
+                        start: '2014-11-07',
+                        end: '2014-11-10'
+                    },
+                    {
+                        id: 999,
+                        title: 'Repeating Event',
+                        start: '2014-11-09T16:00:00'
+                    },
+                    {
+                        id: 999,
+                        title: 'Repeating Event',
+                        start: '2014-11-16T16:00:00'
+                    },
+                    {
+                        title: 'Conference',
+                        start: '2014-11-11',
+                        end: '2014-11-13'
+                    },
+                    {
+                        title: 'Meeting',
+                        start: '2014-11-12T10:30:00',
+                        end: '2014-11-12T12:30:00'
+                    },
+                    {
+                        title: 'Lunch',
+                        start: '2014-11-12T12:00:00'
+                    },
+                    {
+                        title: 'Meeting',
+                        start: '2014-11-12T14:30:00'
+                    },
+                    {
+                        title: 'Happy Hour',
+                        start: '2014-11-12T17:30:00'
+                    },
+                    {
+                        title: 'Dinner',
+                        start: '2014-11-12T20:00:00'
+                    },
+                    {
+                        title: 'Birthday Party',
+                        start: '2014-11-13T07:00:00'
+                    },
+                    {
+                        title: 'Click for Google',
+                        url: 'http://google.com/',
+                        start: '2014-11-28'
+                    }
+                ],
+                locale: 'ar'
+            }).render();
+        }
     };
 
 

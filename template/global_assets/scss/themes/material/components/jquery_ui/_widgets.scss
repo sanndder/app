@@ -48,7 +48,7 @@
 
 				// Iconll
 				&:before {
-					content: '\e9b8';
+					content: $icon-card-collapse;
 			        font-family: $icon-font-family;
 			        display: block;
 			        width: $icon-font-size;
@@ -62,7 +62,7 @@
 		// Change icon in active header
 		.ui-accordion-header-active {
 			.ui-accordion-header-icon:before {
-				content: '\e9b7';
+				content: $icon-card-expand;
 			}
 		}
 
@@ -122,7 +122,7 @@
 
 	// Animated processing icon
 	.ui-autocomplete-processing:after { 
-	    content: '\eb51';
+	    content: $icon-loading-spinner;
 	    font-family: $icon-font-family;
 	    display: inline-block;
 	    position: absolute;
@@ -170,7 +170,7 @@
 		border: $btn-border-width solid $btn-light-border-color;
 		color: $btn-light-color;
 		text-transform: uppercase;
-		@include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-line-height, 0);
+		@include button-size($btn-padding-y, $btn-padding-x, $btn-font-size, $btn-line-height, 0);
 		@include transition($btn-transition);
 
 		// Remove outline
@@ -452,10 +452,10 @@
 			// Icon
 			&:after {
 		        @if $direction == 'LTR' {
-		            content: '\e9c8';
+		            content: $icon-nav-prev;
 		        }
 		        @else {
-		            content: '\e9cb';
+		            content: $icon-nav-next;
 		        }
 			}
 		}
@@ -467,10 +467,10 @@
 			// Icon
 			&:after {
 		        @if $direction == 'LTR' {
-		            content: '\e9cb';
+		            content: $icon-nav-next;
 		        }
 		        @else {
-		            content: '\e9c8';
+		            content: $icon-nav-prev;
 		        }
 			}
 		}
@@ -703,7 +703,7 @@
 
 		// Cross icon
 		&:after {
-			content: '\ed6a';
+			content: $icon-action-cross;
 			font-family: $icon-font-family;
 			display: block;
 			width: $font-size-base;
@@ -809,10 +809,10 @@
 
 				&:after {
 		            @if $direction == 'LTR' {
-		                content: '\e9c7';
+		                content: $icon-menu-sub-arrow-ltr;
 		            }
 		            @else {
-		                content: '\e9c4';
+		                content: $icon-menu-sub-arrow-rtl;
 		            }
 		            font-family: $icon-font-family;
 		            font-size: $icon-font-size;
@@ -1014,7 +1014,7 @@
 
 		// Down arrow
 		&:after {
-	        content: '\e9c5';
+	        content: $icon-menu-arrow-down;
 	        font-family: $icon-font-family;
 	        display: inline-block;
 	        position: absolute;
@@ -1496,7 +1496,7 @@
 		@include border-left-radius($btn-border-radius);
 
 		&:after {
-			content: '\e9f7';
+			content: $icon-spinner-up;
 		}
 	}
 
@@ -1505,7 +1505,7 @@
 		@include border-right-radius($btn-border-radius);
 
 		&:after {
-			content: '\e9e2';
+			content: $icon-spinner-down;
 		}
 	}
 

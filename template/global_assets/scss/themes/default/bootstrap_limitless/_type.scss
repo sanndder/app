@@ -81,7 +81,7 @@ ul {
 
             // Dot
             &:after {
-                content: '\f052';
+                content: $icon-list-dot;
                 font-family: $icon-font-family;
                 font-size: ($icon-font-size / 2);
                 width: ($icon-font-size / 2.5);

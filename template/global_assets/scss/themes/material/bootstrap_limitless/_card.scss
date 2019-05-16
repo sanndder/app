@@ -168,17 +168,17 @@
 
 // Collapse icon
 [data-action="collapse"]:after {
-    content: '\e9c1';
+    content: $icon-card-action-collapse;
 }
 
 // Reload icon
 [data-action="reload"]:after {
-    content: '\e9fb';
+    content: $icon-card-action-reload;
 }
 
 // Remove icon
 [data-action="remove"]:after {
-    content: '\ed6a';
+    content: $icon-card-action-remove;
     font-size: $font-size-base;
 }
 
@@ -188,25 +188,25 @@
 
     // Icon
     &:after {
-        content: '\e986';
+        content: $icon-card-action-move;
     }
 }
 
 // Fullscreen
 [data-action="fullscreen"] {
     &:after {
-        content: '\e9f9';
+        content: $icon-card-action-full-base;
     }
 
     // Change icon when in fullscreen mode
     &[data-fullscreen="active"]:after {
-        content: '\e9fa';
+        content: $icon-card-action-full-active;
     }
 }
 
 // Open modal icon
 [data-action="modal"]:after {
-    content: '\e9eb';
+    content: $icon-card-action-modal;
 }
 
 
@@ -220,7 +220,7 @@
 
         // Collapsible icon
         &:before {
-            content: '\ed5b';
+            content: $icon-card-expand;
             font-family: $icon-font-family;
             position: absolute;
             top: 50%;
@@ -233,7 +233,7 @@
 
         // Change icon if collapsed
         &.collapsed:before {
-            content: '\ed5a';
+            content: $icon-card-collapse;
         }
     }
 

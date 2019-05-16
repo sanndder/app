@@ -64,5 +64,5 @@
     padding: $padding-y $padding-x;
     font-size: $font-size;
     line-height: $line-height;
-    @include border-radius($border-radius);
+    @include border-radius($border-radius, 0);
 }

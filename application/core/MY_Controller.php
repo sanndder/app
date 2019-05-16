@@ -16,6 +16,7 @@ class MY_Controller extends CI_Controller
 
 		//base_url naar smarty
 		$this->smarty->assign( 'base_url' , BASE_URL );
+		$this->smarty->assign( 'app_name' , 'App' );
 
 		//logout
 		$logout = false;
@@ -27,7 +28,6 @@ class MY_Controller extends CI_Controller
 
 		//init user
 		$this->load->model('user_model', 'user');
-
 	}
 
 }
@@ -47,6 +47,7 @@ class EX_Controller extends CI_Controller
 
 		//base_url naar smarty
 		$this->smarty->assign( 'base_url' , BASE_URL );
+		$this->smarty->assign( 'app_name' , 'App' );
 	}
 
 }

@@ -161,7 +161,7 @@
                 padding-bottom: map-get($spacers, 1);
 
                 &:after {
-                    content: '\e9c9';
+                    content: $icon-menu-arrow-down;
                     font-size: $icon-font-size;
                     font-family: $icon-font-family;
                     display: block;

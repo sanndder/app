@@ -156,7 +156,7 @@
 
                 // Use icon
                 &:after {
-                    content: "\e600";
+                    content: $icon-checkbox-tick;
                     font-family: $icon-font-family;
                     font-size: $icon-font-size;
                     position: absolute;

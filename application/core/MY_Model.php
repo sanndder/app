@@ -9,6 +9,7 @@ class MY_Model extends CI_Model
 {
 	public $db_user = NULL;
 	public $db_admin = NULL;
+	public $logindata = NULL;
 
 	public function __construct()
 	{
@@ -20,6 +21,9 @@ class MY_Model extends CI_Model
 
 		//try to connect to user database
 		$this->_connect();
+
+		//init user
+		$this->load->model('user_model', 'user');
 	}
 
 	/*
@@ -31,7 +35,7 @@ class MY_Model extends CI_Model
 		$config['hostname'] = 'localhost';
 		$config['username'] = 'root';
 		$config['password'] = '';
-		$config['database'] = 'flxuur_0001';
+		$config['database'] = 'app_user';
 		$config['dbdriver'] = 'mysqli';
 		$config['dbprefix'] = '';
 		$config['pconnect'] = FALSE;
@@ -40,7 +44,6 @@ class MY_Model extends CI_Model
 		$config['cachedir'] = '';
 		$config['char_set'] = 'utf8';
 		$config['dbcollat'] = 'utf8_general_ci';
-
 
 		// Grab the super object
 		$CI =& get_instance();

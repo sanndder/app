@@ -109,7 +109,7 @@
 
             // Cross icon
             &:after {
-                content: '\ed6b';
+                content: $icon-action-cross-sm;
                 font-family: $icon-font-family;
                 display: inline-block;
                 font-size: $icon-font-size;
@@ -127,7 +127,7 @@
 
             // Arrow icon
             &:after {
-                content: '\e9c5';
+                content: $icon-menu-arrow-down;
                 font-family: $icon-font-family;
                 display: inline-block;
                 position: absolute;
@@ -536,7 +536,7 @@
 
         // Add search icon
         &:after {
-            content: '\e98e';
+            content: $icon-search-magnifier;
             font-family: $icon-font-family;
             position: absolute;
             top: 50%;

@@ -286,17 +286,17 @@
 
 	// Closer icon
 	.brighttheme-icon-closer:after {
-	    content: "\ed6a";
+	    content: $icon-action-cross;
 	}
 
 	// Sticker icon
 	.brighttheme-icon-sticker:after {
-	    content: "\ee70";
+	    content: $icon-notification-sticker;
 	}
 
 	// Sticked icon
 	.brighttheme-icon-sticker.brighttheme-icon-stuck:after {
-		content: "\ee75";
+		content: $icon-notification-stuck;
 	}
 
 

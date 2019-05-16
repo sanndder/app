@@ -16,6 +16,13 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+// Sizing shortcut. Bootstrap deprecated it, but I find it very handy.
+// From now on this mixin lives here.
+@mixin size($width, $height: $width) {
+    width: $width;
+    height: $height;
+}
+
 
 //
 // Colors (for color system)

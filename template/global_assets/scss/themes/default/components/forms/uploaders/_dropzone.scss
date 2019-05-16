@@ -84,7 +84,7 @@
 
 				// Icon
 				&:before {
-					content: '\ea0e';
+					content: $icon-uploader-placeholder;
 					font-family: $icon-font-family;
 					font-size: $dropzone-placeholder-icon-size;
 					display: inline-block;
@@ -211,14 +211,14 @@
 				color: theme-color('danger');
 
 				&:after {
-					content: '\ed6a';
+					content: $icon-validation-error;
 				}
 			}
 			.dz-success-mark {
 				color: theme-color('success');
 
 				&:after {
-					content: '\ed6e';
+					content: $icon-validation-success;
 				}
 			}
 

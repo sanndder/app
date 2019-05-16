@@ -487,11 +487,11 @@
                 @include transition(opacity ease-in-out $component-transition-timer);
             }
             &:before {
-                content: '\e9c1';
+                content: $icon-table-sorting-down;
                 margin-top: ($font-size-sm / 3);
             }
             &:after {
-                content: '\e9c2';
+                content: $icon-table-sorting-up;
                 margin-top: -($font-size-sm / 3);
             }
             &.ascending {
@@ -604,7 +604,7 @@
 
         // Arrow
         > div:after{
-            content: '\e9c7';
+            content: $icon-menu-sub-arrow-ltr;
             font-family: $icon-font-family;
             position: absolute;
             top: 50%;
@@ -885,7 +885,7 @@
 
             // Add checkmark icon to the active type
             &.active:after {
-                content: '\e600';
+                content: $icon-checkbox-tick;
                 font-family: $icon-font-family;
                 position: absolute;
                 right: $dropdown-item-padding-x;
@@ -1536,7 +1536,7 @@
 
                     // Icon indicator
                     &:after {
-                        content: '\e600';
+                        content: $icon-checkbox-tick;
                         font-family: $icon-font-family;
                         display: inline-block;
                         font-size: $icon-font-size;
@@ -1779,7 +1779,7 @@
 
         // Left arrow
         &:after {
-            content: '\e9c8';
+            content: $icon-nav-prev;
         }
     }
 
@@ -1789,7 +1789,7 @@
 
         // Right arrow
         &:after {
-            content: '\e9cb';
+            content: $icon-nav-next;
         }
     }
 

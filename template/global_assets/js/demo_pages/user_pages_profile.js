@@ -565,13 +565,13 @@ var UserProfile = function() {
 
     // Schedule
     var _componentFullCalendar = function() {
-        if (!$().fullCalendar) {
-            console.warn('Warning - fullcalendar.min.js is not loaded.');
+        if (typeof FullCalendar == 'undefined') {
+            console.warn('Warning - Fullcalendar files are not loaded.');
             return;
         }
 
         // Add events
-        var eventsColors = [
+        var eventColors = [
             {
                 title: 'Day off',
                 start: '2014-11-01',
@@ -629,26 +629,28 @@ var UserProfile = function() {
             }
         ];
 
-        // Container
-        var $element = $('.my-schedule');
+        // Define element
+        var myScheduleElement = document.querySelector('.my-schedule');
 
-        // Initialize with options
-        $element.fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            defaultView: 'agendaWeek',
-            defaultDate: '2014-11-15',
-            editable: true,
-            events: eventsColors
-        });
+        // Initialize
+        if(myScheduleElement) {
+            var myScheduleInit = new FullCalendar.Calendar(myScheduleElement, {
+                plugins: [ 'dayGrid', 'timeGrid', 'interaction' ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                defaultDate: '2014-11-12',
+                defaultView: 'timeGridWeek',
+                businessHours: true,
+                events: eventColors
+            });
+        }
 
         // Render if inside hidden element
         $('.navbar-nav-link[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            $element.fullCalendar('render');
-            $(window).trigger('resize');
+            myScheduleInit.render();
         });
     };
 

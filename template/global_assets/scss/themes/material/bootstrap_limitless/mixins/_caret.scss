@@ -7,19 +7,19 @@
  * ---------------------------------------------------------------------------- */
 
 @mixin caret-down {
-    content: '\e9c9';
+    content: $icon-caret-down;
 }
 
 @mixin caret-up {
-    content: '\e9ca';
+    content: $icon-caret-up;
 }
 
 @mixin caret-right {
-    content: '\e9cb';
+    content: $icon-caret-right;
 }
 
 @mixin caret-left {
-    content: '\e9c8';
+    content: $icon-caret-left;
 }
 
 @mixin caret($caret-direction: down) {
@@ -28,9 +28,9 @@
             font-family: $icon-font-family;
             display: inline-block;
             border: 0;
-            vertical-align: middle;
+            vertical-align: $caret-vertical-align;
             font-size: $caret-font-size;
-            margin-left: ($element-spacer-x * .75);
+            margin-left: $caret-spacing;
             line-height: 1;
             position: relative;
             @if $caret-direction == down {

@@ -48,51 +48,41 @@ if ( ! function_exists('amount'))
 	}
 }
 
+
+
 //=====================================================================
-// content type van een extensie
+// controleer of map bestaat, anders aan maken
 //=====================================================================
-if ( ! function_exists('get_content_type'))
+if ( !function_exists('checkAndCreateDir'))
 {
-	function get_content_type($ext)
+	function checkAndCreateDir( $path = '', $is_file = false )
 	{
-		switch ($ext) {
-			case 'csv':
-				$content_type = 'text/csv';
-				break;
-			case 'jpg':
-				$content_type = 'image/jpeg';
-				break;
-			case 'jpeg':
-				$content_type = 'image/jpeg';
-				break;
-			case 'gif':
-				$content_type = 'image/gif';
-				break;
-			case 'png':
-				$content_type = 'image/png';
-				break;
-			case 'pdf':
-				$content_type = 'application/pdf';
-				break;
-			case 'doc':
-				$content_type = 'application/msword';
-				break;
-			case 'docx':
-				$content_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-				break;
-			default:
-				$content_type = 'application/octet-stream';;
+		//naam van path afhalen wanneer het een bestandsnaam bevast
+		if( $is_file )
+		{
+			$parts = explode('/', $path );
+			$file_name = end($parts);
+			$dir = str_replace( $file_name, '', $path );
+		}
+		else
+		{
+			$dir = $path;
 		}
 
+		//kijken of map al bestaat
+		if( file_exists($dir) && is_dir($dir) )
+			return true;
 
-		return $content_type;
+		//anders map aanmaken
+		return mkdir( $dir, 0777, true );
 	}
 }
+
 
 //=====================================================================
 // //naam samenstellen
 //=====================================================================
-if ( ! function_exists('make_name'))
+if ( !function_exists('make_name'))
 {
 	function make_name($data)
 	{
@@ -554,21 +544,6 @@ if ( ! function_exists('generateRandomString'))
 		}
 		return $randomString;
 	}
-}
-
-//---------------------------------------------------
-// encryppt en decrypt
-//---------------------------------------------------
-define( 'ENCRYPT_KEY', '^&jkdf6$5)fd89#45fszjh88**6Gj*k');
-
-function encrypt( $data ){
-	$return = mcrypt_encrypt( MCRYPT_RIJNDAEL_128, ENCRYPT_KEY, $data, MCRYPT_MODE_ECB);
-	return $return;
-}
-
-function decrypt( $data ){
-	$return = mcrypt_decrypt( MCRYPT_RIJNDAEL_128, ENCRYPT_KEY, $data, MCRYPT_MODE_ECB);
-	return $return;
 }
 
 

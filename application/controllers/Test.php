@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * @property Auth_model $auth class
+ * Test class
  */
 
 class Test extends MY_Controller {
@@ -15,8 +15,10 @@ class Test extends MY_Controller {
 	{
 		parent::__construct();
 
-		$this->load->model('test2_model', 'test2');
-		$this->load->model('test_model', 'test');
+		//$this->load->model('test2_model', 'test2');
+		$this->load->model('emailcentrum_model', 'emailcentrum');
+
+		//show( $this->user->user_type );
 	}
 
 
@@ -25,6 +27,32 @@ class Test extends MY_Controller {
 	//--------------------------------------------------------------------------
 	public function index()
 	{
+
+		$row['file_name'] = 'image.jpg';
+		$row['file_dir'] = 'test';
+		$row['logo_id'] = 133;
+		$row['id_field'] = 'logo_id';
+
+		//$row = 'test/image.jpg';
+
+		$img = new models\File\Img($row);
+
+
+		//$img->download();
+
+		//$file->info();
+
+		/*
+		$email = new models\Email\Email();
+
+
+		//$email->test();
+		$email->debug();
+		$email->setSubject('Testmail');
+		$email->setBody('Test met <b>HTML</b>');
+		$email->useHtmlTemplate( 'default' );
+		//$email->test();
+		*/
 
 		$this->smarty->display('index.tpl');
 	}

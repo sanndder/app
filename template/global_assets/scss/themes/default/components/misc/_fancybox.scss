@@ -99,7 +99,7 @@
 
             // Icon
             &:after {
-                content: '\eb55';
+                content: $icon-loading-spinner;
                 font-family: $icon-font-family;
                 font-size: $icon-font-size;
                 margin-top: -($icon-font-size / 2);
@@ -135,7 +135,7 @@
 
         // Icon
         &:after {
-            content: '\ed6a';
+            content: $icon-action-cross;
             font-family: $icon-font-family;
             font-size: $icon-font-size;
             display: block;
@@ -273,10 +273,10 @@
             // Arrow
             &:after {
                 @if $direction == 'LTR' {
-                    content: '\e9c8';
+                    content: $icon-nav-prev;
                 }
                 @else {
-                    content: '\e9cb';
+                    content: $icon-nav-next;
                 }
             } 
         }
@@ -293,10 +293,10 @@
             // Arrow
             &:after {
                 @if $direction == 'LTR' {
-                    content: '\e9cb';
+                    content: $icon-nav-next;
                 }
                 @else {
-                    content: '\e9c8';
+                    content: $icon-nav-prev;
                 }
             } 
         }

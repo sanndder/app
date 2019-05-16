@@ -52,11 +52,11 @@
 
 	// Error icon
 	.validation-invalid-label:before {
-		content: '\ed63';
+		content: $icon-validation-error;
 	}
 
 	// Valid icon
 	.validation-valid-label:before {
-		content: '\ee73';
+		content: $icon-validation-success;
 	}
 }

@@ -57,7 +57,7 @@
 
         // Icon base
         &:after {
-            content: '\e9a2';
+            content: $icon-alert-styled-base;
             font-family: $icon-font-family;
             color: $white;
             width: (($alert-padding-y * 2) + $icon-font-size);
@@ -75,25 +75,25 @@
         // Danger icon
         &.alert-danger:after,
         &[class*=bg-danger]:after {
-            content: '\ed64';
+            content: $icon-alert-styled-danger;
         }
 
         // Success icon
         &.alert-success:after,
         &[class*=bg-success]:after {
-            content: '\ed6e';
+            content: $icon-alert-styled-success;
         }
 
         // Warning icon
         &.alert-warning:after,
         &[class*=bg-warning]:after {
-            content: '\e9bd';
+            content: $icon-alert-styled-warning;
         }
 
         // Info icon
         &.alert-info:after,
         &[class*=bg-info]:after {
-            content: '\e9b9';
+            content: $icon-alert-styled-info;
         }
     }
 
@@ -126,7 +126,7 @@
     // With custom icon
     &.alert-styled-custom {
         &:after {
-            content: "\e81b"; // Change icon code for custom alert
+            content: $icon-alert-styled-custom; // Change icon code for custom alert
         }
     }
 }

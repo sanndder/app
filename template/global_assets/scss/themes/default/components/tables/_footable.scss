@@ -45,7 +45,7 @@
 
                     // Add expand icon
                     .footable-toggle:before {
-                        content: "\e9e4";
+                        content: $icon-table-row-expand;
                         display: inline-block;  
                         font-family: $icon-font-family;
                         font-size: $icon-font-size;
@@ -59,7 +59,7 @@
 
                     // Add collapse icon
                     &.footable-detail-show .footable-toggle:before {
-                        content: "\e9e7";       
+                        content: $icon-table-row-collapse;       
                     }
                 }
             }

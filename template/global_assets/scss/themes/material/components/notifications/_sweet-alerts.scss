@@ -307,7 +307,7 @@
 	.swal2-loading {
 		.swal2-confirm {
 			&:before {
-				content: '\eb55';
+				content: $icon-loading-spinner;
 				font-family: $icon-font-family;
 			    display: inline-block;
 			    font-size: $icon-font-size;
@@ -425,7 +425,7 @@
 	// Input error
 	.swal2-inputerror {
 		@include plain-hover-focus {
-			border-color: $form-feedback-invalid-color;
+			border-color: $form-feedback-invalid-color !important;
 		}
 
 		&:focus {
@@ -434,28 +434,28 @@
 	}
 
 	// Validation error message
-	.swal2-validationerror {
-		background-color: $gray-200;
+	.swal2-validation-message {
 		overflow: hidden;
-		padding: $input-btn-padding-y $input-btn-padding-x;
 		display: none;
-		margin-top: $spacer;
-		margin-left: 0!important;
+		margin-top: $form-text-margin-top;
+		margin-bottom: $form-text-margin-top;
+		margin-left: 0 !important;
 		margin-right: 0!important;
-		@include border-radius($border-radius);
+		color: theme-color("danger");
+		position: relative;
+		padding-left: ($icon-font-size + $element-spacer-x);
 
 		// Add icon
 		&:before {
-			content: '\ed68';
+			content: $icon-validation-error;
 			font-family: $icon-font-family;
-		    display: inline-block;
-		    font-size: $icon-font-size;
-		    vertical-align: middle;
-		    align-self: center;
-		    line-height: 1;
-		    margin-right: $element-spacer-x;
-		    color: $color-danger-500;
-		    @include ll-font-smoothing();
+			font-size: $icon-font-size;
+			position: absolute;
+			top: (($line-height-computed - $icon-font-size) / 2);
+			left: 0;
+			display: inline-block;
+			line-height: 1;
+			@include ll-font-smoothing();
 		}
 	}
 

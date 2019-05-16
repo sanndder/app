@@ -73,7 +73,7 @@
 
         // Icon
         &:after {
-            content: '\ed6b';
+            content: $icon-action-cross;
             font-family: $icon-font-family;
             font-size: $icon-font-size;
             line-height: 1;

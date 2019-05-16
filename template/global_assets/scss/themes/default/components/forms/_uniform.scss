@@ -123,7 +123,7 @@
 
 			// Checkmark icon
 			&:after {
-				content: "\e600";
+				content: $icon-checkbox-tick;
 				font-family: $icon-font-family;
 				font-size: $icon-font-size;
 				position: absolute;
@@ -406,7 +406,7 @@
 
 		    // Icon
 		    &:after {
-		    	content: '\e9c5';
+		    	content: $icon-menu-arrow-down;
 			    font-family: $icon-font-family;
 			    display: inline-block;
 		    	position: absolute;

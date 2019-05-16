@@ -100,10 +100,10 @@
             // Arrow
             &:after {
                 @if $direction == 'LTR' {
-                    content: '\e9c7';
+                    content: $icon-menu-sub-arrow-ltr;
                 }
                 @else {
-                    content: '\e9c4';
+                    content: $icon-menu-sub-arrow-rtl;
                 }
                 right: $dropdown-item-padding-x;
             }
@@ -119,10 +119,10 @@
             // Icon
             &:before {
                 @if $direction == 'LTR' {
-                    content: '\ede7';
+                    content: $icon-menu-slinky-back-ltr;
                 }
                 @else {
-                    content: '\ede5';
+                    content: $icon-menu-slinky-back-rtl;
                 }
                 left: $dropdown-item-padding-x;
             }

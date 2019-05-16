@@ -119,11 +119,10 @@
 
                             // Icon
                             &:after {
-                                content: '\e913';
+                                content: $icon-wizard-step-current;
                                 font-family: $icon-font-family;
                                 display: inline-block;
                                 font-size: $icon-font-size;
-                                line-height: ($wizard-step-number-size - rem-calc($wizard-step-line-size * 2));
                                 @include ll-font-smoothing();
                                 @include transition(all ease-in-out $component-transition-timer);
                             }
@@ -156,11 +155,10 @@
 
                             // Icon
                             &:after {
-                                content: '\ed6f';
+                                content: $icon-wizard-step-complete;
                                 font-family: $icon-font-family;
                                 display: inline-block;
                                 font-size: $icon-font-size;
-                                line-height: (($icon-font-size * 2) + rem-calc($wizard-step-line-size));
                                 @include ll-font-smoothing();
                                 @include transition(all ease-in-out $component-transition-timer);
                             }

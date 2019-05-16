@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 defined('BASE_URL') OR define('BASE_URL', 'http://127.0.0.1/app');
 
+defined('UPLOAD_DIR') OR define('UPLOAD_DIR', 'userfiles');
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace

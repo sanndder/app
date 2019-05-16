@@ -594,6 +594,9 @@ var NouiSlider = function() {
 
         // Filter pips
         function filter500(value, type) {
+            if (type === 0) {
+                return value = 0 ? -1 : 0;
+            }
             return value % 10 ? 2 : 1;
         }
 

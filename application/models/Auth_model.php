@@ -105,6 +105,7 @@ class Auth_model extends MY_Model
 		//sessie aanmaken
 		$session['logindata']['main']['user_id'] = $user['user_id'];
 		$session['logindata']['main']['naam'] = $user['naam'];
+		$session['logindata']['main']['user_type'] = 'werkgever';
 		$session['logindata']['main']['sid'] = $sid;
 
 		//session to database
@@ -127,6 +128,7 @@ class Auth_model extends MY_Model
 
 		//check main user
 		$user_id = $logindata['main']['user_id'];
+		$user_type = $logindata['main']['user_type'];
 		$sid = $logindata['main']['sid'];
 
 		//user wants to logout
@@ -134,8 +136,8 @@ class Auth_model extends MY_Model
 			$this->logout( $user_id, $sid, 'user action');
 
 		//get login session
-		$sql = "SELECT * FROM users LEFT JOIN users_sessions ON users.user_id = users_sessions.user_id WHERE users.user_id = ? AND sid = ? AND session_logout IS NULL LIMIT 1";
-		$query = $this->db_admin->query($sql, array($user_id, $sid));
+		$sql = "SELECT * FROM users LEFT JOIN users_sessions ON users.user_id = users_sessions.user_id WHERE users.user_id = ? AND sid = ? AND user_type = ? AND session_logout IS NULL LIMIT 1";
+		$query = $this->db_admin->query($sql, array($user_id, $sid, $user_type));
 
 		//logout
 		if ($query->num_rows() == 0)

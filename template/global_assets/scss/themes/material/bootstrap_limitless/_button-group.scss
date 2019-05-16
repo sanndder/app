@@ -7,20 +7,15 @@
  * ---------------------------------------------------------------------------- */
 
 // Make sure custom border widths work correctly
-.btn-group,
-.btn-group-vertical {
+.btn-group {
 
     // Double border width
-    .btn + .btn.border-2,
-    .btn.border-2 + .btn-group,
-    .btn-group + .btn.border-2 {
+    > .btn.border-2:not(:first-child) {
         margin-left: -($btn-border-width * 2);
     }
-    
+
     // Tripple border width
-    .btn + .btn.border-3,
-    .btn.border-3 + .btn-group,
-    .btn-group + .btn.border-3 {
+    > .btn.border-3:not(:first-child) {
         margin-left: -($btn-border-width * 3);
     }
 }

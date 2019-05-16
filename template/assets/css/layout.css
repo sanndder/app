@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* ------------------------------------------------------------------------------
  *
  *  # Core layout
@@ -74,6 +75,13 @@
  * ---------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------
  *
+ *  # Forms mixin
+ *
+ *  Override and extend default forms mixin.
+ *
+ * ---------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------
+ *
  *  # Buttons mixin
  *
  *  Override and extend default buttons mixin.
@@ -84,13 +92,6 @@
  *  # Caret mixin
  *
  *  Override and extend default cared mixin.
- *
- * ---------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------------
- *
- *  # Forms mixin
- *
- *  Override and extend default forms mixin.
  *
  * ---------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------
@@ -226,7 +227,7 @@ body {
   z-index: 1040;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: all ease-in-out 0.15s; }
-  @media screen and (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion: reduce) {
     .sidebar {
       transition: none; } }
   .sidebar-main,
@@ -247,7 +248,7 @@ body {
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   transition: left ease-in-out 0.15s, right ease-in-out 0.15s; }
-  @media screen and (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion: reduce) {
     .sidebar-content {
       transition: none; } }
   .navbar-lg:first-child ~ .page-content .sidebar-content {
@@ -278,9 +279,9 @@ body {
   -ms-flex-direction: column;
       flex-direction: column; }
   .nav-sidebar .nav-item:not(.nav-item-header):first-child {
-    padding-top: 0.5rem; }
+    padding-top: 2px; }
   .nav-sidebar .nav-item:not(.nav-item-header):last-child {
-    padding-bottom: 0.5rem; }
+    padding-bottom: 2px; }
   .nav-sidebar .nav-item:not(.nav-item-divider) {
     margin-bottom: 1px; }
     .nav-sidebar .nav-item:not(.nav-item-divider):last-child {
@@ -295,7 +296,7 @@ body {
         align-items: flex-start;
     padding: 0.75rem 1.25rem;
     transition: background-color ease-in-out 0.15s, color ease-in-out 0.15s; }
-    @media screen and (prefers-reduced-motion: reduce) {
+    @media (prefers-reduced-motion: reduce) {
       .nav-sidebar .nav-link {
         transition: none; } }
     .nav-sidebar .nav-link i {
@@ -305,7 +306,7 @@ body {
       top: 0; }
     .nav-sidebar .nav-link .badge {
       transition: background-color ease-in-out 0.15s, border-color ease-in-out 0.15s; }
-      @media screen and (prefers-reduced-motion: reduce) {
+      @media (prefers-reduced-motion: reduce) {
         .nav-sidebar .nav-link .badge {
           transition: none; } }
     .nav-sidebar .nav-link.disabled, .nav-sidebar .nav-link.disabled:hover, .nav-sidebar .nav-link.disabled:focus {
@@ -323,7 +324,7 @@ body {
 .nav-item-submenu > .nav-link {
   padding-right: 2.75rem; }
   .nav-item-submenu > .nav-link:after {
-    content: '\e9c7';
+    content: "";
     font-family: "icomoon";
     display: inline-block;
     font-size: 1rem;
@@ -338,7 +339,7 @@ body {
     transition: transform 0.25s ease-in-out, -webkit-transform 0.25s ease-in-out;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale; }
-    @media screen and (prefers-reduced-motion: reduce) {
+    @media (prefers-reduced-motion: reduce) {
       .nav-item-submenu > .nav-link:after {
         transition: none; } }
 
@@ -367,6 +368,65 @@ body {
   -webkit-transform: rotate(90deg);
           transform: rotate(90deg); }
 
+.nav-sidebar-icons-reverse .nav-link {
+  padding-right: 3.5rem; }
+  .nav-sidebar-icons-reverse .nav-link i {
+    position: absolute;
+    top: 0.75rem;
+    right: 1.25rem;
+    margin-right: 0; }
+
+.nav-sidebar-icons-reverse .nav-item-submenu .nav-link {
+  padding-right: 4.5rem; }
+  .nav-sidebar-icons-reverse .nav-item-submenu .nav-link:after {
+    right: 3.25rem; }
+
+.nav-sidebar-icons-reverse .nav-group-sub .nav-link {
+  padding-left: 2.5rem; }
+  .nav-sidebar-icons-reverse .nav-group-sub .nav-link i {
+    top: 0.625rem; }
+
+.nav-sidebar-icons-reverse .nav-group-sub .nav-group-sub .nav-link {
+  padding-left: 3.75rem; }
+
+.nav-sidebar-icons-reverse .nav-group-sub .nav-group-sub .nav-group-sub .nav-link {
+  padding-left: 5rem; }
+
+.nav-sidebar-bordered > .nav-item + .nav-item:not(.nav-item-divider) {
+  margin-bottom: 0; }
+
+.sidebar .card:first-child .nav-sidebar-bordered {
+  padding-top: 0; }
+  .sidebar .card:first-child .nav-sidebar-bordered > .nav-item:first-child,
+  .sidebar .card:first-child .nav-sidebar-bordered > .nav-item-header:first-child {
+    border-top: 0; }
+
+.sidebar .card:last-child .nav-sidebar-bordered {
+  padding-bottom: 0; }
+  .sidebar .card:last-child .nav-sidebar-bordered > .nav-item:last-child,
+  .sidebar .card:last-child .nav-sidebar-bordered > .nav-item-header:last-child {
+    border-bottom: 0; }
+
+.sidebar-dark .nav-sidebar-bordered > .nav-item {
+  border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .sidebar-dark .nav-sidebar-bordered > .nav-item:last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+
+.sidebar-dark .nav-sidebar-bordered > .nav-item-header {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0; }
+
+.sidebar-light .nav-sidebar-bordered > .nav-item {
+  border-top: 1px solid #eee; }
+  .sidebar-light .nav-sidebar-bordered > .nav-item:last-child {
+    border-bottom: 1px solid #eee; }
+
+.sidebar-light .nav-sidebar-bordered > .nav-item-header {
+  background-color: #fafafa;
+  border-top: 1px solid #eee;
+  margin: 0; }
+
 .sidebar-mobile-toggler {
   display: -ms-flexbox;
   display: flex;
@@ -379,7 +439,7 @@ body {
   .sidebar-mobile-toggler a {
     padding: 0.875rem 1.25rem;
     transition: all ease-in-out 0.15s; }
-    @media screen and (prefers-reduced-motion: reduce) {
+    @media (prefers-reduced-motion: reduce) {
       .sidebar-mobile-toggler a {
         transition: none; } }
     .navbar-lg:first-child ~ .page-content .sidebar-mobile-toggler a {
@@ -469,7 +529,8 @@ body {
       background-color: #f5f5f5; }
   .sidebar-light .nav-sidebar .nav-item > .nav-link.active {
     background-color: #f5f5f5;
-    color: #333; }
+    color: #333;
+  font-weight: bold}
   .sidebar-light .nav-sidebar .nav-item-open > .nav-link:not(.disabled),
   .sidebar-light .nav-sidebar > .nav-item-expanded:not(.nav-item-open) > .nav-link {
     background-color: #f5f5f5;
@@ -518,7 +579,8 @@ body {
       padding-top: 0.31733rem;
       padding-bottom: 0.31733rem; }
     .sidebar-xs .sidebar-main .nav-sidebar > .nav-item {
-      position: relative;
+      position: sticky;
+      top:0;
       margin: 0; }
       .sidebar-xs .sidebar-main .nav-sidebar > .nav-item > .nav-link {
         -ms-flex-pack: center;
@@ -526,7 +588,7 @@ body {
         padding-left: 0;
         padding-right: 0; }
         .sidebar-xs .sidebar-main .nav-sidebar > .nav-item > .nav-link > i {
-          position: static;
+          position: sticky;
           margin-left: 0;
           margin-right: 0;
           display: block;
@@ -536,7 +598,7 @@ body {
     .sidebar-xs .sidebar-main .nav-sidebar > .nav-item-submenu:hover > .nav-group-sub, .sidebar-xs .sidebar-main .nav-sidebar > .nav-item-submenu:focus > .nav-group-sub {
       display: block !important; }
     .sidebar-xs .sidebar-main .nav-sidebar > .nav-item-submenu > .nav-group-sub {
-      position: absolute;
+      position: sticky;
       top: -0.5rem;
       right: -16.875rem;
       width: 16.875rem;
@@ -611,13 +673,13 @@ body {
 
 @media (min-width: 576px) {
   .sidebar-expand-sm {
-    position: static;
+    position: sticky;
     margin-left: 0.625rem;
     margin-right: 0.625rem;
     margin-bottom: 1.25rem;
     border-radius: 0.1875rem;
     transition: none; } }
-  @media screen and (min-width: 576px) and (prefers-reduced-motion: reduce) {
+  @media (min-width: 576px) and (prefers-reduced-motion: reduce) {
     .sidebar-expand-sm {
       transition: none; } }
 
@@ -641,7 +703,7 @@ body {
       .sidebar-expand-sm.sidebar-right .sidebar-content {
         right: 0; }
     .sidebar-expand-sm .sidebar-content {
-      position: static;
+      position: sticky;
       overflow: visible;
       width: auto; }
     .sidebar-expand-sm .sidebar-mobile-toggler {
@@ -672,13 +734,14 @@ body {
 
 @media (min-width: 768px) {
   .sidebar-expand-md {
-    position: static;
+    position: sticky;
+    top:110px;
     margin-left: 0.625rem;
     margin-right: 0.625rem;
     margin-bottom: 1.25rem;
     border-radius: 0.1875rem;
     transition: none; } }
-  @media screen and (min-width: 768px) and (prefers-reduced-motion: reduce) {
+  @media (min-width: 768px) and (prefers-reduced-motion: reduce) {
     .sidebar-expand-md {
       transition: none; } }
 
@@ -739,7 +802,7 @@ body {
     margin-bottom: 1.25rem;
     border-radius: 0.1875rem;
     transition: none; } }
-  @media screen and (min-width: 992px) and (prefers-reduced-motion: reduce) {
+  @media (min-width: 992px) and (prefers-reduced-motion: reduce) {
     .sidebar-expand-lg {
       transition: none; } }
 
@@ -800,7 +863,7 @@ body {
     margin-bottom: 1.25rem;
     border-radius: 0.1875rem;
     transition: none; } }
-  @media screen and (min-width: 1200px) and (prefers-reduced-motion: reduce) {
+  @media (min-width: 1200px) and (prefers-reduced-motion: reduce) {
     .sidebar-expand-xl {
       transition: none; } }
 
@@ -861,7 +924,7 @@ body {
   border-radius: 0.1875rem;
   transition: none;
   border: 0; }
-  @media screen and (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion: reduce) {
     .sidebar-expand {
       transition: none; } }
   .sidebar-expand.sidebar-main {

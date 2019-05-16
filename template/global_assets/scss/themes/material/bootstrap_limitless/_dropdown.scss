@@ -142,11 +142,6 @@
     }
 }
 
-// Dividers within the dropdown
-.dropdown-divider {
-    margin: $dropdown-item-padding-y 0;
-}
-
 // Checkboxes and radios
 .dropdown-item {
     &.form-check {
@@ -190,10 +185,10 @@
             // Arrow icon
             &:after {
                 @if $direction == 'LTR' {
-                    content: '\e9c7';
+                    content: $icon-menu-sub-arrow-ltr;
                 }
                 @else {
-                    content: '\e9c4';
+                    content: $icon-menu-sub-arrow-rtl;
                 }
                 font-family: $icon-font-family;
                 position: absolute;
@@ -252,7 +247,7 @@
             
             // Change arrow icon direction
             .dropdown-toggle:after {
-                content: '\e9c5';
+                content: $icon-menu-arrow-down;
             }
 
             // Make them stacked

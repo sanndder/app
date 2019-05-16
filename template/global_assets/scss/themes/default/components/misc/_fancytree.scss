@@ -115,28 +115,28 @@
         cursor: pointer;
 
         .fancytree-exp-c &:after {
-            content: '\e9c7';
+            content: $icon-indicator-collapse;
         }
         .fancytree-exp-cl &:after {
-            content: '\e9c7';
+            content: $icon-indicator-collapse;
         }
         .fancytree-exp-cd &:after,
         .fancytree-exp-cdl &:after {
-            content: '\e9c7';
+            content: $icon-indicator-collapse;
         }
         .fancytree-exp-e &:after,
         .fancytree-exp-ed &:after {
-            content: '\e9c5';
+            content: $icon-indicator-expand;
         }
         .fancytree-exp-el &:after,
         .fancytree-exp-edl &:after {
-            content: '\e9c5';
+            content: $icon-indicator-expand;
         }
     }
 
     // Status node icons
     .fancytree-statusnode-error .fancytree-icon:after {
-        content: '\ed63';
+        content: $icon-validation-error;
     }
 
     // Loading icon
@@ -149,7 +149,7 @@
         @include size($icon-font-size);
 
         &:after {
-            content: '\ed6c';
+            content: $icon-checkbox-tick;
             @include transition(all ease-in-out $component-transition-timer);
         }
     }
@@ -173,18 +173,18 @@
     .fancytree-ico-c,
     .fancytree-ico-e {
         .fancytree-icon:after {
-            content: '\ea1a';
+            content: $icon-fancytree-file;
         }
     }
 
     // With children
     .fancytree-has-children {
         &.fancytree-ico-c .fancytree-icon:after {
-            content: '\ea0f';
+            content: $icon-fancytree-sub-collapse;
         }
 
         &.fancytree-ico-e .fancytree-icon:after {
-            content: '\ea11';
+            content: $icon-fancytree-sub-expand;
         }
     }
 
@@ -197,18 +197,18 @@
     .fancytree-ico-cf,
     .fancytree-ico-ef {
         .fancytree-icon:after {
-            content: '\ea3d';
+            content: $icon-fancytree-folder;
         }
     }
 
     // With children
     .fancytree-has-children {
         &.fancytree-ico-cf .fancytree-icon:after {
-            content: '\ea41';
+            content: $icon-fancytree-folder-collapse;
         }
 
         &.fancytree-ico-ef .fancytree-icon:after {
-            content: '\ea43';
+            content: $icon-fancytree-folder-expand;
         }
     }
 
@@ -247,7 +247,7 @@
 
         // Add icons
         .fancytree-selected &:after {
-            content: "\e600";
+            content: $icon-checkbox-tick;
             border: 0;
             top: ($checkbox-size - $icon-font-size - ($checkbox-border-width * 2)) / 2;
             left: ($checkbox-size - $icon-font-size - ($checkbox-border-width * 2)) / 2;
@@ -292,13 +292,13 @@
 
         // If accept
         .fancytree-drop-accept &:after {
-            content: '\ee73';
+            content: $icon-validation-success;
             color: $color-success-500;
         }
 
         // If reject
         .fancytree-drop-reject &:after {
-            content: '\ed63';
+            content: $icon-validation-error;
             color: $color-danger-500;
         }
     }

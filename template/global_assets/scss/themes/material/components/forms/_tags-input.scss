@@ -94,7 +94,7 @@
 
                 // Icon
                 &:after {
-                    content: '\ed6a';
+                    content: $icon-action-cross;
                     font-family: $icon-font-family;
                     display: block;
                     font-size: $font-size-xs;

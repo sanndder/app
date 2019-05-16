@@ -68,7 +68,7 @@
         // Checkmark icon
         .selected .select-checkbox {
             &:after {
-                content: "\e600";
+                content: $icon-checkbox-tick;
                 font-family: $icon-font-family;
                 font-size: $icon-font-size;
                 line-height: 1;

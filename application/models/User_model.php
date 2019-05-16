@@ -2,8 +2,8 @@
 	exit('No direct script access allowed');
 
 /*
- * Auth model
- * Zorg voor inloggen en beveiliging user
+ * User model
+ *
 */
 
 class User_model extends MY_Model
@@ -11,8 +11,8 @@ class User_model extends MY_Model
 
 	public $username = NULL;
 	public $user_id = NULL;
+	public $user_type = NULL;
 
-	private $logindata = NULL;
 	private $_errors = array();
 
 	/*************************************************************************************************
@@ -24,7 +24,7 @@ class User_model extends MY_Model
 		// Call the Model constructor
 		parent::__construct();
 
-		//load session
+		//user as global var
 		$this->logindata = $this->session->userdata('logindata');
 
 		//main user
@@ -32,6 +32,7 @@ class User_model extends MY_Model
 		{
 			$this->user_id = $this->logindata['main']['user_id'];
 			$this->username = $this->logindata['main']['naam'];
+			$this->user_type = $this->logindata['main']['user_type'];
 		}
 	}
 

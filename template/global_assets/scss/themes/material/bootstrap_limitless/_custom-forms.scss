@@ -65,7 +65,7 @@
 // Right input alignment
 .custom-control-right {
     padding-left: 0;
-    padding-right: $custom-control-gutter;
+    padding-right: ($custom-control-gutter + $custom-control-indicator-size);
 
     // Input
     .custom-control-input {

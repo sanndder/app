@@ -295,7 +295,7 @@ var JqueryUiComponents = function() {
         $('#jui-dialog-form-inline').dialog({
             autoOpen: false,
             modal: true,
-            width: 555,
+            width: 'auto',
             buttons: {
                 Submit: function() {
                     $(this).dialog('close');

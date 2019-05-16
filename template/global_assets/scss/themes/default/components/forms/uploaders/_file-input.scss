@@ -192,7 +192,7 @@
 
 	    // Override for preview icon, use Icomoon instead
 	    &:after {
-			content: '\ea0c';
+			content: $icon-uploader-placeholder;
 			font-family: $icon-font-family;
 			line-height: 1;
 			position: absolute;
@@ -257,7 +257,7 @@
 
 		// Icon itself
 		&:after {
-			content: '\eb55';
+			content: $icon-loading-spinner;
 			font-family: $icon-font-family;
 			display: inline-block;
 			position: absolute;

@@ -54,9 +54,80 @@ $header-elements-padding-y:               $spacer !default;
 $header-elements-padding-x:               $grid-gutter-width !default;
 
 // Icons
-$icon-font-family:                        'icomoon' !default;
-$icon-font-size:                          1rem !default;
 $list-icons-spacer:                       0.375rem !default;
+
+$icon-caret-up:                           '\e9ca' !default;
+$icon-caret-down:                         '\e9c9' !default;
+$icon-caret-left:                         '\e9c8' !default;
+$icon-caret-right:                        '\e9cb' !default;
+
+$icon-alert-styled-base:                  '\e9a2' !default;
+$icon-alert-styled-danger:                '\ed64' !default;
+$icon-alert-styled-success:               '\ed6e' !default;
+$icon-alert-styled-warning:               '\e9bd' !default;
+$icon-alert-styled-info:                  '\e9b9' !default;
+$icon-alert-styled-custom:                '\e81b' !default;
+
+$icon-validation-error:                   '\ed63' !default;
+$icon-validation-success:                 '\ee73' !default;
+
+$icon-notification-sticker:               '\ee70' !default;
+$icon-notification-stuck:                 '\ee75' !default;
+
+$icon-table-row-expand:                   '\e9e4' !default;
+$icon-table-row-collapse:                 '\e9e7' !default;
+$icon-table-sorting-up:                   '\e9c2' !default;
+$icon-table-sorting-down:                 '\e9c1' !default;
+$icon-table-button-confirm:               '\ed6e' !default;
+
+$icon-menu-arrow-down:                    '\e9c5' !default;
+$icon-menu-sub-arrow-ltr:                 '\e9c7' !default;
+$icon-menu-sub-arrow-rtl:                 '\e9c4' !default;
+$icon-menu-slinky-back-ltr:               '\ede7' !default;
+$icon-menu-slinky-back-rtl:               '\ede5' !default;
+
+$icon-nav-prev:                           '\e9c8' !default;
+$icon-nav-next:                           '\e9cb' !default;
+$icon-nav-calendar-prev:                  '\e9c0' !default;
+$icon-nav-calendar-next:                  '\e9c3' !default;
+
+$icon-indicator-expand:                   '\e9c5' !default;
+$icon-indicator-collapse:                 '\e9c7' !default;
+
+$icon-spinner-up:                         '\e9f7' !default;
+$icon-spinner-down:                       '\e9e2' !default;
+
+$icon-uploader-placeholder:               '\ea0e' !default;
+$icon-uploader-placeholder-actions:       '\ec67' !default;
+
+$icon-action-cross:                       '\ed6a' !default;
+$icon-action-cross-sm:                    '\ed6b' !default;
+
+$icon-fancytree-file:                     '\ea1a' !default;
+$icon-fancytree-sub-collapse:             '\ea0f' !default;
+$icon-fancytree-sub-expand:               '\ea11' !default;
+$icon-fancytree-folder:                   '\ea3d' !default;
+$icon-fancytree-folder-collapse:          '\ea41' !default;
+$icon-fancytree-folder-expand:            '\ea43' !default;
+
+$icon-card-collapse:                      '\e9b8' !default;
+$icon-card-expand:                        '\e9b7' !default;
+$icon-card-action-collapse:               '\e9c1' !default;
+$icon-card-action-reload:                 '\e9fb' !default;
+$icon-card-action-remove:                 '\ed6a' !default;
+$icon-card-action-move:                   '\e986' !default;
+$icon-card-action-full-base:              '\e9f9' !default;
+$icon-card-action-full-active:            '\e9fa' !default;
+$icon-card-action-modal:                  '\e9eb' !default;
+
+$icon-wizard-step-current:                '\e913' !default;
+$icon-wizard-step-complete:               '\ed6f' !default;
+
+$icon-picker-color-clear:                 '\ee6e' !default;
+$icon-checkbox-tick:                      '\e600' !default;
+$icon-search-magnifier:                   '\e98e' !default;
+$icon-loading-spinner:                    '\eb51' !default;
+$icon-list-dot:                           '\f052' !default;
 
 // Transition timers
 $component-transition-timer:              0.15s !default;
@@ -394,7 +465,7 @@ $datepicker-item-disabled-bg:       transparent !default;
 
 // Pick-a-date picker
 $pickadate-min-width:				18rem !default;
-$pickadate-max-width:               25rem !default;
+$pickadate-max-width:               20rem !default;
 $pickadate-max-height:              480px !default;
 
 

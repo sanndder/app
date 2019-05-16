@@ -400,21 +400,33 @@
                     }
                 }
 
-                // Input field
+                // Inputs
                 input {
-                    padding: $input-padding-y $input-padding-x;
-                    font-size: $font-size-base;
-                    line-height: $input-btn-line-height;
-                    color: $input-color;
-                    border: $input-border-width solid transparent;
-                    border-width: $input-border-width 0;
-                    border-bottom-color: $input-border-color;
-                    float: right;
-                    width: 70%;
 
                     // Remove outline
                     &:focus {
                         outline: 0;
+                    }
+
+                    // Text and file
+                    &:not([type=checkbox]):not([type=radio]) {
+                        padding: $input-padding-y $input-padding-x;
+                        font-size: $font-size-base;
+                        line-height: $input-btn-line-height;
+                        color: $input-color;
+                        border: $input-border-width solid transparent;
+                        border-width: $input-border-width 0;
+                        border-bottom-color: $input-border-color;
+                        float: right;
+                        width: 70%;
+                    }
+
+                    // Checkbox
+                    &[type=checkbox] {
+                        position: absolute;
+                        left: 30%;
+                        top: 50%;
+                        transform: translate(0, -50%);
                     }
                 }
 
@@ -445,7 +457,7 @@
         cursor: pointer;
         margin-left: $element-spacer-x;
         border: $btn-border-width solid transparent;
-        @include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-line-height, $btn-border-radius);
+        @include button-size($btn-padding-y, $btn-padding-x, $btn-font-size, $btn-line-height, $btn-border-radius);
         @include transition($btn-transition);
 
         // Submit button

@@ -45,8 +45,8 @@ var LearningCourseDetailed = function() {
 
     // Schedule
     var _componentFullCalendar = function() {
-        if (!$().fullCalendar) {
-            console.warn('Warning - fullcalendar.min.js is not loaded.');
+        if (typeof FullCalendar == 'undefined') {
+            console.warn('Warning - Fullcalendar files are not loaded.');
             return;
         }
 
@@ -128,26 +128,28 @@ var LearningCourseDetailed = function() {
             }
         ];
 
-        // Container
-        var $element = $('.schedule');
+        // Define element
+        var scheduleElement = document.querySelector('.schedule');
 
-        // Initialize with options
-        $element.fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            defaultDate: '2014-11-12',
-            editable: true,
-            events: eventColors
-        });
+        // Initialize
+        if(scheduleElement) {
+            var scheduleInit = new FullCalendar.Calendar(scheduleElement, {
+                plugins: [ 'dayGrid', 'timeGrid', 'interaction' ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                defaultDate: '2014-11-12',
+                businessHours: true,
+                events: eventColors
+            });
 
-        // Render if inside hidden element
-        $('a[href="#course-schedule"]').on('shown.bs.tab', function (e) {
-            $element.fullCalendar('render');
-            // $(window).trigger('resize');
-        });
+            // Render if inside hidden element
+            $('a[href="#course-schedule"]').on('shown.bs.tab', function (e) {
+                scheduleInit.render();
+            });
+        }
     };
 
 

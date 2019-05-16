@@ -249,7 +249,7 @@
                 position: absolute;
                 right: $input-padding-x-sm;
                 top: auto;
-                bottom: (($input-height-inner - $icon-font-size) / 2) + rem-calc($input-border-width);
+                bottom: ((($input-line-height * $input-font-size) + ($input-padding-y * 2) + rem-calc($input-border-width * 2) - $icon-font-size) / 2);
                 color: $text-muted;
             }
 
@@ -391,7 +391,7 @@
 
         // Arrow icon
         &:after {
-            content: '\e9c1';
+            content: $icon-menu-arrow-down;
             font-family: $icon-font-family;
             display: block;
             font-size: $icon-font-size;

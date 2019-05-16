@@ -180,7 +180,7 @@
 
         // Icon
         &:after {
-            content: '\ee6e';
+            content: $icon-picker-color-clear;
             display: block;
             font-family: $icon-font-family;
             font-size: $icon-font-size;
@@ -343,7 +343,7 @@
 
         // Arrow icon
         &:after {
-            content: '\e9c5';
+            content: $icon-menu-arrow-down;
             display: block;
             font-family: $icon-font-family;
             font-size: $icon-font-size;
@@ -475,7 +475,7 @@
             &.sp-thumb-light {
                 .sp-thumb-inner {
                     &:after {
-                        content: '\e600';
+                        content: $icon-checkbox-tick;
                         display: block;
                         font-family: $icon-font-family;
                         font-size: $icon-font-size;

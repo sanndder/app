@@ -25,8 +25,7 @@
 
 // Linked badge
 a.badge {
-    @include transition(all ease-in-out $component-transition-timer);
-
+    
     // Custom bg color
     &[class*=bg-]:not(.bg-transparent):not(.bg-white):not(.bg-light) {
         &:hover,

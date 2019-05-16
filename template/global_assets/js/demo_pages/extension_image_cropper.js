@@ -103,12 +103,12 @@ var ImageCropper = function() {
                 aspectRatio: 1,
                 preview: '.preview',
                 crop: function (e) {
-                    $dataX.val(Math.round(e.x));
-                    $dataY.val(Math.round(e.y));
-                    $dataHeight.val(Math.round(e.height));
-                    $dataWidth.val(Math.round(e.width));
-                    $dataScaleX.val(e.scaleX);
-                    $dataScaleY.val(e.scaleY);
+                    $dataX.val(Math.round(e.detail.x));
+                    $dataY.val(Math.round(e.detail.y));
+                    $dataHeight.val(Math.round(e.detail.height));
+                    $dataWidth.val(Math.round(e.detail.width));
+                    $dataScaleX.val(e.detail.scaleX);
+                    $dataScaleY.val(e.detail.scaleY);
                 }
             };
 

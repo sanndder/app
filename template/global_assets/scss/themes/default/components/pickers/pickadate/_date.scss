@@ -105,10 +105,10 @@
         // Icon
         &:before {
             @if $direction == 'LTR' {
-                content: '\e9c8';
+                content: $icon-nav-prev;
             }
             @else {
-                content: '\e9cb';
+                content: $icon-nav-next;
             }
         }
     }
@@ -120,10 +120,10 @@
         // Icon
         &:before {
             @if $direction == 'LTR' {
-                content: '\e9cb';
+                content: $icon-nav-next;
             }
             @else {
-                content: '\e9c8';
+                content: $icon-nav-prev;
             }
         }
     }

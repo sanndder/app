@@ -101,7 +101,7 @@
 
                 // Checkmark icon
                 &:after {
-                    content: '\e9c3';
+                    content: $icon-table-button-confirm;
                     font-family: $icon-font-family;
                     display: block;
                     font-size: $icon-font-size;

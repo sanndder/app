@@ -248,7 +248,7 @@
 
                     // Change arrow icon direction
                     .dropdown-toggle:after {
-                        content: '\e9c5';
+                        content: $icon-menu-arrow-down;
                     }
 
                     // Make them stacked

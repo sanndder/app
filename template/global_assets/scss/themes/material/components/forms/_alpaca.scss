@@ -110,7 +110,7 @@
 
         // Error icon
         .glyphicon-exclamation-sign:before {
-            content: '\ed63';
+            content: $icon-validation-error;
         }
     }
 

@@ -46,7 +46,7 @@
 
 		// Icon
 		&:after {
-			content: '\ec78';
+			content: $icon-uploader-placeholder;
 			font-size: ($icon-font-size * 2);
 			position: absolute;
 			top: 50%;
@@ -88,7 +88,7 @@
 		display: inline-block;
 		border: $btn-border-width solid transparent;
 		font-weight: $btn-font-weight;
-		@include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-line-height, $btn-border-radius);
+		@include button-size($btn-padding-y, $btn-padding-x, $btn-font-size, $btn-line-height, $btn-border-radius);
 		@include transition($btn-transition);
 
 		// Button spacer
@@ -188,7 +188,7 @@
 
 			// Icon
 			&:before {
-				content: '\ea0e';
+				content: $icon-uploader-placeholder;
 				font-size: ($icon-font-size * 5);
 				position: absolute;
 				top: 50%;
@@ -323,7 +323,7 @@
 
 		// Add icon to the header and footer
 		&:after {
-			content: '\ec67';
+			content: $icon-uploader-placeholder-actions;
 		}
 
 		// Remove icons in the file list
@@ -354,7 +354,7 @@
 
 	// Delete button
 	.plupload_delete a:after {
-		content: '\ed6b';
+		content: $icon-action-cross-sm;
 	}
 
 	// Failed indicator
@@ -364,7 +364,7 @@
 
 		// Icon
 		&:after {
-			content: '\e9cf';
+			content: $icon-validation-error;
 		}
 	}
 
@@ -379,7 +379,7 @@
 
 			// Icon
 			&:after {
-				content: '\e9db';
+				content: $icon-validation-success;
 			}
 		}
 	}

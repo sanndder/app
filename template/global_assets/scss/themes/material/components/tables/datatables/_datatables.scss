@@ -65,30 +65,30 @@
 			// Icons
 			.sorting {
 				&:before {
-					content: '\e9c1';
+					content: $icon-table-sorting-down;
 					margin-top: -0.125rem;
 					opacity: 0.5;
 				}
 				&:after {
-					content: '\e9c2';
+					content: $icon-table-sorting-up;
 					margin-top: -($font-size-sm - 0.125rem);
 					opacity: 0.5;
 				}
 			}
 			.sorting_asc:after {
-				content: '\e9c2';
+				content: $icon-table-sorting-up;
 				opacity: 1;
 			}
 			.sorting_desc:after {
-				content: '\e9c1';
+				content: $icon-table-sorting-down;
 				opacity: 1;
 			}
 			.sorting_asc_disabled:after {
-				content: '\e9c2';
+				content: $icon-table-sorting-up;
 				opacity: 0.25;
 			}
 			.sorting_desc_disabled:after {
-				content: '\e9c1';
+				content: $icon-table-sorting-down;
 				opacity: 0.25;
 			}
 		}
@@ -133,7 +133,7 @@
 	// Wrapper
 	.dataTables_wrapper {
 		position: relative;
-		clear: both;
+		flex: none;
 		@include clearfix();
 
 		// Remove top border from bordered table
@@ -266,7 +266,7 @@
 
 			// Add search icon
 			&:after {
-				content: "\e98e";
+				content: $icon-search-magnifier;
 				font-family: $icon-font-family;
 				font-size: $font-size-sm;
 				display: inline-block;

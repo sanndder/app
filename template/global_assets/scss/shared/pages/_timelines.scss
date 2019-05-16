@@ -45,7 +45,7 @@
 		padding-bottom: 1px;
 
 		// Vertical line
-		&:after {
+		&:before {
 			content: "";
 			position: absolute;
 			top: 0;
@@ -54,7 +54,6 @@
 			background-color: $timeline-line-color;
 			height: 100%;
 			width: $timeline-line-width;
-			z-index: -1;
 		}
 	}
 

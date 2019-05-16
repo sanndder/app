@@ -2,7 +2,7 @@
  *
  *  # FullCalendar
  *
- *  Styles for fullcalendar.min.js - JavaScript event calendar
+ *  Styles for fullcalendar JS files - JavaScript event calendar
  *
  * ---------------------------------------------------------------------------- */
 
@@ -25,14 +25,14 @@
 		border: $border-width solid $border-color;
 		padding: map-get($spacers, 2);
 		@include border-radius($border-radius);
+	}
 
-		.fc-event {
-			// margin: 0;
-			padding: $fullcalendar-event-padding-y $fullcalendar-event-padding-x;
+	// Event
+	.fc-event {
+		padding: $fullcalendar-event-padding-y $fullcalendar-event-padding-x;
 
-			+ .fc-event {
-				margin-top: ($spacer / 2);
-			}
+		+ .fc-event {
+			margin-top: ($spacer / 2);
 		}
 	}
 
@@ -109,35 +109,35 @@
 			font-size: $icon-font-size;
 			vertical-align: middle;
 			position: relative;
-			top: ($font-size-base - $icon-font-size) / 2;
+			top: -1px;
 			@include ll-font-smoothing();
 		}
 	}
 
 	// Arrow icons
-	.fc-icon-left-single-arrow:after {
+	.fc-icon-chevron-left:after {
 	    @if $direction == 'LTR' {
-	        content: '\e9c0';
+	        content: $icon-nav-calendar-prev;
 	    }
 	    @else {
-	        content: '\e9c3';
+	        content: $icon-nav-calendar-next;
 	    }
 	    .fc-rtl & {
-	    	content: '\e9c0';
+	    	content: $icon-nav-calendar-prev;
 	    }
 	}
-	.fc-icon-right-single-arrow:after {
+	.fc-icon-chevron-right:after {
 	    @if $direction == 'LTR' {
-	        content: '\e9c3';
+	        content: $icon-nav-calendar-next;
 	    }
 	    @else {
-	        content: '\e9c0';
+	        content: $icon-nav-calendar-prev;
 	    }
 	    .fc-rtl & {
-	    	content: '\e9c3';
+	    	content: $icon-nav-calendar-next;
 	    }
 	}
-	.fc-icon-left-double-arrow:after {
+	.fc-icon-chevrons-left:after {
 	    @if $direction == 'LTR' {
 	        content: '\000AB';
 	    }
@@ -148,7 +148,7 @@
 	    	content: '\000AB';
 	    }
 	}
-	.fc-icon-right-double-arrow:after {
+	.fc-icon-chevrons-right:after {
 	    @if $direction == 'LTR' {
 	        content: '\000BB';
 	    }
@@ -162,7 +162,7 @@
 
 	// Close popover icon
 	.fc-icon-x:after {
-		content: '\ed6a';
+		content: $icon-action-cross;
 		font-size: $font-size-base;
 		display: block;
 		margin-top: ($line-height-computed - $font-size-base) / 2;
@@ -179,11 +179,22 @@
 		padding: $btn-padding-y $btn-padding-x;
 		white-space: nowrap;
 		cursor: pointer;
-		font-weight: $btn-font-weight;
-		text-transform: uppercase;
+	    color: $btn-light-color;
+	    background-color: $btn-light-bg;
+	    border: $btn-border-width solid $btn-light-border-color;
+	    outline: 0;
+	    @include border-radius($btn-border-radius);
 		@include transition(all ease-in-out $component-transition-timer);
 
-		// Focus state
+		// Hover state
+	    &:not(.fc-button-disabled):not(.fc-button-active):hover,
+	    &:not(.fc-button-disabled):not(.fc-button-active):focus {
+		    color: $btn-light-hover-color;
+		    background-color: $btn-light-hover-bg;
+		    border-color: $btn-light-hover-border-color;
+	    }
+
+	    // Remove outline
 		&:focus {
 			outline: 0;
 		}
@@ -195,48 +206,18 @@
 		}
 	}
 
-
-	//
-	// Button states
-	//
-
-	// Default
-	.fc-state-default {
-	    color: $btn-light-color;
-	    background-color: $btn-light-bg;
-	    border: $btn-border-width solid $btn-light-border-color;
-
-	    // Left rounded corders
-		&.fc-corner-left {
-			@include border-left-radius($btn-border-radius);
-		}
-
-		// Right rounded corners
-		&.fc-corner-right {
-			@include border-right-radius($btn-border-radius);
-		}
+	// Disabled state
+	.fc-button-disabled {
+		cursor: $cursor-disabled;
+		opacity: $btn-disabled-opacity;
 	}
 
-	// Hover
-	.fc-state-down,
-	.fc-state-hover {
-	    color: $btn-light-hover-color;
-	    background-color: $btn-light-hover-bg;
-	    border-color: $btn-light-hover-border-color;
-	}
-
-	// Active
-	.fc-state-active {
+	// Active state
+	.fc-button-active {
 		background-image: none;
 	    color: $btn-light-active-color;
 	    background-color: $btn-light-active-bg;
 	    border-color: $btn-light-active-border-color;
-	}
-
-	// Disabled
-	.fc-state-disabled {
-		cursor: $cursor-disabled;
-		opacity: $btn-disabled-opacity;
 	}
 
 
@@ -246,6 +227,18 @@
 
 	.fc-button-group {
 		display: inline-block;
+
+		// Border radius
+		.fc-button {
+			@include border-radius(0);
+
+			&:first-child {
+				@include border-left-radius($btn-border-radius);
+			}
+			&:last-child {
+				@include border-right-radius($btn-border-radius);
+			}
+		}
 
 		.fc & {
 			> * {
@@ -274,16 +267,16 @@
 		.fc-header {
 			padding: $popover-header-padding-y $popover-header-padding-x;
 
-			// Title
-			.fc-title {
-				float: left;
-			}
-
 			// Close button
 			.fc-close {
 				cursor: pointer;
 				float: right;
 				margin-left: $element-spacer-x;
+			}
+
+			// Title
+			.fc-title {
+				font-weight: $font-weight-semibold;
 			}
 		}
 
@@ -701,6 +694,14 @@
 			padding: $popover-body-padding-y $popover-body-padding-x;
 			padding-top: 0;
 		}
+
+		.fc-day-grid-event {
+			margin: 0;
+
+			+ .fc-day-grid-event {
+				margin-top: $fullcalendar-event-spacer;
+			}
+		}
 	}
 
 
@@ -794,15 +795,13 @@
 		}
 
 		// States
-		.fc-state-hover,
-		.ui-state-hover {
+		.fc-button:hover {
 			z-index: 2;
 		}
-		.fc-state-down {
+		.fc-button:focus {
 			z-index: 3;
 		}
-		.fc-state-active,
-		.ui-state-active {
+		.fc-button-active {
 			z-index: 4;
 		}
 	}
@@ -829,6 +828,13 @@
 				th:first-child,
 				td:first-child {
 					border-left-width: 0;
+				}
+			}
+
+			// Bottom border from last cell
+			tr:last-child {
+				td {
+					border-bottom-width: 0;
 				}
 			}
 
@@ -899,8 +905,8 @@
 	// ------------------------------
 
 	// Day row structure
-	.fc-basicWeek-view,
-	.fc-basicDay-view {
+	.fc-dayGridWeek-view,
+	.fc-dayGridDay-view {
 		.fc-content-skeleton {
 			padding-top: $fullcalendar-event-spacer;
 			padding-bottom: $fullcalendar-event-spacer;
@@ -908,7 +914,7 @@
 	}
 
 	// Rows
-	.fc-basic-view tbody .fc-row {
+	.fc-dayGrid-view tbody .fc-row {
 		min-height: 6em;
 	}
 
@@ -926,7 +932,7 @@
 	}
 
 	// Week and day number styling
-	.fc-basic-view {
+	.fc-dayGrid-view {
 
 		// Week and day
 		.fc-day-number {
@@ -983,7 +989,7 @@
 	// AgendaView all-day area
 	// ------------------------------
 
-	.fc-agenda-view {
+	.fc-timeGrid-view {
 		.fc-day-grid {
 			position: relative;
 			z-index: 2;

@@ -1,8 +1,16 @@
 <div class="navbar navbar-expand-md navbar-light">
-	<div class="text-center d-md-none w-100">
+	<!-- hidden buttons for mobile view -->
+	<div class="text-left d-md-none">
+		<!-- left side bar -->
+		<button class="navbar-toggler sidebar-mobile-main-toggle" type="button">
+			<i class="icon-paragraph-justify3"></i>
+		</button>
+	</div>
+	<div class="text-right d-md-none">
+		<!-- main menu -->
 		<button type="button" class="navbar-toggler dropdown-toggle" data-toggle="collapse" data-target="#navbar-navigation">
 			<i class="icon-unfold mr-2"></i>
-			Navigation
+			Menu
 		</button>
 	</div>
 
@@ -32,6 +40,13 @@
 						<i class="icon-user"></i>Werknemers
 					</a>
 				</div>
+			</li>
+
+			<li class="nav-item">
+				<a href="instellingen/werkgever" class="navbar-nav-link">
+					<i class="icon-cog mr-2"></i>
+					Instellingen
+				</a>
 			</li>
 		</ul>
 

@@ -11,12 +11,22 @@
 	<!-- Global stylesheets -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
 	<link href="template/global_assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+	<link href="template/global_assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
 	<link href="template/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="template/assets/css/bootstrap_limitless.min.css" rel="stylesheet" type="text/css">
 	<link href="template/assets/css/layout.css" rel="stylesheet" type="text/css">
 	<link href="template/assets/css/components.min.css" rel="stylesheet" type="text/css">
 	<link href="template/assets/css/colors.min.css" rel="stylesheet" type="text/css">
 	<!-- /global stylesheets -->
+
+	<!-- Custom stylesheets -->
+	<link href="recources/css/custom.css" rel="stylesheet" type="text/css">
+	<!-- /Custom stylesheets -->
+
+	<!-- file upload -->
+	<link href="template/global_assets/js/plugins/fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="template/global_assets/js/plugins/fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+	<link href="template/global_assets/js/plugins/fileinput/themes/explorer-fa/theme.css" rel="stylesheet">
 
 	<!-- Core JS files -->
 	<script src="template/global_assets/js/main/jquery.min.js"></script>
@@ -28,6 +38,32 @@
 	<!-- Theme JS files -->
 	<script src="template/assets/js/app.js"></script>
 	<!-- /theme JS files -->
+
+	<!-- Load plugin -->
+	<script src="template/global_assets/js/plugins/fileinput/js/plugins/piexif.min.js" type="text/javascript"></script>
+	<script src="template/global_assets/js/plugins/fileinput/js/plugins/sortable.min.js" type="text/javascript"></script>
+
+	<script src="template/global_assets/js/plugins/fileinput/js/fileinput.min.js"></script>
+	<script src="template/global_assets/js/plugins/fileinput/themes/explorer-fa/theme.js"></script>
+	<script src="template/global_assets/js/plugins/fileinput/js/locales/nl.js"></script>
+
+	<script>
+		{literal}
+        // Basic setup
+        $(document).ready(function(){
+			$('#fileupload').fileinput({
+				theme: "explorer-fa",
+				language: 'nl',
+                overwriteInitial: false,
+                initialPreviewShowDelete: true,
+                uploadUrl: 'upload',
+                dropZoneEnabled: false,
+                uploadAsync: true,
+                msgUploadError: ''
+			});
+        });
+		{/literal}
+	</script>
 
 </head>
 
@@ -71,45 +107,7 @@
 
 
 	<!-- Secondary navbar -->
-	<div class="navbar navbar-expand-md navbar-light">
-		<div class="text-center d-md-none w-100">
-			<button type="button" class="navbar-toggler dropdown-toggle" data-toggle="collapse" data-target="#navbar-navigation">
-				<i class="icon-unfold mr-2"></i>
-				Navigation
-			</button>
-		</div>
-
-		<div class="navbar-collapse collapse" id="navbar-navigation">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a href="index" class="navbar-nav-link">
-						<i class="icon-home4 mr-2"></i>
-						Dashboard
-					</a>
-				</li>
-
-				<li class="nav-item dropdown">
-					<a href="#" class="navbar-nav-link dropdown-toggle active" data-toggle="dropdown">
-						<i class="icon-users mr-2"></i>
-						CRM
-					</a>
-
-					<div class="dropdown-menu">
-						<a href="#" class="dropdown-item">
-							<i class="icon-office"></i>Uitzenders
-						</a>
-						<a href="#" class="dropdown-item">
-							<i class="icon-user-tie"></i>Inleners
-						</a>
-						<a href="#" class="dropdown-item">
-							<i class="icon-user"></i>Werknemers
-						</a>
-					</div>
-				</li>
-			</ul>
-
-		</div>
-	</div>
+	{include file='_menu/werkgever.tpl'}
 	<!-- /secondary navbar -->
 
 </div>
@@ -147,6 +145,34 @@
 
 		<!-- Content area -->
 		<div class="content">
+
+
+			<div class="row">
+
+
+				<div class="col-md-6">
+
+					<!-- Vertical form -->
+					<div class="card">
+						<div class="card-header header-elements-inline">
+							<h5 class="card-title">Vertical form</h5>
+							<div class="header-elements">
+								<div class="list-icons">
+									<a class="list-icons-item" data-action="collapse"></a>
+									<a class="list-icons-item" data-action="reload"></a>
+									<a class="list-icons-item" data-action="remove"></a>
+								</div>
+							</div>
+						</div>
+
+						<div class="card-body">
+							<form action="#">
+								<input name="file" type="file" id="fileupload" class="file-input" multiple="multiple">
+							</form>
+						</div>
+					</div>
+				</div>
+
 
 
 
