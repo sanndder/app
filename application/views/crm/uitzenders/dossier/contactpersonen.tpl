@@ -49,7 +49,7 @@
 
 										<div class="col-md-3 mb-2">
 											<ul class="list list-unstyled mb-0">
-												<li><i class="icon-phone mr-2"></i> {$contact.telefoon}</li>
+												<li><i class="icon-phone mr-2"></i> {$contact.telefoon} </li>
 												<li><i class="icon-mail5 mr-2"></i> {$contact.email}</li>
 											</ul>
 										</div>
