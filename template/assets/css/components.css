@@ -12634,8 +12634,8 @@ textarea#HandsontableCopyPaste {
   margin: 0 0 1.25rem 1.25rem; }
   .dataTables_paginate .paginate_button {
     display: inline-block;
-    padding: 0.4375rem;
-    min-width: 2.25003rem;
+    padding: 0.2375rem;
+    min-width: 2.05003rem;
     margin-left: 0.125rem;
     text-align: center;
     text-decoration: none;
@@ -12654,7 +12654,7 @@ textarea#HandsontableCopyPaste {
       background-color: #f5f5f5; }
     .dataTables_paginate .paginate_button.current, .dataTables_paginate .paginate_button.current:hover, .dataTables_paginate .paginate_button.current:focus {
       color: #fff;
-      background-color: #37474F; }
+      background-color: #999; }
     .dataTables_paginate .paginate_button.disabled, .dataTables_paginate .paginate_button.disabled:hover, .dataTables_paginate .paginate_button.disabled:focus {
       cursor: default;
       background-color: #fff;

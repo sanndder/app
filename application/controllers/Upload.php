@@ -38,7 +38,6 @@ class Upload extends MY_Controller {
 		header('Content-Type: application/json'); // set json response headers
 
 		$result['error'] = 'Er gaat wat mis';
-
 		echo json_encode($result);
 
 		die();

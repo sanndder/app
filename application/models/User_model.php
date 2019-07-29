@@ -9,9 +9,11 @@
 class User_model extends MY_Model
 {
 
+	public $user_name = NULL;
 	public $username = NULL;
 	public $user_id = NULL;
 	public $user_type = NULL;
+	public $werkgever_id = NULL;
 
 	private $_errors = array();
 
@@ -31,21 +33,14 @@ class User_model extends MY_Model
 		if( isset($this->logindata['main']['user_id']) && $this->logindata['main']['user_id'] != NULL )
 		{
 			$this->user_id = $this->logindata['main']['user_id'];
-			$this->username = $this->logindata['main']['naam'];
+			$this->username = $this->logindata['main']['username'];
+			$this->user_name = $this->logindata['main']['user_name'];
 			$this->user_type = $this->logindata['main']['user_type'];
+			$this->werkgever_id = $this->logindata['werkgever_id'];
+
+			$this->smarty->assign( 'user_name' , $this->user_name );
+
 		}
-	}
-
-
-	/*************************************************************************************************
-	 * hash password for database reset
-	 * @return string
-	 *
-	*/
-	public function hashPassword( $string = '' )
-	{
-		$hash = password_hash( $string, PASSWORD_BCRYPT );
-		return $hash;
 	}
 
 

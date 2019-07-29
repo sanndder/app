@@ -203,9 +203,8 @@ class Email{
 	 */
 	public function debug( $level = 0 )
 	{
-		$CI =& get_instance();
-
 		//connect to admin database
+		$CI =& get_instance();
 		$db_admin = $CI->load->database('admin', TRUE);
 
 		$insert['subject'] = 'test';

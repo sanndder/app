@@ -1,22 +1,23 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH'))
+	exit('No direct script access allowed');
 
 
 ///bedrag maken van decimaal
-if ( ! function_exists('prepareAmountForDatabase'))
+if (!function_exists('prepareAmountForDatabase'))
 {
 	function prepareAmountForDatabase($val)
 	{
 		//bevat het getal een punt?
-		if( strpos($val, '.') !== false )
+		if (strpos($val, '.') !== false)
 		{
 
 			//kijken of punt als duizendtal of als komma bedoelt is
-			$parts = explode( '.', $val );
+			$parts = explode('.', $val);
 
 			//lengte van getallen achter de punt
 			$centen = end($parts);
 			// 1 of 2, dan als komma
-			if( strlen($centen) < 3 )
+			if (strlen($centen) < 3)
 			{
 				//getal is goed
 				return $val;
@@ -24,14 +25,14 @@ if ( ! function_exists('prepareAmountForDatabase'))
 			//3 of meer dan als punt
 			else
 			{
-				$val = str_replace( '.', '', $val );
-				$val = str_replace( ',', '.', $val );
+				$val = str_replace('.', '', $val);
+				$val = str_replace(',', '.', $val);
 			}
 		}
 		//geen punt, komma vervangen voor punt voor database
 		else
 		{
-			$val = str_replace( ',', '.', $val );
+			$val = str_replace(',', '.', $val);
 		}
 
 
@@ -40,29 +41,42 @@ if ( ! function_exists('prepareAmountForDatabase'))
 }
 
 ///bedrag maken van decimaal
-if ( ! function_exists('amount'))
+if (!function_exists('amount'))
 {
 	function amount($val)
 	{
-		return number_format( $val, 2, ',', '.' );
+		return number_format($val, 2, ',', '.');
 	}
 }
 
 
 
 //=====================================================================
+// display forbidden template
+//=====================================================================
+if (!function_exists('forbidden'))
+{
+	function forbidden()
+	{
+		$CI =& get_instance();
+		$CI->smarty->display('forbidden.tpl');
+		die();
+	}
+}
+
+//=====================================================================
 // controleer of map bestaat, anders aan maken
 //=====================================================================
-if ( !function_exists('checkAndCreateDir'))
+if (!function_exists('checkAndCreateDir'))
 {
-	function checkAndCreateDir( $path = '', $is_file = false )
+	function checkAndCreateDir($path = '', $is_file = false)
 	{
 		//naam van path afhalen wanneer het een bestandsnaam bevast
-		if( $is_file )
+		if ($is_file)
 		{
-			$parts = explode('/', $path );
+			$parts = explode('/', $path);
 			$file_name = end($parts);
-			$dir = str_replace( $file_name, '', $path );
+			$dir = str_replace($file_name, '', $path);
 		}
 		else
 		{
@@ -70,11 +84,11 @@ if ( !function_exists('checkAndCreateDir'))
 		}
 
 		//kijken of map al bestaat
-		if( file_exists($dir) && is_dir($dir) )
+		if (file_exists($dir) && is_dir($dir))
 			return true;
 
 		//anders map aanmaken
-		return mkdir( $dir, 0777, true );
+		return mkdir($dir, 0777, true);
 	}
 }
 
@@ -82,33 +96,55 @@ if ( !function_exists('checkAndCreateDir'))
 //=====================================================================
 // //naam samenstellen
 //=====================================================================
-if ( !function_exists('make_name'))
+if (!function_exists('make_name'))
 {
 	function make_name($data)
 	{
 		if ($data['tussenvoegsel'] != '')
-			$naam	= $data['achternaam'] . ' ' . $data['tussenvoegsel'] . ', ' . $data['roepnaam'] . ' (' . $data['voorletters'] . ')';
+			$naam = $data['achternaam'] . ' ' . $data['tussenvoegsel'] . ', ' . $data['voornaam'] . ' (' . $data['voorletters'] . ')';
 		else
-			$naam = $data['achternaam'] . ', ' . $data['roepnaam'] . ' (' . $data['voorletters'] . ')';
+			$naam = $data['achternaam'] . ', ' . $data['voornaam'] . ' (' . $data['voorletters'] . ')';
 
 		return $naam;
 	}
 }
 
 
+//=====================================================================
+// msg maken
+//=====================================================================
+if (!function_exists('formatPostArray'))
+{
+	function formatPostArray($post, $submit = 'set')
+	{
+
+		foreach ($post as $field => $valueArray)
+		{
+			foreach ($valueArray as $key => $value)
+			{
+				if ($field != $submit)
+					$array[$key][$field] = $value;
+			}
+		}
+
+		return $array;
+	}
+}
+
 
 //=====================================================================
 // msg maken
 //=====================================================================
-if ( ! function_exists('msg'))
+if (!function_exists('msg'))
 {
-	function msg( $type, $msg ) {
+	function msg($type, $msg)
+	{
 
-		$data = '<div class="alert alert-'.$type.' alert-dismissible" role="alert">';
+		$data = '<div class="alert alert-' . $type . ' alert-styled-left alert-arrow-left alert-dismissible" role="alert">';
 
-		if( is_array($msg) )
+		if (is_array($msg))
 		{
-			foreach($msg as $val )
+			foreach ($msg as $val)
 				$data .= $val . '<br />';
 		}
 		else
@@ -122,13 +158,13 @@ if ( ! function_exists('msg'))
 }
 
 
-
 //=====================================================================
 // datum checken
 //=====================================================================
-if ( ! function_exists('validDate'))
+if (!function_exists('validDate'))
 {
-	function validDate($date, $format = 'Y-m-d') {
+	function validDate($date, $format = 'Y-m-d')
+	{
 		$d = DateTime::createFromFormat($format, $date);
 		// The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
 		return $d && $d->format($format) === $date;
@@ -139,16 +175,17 @@ if ( ! function_exists('validDate'))
 //=====================================================================
 // emailadres checken
 //=====================================================================
-if ( ! function_exists('validEmail'))
+if (!function_exists('validEmail'))
 {
-	function validEmail($email) {
+	function validEmail($email)
+	{
 
-		if( !filter_var($email, FILTER_VALIDATE_EMAIL) )
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL))
 			return false;
 
 		//check domain
-		$parts = explode( '.', $email );
-		if( strlen(end($parts)) > 255 ||  strlen(end($parts)) < 2 )
+		$parts = explode('.', $email);
+		if (strlen(end($parts)) > 255 || strlen(end($parts)) < 2)
 			return false;
 
 		return true;
@@ -158,18 +195,19 @@ if ( ! function_exists('validEmail'))
 //=====================================================================
 // maakt een array met dagen van tot
 //=====================================================================
-if ( ! function_exists('dateArray'))
+if (!function_exists('dateArray'))
 {
-	function dateArray($van,$tot) {
+	function dateArray($van, $tot)
+	{
 
-		$begin 		= new DateTime( $van );
-		$end 		= new DateTime( $tot );
-		$end 		= $end->modify( '+1 day' );
+		$begin = new DateTime($van);
+		$end = new DateTime($tot);
+		$end = $end->modify('+1 day');
 
 		$interval = new DateInterval('P1D');
-		$daterange = new DatePeriod($begin, $interval ,$end);
+		$daterange = new DatePeriod($begin, $interval, $end);
 
-		foreach( $daterange as $date)
+		foreach ($daterange as $date)
 			$array[$date->format('Y-m-d')] = 0;
 
 		return $array;
@@ -178,19 +216,23 @@ if ( ! function_exists('dateArray'))
 //=====================================================================
 //verandert YYYY-MM-DD in DD-MM-YYYY of andersom, ook in een array
 //=====================================================================
-if ( ! function_exists('hex2rgb'))
+if (!function_exists('hex2rgb'))
 {
-	function hex2rgb($hex) {
+	function hex2rgb($hex)
+	{
 		$hex = str_replace("#", "", $hex);
 
-		if(strlen($hex) == 3) {
-			$r = hexdec(substr($hex,0,1).substr($hex,0,1));
-			$g = hexdec(substr($hex,1,1).substr($hex,1,1));
-			$b = hexdec(substr($hex,2,1).substr($hex,2,1));
-		} else {
-			$r = hexdec(substr($hex,0,2));
-			$g = hexdec(substr($hex,2,2));
-			$b = hexdec(substr($hex,4,2));
+		if (strlen($hex) == 3)
+		{
+			$r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+			$g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+			$b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+		}
+		else
+		{
+			$r = hexdec(substr($hex, 0, 2));
+			$g = hexdec(substr($hex, 2, 2));
+			$b = hexdec(substr($hex, 4, 2));
 		}
 		$rgb = array($r, $g, $b);
 		//return implode(",", $rgb); // returns the rgb values separated by commas
@@ -202,25 +244,36 @@ if ( ! function_exists('hex2rgb'))
 //=====================================================================
 //verandert YYYY-MM-DD in DD-MM-YYYY of andersom, ook in een array
 //=====================================================================
-function reverseDate($date){
-	if(is_array($date)){
-		foreach($date as $v){
-			$parts = explode('-',$v);
-			if(isset($parts[0]) && isset($parts[1]) && isset($parts[2])){
-				$nDate = $parts[2] .'-'.$parts[1] .'-'.$parts[0];
+function reverseDate($date)
+{
+	if (is_array($date))
+	{
+		foreach ($date as $v)
+		{
+			$parts = explode('-', $v);
+			if (isset($parts[0]) && isset($parts[1]) && isset($parts[2]))
+			{
+				$nDate = $parts[2] . '-' . $parts[1] . '-' . $parts[0];
 				$nDates[] = $nDate;
-			}else{
-				echo 'Fout: geen geldige datum in de functie <i>reverseDate('.$date.')</i>.';
+			}
+			else
+			{
+				echo 'Fout: geen geldige datum in de functie <i>reverseDate(' . $date . ')</i>.';
 				break;
 			}
 		}
 		return $nDates;
-	}else{
-		$parts = explode('-',$date);
-		if(isset($parts[0]) && isset($parts[1]) && isset($parts[2])){
-			$nDate = $parts[2] .'-'.$parts[1] .'-'.$parts[0];
+	}
+	else
+	{
+		$parts = explode('-', $date);
+		if (isset($parts[0]) && isset($parts[1]) && isset($parts[2]))
+		{
+			$nDate = $parts[2] . '-' . $parts[1] . '-' . $parts[0];
 			return $nDate;
-		}else{
+		}
+		else
+		{
 			//echo 'Fout: geen geldige datum in de functie <i>reverseDate('.$date.')</i>.';
 		}
 	}
@@ -229,34 +282,48 @@ function reverseDate($date){
 //=====================================================================
 // is BTW geldig?
 //=====================================================================
-if ( ! function_exists('validBTW'))
+if (!function_exists('validBTW'))
 {
-	function validBTW( $input = ''){
-		if( $input == '' )
+	function validBTW($input = '')
+	{
+		if ($input == '')
 			return false;
-		$input = strtoupper( $input );
-		$land = substr( $input, 0, 2 );
+		$input = strtoupper($input);
+		$land = substr($input, 0, 2);
 
 		//check
-		switch ($land) {
+		switch ($land)
+		{
 			case 'AT':
 				$pat = '/AT\w{9}$/';
-				if( !preg_match( $pat, $input ) )return false;break;
+				if (!preg_match($pat, $input))
+					return false;
+				break;
 			case 'BE':
 				$pat = '/BE\d{10}$/';
-				if( !preg_match( $pat, $input ) )return false;break;
+				if (!preg_match($pat, $input))
+					return false;
+				break;
 			case 'DE':
 				$pat = '/DE\d{9}$/';
-				if( !preg_match( $pat, $input ) )return false;break;
+				if (!preg_match($pat, $input))
+					return false;
+				break;
 			case 'ES':
 				$pat = '/ES\w{9}$/';
-				if( !preg_match( $pat, $input ) )return false;break;
+				if (!preg_match($pat, $input))
+					return false;
+				break;
 			case 'FR':
 				$pat = '/FR\w{2}\d{9}$/';
-				if( !preg_match( $pat, $input ) )return false;break;
+				if (!preg_match($pat, $input))
+					return false;
+				break;
 			case 'NL':
 				$pat = '/NL\d{9}B\d{2}$/';
-				if( !preg_match( $pat, $input ) )return false;break;
+				if (!preg_match($pat, $input))
+					return false;
+				break;
 
 			default:
 				return false;
@@ -269,33 +336,34 @@ if ( ! function_exists('validBTW'))
 //=====================================================================
 // is iban geldig?
 //=====================================================================
-if ( ! function_exists('validIBAN'))
+if (!function_exists('validIBAN'))
 {
-	function validIBAN( $input = ''){
-		if( $input == '' )
+	function validIBAN($input = '')
+	{
+		if ($input == '')
 			return false;
 
 		//eerste 4 verplaatsen
-		$start = substr( $input , 0, 4 );
-		$eind = substr( $input , 4 );
+		$start = substr($input, 0, 4);
+		$eind = substr($input, 4);
 		$iban = $eind . $start;
-		$chars = str_split( $iban );
+		$chars = str_split($iban);
 		//alphabet voor check, a = 10, b = 11, z = 35
 		$alphas_temp = range('A', 'Z');
-		foreach( $alphas_temp as $k=>$l )
-			$alphas[$k+10] = $l;
+		foreach ($alphas_temp as $k => $l)
+			$alphas[$k + 10] = $l;
 		//letters doro cijfers vervangen
-		foreach( $chars as $k=>$char )
+		foreach ($chars as $k => $char)
 		{
-			if( ctype_alpha($char) )
+			if (ctype_alpha($char))
 			{
-				$nummer = array_search( $char, $alphas );
-				$chars[$k] = array_search( $char, $alphas );
+				$nummer = array_search($char, $alphas);
+				$chars[$k] = array_search($char, $alphas);
 			}
 		}
 		$iban = implode($chars);
 		//modules 97
-		if( bcmod($iban, 97) != 1 )
+		if (bcmod($iban, 97) != 1)
 			return false;
 
 		return true;
@@ -303,33 +371,84 @@ if ( ! function_exists('validIBAN'))
 }
 
 //=====================================================================
+/*** switch keys in array while preserving order ***/
+//=====================================================================
+if (!function_exists('changeKey'))
+{
+	function changeKey($array, $old_key, $new_key)
+	{
+		if (!array_key_exists($old_key, $array))
+			return $array;
+
+		$keys = array_keys($array);
+		$keys[array_search($old_key, $keys)] = $new_key;
+
+		return array_combine($keys, $array);
+	}
+}
+
+//=====================================================================
+/*** compare input array with current data ***/
+//=====================================================================
+if (!function_exists('inputIsDifferent'))
+{
+	function inputIsDifferent($input, $current_data)
+	{
+		$found_difference = false;
+
+		foreach ($input as $field => $value)
+		{
+			if (isset($current_data[$field]) || $current_data[$field] === NULL )
+			{
+				//comapre new and current
+				if ($value != $current_data[$field])
+					$found_difference = true;
+			}
+			//there's a field that does not belong here
+			else
+			{
+				if (ENVIRONMENT != 'production')
+				{
+					show($input, 'input');
+					show($current_data, 'database');
+				}
+				die('Error - field not found in current data: ' . $field);
+			}
+		}
+
+		return $found_difference;
+	}
+}
+
+//=====================================================================
 /*** strip tags from array ***/
 //=====================================================================
-if ( ! function_exists('stripTagsArray'))
+if (!function_exists('stripTagsArray'))
 {
-	function stripTagsArray( $array, $exept = '' ){
-		if( $exept != '' )
-			$not = explode( ',', $exept );
+	function stripTagsArray($array, $exept = '')
+	{
+		if ($exept != '')
+			$not = explode(',', $exept);
 
-		foreach( $array as $key => $value )
+		foreach ($array as $key => $value)
 		{
 			//if array, call self
-			if( is_array( $value ) )
+			if (is_array($value))
 			{
-				$data[$key] = stripTagsArray( $value );
+				$data[$key] = stripTagsArray($value);
 			}
 			else
 			{
-				if( $exept != '')
+				if ($exept != '')
 				{
-					if( !in_array( $key, $not ) )
-						$data[$key] = trim(strip_tags( $value ));
+					if (!in_array($key, $not))
+						$data[$key] = trim(strip_tags($value));
 					else
-						$data[$key] =  $value;
+						$data[$key] = $value;
 				}
 				else
 				{
-					$data[$key] = trim(strip_tags( $value ));
+					$data[$key] = trim(strip_tags($value));
 				}
 			}
 		}
@@ -342,13 +461,14 @@ if ( ! function_exists('stripTagsArray'))
 //=====================================================================
 /*** van H:M naar decimaal ***/
 //=====================================================================
-if ( !function_exists('h2d'))
+if (!function_exists('h2d'))
 {
-	function h2d($val) {
-		$temp = explode( ':', $val );
-		if( isset( $temp[1] ) )
+	function h2d($val)
+	{
+		$temp = explode(':', $val);
+		if (isset($temp[1]))
 		{
-			if( strlen($temp[1]) == 1)
+			if (strlen($temp[1]) == 1)
 				$temp[1] = $temp[1] . '0';
 			$minuten = $temp[1] / 60;
 		}
@@ -356,7 +476,7 @@ if ( !function_exists('h2d'))
 		{
 			$minuten = '00';
 		}
-		$return = $temp[0] + round( $minuten, 2 );
+		$return = $temp[0] + round($minuten, 2);
 		return $return;
 	}
 }
@@ -364,12 +484,13 @@ if ( !function_exists('h2d'))
 //=====================================================================
 /*** van decimaal naar H:M:S***/
 //=====================================================================
-if ( !function_exists('d2h'))
+if (!function_exists('d2h'))
 {
-	function d2h( $val ){
+	function d2h($val)
+	{
 
-		$temp = explode( '.', $val );
-		if( isset( $temp[1] ) )
+		$temp = explode('.', $val);
+		if (isset($temp[1]))
 		{
 			$min = '0.' . $temp[1];
 			$minuten = $min * 60;
@@ -380,10 +501,10 @@ if ( !function_exists('d2h'))
 			$minuten = '00';
 		}
 
-		if( strlen($minuten) == 1)
-			$minuten =  '0' . $minuten;
+		if (strlen($minuten) == 1)
+			$minuten = '0' . $minuten;
 
-		$return = $temp[0] .':'. $minuten;
+		$return = $temp[0] . ':' . $minuten;
 
 		return $return;
 	}
@@ -392,20 +513,20 @@ if ( !function_exists('d2h'))
 //=====================================================================
 /*** volledige url incl get waardes ***/
 //=====================================================================
-if ( ! function_exists('getFullUrl'))
+if (!function_exists('getFullUrl'))
 {
 	function getFullUrl()
 	{
 		$url = current_url();
 
-		if( isset($_GET) && count($_GET) > 0 )
+		if (isset($_GET) && count($_GET) > 0)
 		{
 			$url .= '?';
 
-			foreach( $_GET as $k => $v )
-				$url .= $k .'=' . $v . '&';
+			foreach ($_GET as $k => $v)
+				$url .= $k . '=' . $v . '&';
 
-			$url = substr( $url, 0, -1);
+			$url = substr($url, 0, -1);
 		}
 
 		return $url;
@@ -415,26 +536,27 @@ if ( ! function_exists('getFullUrl'))
 //=====================================================================
 /*** van H:M:S naar decimaal ***/
 //=====================================================================
-if ( ! function_exists('hms2d'))
+if (!function_exists('hms2d'))
 {
-	function hms2d($val)	{
-		$temp = explode( ':', $val );
+	function hms2d($val)
+	{
+		$temp = explode(':', $val);
 		//stoppen als niet juiste formaat is
-		if( count($temp) != 3 )
+		if (count($temp) != 3)
 			return;
 
 		//seconden
-		if( strlen($temp[2]) == 1)
+		if (strlen($temp[2]) == 1)
 			$temp[2] = $temp[2] . '0';
 		$seconden = $temp[2] / 60;
 		$seconden = $seconden / 100;
 
 
-		if( strlen($temp[1]) == 1)
+		if (strlen($temp[1]) == 1)
 			$temp[1] = $temp[1] . '0';
 		$minuten = $temp[1] / 60;
 
-		$return =  $temp[0] + $minuten + $seconden;
+		$return = $temp[0] + $minuten + $seconden;
 		return $return;
 	}
 }
@@ -442,9 +564,10 @@ if ( ! function_exists('hms2d'))
 //=====================================================================
 /*** format size of file ***/
 //=====================================================================
-if ( ! function_exists('size'))
+if (!function_exists('size'))
 {
-	function size($bytes)	{
+	function size($bytes)
+	{
 
 		if ($bytes > 0)
 		{
@@ -464,11 +587,12 @@ if ( ! function_exists('size'))
 //=====================================================================
 /*** determine if controller is in refferen ***/
 //=====================================================================
-if ( ! function_exists('array_keys_to_string'))
+if (!function_exists('array_keys_to_string'))
 {
-	function array_keys_to_string( $array ){
+	function array_keys_to_string($array)
+	{
 		$keys = array_keys($array);
-		$string = implode( ',', $keys );
+		$string = implode(',', $keys);
 		return $string;
 	}
 }
@@ -477,10 +601,11 @@ if ( ! function_exists('array_keys_to_string'))
 //=====================================================================
 /*** determine if controller is in refferen ***/
 //=====================================================================
-if ( ! function_exists('check_ref_for_controller'))
+if (!function_exists('check_ref_for_controller'))
 {
-	function check_ref_for_controller(  $ref, $controller ){
-		if( preg_match( "/$controller/", $ref ) == 1)
+	function check_ref_for_controller($ref, $controller)
+	{
+		if (preg_match("/$controller/", $ref) == 1)
 		{
 			return TRUE;
 		}
@@ -492,11 +617,12 @@ if ( ! function_exists('check_ref_for_controller'))
 //=====================================================================
 /*** Show array ***/
 //=====================================================================
-if ( ! function_exists('splitTimestamp'))
+if (!function_exists('splitTimestamp'))
 {
-	function splitTimestamp( $timestamp ){
-		$split['date'] = date('d-m-Y',strtotime($timestamp));
-		$split['time'] = date('H:i:s',strtotime($timestamp));
+	function splitTimestamp($timestamp)
+	{
+		$split['date'] = date('d-m-Y', strtotime($timestamp));
+		$split['time'] = date('H:i:s', strtotime($timestamp));
 
 		return $split;
 	}
@@ -505,13 +631,18 @@ if ( ! function_exists('splitTimestamp'))
 //=====================================================================
 /*** Show array ***/
 //=====================================================================
-if ( !function_exists('show'))
+if (!function_exists('show'))
 {
-	function show($array = '[leeg]' , $width = 750 ){
+	function show($array = '[leeg]', $name = '', $width = 1250)
+	{
 
-		if( $_SERVER['REMOTE_ADDR'] == '82.74.122.107' ||  $_SERVER['REMOTE_ADDR'] == '127.0.0.1' )
+		if ($_SERVER['REMOTE_ADDR'] == '82.74.122.107' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2')
 		{
 			echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:" . $width . "px;'>";
+
+			if ($name != '')
+				echo $name . "<br />";
+
 			echo "<pre>";
 			print_r($array);
 			echo "</pre>";
@@ -520,10 +651,11 @@ if ( !function_exists('show'))
 	}
 }
 
-if ( !function_exists('p'))
+if (!function_exists('p'))
 {
-	function p($width = 500 ){
-		echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:".$width."px;'>";
+	function p($width = 500)
+	{
+		echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:" . $width . "px;'>";
 		echo "<pre>";
 		print_r($_POST);
 		echo "</pre>";
@@ -534,12 +666,14 @@ if ( !function_exists('p'))
 //=====================================================================
 /*** generate Random String ***/
 //=====================================================================
-if ( ! function_exists('generateRandomString'))
+if (!function_exists('generateRandomString'))
 {
-	function generateRandomString($length = 10) {
+	function generateRandomString($length = 10)
+	{
 		$characters = '23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ';
 		$randomString = '';
-		for ($i = 0; $i < $length; $i++) {
+		for ($i = 0; $i < $length; $i++)
+		{
 			$randomString .= $characters[rand(0, strlen($characters) - 1)];
 		}
 		return $randomString;

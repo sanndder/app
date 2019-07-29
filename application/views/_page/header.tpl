@@ -16,12 +16,12 @@
 			<li class="nav-item dropdown dropdown-user">
 				<a href="#" class="navbar-nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown">
 					<i class="icon-user mr-3 icon-2x"></i>
-					<span>Victoria</span>
+					<span>{$user_name}</span>
 				</a>
 
 				<div class="dropdown-menu dropdown-menu-right">
-					<a href="mijnaccount/index" class="dropdown-item"><i class="icon-cog5"></i> Account settings</a>
-					<a href="login/index?logout" class="dropdown-item"><i class="icon-switch2"></i> Logout</a>
+					<a href="mijnaccount/index" class="dropdown-item"><i class="icon-cog5"></i> Mijn account</a>
+					<a href="login/index?logout" class="dropdown-item"><i class="icon-switch2"></i> Uitloggen</a>
 				</div>
 			</li>
 

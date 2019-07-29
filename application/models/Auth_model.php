@@ -6,7 +6,7 @@
  * Zorg voor inloggen en beveiliging user
 */
 
-class Auth_model extends MY_Model
+class Auth_model extends CI_Model
 {
 
 	private $_session_timeout = 7200; //session duration in seconds
@@ -26,6 +26,8 @@ class Auth_model extends MY_Model
 		// Call the Model constructor
 		parent::__construct();
 
+		//connect to admin database, THIS SHOULD BE THE ONLY DUPLICATE ADMIN DB LOAD
+		$this->db_admin = $this->load->database('admin', TRUE);
 	}
 
 
@@ -103,8 +105,10 @@ class Auth_model extends MY_Model
 		$secret = $this->_secretHash( $user['user_id'], $user['user_type'], $sid );
 
 		//sessie aanmaken
+		$session['logindata']['werkgever_id'] = $user['werkgever_id'];
 		$session['logindata']['main']['user_id'] = $user['user_id'];
-		$session['logindata']['main']['naam'] = $user['naam'];
+		$session['logindata']['main']['user_name'] = $user['naam'];
+		$session['logindata']['main']['username'] = $user['username'];
 		$session['logindata']['main']['user_type'] = 'werkgever';
 		$session['logindata']['main']['sid'] = $sid;
 
@@ -135,8 +139,18 @@ class Auth_model extends MY_Model
 		if ($logout)
 			$this->logout( $user_id, $sid, 'user action');
 
+		//TODO: move to other class
+		//$sql = "UPDATE werkgevers SET db_password = AES_ENCRYPT('qwerty', UNHEX(SHA2('".self::DB_SECRET."',512))) WHERE werkgever_id = 1";
+		//$query = $this->db_admin->query($sql);
+
 		//get login session
-		$sql = "SELECT * FROM users LEFT JOIN users_sessions ON users.user_id = users_sessions.user_id WHERE users.user_id = ? AND sid = ? AND user_type = ? AND session_logout IS NULL LIMIT 1";
+		$sql = "SELECT users.*, users_sessions.*, werkgevers.*, AES_DECRYPT( werkgevers.db_password, UNHEX(SHA2('".DB_SECRET."' ,512)) ) AS db_password
+				FROM users 
+				LEFT JOIN users_sessions ON users.user_id = users_sessions.user_id 
+				LEFT JOIN werkgevers ON users.werkgever_id = werkgevers.werkgever_id
+				WHERE users.user_id = ? AND sid = ? AND user_type = ? AND session_logout IS NULL 
+				LIMIT 1";
+
 		$query = $this->db_admin->query($sql, array($user_id, $sid, $user_type));
 
 		//logout
@@ -145,6 +159,11 @@ class Auth_model extends MY_Model
 
 		//get row
 		$session = $query->row_array();
+
+		//databse gegevens naar config
+		$this->config->set_item( 'db_name', $session['db_name'] );
+		$this->config->set_item( 'db_user', $session['db_user'] );
+		$this->config->set_item( 'db_password', $session['db_password'] );
 
 		//check timeout
 		if( strtotime($session['session_last_action']) + $this->_session_timeout < time() )

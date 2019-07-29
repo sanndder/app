@@ -1,0 +1,27 @@
+{
+  "remove": [
+    "id",
+    "user_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "fieldname": {
+      "label" : "Label",
+      "rules": {
+        "required" : true,
+        "minlength": 2,
+        "maxlength": 100,
+        "trim": true,
+        "striptags": true,
+        "toupper" : true,
+        "tolower" : true,
+        "removespaces" : true,
+        "removechars" : "-,.",
+        "type" : "int|decimal|email|iban|postcode|btwnr|bsn"
+      }
+    }
+  }
+}

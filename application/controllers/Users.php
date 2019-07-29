@@ -2,10 +2,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Instellingen controller
+ * Test class
  */
 
-class Werkgever extends MY_Controller {
+class Users extends MY_Controller {
 
 
 	//--------------------------------------------------------------------------
@@ -14,25 +14,22 @@ class Werkgever extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		//show( $this->user->user_type );
 	}
 
 
 	//--------------------------------------------------------------------------
-	// aanpassen bedrijfsgegevens
+	// test method
 	//--------------------------------------------------------------------------
-	public function bedrijfsgegevens()
+	public function index()
 	{
 
-		$this->smarty->display('instellingen/werkgever/bedrijfsgegevens.tpl');
-	}
 
-	//--------------------------------------------------------------------------
-	// logo uploaden
-	//--------------------------------------------------------------------------
-	public function logo()
-	{
 
-		$this->smarty->display('instellingen/werkgever/logo.tpl');
+		$usertype = 'werkgever';
+
+		$this->smarty->assign('usertype', $usertype);
+		$this->smarty->display('users/overzicht.tpl');
 	}
 
 }

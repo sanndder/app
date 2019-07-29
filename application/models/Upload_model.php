@@ -10,8 +10,9 @@
 
 class Upload_model extends MY_Model
 {
-	private $_dir = NULL; //map waar de bstanden heen moeten
+	private $_dir = NULL; //map waar de bestanden heen moeten
 	private $_path = NULL; //volledige path op de server waar de bestanden heen moeten
+	private $_table = NULL; //tabel waar de info moet worden opgeslagen
 
 	private $_random_name = true; //random naam meegeven
 	private $_random_name_prefix = ''; //random naam prefix
@@ -34,6 +35,17 @@ class Upload_model extends MY_Model
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * Tabel waar de data moet worden opgeslagen
+	 *
+	 * @return void
+	 */
+	public function setDatabaseTable( $table = '' )
+	{
+		$this->_table = trim($table);
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * Upload dir instellen en eventueel aanmaken
 	 *
 	 * @return void
@@ -46,7 +58,14 @@ class Upload_model extends MY_Model
 		if(substr($this->_dir, -1) == '/')
 			$this->_dir = substr($this->_dir, 0, -1);
 
-		$this->_path = UPLOAD_DIR .'/'. $this->_dir;
+		//geen werkgever ID? Stoppen
+		if( !isset($this->user->werkgever_id) || $this->user->werkgever_id === NULL || !is_numeric($this->user->werkgever_id) )
+		{
+			$this->_error[] = 'Ongeldig werkgever ID';
+			return false;
+		}
+
+		$this->_path = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $this->_dir;
 
 		if( !checkAndCreateDir($this->_path) )
 			$this->_error[] = 'Upload map bestaat niet en kan niet worden aangemaakt.';
@@ -83,7 +102,7 @@ class Upload_model extends MY_Model
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * de te uploaden files afhandelen, we gebruiken codeignitors ingebouwde uplaod functies
+	 * de te uploaden files afhandelen, we gebruiken codeignitors ingebouwde upload functies
 	 *
 	 * @return void
 	 */
@@ -113,6 +132,29 @@ class Upload_model extends MY_Model
 		}
 	}
 
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * de te uploaden files in de database opslaan
+	 *
+	 * @return void
+	 */
+	function uploadfilesToDatabase()
+	{
+		//show($_FILES);
+
+		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES ('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."')";
+		$sql = "INSERT INTO uitzenders_handtekening (file) VALUES (AES_ENCRYPT('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."', UNHEX(SHA2('".UPLOAD_SECRET."',512))))";
+		$query = $this->db_user->query($sql);
+
+
+		//$ciphertext = sodium_crypto_secretbox(, $nonce, UPLOAD_SECRET));
+
+		//$update['file'] = $ciphertext;
+		//$this->db_user->insert($this->_table, $update );
+
+
+	}
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

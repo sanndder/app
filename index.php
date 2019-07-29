@@ -55,7 +55,7 @@
  */
 
 //alleen lokaal op development
-if( $_SERVER['HTTP_HOST'] != '127.0.0.1' )
+if( $_SERVER['HTTP_HOST'] != '192.168.1.2' && $_SERVER['HTTP_HOST'] != '127.0.0.1')
 	define('ENVIRONMENT', 'production');
 else
 	define('ENVIRONMENT', 'development');

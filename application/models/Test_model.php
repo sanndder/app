@@ -4,8 +4,7 @@
 /*
  *
  * Test model
- * Puur voor test doeleinden, geen productie value
- * @property Img_model $img class
+ * Bevat data en config voor te testen classes
  *
 */
 
@@ -24,13 +23,11 @@ class Test_model extends MY_Model
 
 	}
 
-	function go()
+	function validation()
 	{
+		$test['description'] = '';
 
-		$tijdvak = new models\Utils\Tijdvak( 'w' );
-		//show($tijdvak->getPeriode());
 
-		show($this->user->username);
 	}
 
 

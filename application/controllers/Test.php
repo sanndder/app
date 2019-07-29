@@ -19,6 +19,23 @@ class Test extends MY_Controller {
 		$this->load->model('emailcentrum_model', 'emailcentrum');
 
 		//show( $this->user->user_type );
+
+
+	}
+
+
+	//--------------------------------------------------------------------------
+	// Run a series of validation tests
+	//--------------------------------------------------------------------------
+	public function validation()
+	{
+
+
+
+		$validator = new models\Forms\Validator();
+		$validator->table( 'test' )->input( $data )->run();
+
+		$this->smarty->display('test/validation.tpl');
 	}
 
 
@@ -28,6 +45,25 @@ class Test extends MY_Controller {
 	public function index()
 	{
 
+		$data['id'] = 12;
+		$data['timestamp'] = '2019-05-06 10:15:00';
+		$data['bedrijfsnaam'] = 'Jan van Tongeren - De Groot';
+		$data['bedrijfsnaam'] = '105518979';
+
+
+		$validator = new models\Forms\Validator();
+		$validator->table( 'werkgever_bedrijfsgegevens' )->input( $data )->run();
+		if( $validator->success() )
+		{
+
+		}
+		else
+		{
+
+		}
+
+
+		/*
 		$row['file_name'] = 'image.jpg';
 		$row['file_dir'] = 'test';
 		$row['logo_id'] = 133;

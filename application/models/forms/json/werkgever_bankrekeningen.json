@@ -1,0 +1,32 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "omschrijving": {
+      "label": "Omschrijving",
+      "rules": {
+        "required": true,
+        "minlength": 3,
+        "maxlength": 100
+      }
+    },
+    "iban": {
+      "label": "IBAN",
+      "rules": {
+        "required": true,
+        "minlength": 10,
+        "maxlength": 100,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "iban"
+      }
+    }
+  }
+}

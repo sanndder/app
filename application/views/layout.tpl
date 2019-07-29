@@ -16,6 +16,35 @@
 	{include file='_page/js.tpl'}
 	<!-- /JS files -->
 
+	<!-- ckeditor plugin -->
+	{if isset($ckeditor)}
+		<script src="recources/plugins/ckeditor/ckeditor.js"></script>
+		<script src="recources/js/ckeditor.js"></script>
+	{/if}
+
+	<!-- file upload -->
+	{if isset($uploader)}
+		<link href="template/global_assets/js/plugins/fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="template/global_assets/js/plugins/fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="template/global_assets/js/plugins/fileinput/themes/explorer-fa/theme.css" rel="stylesheet">
+
+		<script src="template/global_assets/js/plugins/fileinput/js/plugins/piexif.min.js" type="text/javascript"></script>
+		<script src="template/global_assets/js/plugins/fileinput/js/plugins/sortable.min.js" type="text/javascript"></script>
+
+		<script src="template/global_assets/js/plugins/fileinput/js/fileinput.min.js"></script>
+		<script src="template/global_assets/js/plugins/fileinput/themes/fa/theme.js"></script>
+		<script src="template/global_assets/js/plugins/fileinput/js/locales/nl.js"></script>
+		<script src="recources/js/uploader.js"></script>
+	{/if}
+
+	<!-- datatable -->
+	{if isset($datatable)}
+		<script src="template/global_assets/js/plugins/tables/datatables/datatables.min.js" type="text/javascript"></script>
+		<script src="template/global_assets/js/plugins/forms/selects/select2.min.js" type="text/javascript"></script>
+	{/if}
+
+	<!-- /JS plugins -->
+
 </head>
 
 <body class="navbar-md-md-top">

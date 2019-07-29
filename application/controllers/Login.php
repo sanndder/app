@@ -22,14 +22,12 @@ class Login extends EX_Controller {
 	//--------------------------------------------------------------------------
 	public function index()
 	{
-		show($_SESSION);
-
 		//login knop
 		if( isset($_POST['login']) )
 		{
 			//try login
 			if( $this->auth->login() )
-				redirect( $this->config->item('base_url') . 'test' ,'location');
+				redirect( $this->config->item('base_url') . 'crm/uitzenders' ,'location');
 
 			//display errors when login fails
 			if( $this->auth->errors() != false )

@@ -467,9 +467,8 @@ pre {
 .table-lg td {
   padding: 1rem 1.25rem; }
 
-.table-xs th,
-.table-xs td {
-  padding: 0.5rem 1.25rem; }
+.table-xs th { padding: 0.55rem 1.25rem; font-size: 1em }
+.table-xs td { padding: 0.45rem 1.25rem; font-size: 0.9em }
 
 thead .table-border-solid th,
 thead .table-border-solid td {
@@ -1525,6 +1524,7 @@ select[size] {
 .navbar {
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
+  font-weight: 400;
   -ms-flex-align: stretch;
       align-items: stretch; }
   .page-content ~ .navbar:not(.navbar-component):last-of-type,

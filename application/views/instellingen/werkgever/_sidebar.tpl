@@ -22,24 +22,23 @@
 				<!-- Main navigation -->
 				<div class="card-body p-0">
 					<ul class="nav nav-sidebar" data-nav-type="accordion">
-						<!-- Main -->
+						<li class="nav-item">
+							<a href="instellingen/werkgever/users" class="nav-link {if $active == 'users'}active{/if}">
+								<span>Gebruikers</span>
+							</a>
+						</li>
 						<li class="nav-item">
 							<a href="instellingen/werkgever/bedrijfsgegevens" class="nav-link {if $active == 'bedrijfsgegevens'}active{/if}">
-								<span>Bedrijfsgegeven</span>
+								<span>Bedrijfsgegevens</span>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="instellingen/werkgever/logo" class="nav-link">
-								<span>Logo</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="instellingen/werkgever/logo" class="nav-link">
+							<a href="instellingen/werkgever/bankrekeningen" class="nav-link {if $active == 'bankrekeningen'}active{/if}">
 								<span>Bankrekeningen</span>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="instellingen/werkgever/logo" class="nav-link">
+							<a href="instellingen/werkgever/av" class="nav-link {if $active == 'av'}active{/if}">
 								<span>Algemene voorwaarden</span>
 							</a>
 						</li>
@@ -53,4 +52,4 @@
 		<!-- /sidebar content -->
 
 	</div>
-	<!-- /main sidebar -->
+	<!-- /main sidebar  -->

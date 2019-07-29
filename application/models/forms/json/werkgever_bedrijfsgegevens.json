@@ -1,0 +1,79 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "bedrijfsnaam": {
+      "label": "Bedrijfsnaam",
+      "rules": {
+        "required": true,
+        "minlength": 3,
+        "maxlength": 200
+      }
+    },
+    "kvknr": {
+      "label": "KvK nummer",
+      "rules": {
+        "required": true,
+        "minlength": 8,
+        "maxlength": 8,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "int"
+      }
+    },
+    "btwnr": {
+      "label": "BTW nummer",
+      "rules": {
+        "required": true,
+        "minlength": 14,
+        "maxlength": 14,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "btwnr"
+      }
+    },
+    "straat": {
+      "label": "Straat",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 100
+      }
+    },
+    "huisnummer": {
+      "label": "Huisnummer",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 20
+      }
+    },
+    "postcode": {
+      "label": "Postcode",
+      "rules": {
+        "required": true,
+        "minlength": 6,
+        "maxlength": 8,
+        "toupper": true,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "postcode"
+      }
+    },
+    "plaats": {
+      "label": "Plaats",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 100
+      }
+    }
+  }
+}
