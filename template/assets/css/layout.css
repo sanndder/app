@@ -288,6 +288,8 @@ body {
   margin-bottom: 0; }
 .nav-sidebar > .nav-item > .nav-link {
   font-weight: 500; }
+.nav-sidebar > .nav-item > .nav-link-disabled {
+  color:#CBCBCB !important; }
 .nav-sidebar .nav-link {
   position: relative;
   display: -ms-flexbox;

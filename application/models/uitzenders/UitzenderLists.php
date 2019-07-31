@@ -75,6 +75,10 @@ class UitzenderLists extends Connector {
 		if( !isset($param['actief']) && isset($param['archief']) )
 			$sql .= " AND uitzenders_status.archief = 1";
 
+		//default
+		if( !isset($param['actief']) && !isset($param['archief']) )
+			$sql .= " AND uitzenders_status.archief = 0";
+
 		//zoeken, q1 is voor ID en bedrijfsnaam, q2 is voor overig
 		if( isset($param['q1']) && $param['q1'] != '' )
 			$sql .= " AND (uitzenders_bedrijfsgegevens.bedrijfsnaam LIKE '%". addslashes($_GET['q1'])."%' OR uitzenders_status.uitzender_id LIKE '%". addslashes($_GET['q1'])."%' ) ";

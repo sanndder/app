@@ -24,9 +24,18 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Overzicht pagina
 	//--------------------------------------------------------------------------
-	public function overzicht( $uitzender_id )
+	public function overzicht( $uitzender_id = NULL )
 	{
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+
+		//redirect indien nodig
+		if( $uitzender->complete == 0 )
+		{
+			if( $uitzender->bedrijfsgegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/bedrijfsgegevens/' . $uitzender_id ,'location');
+			if( $uitzender->emailadressen_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/emailadressen/' . $uitzender_id ,'location');
+			if( $uitzender->factuurgegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/factuurgegevens/' . $uitzender_id ,'location');
+			if( $uitzender->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/contactpersonen/' . $uitzender_id ,'location');
+		}
 
 		//show($uitzenders);
 
@@ -38,7 +47,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Bedrijfsgegevens
 	//--------------------------------------------------------------------------
-	public function bedrijfsgegevens( $uitzender_id )
+	public function bedrijfsgegevens( $uitzender_id = NULL )
 	{
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
@@ -54,7 +63,17 @@ class Dossier extends MY_Controller
 
 			//msg
 			if( $errors === false )
+			{
+				//nieuwe aanmelding doorzetten naar volgende pagina
+				if( $uitzender->emailadressen_complete != 1 )
+				{
+					redirect( $this->config->item('base_url') . 'crm/uitzenders/dossier/emailadressen/' . $uitzender->uitzender_id ,'location');
+					die();
+				}
+
+				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			}
 			else
 				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
 		}
@@ -67,7 +86,7 @@ class Dossier extends MY_Controller
 		$formdata = $formbuidler->table( 'uitzenders_bedrijfsgegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
 		$this->smarty->assign('formdata', $formdata);
 
-		//show($uitzenders);
+		//show($uitzender);
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/bedrijfsgegevens.tpl');
@@ -77,7 +96,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Factuurgegevens
 	//--------------------------------------------------------------------------
-	public function Factuurgegevens( $uitzender_id )
+	public function Factuurgegevens( $uitzender_id = NULL )
 	{
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
@@ -93,7 +112,17 @@ class Dossier extends MY_Controller
 
 			//msg
 			if( $errors === false )
+			{
+				//nieuwe aanmelding doorzetten naar volgende pagina
+				if( $uitzender->contactpersonen_complete != 1 )
+				{
+					redirect( $this->config->item('base_url') . 'crm/uitzenders/dossier/contactpersonen/' . $uitzender->uitzender_id ,'location');
+					die();
+				}
+
+				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			}
 			else
 				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
 		}
@@ -116,7 +145,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Factuurgegevens
 	//--------------------------------------------------------------------------
-	public function Emailadressen( $uitzender_id )
+	public function Emailadressen( $uitzender_id = NULL )
 	{
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
@@ -132,7 +161,17 @@ class Dossier extends MY_Controller
 
 			//msg
 			if( $errors === false )
+			{
+				//nieuwe aanmelding doorzetten naar volgende pagina
+				if( $uitzender->factuurgegevens_complete != 1 )
+				{
+					redirect( $this->config->item('base_url') . 'crm/uitzenders/dossier/factuurgegevens/' . $uitzender->uitzender_id ,'location');
+					die();
+				}
+
+				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			}
 			else
 				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
 		}
@@ -155,7 +194,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// documenten pagina
 	//--------------------------------------------------------------------------
-	public function contactpersonen( $uitzender_id )
+	public function contactpersonen( $uitzender_id = NULL )
 	{
 		//init uitzender object
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
@@ -171,7 +210,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// documenten pagina
 	//--------------------------------------------------------------------------
-	public function documenten( $uitzender_id )
+	public function documenten( $uitzender_id = NULL )
 	{
 		//init uitzender object
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
@@ -184,7 +223,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// notities pagina
 	//--------------------------------------------------------------------------
-	public function notities( $uitzender_id )
+	public function notities( $uitzender_id = NULL )
 	{
 		//init uitzender object
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
@@ -197,7 +236,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// facturen pagina
 	//--------------------------------------------------------------------------
-	public function facturen( $uitzender_id )
+	public function facturen( $uitzender_id = NULL )
 	{
 		//init uitzender object
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
@@ -210,7 +249,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// inleners pagina
 	//--------------------------------------------------------------------------
-	public function inleners( $uitzender_id )
+	public function inleners( $uitzender_id = NULL )
 	{
 		//init uitzender object
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
@@ -223,7 +262,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// werknemers pagina
 	//--------------------------------------------------------------------------
-	public function werknemers( $uitzender_id )
+	public function werknemers( $uitzender_id = NULL )
 	{
 		//init uitzender object
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );

@@ -1,7 +1,14 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Uitzender{/block}
 {block "header-icon"}icon-office{/block}
-{block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{/block}
+{block "header-title"}
+	{if $uitzender->uitzender_id == 0}
+		Nieuwe utzender aanmelden
+	{else}
+		Uitzender - {$uitzender->bedrijfsnaam}
+	{/if}
+
+{/block}
 
 {block "content"}
 
@@ -36,7 +43,6 @@
 						<div class="card-body">
 
 							<form method="post" action="">
-
 
 								<!-- opslaan -->
 								<div class="row">

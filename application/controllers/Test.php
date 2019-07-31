@@ -30,8 +30,6 @@ class Test extends MY_Controller {
 	public function validation()
 	{
 
-
-
 		$validator = new models\Forms\Validator();
 		$validator->table( 'test' )->input( $data )->run();
 
@@ -45,22 +43,10 @@ class Test extends MY_Controller {
 	public function index()
 	{
 
-		$data['id'] = 12;
-		$data['timestamp'] = '2019-05-06 10:15:00';
-		$data['bedrijfsnaam'] = 'Jan van Tongeren - De Groot';
-		$data['bedrijfsnaam'] = '105518979';
+		$config['format'] = 'L';
 
+		$pdf = new models\pdf\Pdf($config);
 
-		$validator = new models\Forms\Validator();
-		$validator->table( 'werkgever_bedrijfsgegevens' )->input( $data )->run();
-		if( $validator->success() )
-		{
-
-		}
-		else
-		{
-
-		}
 
 
 		/*
@@ -90,7 +76,7 @@ class Test extends MY_Controller {
 		//$email->test();
 		*/
 
-		$this->smarty->display('index.tpl');
+		//$this->smarty->display('index.tpl');
 	}
 
 }

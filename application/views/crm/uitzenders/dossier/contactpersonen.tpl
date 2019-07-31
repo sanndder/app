@@ -27,6 +27,39 @@
 			{/if}
 			<form method="post" action="">
 
+				<div class="row">
+					<div class="col-md-10">
+
+						<!-- Basic card -->
+						<div class="card">
+
+							<div class="bg-light rounded-top">
+								<div class="navbar navbar-light bg-light navbar-expand-lg py-lg-2 rounded-top">
+									<div class="text-center d-lg-none w-100">
+										<button type="button" class="navbar-toggler w-100 h-100" data-toggle="collapse" data-target="#inbox-toolbar-toggle-read">
+											<i class="icon-circle-down2"></i>
+										</button>
+									</div>
+
+									<div class="navbar-collapse text-center text-lg-left flex-wrap collapse" id="inbox-toolbar-toggle-read">
+										<div class="mt-3 mt-lg-0 mr-lg-3">
+											<div class="btn-group">
+												<button type="button" class="btn btn-light" data-id="0" onclick="modalContact(this, 'uitzender', {$uitzender->uitzender_id})">
+													<i class="icon-plus-circle2"></i>
+													<span class="d-none d-lg-inline-block ml-2">Contactpersoon toevoegen</span>
+												</button>
+											</div>
+										</div>
+
+										<div class="navbar-text ml-lg-auto"></div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 
 				{foreach $contactpersonen as $contact}
 					<div class="row">
@@ -42,7 +75,8 @@
 										</div>
 
 										<div class="col-md-4 mb-2">
-											<div class="media-title font-weight-semibold">{$contact.aanhef}. {$contact.naam}</div>
+											<div class="media-title font-weight-semibold">{$contact.aanhef}
+												. {$contact.naam}</div>
 											<span class="text-muted">{$contact.functie} {if $contact.afdeling != NULL} - {$contact.afdeling}{/if} </span>
 										</div>
 

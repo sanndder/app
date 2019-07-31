@@ -138,11 +138,19 @@
             // Setting datatable defaults
             $.extend( $.fn.dataTable.defaults, {
                 autoWidth: false,
-                columnDefs: [{
+                columnDefs: [
+                    {
                     orderable: false,
                     width: 100,
                     targets: [ -1 ]
-                }],
+                    },
+                    {
+                    orderable: false,
+                    visible: false,
+                    searchable: false,
+                    targets: [ 0 ]
+                    }
+                ],
                 lengthMenu: [
                     [ 10, 15, 20, 25, 50, -1 ],
                     [ '10 rijen', '15 rijen', '20 rijen', '25 rijen', '50 rijen', 'Alle rijen' ]

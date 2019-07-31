@@ -16,7 +16,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Uitzender extends Connector {
 
-	private $_info = NULL; // @var array
+	private $_status = NULL; // @var array
 
 	public $uitzender_id = NULL; // @var int
 	public $bedrijfsnaam = NULL; // @var string
@@ -28,6 +28,13 @@ class Uitzender extends Connector {
 	 * @var array
 	 */
 	private $_error = NULL;
+
+	public $complete;
+	public $archief;
+	public $emailadressen_complete;
+	public $contactpersoon_complete;
+	public $factuurgegevens_complete;
+	public $bedrijfsgegevens_complete;
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -42,8 +49,8 @@ class Uitzender extends Connector {
 		//set ID
 		$this->setID( $uitzender_id );
 
-		//get info
-		$this->getInfo();
+		//get status
+		$this->getStatus();
 
 	}
 
@@ -65,8 +72,8 @@ class Uitzender extends Connector {
 	 */
 	public function get( $field )
 	{
-		if( isset($this->_info[$field]) )
-			return $this->_info[$field];
+		if( isset($this->_status[$field]) )
+			return $this->_status[$field];
 
 		return NULL;
 	}
@@ -76,7 +83,7 @@ class Uitzender extends Connector {
 	/*
 	 * get basic info
 	 */
-	public function getInfo()
+	public function getStatus()
 	{
 		$sql = "SELECT * FROM uitzenders_status
 				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_bedrijfsgegevens.uitzender_id = uitzenders_status.uitzender_id
@@ -85,13 +92,30 @@ class Uitzender extends Connector {
 
 		$query = $this->db_user->query($sql);
 
+		//bij leeg alles wel aanmaken
 		if ($query->num_rows() == 0)
-			return false;
+		{
+			$this->complete = NULL;
+			$this->archief = NULL;
+			$this->bedrijfsgegevens_complete = NULL;
+			$this->factuurgegevens_complete = NULL;
+			$this->contactpersoon_complete = NULL;
+			$this->emailadressen_complete = NULL;
 
-		$this->_info = $query->row_array();
+			return false;
+		}
+
+		$this->_status = $query->row_array();
+
+		$this->complete = $this->_status['complete'];
+		$this->archief = $this->_status['archief'];
+		$this->bedrijfsgegevens_complete = $this->_status['bedrijfsgegevens_complete'];
+		$this->factuurgegevens_complete = $this->_status['factuurgegevens_complete'];
+		$this->contactpersoon_complete = $this->_status['contactpersoon_complete'];
+		$this->emailadressen_complete = $this->_status['emailadressen_complete'];
 
 		//set public vars
-		$this->bedrijfsnaam = $this->_info['bedrijfsnaam'];
+		$this->bedrijfsnaam = $this->_status['bedrijfsnaam'];
 
 	}
 
@@ -186,6 +210,28 @@ class Uitzender extends Connector {
 	}
 
 
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Nieuwe uitzender aanmaken
+	 * Kan alleen als basis bedrijfsgegevens ingevuld zijn
+	 * Entry in status tabel maken, dit levert uitzender_id op
+	 * @return boolean
+	 */
+	public function _new()
+	{
+		$insert['complete'] = 0;
+		$this->db_user->insert('uitzenders_status', $insert);
+
+		if ($this->db_user->insert_id() > 0)
+		{
+			$this->uitzender_id = $this->db_user->insert_id();
+			return true;
+		}
+
+		return false;
+	}
+
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Sla data op na controle
@@ -193,7 +239,7 @@ class Uitzender extends Connector {
 	 * Geeft ingevoerde data terug
 	 * @return array
 	 */
-	public function _set( $table = '', $class = '', $where = NULL )
+	public function _set( $table = '', $method = '', $where = NULL )
 	{
 		$validator = new Validator();
 		$validator->table( $table )->input( $_POST )->run();
@@ -209,8 +255,18 @@ class Uitzender extends Connector {
 		//geen fouten, nieuwe insert doen wanneer er wijzigingen zijn
 		if( $validator->success() )
 		{
+			//nieuwe uitzender aanmaken? Alleen mogelijk vanaf method Bedrijfsgegevens
+			if($this->uitzender_id == 0 && $method == 'bedrijfsgegevens')
+			{
+				if( !$this->_new() )
+				{
+					$this->_error[] = 'Uitzender kan niet worden aangemaakt';
+					return false;
+				}
+			}
+
 			//zijn er daadwerkelijk wijzigingen?
-			if( inputIsDifferent( $input, $this->$class( $id ) ))
+			if( inputIsDifferent( $input, $this->$method( $id ) ))
 			{
 				//alle vorige entries als deleted
 				$sql = "UPDATE $table 
@@ -232,6 +288,10 @@ class Uitzender extends Connector {
 					$input['uitzender_id'] = $this->uitzender_id;
 					$input['user_id'] = $this->user->user_id;
 					$this->db_user->insert($table, $input);
+
+					//update status wanneer nodig
+					$this->_updateStatus( $method . '_complete' );
+
 				}
 				else
 				{
@@ -248,6 +308,48 @@ class Uitzender extends Connector {
 
 		return $input;
 	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Update status van een onderdeel en controleer of alles compleet is
+	 *
+	 */
+	public function _updateStatus( $property )
+	{
+		if( $this->$property === NULL )
+		{
+			//werkgever hoeft niet gecontroleerd te worden
+			if( $this->user->user_type == 'werkgever')
+				$update_status[$property] = 1;// van leeg naar complete
+			else
+				$update_status[$property] = 0;// van leeg naar controle
+		}
+		//alleen werkgever mag controle uitvoeren
+		if( $this->$property === 0 && $this->user->user_type == 'werkgever' )
+			$update_status[$property] = 1;//van controle naar compleet
+
+		//alleen uitvoeren wanneer nodig
+		if( isset($update_status) )
+		{
+			$this->$property = $update_status[$property];//update property
+
+			//controle op alle sub statussen
+			if(
+				$this->bedrijfsgegevens_complete == 1 &&
+				$this->emailadressen_complete == 1 &&
+				$this->factuurgegevens_complete == 1 &&
+				$this->contactpersoon_complete == 1
+			)
+				$update_status['complete'] = 1;
+
+			//update
+			$this->db_user->where( 'uitzender_id', $this->uitzender_id );
+			$this->db_user->update('uitzenders_status', $update_status);
+		}
+	}
+
+
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -288,12 +390,44 @@ class Uitzender extends Connector {
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Sla factuurgegevens op na controle
+	 * Sla contactpersoon op na controle
+	 * Maak eventueel een nieuw contact aan
 	 * @return array
 	 */
 	public function setContactpersoon( $contact_id )
 	{
+		$new = false;
+
+		//nieuw contact aanmaken indien nodig
+		if( $contact_id == 0 )
+		{
+			//hoogste contact id ophalen, autoincrement is niet van toepassing (zit op andere kolom)
+			$sql = "SELECT MAX(contact_id) AS contact_id FROM uitzenders_contactpersonen";
+			$query = $this->db_user->query($sql);
+
+			$data = $query->row_array();
+
+			$insert['contact_id'] = $data['contact_id']+1;
+			$insert['uitzender_id'] = $this->uitzender_id;
+			$this->db_user->insert('uitzenders_contactpersonen', $insert);
+
+			if ($this->db_user->insert_id() > 0)
+			{
+				$new = true;
+				$contact_id = $insert['contact_id'];
+			}
+
+		}
+
 		$input = $this->_set( 'uitzenders_contactpersonen', 'contactpersoon', array( 'contact_id' => $contact_id ) );
+
+		//zijn er erros, dan weer uit de database
+		if( $new == true && $this->errors() !== false )
+		{
+			$sql = "DELETE FROM uitzenders_contactpersonen WHERE contact_id = $contact_id LIMIT 1";
+			$this->db_user->query($sql);
+		}
+
 		return $input;
 	}
 

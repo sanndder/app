@@ -166,7 +166,7 @@
 						<div class="navbar-collapse text-center text-lg-left flex-wrap collapse" id="inbox-toolbar-toggle-read">
 							<div class="mt-3 mt-lg-0 mr-lg-3">
 								<div class="btn-group">
-									<a type="button" class="btn btn-light">
+									<a type="button" class="btn btn-light" href="crm/uitzenders/dossier/bedrijfsgegevens">
 										<i class="icon-plus-circle2"></i>
 										<span class="d-none d-lg-inline-block ml-2">Nieuwe uitzender</span>
 									</a>
@@ -193,23 +193,6 @@
 						<h6 class="mb-0">Uitzenderoverzicht</h6>
 						<div class="letter-icon-title font-weight-semibold">{count($uitzenders)} uitzenders in tabel</div>
 					</div>
-
-					<div class="align-self-md-center ml-md-3 mt-3 mt-md-0">
-						<ul class="list-inline list-inline-condensed mb-0">
-							<li class="list-inline-item">
-								<a href="#"><img src="../../../../global_assets/images/demo/users/face1.jpg" class="rounded-circle" width="32" height="32" alt=""></a>
-							</li>
-							<li class="list-inline-item">
-								<a href="#"><img src="../../../../global_assets/images/demo/users/face24.jpg" class="rounded-circle" width="32" height="32" alt=""></a>
-							</li>
-							<li class="list-inline-item">
-								<a href="#"><img src="../../../../global_assets/images/demo/users/face11.jpg" class="rounded-circle" width="32" height="32" alt=""></a>
-							</li>
-							<li class="list-inline-item">
-								<span class="btn btn-sm bg-transparent border-slate-300 text-slate rounded-round border-dashed">+26</span>
-							</li>
-						</ul>
-					</div>
 				</div>
 
 
@@ -217,9 +200,10 @@
 
 
 				<!-- table -->
-				<table class="table datatable-basic table-striped table-hover table-xs" data-page-length="15">
+				<table class="table datatable-basic table-striped table-hover table-xs" data-page-length="15" data-order="[[0,&quot;asc&quot; ],[2,&quot;asc&quot; ]]">
 					<thead class="">
 					<tr>
+						<th></th>
 						<th style="width: 75px;">ID</th>
 						<th>Bedrijfsnaam</th>
 						<th class="text-center">Actions</th>
@@ -228,10 +212,14 @@
 					{if isset($uitzenders) && is_array($uitzenders) && count($uitzenders) > 0}
 						<tbody>
 						{foreach $uitzenders as $u}
-							<tr>
+							<tr style="{if $u.complete == 0}background-color: #EEE;{/if}{if $u.archief == 1}color: #F44336;{/if}">
+								<td>{$u.complete}</td>
 								<td>{$u.uitzender_id}</td>
 								<td>
-									<a href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.bedrijfsnaam}</a>
+									{if $u.complete == 0}
+										<span class="badge bg-success  mr-1">NIEUW</span>
+									{/if}
+									<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.bedrijfsnaam}</a>
 								</td>
 								<td></td>
 							</tr>
