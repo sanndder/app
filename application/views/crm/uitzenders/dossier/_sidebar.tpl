@@ -39,6 +39,11 @@
 							</a>
 						</li>
 						<li class="nav-item">
+							<a href="crm/uitzenders/dossier/emailadressen/{$uitzender->uitzender_id}" class="nav-link {if $active == 'emailadressen'}active{/if}">
+								<span>Emailinstellingen</span>
+							</a>
+						</li>
+						<li class="nav-item">
 							<a href="crm/uitzenders/dossier/factuurgegevens/{$uitzender->uitzender_id}" class="nav-link {if $active == 'factuurgegevens'}active{/if}">
 								<span>Factuurgegevens</span>
 							</a>

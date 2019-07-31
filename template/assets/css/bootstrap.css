@@ -4560,8 +4560,8 @@ a.close.disabled {
   display: flex;
   -ms-flex-align: center;
       align-items: center;
-  -ms-flex-pack: end;
-      justify-content: flex-end;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
   padding: 1.25rem;
   border-top: 1px solid rgba(0, 0, 0, 0.125);
   border-bottom-right-radius: 0.25rem;

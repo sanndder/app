@@ -114,6 +114,45 @@ class Dossier extends MY_Controller
 
 
 	//--------------------------------------------------------------------------
+	// Factuurgegevens
+	//--------------------------------------------------------------------------
+	public function Emailadressen( $uitzender_id )
+	{
+		//load the formbuilder
+		$formbuidler = new models\forms\Formbuilder();
+
+		//init uitzender object
+		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+
+		//set bedrijfsgegevens
+		if( isset($_POST['set'] ))
+		{
+			$emailadressen = $uitzender->setEmailadressen();
+			$errors = $uitzender->errors();
+
+			//msg
+			if( $errors === false )
+				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			else
+				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
+		}
+		else
+		{
+			$emailadressen =  $uitzender->emailadressen();
+			$errors = false; //no errors
+		}
+
+		$formdata = $formbuidler->table( 'uitzenders_emailadressen' )->data( $emailadressen )->errors( $errors )->build();
+		$this->smarty->assign('formdata', $formdata);
+
+		//show($formdata);
+
+		$this->smarty->assign('uitzender', $uitzender);
+		$this->smarty->display('crm/uitzenders/dossier/emailadressen.tpl');
+	}
+
+
+	//--------------------------------------------------------------------------
 	// documenten pagina
 	//--------------------------------------------------------------------------
 	public function contactpersonen( $uitzender_id )

@@ -47,7 +47,7 @@
         "minlength": 10,
         "maxlength": 20,
         "removespaces": false,
-        "removechars": ",.,_"
+        "removechars": ".,_"
       }
     },
     "straat": {

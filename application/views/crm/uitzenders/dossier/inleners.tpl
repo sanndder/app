@@ -2,7 +2,6 @@
 {block "title"}Uitzender{/block}
 {block "header-icon"}icon-office{/block}
 {block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{/block}
-{assign "datatable" "true"}
 
 {block "content"}
 

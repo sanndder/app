@@ -71,7 +71,6 @@
 
     var Uniform = function () {
 
-
         //
         // Setup module components
         //

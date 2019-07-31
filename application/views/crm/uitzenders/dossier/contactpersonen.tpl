@@ -2,12 +2,11 @@
 {block "title"}Uitzender{/block}
 {block "header-icon"}icon-office{/block}
 {block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{/block}
-{assign "datatable" "true"}
 
 {block "content"}
 
 	{include file='crm/uitzenders/dossier/_sidebar.tpl' active='contactpersonen'}
-
+	{include file='crm/uitzenders/dossier/modals/contactpersonen.tpl'}
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	|| Main content
@@ -43,7 +42,7 @@
 										</div>
 
 										<div class="col-md-4 mb-2">
-											<div class="media-title font-weight-semibold">{$contact.naam}</div>
+											<div class="media-title font-weight-semibold">{$contact.aanhef}. {$contact.naam}</div>
 											<span class="text-muted">{$contact.functie} {if $contact.afdeling != NULL} - {$contact.afdeling}{/if} </span>
 										</div>
 
@@ -61,7 +60,7 @@
 										</div>
 
 										<div class="col-md-1 text-right">
-											<button data-title="Contact persoon wijzigen" data-id="{$contact.contact_id}" type="button" class="btn btn-outline-info btn-icon rounded-round ml-1" data-popup="tooltip" data-placement="top" data-original-title="Wijzigen">
+											<button data-title="Contact persoon wijzigen" data-id="{$contact.contact_id}" type="button" class="btn btn-outline-info btn-icon rounded-round ml-1" onclick="modalContact(this, 'uitzender', {$uitzender->uitzender_id})" data-popup="tooltip" data-placement="top">
 												<em class="icon-pencil mr-sm"></em>
 											</button>
 										</div>

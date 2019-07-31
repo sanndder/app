@@ -135,7 +135,7 @@ class Uitzender extends Connector {
 	 */
 	public function contactpersonen()
 	{
-		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
+		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id ORDER BY achternaam ASC, voorletters ASC";
 		$query = $this->db_user->query($sql);
 
 		if ( $query->num_rows() == 0 )
@@ -150,7 +150,40 @@ class Uitzender extends Connector {
 		return $data;
 	}
 
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get contactpersonen
+	 */
+	public function emailadressen()
+	{
+		$sql = "SELECT * FROM uitzenders_emailadressen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$query = $this->db_user->query($sql);
 
+		if ( $query->num_rows() == 0 )
+			return NULL;
+
+		return $query->row_array();
+	}
+
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get contactpersonen
+	 */
+	public function contactpersoon( $contact_id )
+	{
+		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE contact_id = $contact_id AND deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$query = $this->db_user->query($sql);
+
+		if ( $query->num_rows() == 0 )
+			return NULL;
+
+		$row = $query->row_array();
+		$row['naam'] = make_name($row);
+
+		return $row;
+	}
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -160,26 +193,42 @@ class Uitzender extends Connector {
 	 * Geeft ingevoerde data terug
 	 * @return array
 	 */
-	public function _set( $table = '', $class = '' )
+	public function _set( $table = '', $class = '', $where = NULL )
 	{
 		$validator = new Validator();
 		$validator->table( $table )->input( $_POST )->run();
 
 		$input = $validator->data();
 
+		//juitse paramter meegeven
+		if( $where !== NULL)
+			$id = current($where);
+		else
+			$id = NULL;
+
 		//geen fouten, nieuwe insert doen wanneer er wijzigingen zijn
 		if( $validator->success() )
 		{
 			//zijn er daadwerkelijk wijzigingen?
-			if( inputIsDifferent( $input, $this->$class() ))
+			if( inputIsDifferent( $input, $this->$class( $id ) ))
 			{
 				//alle vorige entries als deleted
-				$sql = "UPDATE $table SET deleted = 1, deleted_on = NOW(), deleted_by = ".$this->user->user_id." WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
+				$sql = "UPDATE $table 
+						SET deleted = 1, deleted_on = NOW(), deleted_by = ".$this->user->user_id." 
+						WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
+				//extra WHERE clause
+				if(is_array($where))
+					$sql .= " AND ".key($where)." = ".current($where)." ";
+
 				$this->db_user->query($sql);
 
 				//alleen wanneer de update lukt om dubbele entries te voorkomen
 				if ($this->db_user->affected_rows() != -1)
 				{
+					//extra veld
+					if( $where !== NULL)
+						$input[key($where)] = current($where);
+
 					$input['uitzender_id'] = $this->uitzender_id;
 					$input['user_id'] = $this->user->user_id;
 					$this->db_user->insert($table, $input);
@@ -212,6 +261,18 @@ class Uitzender extends Connector {
 		return $input;
 	}
 
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Sla emailadresseb op na controle
+	 *
+	 */
+	public function setEmailadressen()
+	{
+		$input = $this->_set( 'uitzenders_emailadressen', 'emailadressen' );
+		return $input;
+	}
+
+
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -223,6 +284,17 @@ class Uitzender extends Connector {
 		$input = $this->_set( 'uitzenders_factuurgegevens', 'factuurgegevens' );
 		return $input;
 
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Sla factuurgegevens op na controle
+	 * @return array
+	 */
+	public function setContactpersoon( $contact_id )
+	{
+		$input = $this->_set( 'uitzenders_contactpersonen', 'contactpersoon', array( 'contact_id' => $contact_id ) );
+		return $input;
 	}
 
 
