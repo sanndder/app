@@ -43,11 +43,9 @@ class Test extends MY_Controller {
 	public function index()
 	{
 
-		$config['format'] = 'L';
+		$pdf = new models\pdf\PdfFactuur();
 
-		$pdf = new models\pdf\Pdf($config);
-
-
+		$pdf->setHeader()->setFooter()->view();
 
 		/*
 		$row['file_name'] = 'image.jpg';

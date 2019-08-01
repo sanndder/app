@@ -16,30 +16,54 @@
 		<!-- Content area -->
 		<div class="content">
 
-			<!-- msg -->
-			{if isset($msg)}
-				<div class="row">
-					<div class="col-xl-10">
-						{$msg}
-					</div><!-- /col -->
-				</div>
-				<!-- /row -->
-			{/if}
+
 
 			<div class="row">
-				<div class="col-xl-10">
+				<div class="col-xl-12">
 
-					<!-- Basic card -->
+					<!-- Default tabs -->
 					<div class="card">
+						<div class="bg-light">
+							<ul class="nav nav-tabs nav-tabs-bottom mb-0">
+								<li class="nav-item">
+									<a href="#card-toolbar-tab1" class="nav-link active show" data-toggle="tab">
+										2019
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#card-toolbar-tab2" class="nav-link" data-toggle="tab">
+										2018
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#card-toolbar-tab2" class="nav-link" data-toggle="tab">
+										2017
+									</a>
+								</li>
+							</ul>
+						</div>
 
-						<!-- card  body-->
-						<div class="card-body">
+						<div class="card-body tab-content">
+							<div class="tab-pane fade show active" id="card-toolbar-tab1">
+								This is the first card tab content
+							</div>
 
+							<div class="tab-pane fade" id="card-toolbar-tab2">
+								This is the second card tab content
+							</div>
 
-						</div><!-- /card body-->
-					</div><!-- /basic card -->
+							<div class="tab-pane fade" id="card-tab3">
+								This is the third card tab content
+							</div>
 
-				</div><!-- /col -->
+							<div class="tab-pane fade" id="card-tab4">
+								This is the fourth card tab content
+							</div>
+						</div>
+					</div>
+					<!-- /default tabs --
+
+			</div><!-- /col -->
 			</div><!-- /row -->
 
 		</div><!-- /content area -->

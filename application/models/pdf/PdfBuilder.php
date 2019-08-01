@@ -10,12 +10,17 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  * Common PDF methods
  *
  */
-class Pdf{
+class PdfBuilder{
 
 	/*
 	 * @var mpdf object
 	 */
 	protected $mpdf = NULL;
+
+	/*
+	 * @var smarty object
+	 */
+	protected $smarty = NULL;
 
 	/*
 	 * @var array
@@ -26,38 +31,63 @@ class Pdf{
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Init new file from array
+	 * Init new mpdf object
+	 * Set default config
 	 *
-	 *
-	 * @param file array
+	 * @param config array
 	 * @return $this
 	 */
 	public function __construct( $config = NULL )
 	{
 		//load lib
-		require_once('application/third_party/vendor/autoload.php'); //pdf library laden
+		require_once('application/third_party/vendor/autoload.php');
 
 		//Landscape or portrait
 		if( isset($config['format']) && $config['format'] == 'L' )
-			$param['format'] = 'A4-L';
+			$config['format'] = 'A4-L';
 		else
-			$param['format'] = 'A4-P';
+			$config['format'] = 'A4-P';
 
 		//font
-		$param['default_font'] = 'arial';
+		$config['default_font'] = 'arial';
+		$config['autoMarginPadding'] = 0;
+		$config['bleedMargin'] = 0;
+		$config['collapseBlockMargins'] = false;
 
-		$this->mpdf = new \Mpdf\mpdf( $param );
+		/*
+		'autoMarginPadding' => 0,
+        'bleedMargin' => 0,
+        'crossMarkMargin' => 0,
+        'cropMarkMargin' => 0,
+        'nonPrintMargin' => 0,
+        'margBuffer' => 0,
+        'collapseBlockMargins' => false,*/
+
+		//init mpdf object
+		$this->mpdf = new \Mpdf\mpdf( $config );
 
 		$this->mpdf->SetTitle('PDF');
 		$this->mpdf->SetAuthor('App');
 		$this->mpdf->SetDisplayMode('fullpage');
 		$this->mpdf->SetProtection ( array('print','print-highres','assemble','extract','copy') );
 
-		$this->mpdf->WriteHTML('Hello World');
-
-		$this->mpdf->Output();
+		//init smarty object
+		$CI =& get_instance();// Grab the super object
+		$this->smarty = $CI->smarty;
 
 		return $this;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * View pdf in browser
+	 * @return array or boolean
+	 */
+	public function view()
+	{
+		//temp
+		if( isset($_GET['p']) )
+			$this->mpdf->Output();
 	}
 
 

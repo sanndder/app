@@ -22,7 +22,7 @@
 				<div class="card-body p-0">
 					<ul class="nav nav-sidebar" data-nav-type="accordion">
 						<li class="nav-item p-0">
-							<a href="crm/uitzenders" class="nav-link">
+							<a href="crm/uitzenders" class="nav-link" style="padding: 0.625rem 1.25rem">
 								<i class="mi-arrow-back"></i>
 								<span>Terug naar uitzenders</span>
 							</a>
