@@ -183,7 +183,6 @@ class Werkgever extends MY_Controller
 		echo json_encode($result);
 		die();
 
-
 	}
 
 }

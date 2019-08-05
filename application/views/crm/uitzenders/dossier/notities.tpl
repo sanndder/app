@@ -30,15 +30,15 @@
 				<div class="col-md-10">
 
 					<!-- Basic card -->
-					<div class="card">
+					<div class="card mb-2">
 
 						<div class="bg-light rounded-top">
-							<div class="navbar navbar-light bg-light navbar-expand-sm py-lg-2 rounded-top">
+							<div class="navbar navbar-light bg-light navbar-expand-sm py-header rounded-top">
 
 								<div class="navbar-collapse text-center text-lg-left flex-wrap collapse show" id="inbox-toolbar-toggle-read">
 									<div class="mt-3 mt-lg-0 mr-lg-3">
 										<div class="btn-group">
-											<button type="button" class="btn btn-light" data-id="0" onclick="modalContact(this, 'uitzender', {$uitzender->uitzender_id})">
+											<button type="button" class="btn btn-light btn-sm" data-id="0" onclick="modalContact(this, 'uitzender', {$uitzender->uitzender_id})">
 												<i class="icon-plus-circle2"></i>
 												<span class="d-none d-inline-block ml-2">Notitie toevoegen</span>
 											</button>
@@ -57,7 +57,7 @@
 			<div class="row">
 				<div class="col-xl-11">
 
-					<div class="card border-left-3 border-left-blue-400 rounded-left-0">
+					<div class="card border-left-3 border-left-blue-400 rounded-left-0 mb-2">
 						<div class="card-body">
 							<div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
 								<div>

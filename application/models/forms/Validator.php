@@ -145,6 +145,10 @@ class Validator extends Json
 			if (isset($rules->removechars))
 				$val = str_replace(explode(',', $rules->removechars), '', $val);
 
+			//factor
+			if ( isset($rules->type) && $rules->type == 'factor')
+				$val = prepareAmountForDatabase($val);
+
 			//empty to NULL
 			if( $val == '' ) $val = NULL;
 		}
@@ -186,6 +190,10 @@ class Validator extends Json
 						if (!is_numeric($val))
 							$this->_errors[$field][] = sprintf('<strong>%s</strong> moet een getal zijn', $this->json->field->$field->label);
 					}
+
+					//factor
+					if ($rules->type == 'factor' && !Valid::factor($val))
+						$this->_errors[$field][] = sprintf('<strong>%s</strong> is geen geldige factor', $this->json->field->$field->label);
 
 					//email
 					if ($rules->type == 'email' && !Valid::email($val))

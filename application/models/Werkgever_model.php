@@ -49,21 +49,12 @@ class Werkgever_model extends MY_Model
 	 * Get  array bankrekeningen
 	 *
 	 */
-	public function bankrekeningen( $addEmpty = false )
+	public function bankrekeningen()
 	{
-		$bankrekeningen = array();
-
 		$sql = "SELECT * FROM werkgever_bankrekeningen WHERE deleted = 0 ORDER BY omschrijving ASC";
 		$query = $this->db_user->query($sql);
 
-		if ( $query->num_rows() == 0 )
-			return $bankrekeningen;
-
-		foreach ($query->result_array() as $row)
-		{
-			$bankrekeningen[$row['id']] = $row;
-		}
-
+		$bankrekeningen = \models\Utils\Dbhelper::toArray( $query, 'id', 'array');
 		return $bankrekeningen;
 	}
 

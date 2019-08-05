@@ -38,13 +38,6 @@
 							<form method="post" action="">
 
 
-								<!-- opslaan -->
-								<div class="row">
-									<div class="col-lg-12 mb-3">
-										<button type="submit" name="set" class="btn btn-success btn-sm"><i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan</button>
-									</div><!-- /col -->
-								</div><!-- /row -->
-
 								{*settings*}
 								{assign "label_lg" "3"}
 								{assign "div_xl" "8"}

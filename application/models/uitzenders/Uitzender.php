@@ -4,8 +4,10 @@ namespace models\Uitzenders;
 
 use models\Connector;
 use models\Forms\Validator;
+use models\Utils\Dbhelper;
 
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH'))
+	exit('No direct script access allowed');
 
 
 /*
@@ -14,7 +16,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  *
  *
  */
-class Uitzender extends Connector {
+
+class Uitzender extends Connector
+{
 
 	private $_status = NULL; // @var array
 
@@ -36,18 +40,20 @@ class Uitzender extends Connector {
 	public $factuurgegevens_complete;
 	public $bedrijfsgegevens_complete;
 
+	public $next = array();
+	public $prev = array();
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * constructor
 	 */
-	public function __construct( $uitzender_id )
+	public function __construct($uitzender_id)
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
 
 		//set ID
-		$this->setID( $uitzender_id );
+		$this->setID($uitzender_id);
 
 		//get status
 		$this->getStatus();
@@ -55,12 +61,11 @@ class Uitzender extends Connector {
 	}
 
 
-
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Set ID
 	 */
-	public function setID( $uitzender_id )
+	public function setID($uitzender_id)
 	{
 		$this->uitzender_id = intval($uitzender_id);
 	}
@@ -70,9 +75,9 @@ class Uitzender extends Connector {
 	/*
 	 * get data
 	 */
-	public function get( $field )
+	public function get($field)
 	{
-		if( isset($this->_status[$field]) )
+		if (isset($this->_status[$field]))
 			return $this->_status[$field];
 
 		return NULL;
@@ -85,6 +90,7 @@ class Uitzender extends Connector {
 	 */
 	public function getStatus()
 	{
+		//status opahlen en basis gegevens
 		$sql = "SELECT * FROM uitzenders_status
 				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_bedrijfsgegevens.uitzender_id = uitzenders_status.uitzender_id
 				WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_status.uitzender_id = $this->uitzender_id
@@ -117,8 +123,36 @@ class Uitzender extends Connector {
 		//set public vars
 		$this->bedrijfsnaam = $this->_status['bedrijfsnaam'];
 
-	}
+		//volgende vorige init
+		$this->next[$this->uitzender_id] = $this->bedrijfsnaam;    //default self
+		$this->prev[$this->uitzender_id] = $this->bedrijfsnaam;    //default self
 
+		$sql = "SELECT uitzenders_status.uitzender_id, uitzenders_bedrijfsgegevens.bedrijfsnaam FROM uitzenders_status 
+				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_status.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
+				WHERE ( 
+						uitzenders_status.uitzender_id = IFNULL((SELECT min(uitzenders_status.uitzender_id) FROM uitzenders_status WHERE uitzenders_status.uitzender_id > $this->uitzender_id AND uitzenders_status.archief = 0 AND uitzenders_status.complete = 1),0) 
+						OR uitzenders_status.uitzender_id = IFNULL((SELECT max(uitzenders_status.uitzender_id) FROM uitzenders_status WHERE uitzenders_status.uitzender_id < $this->uitzender_id AND uitzenders_status.archief = 0 AND uitzenders_status.complete = 1),0)
+					  )
+				";
+
+		$query = $this->db_user->query($sql);
+		if ($query->num_rows() > 0)
+		{
+			foreach ($query->result_array() as $row)
+			{
+				if ($row['uitzender_id'] > $this->uitzender_id)
+				{
+					$this->next['id'] = $row['uitzender_id'];
+					$this->next['bedrijfsnaam'] = $row['bedrijfsnaam'];
+				}
+				else
+				{
+					$this->prev['id'] = $row['uitzender_id'];
+					$this->prev['bedrijfsnaam'] = $row['bedrijfsnaam'];
+				}
+			}
+		}
+	}
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -130,7 +164,7 @@ class Uitzender extends Connector {
 		$sql = "SELECT * FROM uitzenders_factuurgegevens WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
-		if ( $query->num_rows() == 0 )
+		if ($query->num_rows() == 0)
 			return NULL;
 
 		return $query->row_array();
@@ -146,7 +180,7 @@ class Uitzender extends Connector {
 		$sql = "SELECT * FROM uitzenders_bedrijfsgegevens WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
-		if ( $query->num_rows() == 0 )
+		if ($query->num_rows() == 0)
 			return NULL;
 
 		return $query->row_array();
@@ -162,15 +196,7 @@ class Uitzender extends Connector {
 		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id ORDER BY achternaam ASC, voorletters ASC";
 		$query = $this->db_user->query($sql);
 
-		if ( $query->num_rows() == 0 )
-			return NULL;
-
-		foreach ($query->result_array() as $row)
-		{
-			$row['naam'] = make_name($row);
-			$data[$row['contact_id']] = $row;
-		}
-
+		$data = Dbhelper::toArray( $query, 'contact_id', 'NULL' );
 		return $data;
 	}
 
@@ -183,24 +209,23 @@ class Uitzender extends Connector {
 		$sql = "SELECT * FROM uitzenders_emailadressen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
-		if ( $query->num_rows() == 0 )
+		if ($query->num_rows() == 0)
 			return NULL;
 
 		return $query->row_array();
 	}
 
 
-
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * get contactpersonen
 	 */
-	public function contactpersoon( $contact_id )
+	public function contactpersoon($contact_id)
 	{
 		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE contact_id = $contact_id AND deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
-		if ( $query->num_rows() == 0 )
+		if ($query->num_rows() == 0)
 			return NULL;
 
 		$row = $query->row_array();
@@ -209,7 +234,67 @@ class Uitzender extends Connector {
 		return $row;
 	}
 
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get contactpersonen
+	 */
+	public function factoren()
+	{
+		$sql = "SELECT factor_normaal, factor_overuren FROM uitzenders_factoren WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$query = $this->db_user->query($sql);
 
+		if ($query->num_rows() == 0)
+			return NULL;
+
+		$row = $query->row_array();
+
+		return $row;
+	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 *  get contactpersonen
+	 */
+	public function logo( $method = 'path' )
+	{
+		$sql = "SELECT * FROM uitzenders_logo WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$query = $this->db_user->query($sql);
+
+		if ($query->num_rows() == 0)
+			return NULL;
+
+		$row = $query->row_array();
+
+		//full path
+		$file_path =  UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $row['file_dir'] . '/' . $row['file_name'];
+
+		//check
+		if( !file_exists($file_path))
+			return false;
+
+		if( $method == 'path' )
+			return $file_path;
+
+		if( $method == 'url' )
+			return 'image/logouitzender/' . $this->uitzender_id . '?' . $row['id'];
+
+		return $row;
+	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 *  del logo
+	 */
+	public function delLogo()
+	{
+		$sql = "UPDATE uitzenders_logo
+					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
+					WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
+
+		$this->db_user->query($sql);
+	}
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -239,26 +324,26 @@ class Uitzender extends Connector {
 	 * Geeft ingevoerde data terug
 	 * @return array
 	 */
-	public function _set( $table = '', $method = '', $where = NULL )
+	public function _set($table = '', $method = '', $where = NULL)
 	{
 		$validator = new Validator();
-		$validator->table( $table )->input( $_POST )->run();
+		$validator->table($table)->input($_POST)->run();
 
 		$input = $validator->data();
 
 		//juitse paramter meegeven
-		if( $where !== NULL)
+		if ($where !== NULL)
 			$id = current($where);
 		else
 			$id = NULL;
 
 		//geen fouten, nieuwe insert doen wanneer er wijzigingen zijn
-		if( $validator->success() )
+		if ($validator->success())
 		{
 			//nieuwe uitzender aanmaken? Alleen mogelijk vanaf method Bedrijfsgegevens
-			if($this->uitzender_id == 0 && $method == 'bedrijfsgegevens')
+			if ($this->uitzender_id == 0 && $method == 'bedrijfsgegevens')
 			{
-				if( !$this->_new() )
+				if (!$this->_new())
 				{
 					$this->_error[] = 'Uitzender kan niet worden aangemaakt';
 					return false;
@@ -266,15 +351,15 @@ class Uitzender extends Connector {
 			}
 
 			//zijn er daadwerkelijk wijzigingen?
-			if( inputIsDifferent( $input, $this->$method( $id ) ))
+			if (inputIsDifferent($input, $this->$method($id)))
 			{
 				//alle vorige entries als deleted
 				$sql = "UPDATE $table 
-						SET deleted = 1, deleted_on = NOW(), deleted_by = ".$this->user->user_id." 
+						SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
 						WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
 				//extra WHERE clause
-				if(is_array($where))
-					$sql .= " AND ".key($where)." = ".current($where)." ";
+				if (is_array($where))
+					$sql .= " AND " . key($where) . " = " . current($where) . " ";
 
 				$this->db_user->query($sql);
 
@@ -282,7 +367,7 @@ class Uitzender extends Connector {
 				if ($this->db_user->affected_rows() != -1)
 				{
 					//extra veld
-					if( $where !== NULL)
+					if ($where !== NULL)
 						$input[key($where)] = current($where);
 
 					$input['uitzender_id'] = $this->uitzender_id;
@@ -290,7 +375,8 @@ class Uitzender extends Connector {
 					$this->db_user->insert($table, $input);
 
 					//update status wanneer nodig
-					$this->_updateStatus( $method . '_complete' );
+					if( $this->complete == 0 )
+						$this->_updateStatus($method . '_complete');
 
 				}
 				else
@@ -315,27 +401,27 @@ class Uitzender extends Connector {
 	 * Update status van een onderdeel en controleer of alles compleet is
 	 *
 	 */
-	public function _updateStatus( $property )
+	public function _updateStatus($property)
 	{
-		if( $this->$property === NULL )
+		if ($this->$property === NULL)
 		{
 			//werkgever hoeft niet gecontroleerd te worden
-			if( $this->user->user_type == 'werkgever')
+			if ($this->user->user_type == 'werkgever')
 				$update_status[$property] = 1;// van leeg naar complete
 			else
 				$update_status[$property] = 0;// van leeg naar controle
 		}
 		//alleen werkgever mag controle uitvoeren
-		if( $this->$property === 0 && $this->user->user_type == 'werkgever' )
+		if ($this->$property === 0 && $this->user->user_type == 'werkgever')
 			$update_status[$property] = 1;//van controle naar compleet
 
 		//alleen uitvoeren wanneer nodig
-		if( isset($update_status) )
+		if (isset($update_status))
 		{
 			$this->$property = $update_status[$property];//update property
 
 			//controle op alle sub statussen
-			if(
+			if (
 				$this->bedrijfsgegevens_complete == 1 &&
 				$this->emailadressen_complete == 1 &&
 				$this->factuurgegevens_complete == 1 &&
@@ -344,11 +430,10 @@ class Uitzender extends Connector {
 				$update_status['complete'] = 1;
 
 			//update
-			$this->db_user->where( 'uitzender_id', $this->uitzender_id );
+			$this->db_user->where('uitzender_id', $this->uitzender_id);
 			$this->db_user->update('uitzenders_status', $update_status);
 		}
 	}
-
 
 
 
@@ -357,9 +442,20 @@ class Uitzender extends Connector {
 	 * Sla bedrijfsgegevens op na controle
 	 *
 	 */
+	public function setFactoren()
+	{
+		$input = $this->_set('uitzenders_factoren', 'factoren');
+		return $input;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Sla bedrijfsgegevens op na controle
+	 *
+	 */
 	public function setBedrijfsgegevens()
 	{
-		$input = $this->_set( 'uitzenders_bedrijfsgegevens', 'bedrijfsgegevens' );
+		$input = $this->_set('uitzenders_bedrijfsgegevens', 'bedrijfsgegevens');
 		return $input;
 	}
 
@@ -370,10 +466,9 @@ class Uitzender extends Connector {
 	 */
 	public function setEmailadressen()
 	{
-		$input = $this->_set( 'uitzenders_emailadressen', 'emailadressen' );
+		$input = $this->_set('uitzenders_emailadressen', 'emailadressen');
 		return $input;
 	}
-
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -383,7 +478,7 @@ class Uitzender extends Connector {
 	 */
 	public function setFactuurgegevens()
 	{
-		$input = $this->_set( 'uitzenders_factuurgegevens', 'factuurgegevens' );
+		$input = $this->_set('uitzenders_factuurgegevens', 'factuurgegevens');
 		return $input;
 
 	}
@@ -394,12 +489,12 @@ class Uitzender extends Connector {
 	 * Maak eventueel een nieuw contact aan
 	 * @return array
 	 */
-	public function setContactpersoon( $contact_id )
+	public function setContactpersoon($contact_id)
 	{
 		$new = false;
 
 		//nieuw contact aanmaken indien nodig
-		if( $contact_id == 0 )
+		if ($contact_id == 0)
 		{
 			//hoogste contact id ophalen, autoincrement is niet van toepassing (zit op andere kolom)
 			$sql = "SELECT MAX(contact_id) AS contact_id FROM uitzenders_contactpersonen";
@@ -407,7 +502,7 @@ class Uitzender extends Connector {
 
 			$data = $query->row_array();
 
-			$insert['contact_id'] = $data['contact_id']+1;
+			$insert['contact_id'] = $data['contact_id'] + 1;
 			$insert['uitzender_id'] = $this->uitzender_id;
 			$this->db_user->insert('uitzenders_contactpersonen', $insert);
 
@@ -419,10 +514,10 @@ class Uitzender extends Connector {
 
 		}
 
-		$input = $this->_set( 'uitzenders_contactpersonen', 'contactpersoon', array( 'contact_id' => $contact_id ) );
+		$input = $this->_set('uitzenders_contactpersonen', 'contactpersoon', array('contact_id' => $contact_id));
 
 		//zijn er erros, dan weer uit de database
-		if( $new == true && $this->errors() !== false )
+		if ($new == true && $this->errors() !== false)
 		{
 			$sql = "DELETE FROM uitzenders_contactpersonen WHERE contact_id = $contact_id LIMIT 1";
 			$this->db_user->query($sql);
@@ -440,15 +535,15 @@ class Uitzender extends Connector {
 	public function errors()
 	{
 		//output for debug
-		if( isset($_GET['debug']) )
+		if (isset($_GET['debug']))
 		{
-			if( $this->_error === NULL )
+			if ($this->_error === NULL)
 				show('Geen errors');
 			else
 				show($this->_error);
 		}
 
-		if( $this->_error === NULL )
+		if ($this->_error === NULL)
 			return false;
 
 		return $this->_error;

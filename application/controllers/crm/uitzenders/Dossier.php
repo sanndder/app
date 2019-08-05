@@ -18,7 +18,8 @@ class Dossier extends MY_Controller
 		//Deze pagina mag alleen bezocht worden door werkgever
 		if( $this->user->user_type != 'werkgever' )forbidden();
 
-
+		//method naar smarty
+		$this->smarty->assign('method', $this->router->method);
 	}
 
 	//--------------------------------------------------------------------------
@@ -44,6 +45,57 @@ class Dossier extends MY_Controller
 	}
 
 
+
+	//--------------------------------------------------------------------------
+	// Algemene instellingen
+	//--------------------------------------------------------------------------
+	public function algemeneinstellingen( $uitzender_id = NULL )
+	{
+		//load the formbuilder
+		$formbuidler = new models\forms\Formbuilder();
+
+		//init uitzender object
+		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+
+		//del logo
+		if( isset($_GET['dellogo']) )
+		{
+			$uitzender->delLogo();
+			redirect($this->config->item('base_url') . '/crm/uitzenders/dossier/algemeneinstellingen/' . $uitzender_id ,'location');
+		}
+		//set bedrijfsgegevens
+		if( isset($_POST['set']) )
+		{
+			//sitch
+			switch ($_POST['set']) {
+				case 'uitzenders_factoren':
+					$factoren = $uitzender->setFactoren();
+					break;
+			}
+
+			$errors = $uitzender->errors();
+
+			//msg
+			if( $errors === false )
+				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			else
+				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
+		}
+		else
+		{
+			$factoren =  $uitzender->factoren();
+			$errors = false; //no errors
+		}
+
+		//form maken
+		$formdata = $formbuidler->table( 'uitzenders_factoren' )->data( $factoren )->errors( $errors )->build();
+		$this->smarty->assign('formdata', $formdata);
+
+		$this->smarty->assign('uitzender', $uitzender);
+		$this->smarty->display('crm/uitzenders/dossier/algemeneinstellingen.tpl');
+	}
+
+
 	//--------------------------------------------------------------------------
 	// Bedrijfsgegevens
 	//--------------------------------------------------------------------------
@@ -56,7 +108,7 @@ class Dossier extends MY_Controller
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
 
 		//set bedrijfsgegevens
-		if( isset($_POST['set'] ))
+		if( isset($_POST['set']) )
 		{
 			$bedrijfsgevens = $uitzender->setBedrijfsgegevens();
 			$errors = $uitzender->errors();

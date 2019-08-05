@@ -17,12 +17,20 @@
 		<div class="content">
 
 
-
 			<div class="row">
 				<div class="col-xl-12">
 
 					<!-- Default tabs -->
 					<div class="card">
+
+						<!-- header -->
+						<div class="card-header bg-transparent header-elements-inline">
+							<span class="text-uppercase font-size-sm font-weight-semibold">Facturen</span>
+							<div class="header-elements">
+
+							</div>
+						</div>
+
 						<div class="bg-light">
 							<ul class="nav nav-tabs nav-tabs-bottom mb-0">
 								<li class="nav-item">
@@ -61,9 +69,9 @@
 							</div>
 						</div>
 					</div>
-					<!-- /default tabs --
+					<!-- /default tabs -->
 
-			</div><!-- /col -->
+				</div><!-- /col -->
 			</div><!-- /row -->
 
 		</div><!-- /content area -->

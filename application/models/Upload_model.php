@@ -17,6 +17,12 @@ class Upload_model extends MY_Model
 	private $_random_name = true; //random naam meegeven
 	private $_random_name_prefix = ''; //random naam prefix
 
+	private $_file_name = NULL; //name after upload
+	private $_file_path = NULL; //name after upload
+
+	private $_field = ''; //welk veld is key
+	private $_id = ''; //id voor table
+
 
 	private $_error = NULL;
 
@@ -43,6 +49,20 @@ class Upload_model extends MY_Model
 	{
 		$this->_table = trim($table);
 	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * field en value voor database
+	 *
+	 * @return void
+	 */
+	public function setFieldId( $field, $id )
+	{
+		$this->_field = $field;
+		$this->_id = $id;
+	}
+
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -130,6 +150,46 @@ class Upload_model extends MY_Model
 			$this->_error = $this->upload->display_errors();
 			return false;
 		}
+
+		$uploaddata = $this->upload->data();
+
+		//check
+		$this->_file_name = $uploaddata['orig_name'];
+		$this->_file_path = $this->_path . '/' . $this->_file_name;
+
+		if( !file_exists($this->_file_path) || is_dir($this->_file_path))
+		{
+			$this->_error[] = 'Upload mislukt, bestand niet aanwezig op server';
+			return false;
+		}
+
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * de te uploaden files in de database opslaan
+	 *
+	 * @return void
+	 */
+	function dataToDatabase( $delete_old_entries = false )
+	{
+		//clear old entries
+		if ($delete_old_entries)
+		{
+			$sql = "UPDATE $this->_table 
+					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
+					WHERE deleted = 0 AND $this->_field = $this->_id";
+			$this->db_user->query($sql);
+		}
+
+		$insert[$this->_field] = $this->_id;
+		$insert['file_dir'] = $this->_dir;
+		$insert['file_name'] = $this->_file_name;
+		$insert['file_size'] = filesize($this->_file_path);
+		$insert['user_id'] = $this->user->user_id;
+
+		$this->db_user->insert('uitzenders_logo', $insert);
+
 	}
 
 
@@ -139,13 +199,26 @@ class Upload_model extends MY_Model
 	 *
 	 * @return void
 	 */
-	function uploadfilesToDatabase()
+	function uploadfilesToDatabase( $delete_old_entries = false )
 	{
+		//clear old entries
+		if( $delete_old_entries )
+		{
+			$sql = "UPDATE $this->_table 
+					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
+					WHERE deleted = 0 AND $this->_field = $this->_id";
+			$this->db_user->query($sql);
+
+		}
+
+		//zonder encrypt opslaan
+
+		$query = $this->db_user->query($sql);
+
 		//show($_FILES);
 
 		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES ('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."')";
-		$sql = "INSERT INTO uitzenders_handtekening (file) VALUES (AES_ENCRYPT('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."', UNHEX(SHA2('".UPLOAD_SECRET."',512))))";
-		$query = $this->db_user->query($sql);
+		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES (AES_ENCRYPT('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."', UNHEX(SHA2('".UPLOAD_SECRET."',512))))";
 
 
 		//$ciphertext = sodium_crypto_secretbox(, $nonce, UPLOAD_SECRET));

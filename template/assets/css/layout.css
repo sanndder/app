@@ -296,7 +296,8 @@ body {
   display: flex;
   -ms-flex-align: start;
   align-items: flex-start;
-  padding: 0.75rem 1.25rem;
+  /*padding: 0.75rem 1.25rem;*/
+  padding: 0.625rem 1.25rem;
   transition: background-color ease-in-out 0.15s, color ease-in-out 0.15s; }
 @media (prefers-reduced-motion: reduce) {
   .nav-sidebar .nav-link {
@@ -322,6 +323,8 @@ body {
 .nav-sidebar .nav-item-divider {
   margin: 0.5rem 0;
   height: 1px; }
+
+
 
 .nav-item-submenu > .nav-link {
   padding-right: 2.75rem; }
@@ -1055,6 +1058,20 @@ body {
 
 .row-tile div[class*=col] + div[class*=col] .btn {
   border-left: 0; }
+
+/* ------------------------------------------------------------------------------
+ *
+ *  # eigen style
+ *
+ *  aangepast of toegevoegd
+ *
+ * ---------------------------------------------------------------------------- */
+/*sidebar buttons iets dichter op elkaar */
+.sidebar-content .sidebar-buttons a{padding: 1.1em 0.625em}
+
+/*knoppen bovenaan dossier pagina evenhoog als de header */
+.py-header{ padding-bottom: 0.5rem; padding-top: 0.50rem}
+
 
 /* ------------------------------------------------------------------------------
  *
