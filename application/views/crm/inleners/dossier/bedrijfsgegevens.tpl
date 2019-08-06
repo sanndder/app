@@ -1,18 +1,18 @@
 {extends file='../../../layout.tpl'}
-{block "title"}Uitzender{/block}
+{block "title"}Inlener{/block}
 {block "header-icon"}icon-office{/block}
 {block "header-title"}
-	{if $uitzender->uitzender_id == 0}
-		Nieuwe uitzender aanmelden
+	{if $inlener->inlener_id == 0}
+		Nieuwe inlener aanmelden
 	{else}
-		Uitzender - {$uitzender->bedrijfsnaam}
+		Inlener - {$inlener->bedrijfsnaam}
 	{/if}
 
 {/block}
 
 {block "content"}
 
-	{include file='crm/uitzenders/dossier/_sidebar.tpl' active='bedrijfsgegevens'}
+	{include file='crm/inleners/dossier/_sidebar.tpl' active='bedrijfsgegevens'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -63,6 +63,14 @@ class Dossier extends MY_Controller
 			$uitzender->delLogo();
 			redirect($this->config->item('base_url') . '/crm/uitzenders/dossier/algemeneinstellingen/' . $uitzender_id ,'location');
 		}
+
+		//del handtekening
+		if( isset($_GET['delhandtekening']) )
+		{
+			$uitzender->delHandtekening();
+			redirect($this->config->item('base_url') . '/crm/uitzenders/dossier/algemeneinstellingen/' . $uitzender_id ,'location');
+		}
+
 		//set bedrijfsgegevens
 		if( isset($_POST['set']) )
 		{
@@ -299,15 +307,15 @@ class Dossier extends MY_Controller
 
 
 	//--------------------------------------------------------------------------
-	// inleners pagina
+	// Uitzenders pagina
 	//--------------------------------------------------------------------------
-	public function inleners( $uitzender_id = NULL )
+	public function Uitzenders( $uitzender_id = NULL )
 	{
 		//init uitzender object
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
 
 		$this->smarty->assign('uitzender', $uitzender);
-		$this->smarty->display('crm/uitzenders/dossier/inleners.tpl');
+		$this->smarty->display('crm/uitzenders/dossier/Uitzenders.tpl');
 	}
 
 

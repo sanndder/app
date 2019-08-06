@@ -1,12 +1,12 @@
 {extends file='../../../layout.tpl'}
-{block "title"}Uitzender{/block}
+{block "title"}Inlener{/block}
 {block "header-icon"}icon-office{/block}
-{block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{/block}
+{block "header-title"}Inlener - {$inlener->bedrijfsnaam}{/block}
 {assign "uploader" "true"}
 
 {block "content"}
 
-	{include file='crm/uitzenders/dossier/_sidebar.tpl' active='algemeneinstellingen'}
+	{include file='crm/inleners/dossier/_sidebar.tpl' active='algemeneinstellingen'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@
 								<!-- opslaan -->
 								<div class="row">
 									<div class="col-lg-12 mb-3">
-										<button type="submit" name="set" value="uitzenders_factoren" class="btn btn-success btn-sm"><i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan</button>
+										<button type="submit" name="set" value="inleners_factoren" class="btn btn-success btn-sm"><i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan</button>
 									</div><!-- /col -->
 								</div><!-- /row -->
 
@@ -111,12 +111,12 @@
 								<div class="col-xl-6 col-lg-12">
 
 									{* upload alleen wanneer er geen logo is *}
-									{if $uitzender->handtekening() === NULL }
+									{if $inlener->handtekening() === NULL }
 										<script>
 											{literal}
                                             $(document).ready(function ()
                                             {
-                                                $('#fileupload2').fileinput('refresh', {uploadUrl: 'upload/uploadhantekeninguitzender/{/literal}{$uitzender->uitzender_id}{literal}'});
+                                                $('#fileupload2').fileinput('refresh', {uploadUrl: 'upload/uploadhantekeninginlener/{/literal}{$inlener->inlener_id}{literal}'});
                                                 $('#fileupload2').on('fileuploaded', function() {
                                                     window.location.reload();
                                                 });
@@ -130,10 +130,10 @@
 										</form>
 									{else}
 
-										<img src="{$uitzender->handtekening('url')}" />
+										<img src="{$inlener->handtekening('url')}" />
 										<br />
 										<br />
-										<a href="crm/uitzenders/dossier/algemeneinstellingen/{$uitzender->uitzender_id}?delhandtekening" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Handtekening verwijderen</a>
+										<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}?delhandtekening" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Handtekening verwijderen</a>
 									{/if}
 
 								</div><!-- /col -->
@@ -158,12 +158,12 @@
 								<div class="col-xl-6 col-lg-12">
 
 									{* upload alleen wanneer er geen logo is *}
-									{if $uitzender->logo() === NULL }
+									{if $inlener->logo() === NULL }
 										<script>
 											{literal}
 											$(document).ready(function ()
 											{
-												$('#fileupload').fileinput('refresh', {uploadUrl: 'upload/uploadlogouitzender/{/literal}{$uitzender->uitzender_id}{literal}'});
+												$('#fileupload').fileinput('refresh', {uploadUrl: 'upload/uploadlogoinlener/{/literal}{$inlener->inlener_id}{literal}'});
 												$('#fileupload').on('fileuploaded', function() {
 													window.location.reload();
 												});
@@ -177,10 +177,10 @@
 										</form>
 									{else}
 
-										<img src="{$uitzender->logo('url')}" />
+										<img src="{$inlener->logo('url')}" />
 										<br />
 										<br />
-										<a href="crm/uitzenders/dossier/algemeneinstellingen/{$uitzender->uitzender_id}?dellogo" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Logo verwijderen</a>
+										<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}?dellogo" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Logo verwijderen</a>
 									{/if}
 
 								</div><!-- /col -->

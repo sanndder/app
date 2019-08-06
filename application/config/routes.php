@@ -56,6 +56,9 @@ $route['translate_uri_dashes'] = FALSE;
 $route['crm/uitzenders(:any)'] 					= 'crm/uitzenders/overzicht/$1';
 $route['crm/uitzenders'] 						= 'crm/uitzenders/overzicht';
 
+$route['crm/inleners(:any)'] 					= 'crm/inleners/overzicht/$1';
+$route['crm/inleners'] 							= 'crm/inleners/overzicht';
+
 $route['ureninvoer'] 							= 'ureninvoer/ureninvoer/index';
 
 

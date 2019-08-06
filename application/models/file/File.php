@@ -2,6 +2,8 @@
 
 namespace models\File;
 
+use models\Connector;
+
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
@@ -10,7 +12,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  * File handlig for all file types
  *
  */
-class File{
+class File extends Connector {
 
 	/*
 	 * @var string file info
@@ -42,6 +44,8 @@ class File{
 	 */
 	public function __construct( $input = NULL )
 	{
+		parent::__construct();
+
 		//if array, get info from array fields
 		if( $input !== NULL && is_array($input) )
 			$this->_getFileFromArray( $input );
@@ -81,7 +85,7 @@ class File{
 			$this->_file_name = end($parts);
 			$this->_file_dir = str_replace( $this->_file_name, '', $input );
 
-			$this->_file_path = UPLOAD_DIR .'/'. $this->_file_dir . $this->_file_name;
+			$this->_file_path = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $this->_file_dir . $this->_file_name;
 		}
 		else
 		{
@@ -122,7 +126,7 @@ class File{
 
 		//set full path
 		if( $this->_file_name !== NULL && $this->_file_dir !== NULL )
-			$this->_file_path = UPLOAD_DIR .'/'. $this->_file_dir . '/' . $this->_file_name;
+			$this->_file_path = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $this->_file_dir . '/' . $this->_file_name;
 
 		//if display name is not set, take file_name
 		if( isset($input['file_name_display']) )
@@ -208,24 +212,6 @@ class File{
 		readfile($this->_file_path);
 		die();
 	}
-
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Force download
-	 * @return void
-	 */
-	public function upload()
-	{
-		//block text/x-php
-		//block application/x-dosexec
-		//block application/x-msdownload
-
-
-
-	}
-
-
 
 
 

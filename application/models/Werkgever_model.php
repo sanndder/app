@@ -41,7 +41,7 @@ class Werkgever_model extends MY_Model
 		if(isset($bankrekeningen[$id]))
 			return $bankrekeningen[$id];
 
-		return false;
+		return NULL;
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

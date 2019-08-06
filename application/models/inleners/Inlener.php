@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Uitzenders;
+namespace models\Inleners;
 
 use models\Connector;
 use models\Forms\Validator;
@@ -11,18 +11,18 @@ if (!defined('BASEPATH'))
 
 
 /*
- * Uitzender class
+ * Inlener class
  *
  *
  *
  */
 
-class Uitzender extends Connector
+class Inlener extends Connector
 {
 
 	private $_status = NULL; // @var array
 
-	public $uitzender_id = NULL; // @var int
+	public $inlener_id = NULL; // @var int
 	public $bedrijfsnaam = NULL; // @var string
 
 	public $contacten = NULL; // @var string
@@ -47,13 +47,13 @@ class Uitzender extends Connector
 	/*
 	 * constructor
 	 */
-	public function __construct($uitzender_id)
+	public function __construct($inlener_id)
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
 
 		//set ID
-		$this->setID($uitzender_id);
+		$this->setID($inlener_id);
 
 		//get status
 		$this->getStatus();
@@ -65,9 +65,9 @@ class Uitzender extends Connector
 	/*
 	 * Set ID
 	 */
-	public function setID($uitzender_id)
+	public function setID($inlener_id)
 	{
-		$this->uitzender_id = intval($uitzender_id);
+		$this->inlener_id = intval($inlener_id);
 	}
 
 
@@ -91,9 +91,9 @@ class Uitzender extends Connector
 	public function getStatus()
 	{
 		//status opahlen en basis gegevens
-		$sql = "SELECT * FROM uitzenders_status
-				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_bedrijfsgegevens.uitzender_id = uitzenders_status.uitzender_id
-				WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_status.uitzender_id = $this->uitzender_id
+		$sql = "SELECT * FROM inleners_status
+				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.inlener_id = $this->inlener_id
 				LIMIT 1";
 
 		$query = $this->db_user->query($sql);
@@ -124,14 +124,14 @@ class Uitzender extends Connector
 		$this->bedrijfsnaam = $this->_status['bedrijfsnaam'];
 
 		//volgende vorige init
-		$this->next[$this->uitzender_id] = $this->bedrijfsnaam;    //default self
-		$this->prev[$this->uitzender_id] = $this->bedrijfsnaam;    //default self
+		$this->next[$this->inlener_id] = $this->bedrijfsnaam;    //default self
+		$this->prev[$this->inlener_id] = $this->bedrijfsnaam;    //default self
 
-		$sql = "SELECT uitzenders_status.uitzender_id, uitzenders_bedrijfsgegevens.bedrijfsnaam FROM uitzenders_status 
-				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_status.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
+		$sql = "SELECT inleners_status.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam FROM inleners_status 
+				LEFT JOIN inleners_bedrijfsgegevens ON inleners_status.inlener_id = inleners_bedrijfsgegevens.inlener_id
 				WHERE ( 
-						uitzenders_status.uitzender_id = IFNULL((SELECT min(uitzenders_status.uitzender_id) FROM uitzenders_status WHERE uitzenders_status.uitzender_id > $this->uitzender_id AND uitzenders_status.archief = 0 AND uitzenders_status.complete = 1),0) 
-						OR uitzenders_status.uitzender_id = IFNULL((SELECT max(uitzenders_status.uitzender_id) FROM uitzenders_status WHERE uitzenders_status.uitzender_id < $this->uitzender_id AND uitzenders_status.archief = 0 AND uitzenders_status.complete = 1),0)
+						inleners_status.inlener_id = IFNULL((SELECT min(inleners_status.inlener_id) FROM inleners_status WHERE inleners_status.inlener_id > $this->inlener_id AND inleners_status.archief = 0 AND inleners_status.complete = 1),0) 
+						OR inleners_status.inlener_id = IFNULL((SELECT max(inleners_status.inlener_id) FROM inleners_status WHERE inleners_status.inlener_id < $this->inlener_id AND inleners_status.archief = 0 AND inleners_status.complete = 1),0)
 					  )
 				";
 
@@ -140,14 +140,14 @@ class Uitzender extends Connector
 		{
 			foreach ($query->result_array() as $row)
 			{
-				if ($row['uitzender_id'] > $this->uitzender_id)
+				if ($row['inlener_id'] > $this->inlener_id)
 				{
-					$this->next['id'] = $row['uitzender_id'];
+					$this->next['id'] = $row['inlener_id'];
 					$this->next['bedrijfsnaam'] = $row['bedrijfsnaam'];
 				}
 				else
 				{
-					$this->prev['id'] = $row['uitzender_id'];
+					$this->prev['id'] = $row['inlener_id'];
 					$this->prev['bedrijfsnaam'] = $row['bedrijfsnaam'];
 				}
 			}
@@ -161,7 +161,7 @@ class Uitzender extends Connector
 	 */
 	public function factuurgegevens()
 	{
-		$sql = "SELECT * FROM uitzenders_factuurgegevens WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$sql = "SELECT * FROM inleners_factuurgegevens WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
 		if ($query->num_rows() == 0)
@@ -177,7 +177,7 @@ class Uitzender extends Connector
 	 */
 	public function bedrijfsgegevens()
 	{
-		$sql = "SELECT * FROM uitzenders_bedrijfsgegevens WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$sql = "SELECT * FROM inleners_bedrijfsgegevens WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
 		if ($query->num_rows() == 0)
@@ -193,7 +193,7 @@ class Uitzender extends Connector
 	 */
 	public function contactpersonen()
 	{
-		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id ORDER BY achternaam ASC, voorletters ASC";
+		$sql = "SELECT * FROM inleners_contactpersonen WHERE deleted = 0 AND inlener_id = $this->inlener_id ORDER BY achternaam ASC, voorletters ASC";
 		$query = $this->db_user->query($sql);
 
 		$data = Dbhelper::toArray( $query, 'contact_id', 'NULL' );
@@ -206,7 +206,7 @@ class Uitzender extends Connector
 	 */
 	public function emailadressen()
 	{
-		$sql = "SELECT * FROM uitzenders_emailadressen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$sql = "SELECT * FROM inleners_emailadressen WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
 		if ($query->num_rows() == 0)
@@ -222,7 +222,7 @@ class Uitzender extends Connector
 	 */
 	public function contactpersoon($contact_id)
 	{
-		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE contact_id = $contact_id AND deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$sql = "SELECT * FROM inleners_contactpersonen WHERE contact_id = $contact_id AND deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
 		if ($query->num_rows() == 0)
@@ -240,7 +240,7 @@ class Uitzender extends Connector
 	 */
 	public function factoren()
 	{
-		$sql = "SELECT factor_normaal, factor_overuren FROM uitzenders_factoren WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$sql = "SELECT factor_normaal, factor_overuren FROM inleners_factoren WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
 		if ($query->num_rows() == 0)
@@ -258,7 +258,7 @@ class Uitzender extends Connector
 	 */
 	public function logo( $method = 'path' )
 	{
-		$sql = "SELECT * FROM uitzenders_logo WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
+		$sql = "SELECT * FROM inleners_logo WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
 		if ($query->num_rows() == 0)
@@ -277,7 +277,7 @@ class Uitzender extends Connector
 			return $file_path;
 
 		if( $method == 'url' )
-			return 'image/logouitzender/' . $this->uitzender_id . '?' . $row['id'];
+			return 'image/logoinlener/' . $this->inlener_id . '?' . $row['id'];
 
 		return $row;
 	}
@@ -289,13 +289,13 @@ class Uitzender extends Connector
 	 */
 	public function handtekening( $method = 'path' )
 	{
-		$sql = "SELECT AES_DECRYPT( uitzenders_handtekening.file, UNHEX(SHA2('".UPLOAD_SECRET."' ,512)) ) AS file, uitzender_id
-				FROM uitzenders_handtekening 
-				WHERE uitzender_id = $this->uitzender_id AND deleted = 0 LIMIT 1";
+		$sql = "SELECT AES_DECRYPT( inleners_handtekening.file, UNHEX(SHA2('".UPLOAD_SECRET."' ,512)) ) AS file, inlener_id
+				FROM inleners_handtekening 
+				WHERE inlener_id = $this->inlener_id AND deleted = 0 LIMIT 1";
 
-		$sql = "SELECT AES_DECRYPT( uitzenders_handtekening.file, UNHEX(SHA2('".UPLOAD_SECRET."' ,512)) ) AS file, id 
-				FROM uitzenders_handtekening 
-				WHERE uitzender_id = $this->uitzender_id AND deleted = 0
+		$sql = "SELECT AES_DECRYPT( inleners_handtekening.file, UNHEX(SHA2('".UPLOAD_SECRET."' ,512)) ) AS file, id 
+				FROM inleners_handtekening 
+				WHERE inlener_id = $this->inlener_id AND deleted = 0
 				LIMIT 1";
 
 		$query = $this->db_user->query($sql);
@@ -306,7 +306,7 @@ class Uitzender extends Connector
 		$data = $query->row_array();
 
 		if( $method == 'url' )
-			return 'image/handtekeninguitzender/' . $this->uitzender_id . '?' . $data['id'];
+			return 'image/handtekeninginlener/' . $this->inlener_id . '?' . $data['id'];
 
 
 		if( $method == 'path' )
@@ -325,9 +325,9 @@ class Uitzender extends Connector
 	 */
 	public function delLogo()
 	{
-		$sql = "UPDATE uitzenders_logo
+		$sql = "UPDATE inleners_logo
 					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-					WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
+					WHERE deleted = 0 AND inlener_id = $this->inlener_id";
 
 		$this->db_user->query($sql);
 	}
@@ -338,9 +338,9 @@ class Uitzender extends Connector
 	 */
 	public function delHandtekening()
 	{
-		$sql = "UPDATE uitzenders_handtekening
+		$sql = "UPDATE inleners_handtekening
 					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-					WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
+					WHERE deleted = 0 AND inlener_id = $this->inlener_id";
 
 		$this->db_user->query($sql);
 	}
@@ -349,19 +349,19 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Nieuwe uitzender aanmaken
+	 * Nieuwe inlener aanmaken
 	 * Kan alleen als basis bedrijfsgegevens ingevuld zijn
-	 * Entry in status tabel maken, dit levert uitzender_id op
+	 * Entry in status tabel maken, dit levert inlener_id op
 	 * @return boolean
 	 */
 	public function _new()
 	{
 		$insert['complete'] = 0;
-		$this->db_user->insert('uitzenders_status', $insert);
+		$this->db_user->insert('inleners_status', $insert);
 
 		if ($this->db_user->insert_id() > 0)
 		{
-			$this->uitzender_id = $this->db_user->insert_id();
+			$this->inlener_id = $this->db_user->insert_id();
 			return true;
 		}
 
@@ -391,12 +391,12 @@ class Uitzender extends Connector
 		//geen fouten, nieuwe insert doen wanneer er wijzigingen zijn
 		if ($validator->success())
 		{
-			//nieuwe uitzender aanmaken? Alleen mogelijk vanaf method Bedrijfsgegevens
-			if ($this->uitzender_id == 0 && $method == 'bedrijfsgegevens')
+			//nieuwe inlener aanmaken? Alleen mogelijk vanaf method Bedrijfsgegevens
+			if ($this->inlener_id == 0 && $method == 'bedrijfsgegevens')
 			{
 				if (!$this->_new())
 				{
-					$this->_error[] = 'Uitzender kan niet worden aangemaakt';
+					$this->_error[] = 'Inlener kan niet worden aangemaakt';
 					return false;
 				}
 			}
@@ -407,7 +407,7 @@ class Uitzender extends Connector
 				//alle vorige entries als deleted
 				$sql = "UPDATE $table 
 						SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-						WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
+						WHERE deleted = 0 AND inlener_id = $this->inlener_id";
 				//extra WHERE clause
 				if (is_array($where))
 					$sql .= " AND " . key($where) . " = " . current($where) . " ";
@@ -421,7 +421,7 @@ class Uitzender extends Connector
 					if ($where !== NULL)
 						$input[key($where)] = current($where);
 
-					$input['uitzender_id'] = $this->uitzender_id;
+					$input['inlener_id'] = $this->inlener_id;
 					$input['user_id'] = $this->user->user_id;
 					$this->db_user->insert($table, $input);
 
@@ -481,8 +481,8 @@ class Uitzender extends Connector
 				$update_status['complete'] = 1;
 
 			//update
-			$this->db_user->where('uitzender_id', $this->uitzender_id);
-			$this->db_user->update('uitzenders_status', $update_status);
+			$this->db_user->where('inlener_id', $this->inlener_id);
+			$this->db_user->update('inleners_status', $update_status);
 		}
 	}
 
@@ -495,7 +495,7 @@ class Uitzender extends Connector
 	 */
 	public function setFactoren()
 	{
-		$input = $this->_set('uitzenders_factoren', 'factoren');
+		$input = $this->_set('inleners_factoren', 'factoren');
 		return $input;
 	}
 
@@ -506,7 +506,7 @@ class Uitzender extends Connector
 	 */
 	public function setBedrijfsgegevens()
 	{
-		$input = $this->_set('uitzenders_bedrijfsgegevens', 'bedrijfsgegevens');
+		$input = $this->_set('inleners_bedrijfsgegevens', 'bedrijfsgegevens');
 		return $input;
 	}
 
@@ -517,7 +517,7 @@ class Uitzender extends Connector
 	 */
 	public function setEmailadressen()
 	{
-		$input = $this->_set('uitzenders_emailadressen', 'emailadressen');
+		$input = $this->_set('inleners_emailadressen', 'emailadressen');
 		return $input;
 	}
 
@@ -529,7 +529,7 @@ class Uitzender extends Connector
 	 */
 	public function setFactuurgegevens()
 	{
-		$input = $this->_set('uitzenders_factuurgegevens', 'factuurgegevens');
+		$input = $this->_set('inleners_factuurgegevens', 'factuurgegevens');
 		return $input;
 
 	}
@@ -548,14 +548,14 @@ class Uitzender extends Connector
 		if ($contact_id == 0)
 		{
 			//hoogste contact id ophalen, autoincrement is niet van toepassing (zit op andere kolom)
-			$sql = "SELECT MAX(contact_id) AS contact_id FROM uitzenders_contactpersonen";
+			$sql = "SELECT MAX(contact_id) AS contact_id FROM inleners_contactpersonen";
 			$query = $this->db_user->query($sql);
 
 			$data = $query->row_array();
 
 			$insert['contact_id'] = $data['contact_id'] + 1;
-			$insert['uitzender_id'] = $this->uitzender_id;
-			$this->db_user->insert('uitzenders_contactpersonen', $insert);
+			$insert['inlener_id'] = $this->inlener_id;
+			$this->db_user->insert('inleners_contactpersonen', $insert);
 
 			if ($this->db_user->insert_id() > 0)
 			{
@@ -565,12 +565,12 @@ class Uitzender extends Connector
 
 		}
 
-		$input = $this->_set('uitzenders_contactpersonen', 'contactpersoon', array('contact_id' => $contact_id));
+		$input = $this->_set('inleners_contactpersonen', 'contactpersoon', array('contact_id' => $contact_id));
 
 		//zijn er erros, dan weer uit de database
 		if ($new == true && $this->errors() !== false)
 		{
-			$sql = "DELETE FROM uitzenders_contactpersonen WHERE contact_id = $contact_id LIMIT 1";
+			$sql = "DELETE FROM inleners_contactpersonen WHERE contact_id = $contact_id LIMIT 1";
 			$this->db_user->query($sql);
 		}
 

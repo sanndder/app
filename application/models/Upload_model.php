@@ -41,6 +41,32 @@ class Upload_model extends MY_Model
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * Locatie van bestand teruggeven
+	 *
+	 * @return void
+	 */
+	public function getFilePath()
+	{
+		return $this->_file_path;
+	}
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Array met info terug
+	 *
+	 * @return void
+	 */
+	public function getFileArray()
+	{
+		$array['file_name'] = $this->_file_name;
+		$array['file_dir'] = $this->_dir;
+
+		return $array;
+	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * Tabel waar de data moet worden opgeslagen
 	 *
 	 * @return void
@@ -211,15 +237,14 @@ class Upload_model extends MY_Model
 
 		}
 
-		//zonder encrypt opslaan
-
-		$query = $this->db_user->query($sql);
-
-		//show($_FILES);
-
 		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES ('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."')";
-		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES (AES_ENCRYPT('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."', UNHEX(SHA2('".UPLOAD_SECRET."',512))))";
-
+		$sql = "INSERT INTO uitzenders_handtekening (file, ".$this->_field.",user_id) 
+				VALUES (AES_ENCRYPT('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."', UNHEX(SHA2('".UPLOAD_SECRET."',512))),
+				".$this->_id.",
+				".$this->user->user_id."				
+				)";
+		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES ('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."')";
+		$this->db_user->query($sql);
 
 		//$ciphertext = sodium_crypto_secretbox(, $nonce, UPLOAD_SECRET));
 
