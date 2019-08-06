@@ -24,13 +24,13 @@ class Ajax extends MY_Controller
 	//--------------------------------------------------------------------------
 	// get contactpersoon JSON
 	//--------------------------------------------------------------------------
-	public function getcontactpersoon( $uitzender_id = NULL, $contact_id = 0 )
+	public function getcontactpersoon( $inlener_id = NULL, $contact_id = 0 )
 	{
-		//init uitzender object
-		$uitzender = new \models\Uitzenders\Inlener( $uitzender_id );
+		//init inlener object
+		$inlener = new \models\Inleners\Inlener( $inlener_id );
 
 		//allemaal ophalen
-		$contactpersoon = $uitzender->contactpersoon($contact_id);
+		$contactpersoon = $inlener->contactpersoon($contact_id);
 
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
@@ -38,14 +38,14 @@ class Ajax extends MY_Controller
 		//contactpersoon is bekend
 		if(isset($contactpersoon))
 		{
-			$formdata = $formbuidler->table( 'uitzenders_contactpersonen' )->data( $contactpersoon )->build();
+			$formdata = $formbuidler->table( 'inleners_contactpersonen' )->data( $contactpersoon )->build();
 			echo json_encode($formdata);
 		}
 
 		//nieuwe toevoegen
 		if( $contact_id == 0 )
 		{
-			$formdata = $formbuidler->table( 'uitzenders_contactpersonen' )->build();
+			$formdata = $formbuidler->table( 'inleners_contactpersonen' )->build();
 			echo json_encode($formdata);
 		}
 	}
@@ -54,16 +54,16 @@ class Ajax extends MY_Controller
 	//--------------------------------------------------------------------------
 	// set contactpersoon
 	//--------------------------------------------------------------------------
-	public function setcontactpersoon( $uitzender_id = NULL, $contact_id = 0 )
+	public function setcontactpersoon( $inlener_id = NULL, $contact_id = 0 )
 	{
-		//init uitzender object
-		$uitzender = new \models\Uitzenders\Inlener( $uitzender_id );
+		//init inlener object
+		$inlener = new \models\Inleners\Inlener( $inlener_id );
 
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
 
-		$contactpersoon = $uitzender->setContactpersoon( $contact_id );
-		$errors = $uitzender->errors();
+		$contactpersoon = $inlener->setContactpersoon( $contact_id );
+		$errors = $inlener->errors();
 
 		//init response
 		$response = array( 'status' => 'error' );

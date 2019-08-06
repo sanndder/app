@@ -1,0 +1,45 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "inlerner_id",
+    "contact_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "standaard": {
+      "label": "Standaard emailadres",
+      "rules": {
+        "required": true,
+        "minlength": 6,
+        "maxlength": 50,
+        "removespaces": true,
+        "type": "email"
+      }
+    },
+    "facturatie": {
+      "label": "Emailadres facturatie",
+      "rules": {
+        "required": false,
+        "minlength": 6,
+        "maxlength": 50,
+        "removespaces": true,
+        "type": "email"
+      }
+    },
+    "administratie": {
+      "label": "Emailadres administratie",
+      "rules": {
+        "required": false,
+        "minlength": 6,
+        "maxlength": 50,
+        "removespaces": true,
+        "type": "email"
+      }
+    }
+  }
+}

@@ -33,12 +33,12 @@ class Uitzender extends Connector
 	 */
 	private $_error = NULL;
 
-	public $complete;
-	public $archief;
-	public $emailadressen_complete;
-	public $contactpersoon_complete;
-	public $factuurgegevens_complete;
-	public $bedrijfsgegevens_complete;
+	public $complete = NULL;
+	public $archief = NULL;
+	public $emailadressen_complete = NULL;
+	public $contactpersoon_complete = NULL;
+	public $factuurgegevens_complete = NULL;
+	public $bedrijfsgegevens_complete = NULL;
 
 	public $next = array();
 	public $prev = array();
@@ -100,16 +100,7 @@ class Uitzender extends Connector
 
 		//bij leeg alles wel aanmaken
 		if ($query->num_rows() == 0)
-		{
-			$this->complete = NULL;
-			$this->archief = NULL;
-			$this->bedrijfsgegevens_complete = NULL;
-			$this->factuurgegevens_complete = NULL;
-			$this->contactpersoon_complete = NULL;
-			$this->emailadressen_complete = NULL;
-
 			return false;
-		}
 
 		$this->_status = $query->row_array();
 
@@ -124,8 +115,10 @@ class Uitzender extends Connector
 		$this->bedrijfsnaam = $this->_status['bedrijfsnaam'];
 
 		//volgende vorige init
-		$this->next[$this->uitzender_id] = $this->bedrijfsnaam;    //default self
-		$this->prev[$this->uitzender_id] = $this->bedrijfsnaam;    //default self
+		$this->next['id'] 			= $this->uitzender_id;    //default self
+		$this->next['bedrijfsnaam'] = $this->bedrijfsnaam;  //default self
+		$this->prev['id'] 			= $this->uitzender_id;    //default self
+		$this->prev['bedrijfsnaam'] = $this->bedrijfsnaam;  //default self
 
 		$sql = "SELECT uitzenders_status.uitzender_id, uitzenders_bedrijfsgegevens.bedrijfsnaam FROM uitzenders_status 
 				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_status.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
@@ -157,7 +150,7 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get bedrijsfgegevens
+	 * get factuurgegevens
 	 */
 	public function factuurgegevens()
 	{
@@ -202,7 +195,7 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get contactpersonen
+	 * get emailadressen
 	 */
 	public function emailadressen()
 	{
@@ -236,7 +229,7 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get contactpersonen
+	 * get factoren
 	 */
 	public function factoren()
 	{
@@ -254,7 +247,7 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 *  get contactpersonen
+	 *  get logo
 	 */
 	public function logo( $method = 'path' )
 	{
@@ -285,14 +278,10 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 *  get contactpersonen
+	 *  get handtekeneing
 	 */
 	public function handtekening( $method = 'path' )
 	{
-		$sql = "SELECT AES_DECRYPT( uitzenders_handtekening.file, UNHEX(SHA2('".UPLOAD_SECRET."' ,512)) ) AS file, uitzender_id
-				FROM uitzenders_handtekening 
-				WHERE uitzender_id = $this->uitzender_id AND deleted = 0 LIMIT 1";
-
 		$sql = "SELECT AES_DECRYPT( uitzenders_handtekening.file, UNHEX(SHA2('".UPLOAD_SECRET."' ,512)) ) AS file, id 
 				FROM uitzenders_handtekening 
 				WHERE uitzender_id = $this->uitzender_id AND deleted = 0
@@ -334,7 +323,7 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 *  del logo
+	 *  del handtekening
 	 */
 	public function delHandtekening()
 	{
@@ -490,7 +479,7 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Sla bedrijfsgegevens op na controle
+	 * Sla factoren op na controle
 	 *
 	 */
 	public function setFactoren()
@@ -512,7 +501,7 @@ class Uitzender extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Sla emailadresseb op na controle
+	 * Sla emailadressen op na controle
 	 *
 	 */
 	public function setEmailadressen()

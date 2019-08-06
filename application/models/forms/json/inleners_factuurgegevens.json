@@ -1,0 +1,125 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "inlerner_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "iban": {
+      "label": "IBAN",
+      "rules": {
+        "required": true,
+        "minlength": 10,
+        "maxlength": 100,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "toupper" :true,
+        "type": "iban"
+      }
+    },
+    "tav": {
+      "label": "Ter attentie van",
+      "rules": {
+        "required": false,
+        "minlength": 3,
+        "maxlength": 50
+      }
+    },
+    "factuur_emailen": {
+      "label": "Factuur emailen",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "termijn": {
+      "label": "Betalingstermijn",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "g_rekening": {
+      "label": "G-rekening gebruiken",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "g_rekening_percentage": {
+      "label": "Percentage G-rekening",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "factuur_per_medewerker": {
+      "label": "Factuur per medewerker splitsen",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "afgesproken_werk": {
+      "label": "Afgesprokenwerkfactuur gebruiken",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "bijlages_invoegen": {
+      "label": "Bijlages automatisch invoegen",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    }
+  }
+}

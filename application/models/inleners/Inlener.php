@@ -33,12 +33,12 @@ class Inlener extends Connector
 	 */
 	private $_error = NULL;
 
-	public $complete;
-	public $archief;
-	public $emailadressen_complete;
-	public $contactpersoon_complete;
-	public $factuurgegevens_complete;
-	public $bedrijfsgegevens_complete;
+	public $complete = NULL;
+	public $archief = NULL;
+	public $emailadressen_complete = NULL;
+	public $contactpersoon_complete = NULL;
+	public $factuurgegevens_complete = NULL;
+	public $bedrijfsgegevens_complete = NULL;
 
 	public $next = array();
 	public $prev = array();
@@ -98,18 +98,9 @@ class Inlener extends Connector
 
 		$query = $this->db_user->query($sql);
 
-		//bij leeg alles wel aanmaken
+		//bij nu afbreken
 		if ($query->num_rows() == 0)
-		{
-			$this->complete = NULL;
-			$this->archief = NULL;
-			$this->bedrijfsgegevens_complete = NULL;
-			$this->factuurgegevens_complete = NULL;
-			$this->contactpersoon_complete = NULL;
-			$this->emailadressen_complete = NULL;
-
 			return false;
-		}
 
 		$this->_status = $query->row_array();
 
@@ -124,8 +115,10 @@ class Inlener extends Connector
 		$this->bedrijfsnaam = $this->_status['bedrijfsnaam'];
 
 		//volgende vorige init
-		$this->next[$this->inlener_id] = $this->bedrijfsnaam;    //default self
-		$this->prev[$this->inlener_id] = $this->bedrijfsnaam;    //default self
+		$this->next['id'] 			= $this->inlener_id;    //default self
+		$this->next['bedrijfsnaam'] = $this->bedrijfsnaam;  //default self
+		$this->prev['id'] 			= $this->inlener_id;    //default self
+		$this->prev['bedrijfsnaam'] = $this->bedrijfsnaam;  //default self
 
 		$sql = "SELECT inleners_status.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam FROM inleners_status 
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_status.inlener_id = inleners_bedrijfsgegevens.inlener_id
@@ -157,7 +150,7 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get bedrijsfgegevens
+	 * get factuurgegevens
 	 */
 	public function factuurgegevens()
 	{
@@ -202,7 +195,7 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get contactpersonen
+	 * get emailadressen
 	 */
 	public function emailadressen()
 	{
@@ -218,7 +211,7 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get contactpersonen
+	 * get contactpersoon
 	 */
 	public function contactpersoon($contact_id)
 	{
@@ -236,7 +229,7 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get contactpersonen
+	 * get factoren
 	 */
 	public function factoren()
 	{
@@ -254,7 +247,7 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 *  get contactpersonen
+	 *  get logo
 	 */
 	public function logo( $method = 'path' )
 	{
@@ -285,7 +278,7 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 *  get contactpersonen
+	 *  get handtekening
 	 */
 	public function handtekening( $method = 'path' )
 	{
@@ -334,7 +327,7 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 *  del logo
+	 *  del handtekening
 	 */
 	public function delHandtekening()
 	{
@@ -490,7 +483,7 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Sla bedrijfsgegevens op na controle
+	 * Sla factoren op na controle
 	 *
 	 */
 	public function setFactoren()
@@ -512,8 +505,8 @@ class Inlener extends Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Sla emailadresseb op na controle
-	 *
+	 * Sla emailadressen op na controle
+	 * @return array
 	 */
 	public function setEmailadressen()
 	{

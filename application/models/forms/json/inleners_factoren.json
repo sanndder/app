@@ -1,0 +1,35 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "inlerner_id",
+    "contact_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "factor_normaal": {
+      "label": "Factor normale uren",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 5,
+        "removespaces": true,
+        "type": "factor"
+      }
+    },
+    "factor_overuren": {
+      "label": "Factor overuren",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 5,
+        "removespaces": true,
+        "type": "factor"
+      }
+    }
+  }
+}

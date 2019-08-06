@@ -1,0 +1,112 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "inlerner_id",
+    "contact_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "aanhef": {
+      "label": "Aanhef",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": false,
+        "options": {
+          "dhr": "De heer",
+          "mevr": "Mevrouw"
+        }
+      }
+    },
+    "voorletters": {
+      "label": "Voorletters",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 10,
+        "removespaces": true,
+        "removechars": ".,_"
+      }
+    },
+    "voornaam": {
+      "label": "Voornaam",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 30,
+        "removespaces": false,
+        "removechars": "_"
+      }
+    },
+    "tussenvoegsel": {
+      "label": "Tussenvoegsel",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 10,
+        "removespaces": false,
+        "removechars": "_"
+      }
+    },
+    "achternaam": {
+      "label": "Achternaam",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 30,
+        "removespaces": false,
+        "removechars": "_"
+      }
+    },
+    "functie": {
+      "label": "Functie",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 50
+      }
+    },
+    "afdeling": {
+      "label": "Afdeling",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 100
+      }
+    },
+    "telefoon": {
+      "label": "Telefoonnummer",
+      "rules": {
+        "required": true,
+        "minlength": 10,
+        "maxlength": 20,
+        "removespaces": false,
+        "removechars": ".,_"
+      }
+    },
+    "email": {
+      "label": "Email",
+      "rules": {
+        "required": true,
+        "minlength": 6,
+        "maxlength": 50,
+        "removespaces": true,
+        "type": "email"
+      }
+    },
+    "opmerking": {
+      "label": "Opmerking",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 512
+      }
+    }
+  }
+}

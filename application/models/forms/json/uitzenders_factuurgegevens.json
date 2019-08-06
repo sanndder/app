@@ -18,6 +18,7 @@
         "maxlength": 100,
         "removespaces": true,
         "removechars": "-,.,_",
+        "toupper" :true,
         "type": "iban"
       }
     },

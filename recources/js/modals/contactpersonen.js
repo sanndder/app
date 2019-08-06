@@ -89,6 +89,8 @@ function setContact( obj, entityType, entityId )
     //juiste call
     if( entityType === 'uitzender' )
         url = 'crm/uitzenders/ajax/setcontactpersoon/' + entityId + '/' + $modal.find('[name=contact_id]').val();
+    if( entityType === 'inlener' )
+        url = 'crm/inleners/ajax/setcontactpersoon/' + entityId + '/' + $modal.find('[name=contact_id]').val();
 
     //spinner
     $btn.find('.icon-checkmark2').removeClass('icon-checkmark2').addClass('icon-spinner2').addClass('spinner');
@@ -141,6 +143,8 @@ function getContact($modal, contactId, entityType, entityId)
     //juiste call
     if( entityType === 'uitzender' )
         url = 'crm/uitzenders/ajax/getcontactpersoon/' + entityId + '/' + contactId;
+    if( entityType === 'inlener' )
+        url = 'crm/inleners/ajax/getcontactpersoon/' + entityId + '/' + contactId;
 
     $.getJSON(url, function ( json )
     {
