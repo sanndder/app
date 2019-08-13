@@ -2,14 +2,8 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/claviska/simpleimage" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/composer" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/league/color-extractor" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/mpdf/mpdf" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/myclabs/deep-copy" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/paragonie/random_compat" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/psr/log" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdi" />
+      <excludeFolder url="file://$MODULE_DIR$/application/views/_compile" />
+      <excludeFolder url="file://$MODULE_DIR$/userf1les_o7dm6" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
