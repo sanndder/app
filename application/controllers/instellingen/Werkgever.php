@@ -29,6 +29,49 @@ class Werkgever extends MY_Controller
 	//--------------------------------------------------------------------------
 	// aanpassen bedrijfsgegevens
 	//--------------------------------------------------------------------------
+	public function minimumloon()
+	{
+		//$werkgever = new models\Werkgever();
+		$formbuidler = new models\forms\Formbuilder();
+
+		$minimumloon = new \models\Instellingen\Minimumloon();
+
+		//set bedrijfsgegevens
+		if( isset($_POST['set'] ))
+		{
+			$bedrijfsgevens = $this->werkgever->setBedrijfsgegevens();
+			$errors = $this->werkgever->errors();
+
+			//msg
+			if( $errors === false )
+				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			else
+				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
+		}
+		else
+		{
+			$bedrijfsgevens = $this->werkgever->bedrijfsgegevens();
+			$errors = false; //no errors
+		}
+
+		//TEMP
+		if(isset($_GET['img']))
+		{
+			$this->werkgever->handtekening();
+		}
+
+
+		$formdata = $formbuidler->table( 'werkgever_bedrijfsgegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
+		//show($formdata);
+		$this->smarty->assign('formdata', $formdata);
+
+		$this->smarty->display('instellingen/werkgever/minimumloon.tpl');
+	}
+
+
+	//--------------------------------------------------------------------------
+	// aanpassen bedrijfsgegevens
+	//--------------------------------------------------------------------------
 	public function bedrijfsgegevens()
 	{
 		//$werkgever = new models\Werkgever();

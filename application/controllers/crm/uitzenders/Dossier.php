@@ -40,6 +40,9 @@ class Dossier extends MY_Controller
 
 		//show($uitzenders);
 
+		$this->smarty->assign('bedrijfsgegevens', $uitzender->bedrijfsgegevens());
+		$this->smarty->assign('emailadressen', $uitzender->emailadressen());
+
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/overzicht.tpl');
 	}
@@ -156,7 +159,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Factuurgegevens
 	//--------------------------------------------------------------------------
-	public function Factuurgegevens( $uitzender_id = NULL )
+	public function factuurgegevens( $uitzender_id = NULL )
 	{
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
@@ -205,7 +208,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Factuurgegevens
 	//--------------------------------------------------------------------------
-	public function Emailadressen( $uitzender_id = NULL )
+	public function emailadressen( $uitzender_id = NULL )
 	{
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
@@ -309,13 +312,13 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Uitzenders pagina
 	//--------------------------------------------------------------------------
-	public function Uitzenders( $uitzender_id = NULL )
+	public function inleners( $uitzender_id = NULL )
 	{
 		//init uitzender object
 		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
 
 		$this->smarty->assign('uitzender', $uitzender);
-		$this->smarty->display('crm/uitzenders/dossier/Uitzenders.tpl');
+		$this->smarty->display('crm/uitzenders/dossier/inleners.tpl');
 	}
 
 

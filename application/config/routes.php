@@ -59,6 +59,9 @@ $route['crm/uitzenders'] 						= 'crm/uitzenders/overzicht';
 $route['crm/inleners(:any)'] 					= 'crm/inleners/overzicht/$1';
 $route['crm/inleners'] 							= 'crm/inleners/overzicht';
 
+$route['crm/werknemers(:any)'] 					= 'crm/werknemers/overzicht/$1';
+$route['crm/werknemers'] 						= 'crm/werknemers/overzicht';
+
 $route['ureninvoer'] 							= 'ureninvoer/ureninvoer/index';
 
 

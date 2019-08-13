@@ -127,14 +127,14 @@
 								<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}" class="nav-link {if $active == 'algemeneinstellingen'}active{/if}">
 									{* standaard icon *}
 									<i class="icon-cog mr-2"></i>
-									Algemene instellingen
+									Algemeen
 								</a>
 							</li>
 						{/if}
 
 
 						<!-- li Bedrijfsgegevens, andere volgorde wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $inlener->complete != 1}order-1{/if}">
+						<li class="nav-item {if $inlener->complete != 1}order-2{/if}">
 							<a href="crm/inleners/dossier/bedrijfsgegevens/{$inlener->inlener_id}" class="nav-link {if $active == 'bedrijfsgegevens'}active{/if}">
 								{* afwijkende icons voor nieuwe aanmelding *}
 								{if $inlener->bedrijfsgegevens_complete == NULL}
@@ -153,7 +153,7 @@
 						</li>
 
 						<!-- li Emailinstellingen, andere volgorde wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $inlener->complete != 1}order-2{/if}">
+						<li class="nav-item {if $inlener->complete != 1}order-3{/if}">
 							<a {if $inlener->bedrijfsgegevens_complete != NULL}href="crm/inleners/dossier/emailadressen/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->bedrijfsgegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'emailadressen'}active{/if}">
 								{* afwijkende icons voor nieuwe aanmelding *}
 								{if $inlener->emailadressen_complete == NULL}
@@ -167,12 +167,12 @@
 										<i class="icon-cog mr-2"></i>
 									{/if}
 								{/if}
-								Emailinstellingen
+								Emailadressen
 							</a>
 						</li>
 
 						<!-- li Factuurgegevens, andere volgorde wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $inlener->complete != 1}order-3{/if}">
+						<li class="nav-item {if $inlener->complete != 1}order-4{/if}">
 							<a {if $inlener->emailadressen_complete != NULL}href="crm/inleners/dossier/factuurgegevens/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->emailadressen_complete == NULL}nav-link-disabled{/if} {if $active == 'factuurgegevens'}active{/if}">
 								{* afwijkende icons voor nieuwe aanmelding *}
 								{if $inlener->factuurgegevens_complete == NULL}
@@ -187,6 +187,15 @@
 									{/if}
 								{/if}
 								Factuurgegevens
+							</a>
+						</li>
+
+						<!-- li Verloningsgegevens, andere volgorde wanneer nieuwe aanmelding -->
+						<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
+							<a href="crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}" class="nav-link {if $active == 'verloninginstellingen'}active{/if}">
+								{* standaard icon *}
+								<i class="icon-cog mr-2"></i>
+								Verloning
 							</a>
 						</li>
 

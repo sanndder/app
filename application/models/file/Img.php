@@ -79,7 +79,6 @@ class Img extends File{
 		parent::__construct( $input );
 
 		//laod image lib
-		require_once('application/third_party/vendor/autoload.php');
 		$this->_simpleimage = new SimpleImage();
 		$this->_simpleimage->fromFile( $this->_file_path );
 
@@ -108,8 +107,7 @@ class Img extends File{
 	/*
 	 * Set max width and height for resize
 	 *
-	 * @return object
-	 */
+	 * @return object */
 	public function setMaxWidthHeight( int $w, int $h )
 	{
 		$this->_max_width = $w;

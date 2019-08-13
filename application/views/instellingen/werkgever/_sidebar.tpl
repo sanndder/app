@@ -38,6 +38,11 @@
 							</a>
 						</li>
 						<li class="nav-item">
+							<a href="instellingen/werkgever/minimumloon" class="nav-link {if $active == 'minimumloon'}active{/if}">
+								<span>Minimumloon</span>
+							</a>
+						</li>
+						<li class="nav-item">
 							<a href="instellingen/werkgever/av" class="nav-link {if $active == 'av'}active{/if}">
 								<span>Algemene voorwaarden</span>
 							</a>

@@ -16,15 +16,24 @@ class Test extends MY_Controller {
 		parent::__construct();
 
 		//$this->load->model('test2_model', 'test2');
-		$this->load->model('emailcentrum_model', 'emailcentrum');
+		//$this->load->model('emailcentrum_model', 'emailcentrum');
 
 		//show( $this->user->user_type );
 
 
 	}
 
-
 	//--------------------------------------------------------------------------
+	// test method
+	//--------------------------------------------------------------------------
+	public function vue()
+	{
+		$this->smarty->assign('t', time());
+		$this->smarty->display('test/vue.tpl');
+	}
+
+
+		//--------------------------------------------------------------------------
 	// Run a series of validation tests
 	//--------------------------------------------------------------------------
 	public function validation()
@@ -42,9 +51,7 @@ class Test extends MY_Controller {
 	//--------------------------------------------------------------------------
 	public function index()
 	{
-
 		$pdf = new models\pdf\PdfFactuur();
-
 		$pdf->setHeader()->setFooter()->view();
 
 		/*

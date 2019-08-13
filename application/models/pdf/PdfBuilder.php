@@ -39,9 +39,6 @@ class PdfBuilder{
 	 */
 	public function __construct( $config = NULL )
 	{
-		//load lib
-		require_once('application/third_party/vendor/autoload.php');
-
 		//Landscape or portrait
 		if( isset($config['format']) && $config['format'] == 'L' )
 			$config['format'] = 'A4-L';

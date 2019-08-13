@@ -156,7 +156,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Factuurgegevens
 	//--------------------------------------------------------------------------
-	public function Factuurgegevens( $inlener_id = NULL )
+	public function factuurgegevens( $inlener_id = NULL )
 	{
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
@@ -205,7 +205,7 @@ class Dossier extends MY_Controller
 	//--------------------------------------------------------------------------
 	// Factuurgegevens
 	//--------------------------------------------------------------------------
-	public function Emailadressen( $inlener_id = NULL )
+	public function emailadressen( $inlener_id = NULL )
 	{
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();
@@ -248,6 +248,63 @@ class Dossier extends MY_Controller
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/emailadressen.tpl');
+	}
+
+	//--------------------------------------------------------------------------
+	// Verloning instellingen
+	//--------------------------------------------------------------------------
+	public function verloninginstellingen( $inlener_id = NULL )
+	{
+		//load the formbuilder
+		$formbuidler = new models\forms\Formbuilder();
+
+		//init inlener object
+		$inlener = new \models\Inleners\Inlener( $inlener_id );
+
+		//del logo
+		if( isset($_GET['dellogo']) )
+		{
+			$inlener->delLogo();
+			redirect($this->config->item('base_url') . '/crm/inleners/dossier/algemeneinstellingen/' . $inlener_id ,'location');
+		}
+
+		//del handtekening
+		if( isset($_GET['delhandtekening']) )
+		{
+			$inlener->delHandtekening();
+			redirect($this->config->item('base_url') . '/crm/inleners/dossier/algemeneinstellingen/' . $inlener_id ,'location');
+		}
+
+		//set bedrijfsgegevens
+		if( isset($_POST['set']) )
+		{
+			//sitch
+			switch ($_POST['set']) {
+				case 'inleners_factoren':
+					$factoren = $inlener->setFactoren();
+					break;
+			}
+
+			$errors = $inlener->errors();
+
+			//msg
+			if( $errors === false )
+				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			else
+				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
+		}
+		else
+		{
+			$factoren =  $inlener->factoren();
+			$errors = false; //no errors
+		}
+
+		//form maken
+		$formdata = $formbuidler->table( 'inleners_factoren' )->data( $factoren )->errors( $errors )->build();
+		$this->smarty->assign('formdata', $formdata);
+
+		$this->smarty->assign('inlener', $inlener);
+		$this->smarty->display('crm/inleners/dossier/verloninginstellingen.tpl');
 	}
 
 

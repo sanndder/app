@@ -102,43 +102,12 @@
 					-------------------------------------------------------------------------------------------------------------------------------------------------->
 					<div class="card">
 						<div class="card-header header-elements-inline">
-							<h5 class="card-title">Handtekening</h5>
+							<h5 class="card-title"></h5>
 						</div>
 
 						<div class="card-body">
 
-							<div class="row">
-								<div class="col-xl-6 col-lg-12">
 
-									{* upload alleen wanneer er geen logo is *}
-									{if $inlener->handtekening() === NULL }
-										<script>
-											{literal}
-                                            $(document).ready(function ()
-                                            {
-                                                $('#fileupload2').fileinput('refresh', {uploadUrl: 'upload/uploadhantekeninginlener/{/literal}{$inlener->inlener_id}{literal}'});
-                                                $('#fileupload2').on('fileuploaded', function() {
-                                                    window.location.reload();
-                                                });
-
-                                            });
-											{/literal}
-										</script>
-
-										<form action="#">
-											<input name="file" type="file" id="fileupload2" class="file-input">
-										</form>
-									{else}
-
-										<img src="{$inlener->handtekening('url')}" />
-										<br />
-										<br />
-										<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}?delhandtekening" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Handtekening verwijderen</a>
-									{/if}
-
-								</div><!-- /col -->
-
-							</div><!-- /row -->
 
 						</div><!-- /card body -->
 					</div><!-- /basic card -->
@@ -149,43 +118,12 @@
 					-------------------------------------------------------------------------------------------------------------------------------------------------->
 					<div class="card">
 						<div class="card-header header-elements-inline">
-							<h5 class="card-title">Logo</h5>
+							<h5 class="card-title"></h5>
 						</div>
 
 						<div class="card-body">
 
-							<div class="row">
-								<div class="col-xl-6 col-lg-12">
 
-									{* upload alleen wanneer er geen logo is *}
-									{if $inlener->logo() === NULL }
-										<script>
-											{literal}
-											$(document).ready(function ()
-											{
-												$('#fileupload').fileinput('refresh', {uploadUrl: 'upload/uploadlogoinlener/{/literal}{$inlener->inlener_id}{literal}'});
-												$('#fileupload').on('fileuploaded', function() {
-													window.location.reload();
-												});
-
-											});
-											{/literal}
-										</script>
-
-										<form action="#">
-											<input name="file" type="file" id="fileupload" class="file-input">
-										</form>
-									{else}
-
-										<img src="{$inlener->logo('url')}" />
-										<br />
-										<br />
-										<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}?dellogo" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Logo verwijderen</a>
-									{/if}
-
-								</div><!-- /col -->
-
-							</div><!-- /row -->
 
 						</div><!-- /card body -->
 					</div><!-- /basic card -->

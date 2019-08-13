@@ -23,7 +23,7 @@ class Image extends MY_Controller {
 	public function logouitzender( $uitzender_id = '' )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Inlener( $uitzender_id );
+		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
 		$file = $uitzender->logo();
 
 		header('Content-type: image/jpeg');
@@ -41,7 +41,7 @@ class Image extends MY_Controller {
 		if( $this->user->user_type != 'werkgever' )forbidden();
 
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Inlener( $uitzender_id );
+		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
 		$file = $uitzender->handtekening();
 
 		header('Content-type: image/jpeg');
