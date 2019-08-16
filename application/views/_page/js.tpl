@@ -16,3 +16,7 @@
 <!-- Theme JS files -->
 <script src="recources/js/modules,js"></script>
 <!-- /theme JS files -->
+
+<!-- vue js -->
+<script src="recources/vue/src/vue.js"></script>
+<!-- /vue files -->

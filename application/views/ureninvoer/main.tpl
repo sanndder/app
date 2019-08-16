@@ -53,6 +53,7 @@
 								<li class="vi-list-item" data-id="1"><span>1001Tafelkleden.com</span></li>
 								<li class="vi-list-item" data-id="2"><span>4you Personeelsdiensten</span></li>
 								<li class="vi-list-item" data-id="3"><span>Aardappelgroothandel Jansen-Dongen B.V.</span></li>
+								<li class="vi-list-item" data-id="4"><span>Inhoudingen</span></li>
 							</ul>
 
 						</div><!-- /col -->

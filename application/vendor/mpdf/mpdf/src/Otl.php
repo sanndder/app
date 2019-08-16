@@ -401,9 +401,9 @@ class Otl
 				// 5(A). GSUB - Shaper - ARABIC
 				//==============================
 				if ($this->shaper == 'A') {
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// a. Apply initial GSUB Lookups (in order specified in lookup list but only selecting from certain tags)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$tags = 'locl ccmp';
 					$omittags = '';
 					$usetags = $tags;
@@ -412,9 +412,9 @@ class Otl
 					}
 					$this->_applyGSUBrules($usetags, $GSUBscriptTag, $GSUBlangsys);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// b. Apply context-specific forms GSUB Lookups (initial, isolated, medial, final)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// Arab and Syriac are the only scripts requiring the special joining - which takes the place of
 					// isol fina medi init rules in GSUB (+ fin2 fin3 med2 in Syriac syrc)
 					$tags = 'isol fina fin2 fin3 medi med2 init';
@@ -434,9 +434,9 @@ class Otl
 					$this->arabTransparentJoin = $this->arabTransparent + $gcm;
 					$this->arabic_shaper($usetags, $GSUBscriptTag);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// c. Set Kashida points (after joining occurred - medi, fina, init) but before other substitutions
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					//if ($scriptblock == Ucdn::SCRIPT_ARABIC ) {
 					for ($i = 0; $i < count($this->OTLdata); $i++) {
 						// Put the kashida marker on the character BEFORE which is inserted the kashida
@@ -511,9 +511,9 @@ class Otl
 						}
 					}
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// d. Apply Presentation Forms GSUB Lookups (+ any discretionary) - Apply one at a time in Feature order
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$tags = 'rlig calt liga clig mset';
 
 					$omittags = 'locl ccmp nukt akhn rphf rkrf pref blwf abvf half pstf cfar vatu cjct init medi fina isol med2 fin2 fin3 ljmo vjmo tjmo';
@@ -526,10 +526,10 @@ class Otl
 					foreach ($ts as $ut) { //  - Apply one at a time in Feature order
 						$this->_applyGSUBrules($ut, $GSUBscriptTag, $GSUBlangsys);
 					}
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// e. NOT IN SPEC
 					// If space precedes a mark -> substitute a &nbsp; before the Mark, to prevent line breaking Test:
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					for ($ptr = 1; $ptr < count($this->OTLdata); $ptr++) {
 						if ($this->OTLdata[$ptr]['general_category'] == Ucdn::UNICODE_GENERAL_CATEGORY_NON_SPACING_MARK && $this->OTLdata[$ptr - 1]['uni'] == 32) {
 							$this->OTLdata[$ptr - 1]['uni'] = 0xa0;
@@ -540,10 +540,10 @@ class Otl
 				//===================================
 				elseif ($this->shaper == 'I' || $this->shaper == 'K' || $this->shaper == 'S') {
 					$this->restrictToSyllable = true;
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// a. First decompose/compose split mattras
 					// (normalize) ??????? Nukta/Halant order etc ??????????????????????????????????????????????????????????????????????????
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					for ($ptr = 0; $ptr < count($this->OTLdata); $ptr++) {
 						$char = $this->OTLdata[$ptr]['uni'];
 						$sub = Indic::decompose_indic($char);
@@ -582,9 +582,9 @@ class Otl
 							}
 						}
 					}
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// b. Analyse characters - group as syllables/clusters (Indic); invalid diacritics; add dotted circle
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$indic_category_string = '';
 					foreach ($this->OTLdata as $eid => $c) {
 						Indic::set_indic_properties($this->OTLdata[$eid], $scriptblock); // sets ['indic_category'] and ['indic_position']
@@ -605,9 +605,9 @@ class Otl
 					}
 					$indic_category_string = '';
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// c. Initial Re-ordering (Indic / Khmer / Sinhala)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// Find base consonant
 					// Decompose/compose and reorder Matras
 					// Reorder marks to canonical order
@@ -630,9 +630,9 @@ class Otl
 					}
 					Indic::initial_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $indic_config, $scriptblock, $is_old_spec, $dottedcircle);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// d. Apply initial and basic shaping forms GSUB Lookups (one at a time)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					if ($this->shaper == 'I' || $this->shaper == 'S') {
 						$tags = 'locl ccmp nukt akhn rphf rkrf pref blwf half pstf vatu cjct';
 					} elseif ($this->shaper == 'K') {
@@ -640,26 +640,26 @@ class Otl
 					}
 					$this->_applyGSUBrulesIndic($tags, $GSUBscriptTag, $GSUBlangsys, $is_old_spec);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// e. Final Re-ordering (Indic / Khmer / Sinhala)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// Reorder matras
 					// Reorder reph
 					// Reorder pre-base reordering consonants:
 
 					Indic::final_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $indic_config, $scriptblock, $is_old_spec);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// f. Apply 'init' feature to first syllable in word (indicated by ['mask']) Indic::FLAG(Indic::INIT);
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					if ($this->shaper == 'I' || $this->shaper == 'S') {
 						$tags = 'init';
 						$this->_applyGSUBrulesIndic($tags, $GSUBscriptTag, $GSUBlangsys, $is_old_spec);
 					}
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// g. Apply Presentation Forms GSUB Lookups (+ any discretionary)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$tags = 'pres abvs blws psts haln rlig calt liga clig mset';
 
 					$omittags = 'locl ccmp nukt akhn rphf rkrf pref blwf abvf half pstf cfar vatu cjct init medi fina isol med2 fin2 fin3 ljmo vjmo tjmo';
@@ -678,9 +678,9 @@ class Otl
 				// NB Old style 'mymr' is left to go through the default shaper
 				elseif ($this->shaper == 'M') {
 					$this->restrictToSyllable = true;
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// a. Analyse characters - group as syllables/clusters (Myanmar); invalid diacritics; add dotted circle
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$myanmar_category_string = '';
 					foreach ($this->OTLdata as $eid => $c) {
 						Myanmar::set_myanmar_properties($this->OTLdata[$eid]); // sets ['myanmar_category'] and ['myanmar_position']
@@ -690,9 +690,9 @@ class Otl
 					Myanmar::set_syllables($this->OTLdata, $myanmar_category_string, $broken_syllables);
 					$myanmar_category_string = '';
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// b. Re-ordering (Myanmar mym2)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$dottedcircle = false;
 					if ($broken_syllables) {
 						if ($this->mpdf->_charDefined($this->mpdf->fonts[$this->fontkey]['cw'], 0x25CC)) {
@@ -709,16 +709,16 @@ class Otl
 					}
 					Myanmar::reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $dottedcircle);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// c. Apply initial and basic shaping forms GSUB Lookups (one at a time)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 
 					$tags = 'locl ccmp rphf pref blwf pstf';
 					$this->_applyGSUBrulesMyanmar($tags, $GSUBscriptTag, $GSUBlangsys);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// d. Apply Presentation Forms GSUB Lookups (+ any discretionary)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$tags = 'pres abvs blws psts haln rlig calt liga clig mset';
 					$omittags = 'locl ccmp nukt akhn rphf rkrf pref blwf abvf half pstf cfar vatu cjct init medi fina isol med2 fin2 fin3 ljmo vjmo tjmo';
 					$usetags = $tags;
@@ -736,9 +736,9 @@ class Otl
 					 * GSUB/GPOS needed, so there may be no scripts found! */
 
 					$this->restrictToSyllable = true;
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// a. Analyse characters - group as syllables/clusters (Indic); invalid diacritics; add dotted circle
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$sea_category_string = '';
 					foreach ($this->OTLdata as $eid => $c) {
 						Sea::set_sea_properties($this->OTLdata[$eid], $scriptblock); // sets ['sea_category'] and ['sea_position']
@@ -753,15 +753,15 @@ class Otl
 					Sea::set_syllables($this->OTLdata, $sea_category_string, $broken_syllables);
 					$sea_category_string = '';
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// b. Apply locl and ccmp shaping forms - before initial re-ordering; GSUB Lookups (one at a time)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$tags = 'locl ccmp';
 					$this->_applyGSUBrulesSingly($tags, $GSUBscriptTag, $GSUBlangsys);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// c. Initial Re-ordering
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// Find base consonant
 					// Decompose/compose and reorder Matras
 					// Reorder marks to canonical order
@@ -783,21 +783,21 @@ class Otl
 					}
 					Sea::initial_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $broken_syllables, $scriptblock, $dottedcircle);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// d. Apply basic shaping forms GSUB Lookups (one at a time)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$tags = 'pref abvf blwf pstf';
 					$this->_applyGSUBrulesSingly($tags, $GSUBscriptTag, $GSUBlangsys);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// e. Final Re-ordering
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 
 					Sea::final_reordering($this->OTLdata, $this->GSUBdata[$this->GSUBfont], $scriptblock);
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// f. Apply Presentation Forms GSUB Lookups (+ any discretionary)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$tags = 'pres abvs blws psts';
 
 					$omittags = 'locl ccmp nukt akhn rphf rkrf pref blwf abvf half pstf cfar vatu cjct init medi fina isol med2 fin2 fin3 ljmo vjmo tjmo';
@@ -810,9 +810,9 @@ class Otl
 				} // 5(D). GSUB - Shaper - DEFAULT (including THAI and LAO and MYANMAR v1 [mymr] and TIBETAN)
 				//==============================
 				else { // DEFAULT
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// a. First decompose/compose in Thai / Lao - Tibetan
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// Decomposition for THAI or LAO
 					/* This function implements the shaping logic documented here:
 					 *
@@ -951,9 +951,9 @@ class Otl
 					}
 
 
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					// b. Apply all GSUB Lookups (in order specified in lookup list)
-					//-----------------------------------------------------------------------------------
+					//--------------------------------------------------------------------------------------------------------------------------
 					$tags = 'locl ccmp pref blwf abvf pstf pres abvs blws psts haln rlig calt liga clig mset  RQD';
 					// pref blwf abvf pstf required for Tibetan
 					// " RQD" is a non-standard tag in Garuda font - presumably intended to be used by default ? "ReQuireD"

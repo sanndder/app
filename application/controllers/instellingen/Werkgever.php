@@ -1,4 +1,7 @@
 <?php
+
+use models\Instellingen\Minimumloon;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -9,37 +12,38 @@ class Werkgever extends MY_Controller
 {
 
 
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// Constructor
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	public function __construct()
 	{
 		parent::__construct();
 	}
 
 
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// index doorzetten
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
 		redirect($this->config->item('base_url') . 'instellingen/werkgever/bedrijfsgegevens', 'location');
 	}
 
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// aanpassen bedrijfsgegevens
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	public function minimumloon()
 	{
 		//$werkgever = new models\Werkgever();
 		$formbuidler = new models\forms\Formbuilder();
 
-		$minimumloon = new \models\Instellingen\Minimumloon();
+		//minimumloon class
+		$minimumloon = new Minimumloon();
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set'] ))
 		{
-			$bedrijfsgevens = $this->werkgever->setBedrijfsgegevens();
+			$minimumloon_data = $minimumloon->updateMinimumloon();
 			$errors = $this->werkgever->errors();
 
 			//msg
@@ -50,18 +54,13 @@ class Werkgever extends MY_Controller
 		}
 		else
 		{
-			$bedrijfsgevens = $this->werkgever->bedrijfsgegevens();
+			$minimumloon_data = $minimumloon->getData();
 			$errors = false; //no errors
 		}
 
-		//TEMP
-		if(isset($_GET['img']))
-		{
-			$this->werkgever->handtekening();
-		}
 
 
-		$formdata = $formbuidler->table( 'werkgever_bedrijfsgegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
+		$formdata = $formbuidler->table( 'settings_minimumloon' )->data( $minimumloon_data )->errors( $errors )->build();
 		//show($formdata);
 		$this->smarty->assign('formdata', $formdata);
 
@@ -69,9 +68,9 @@ class Werkgever extends MY_Controller
 	}
 
 
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// aanpassen bedrijfsgegevens
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	public function bedrijfsgegevens()
 	{
 		//$werkgever = new models\Werkgever();
@@ -95,7 +94,7 @@ class Werkgever extends MY_Controller
 			$errors = false; //no errors
 		}
 
-		//TEMP
+		//TODO: remove
 		if(isset($_GET['img']))
 		{
 			$this->werkgever->handtekening();
@@ -110,9 +109,9 @@ class Werkgever extends MY_Controller
 	}
 
 
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// bankrekeningen instellen
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	public function bankrekeningen()
 	{
 		//new formbuilder
@@ -187,9 +186,9 @@ class Werkgever extends MY_Controller
 	}
 
 
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// algemene voorwaarden
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	public function av()
 	{
 
@@ -197,9 +196,9 @@ class Werkgever extends MY_Controller
 	}
 
 
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	// AJAX upload
-	//--------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------------------
 	public function upload( $type = '' )
 	{
 		if( $type == 'logo' )

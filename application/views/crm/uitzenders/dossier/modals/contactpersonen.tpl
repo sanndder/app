@@ -20,6 +20,8 @@
 
 				<form>
 
+					<datepicker :language="nl" :bootstrap-styling="true"></datepicker>
+
 					<!-- aanhef -->
 					<div class="form-group row input-aanhef mb-3">
 						<label class="col-form-label col-sm-3"></label>

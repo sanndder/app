@@ -2,6 +2,8 @@
 
 namespace models;
 
+use CI_DB_driver;
+
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 
@@ -9,7 +11,7 @@ if (!defined('BASEPATH'))
 /*
  * Connector class
  * Can be used as a parent to connect to database via codeignitor
- *
+ * @property CI_DB_result $db_user CI_DB_result module
  */
 
 class Connector

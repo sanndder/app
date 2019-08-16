@@ -171,6 +171,24 @@ if (!function_exists('validDate'))
 	}
 }
 
+//=====================================================================
+// leeftijd uitrekenen
+//=====================================================================
+if (!function_exists('getAge'))
+{
+	function getAge( $gb_datum, $tot_datum = NULL)
+	{
+		$date = new DateTime($gb_datum);
+		if( $tot_datum === NULL )
+			$now = new DateTime();
+		else
+			$now = new DateTime($tot_datum);
+
+		$interval = $now->diff($date);
+		return $interval->y;
+
+	}
+}
 
 //=====================================================================
 // emailadres checken

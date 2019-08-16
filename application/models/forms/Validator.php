@@ -203,6 +203,10 @@ class Validator extends Json
 					if ($rules->type == 'iban' && !Valid::iban($val))
 						$this->_errors[$field][] = sprintf('<strong>%s</strong> is geen geldig IBAN', $this->json->field->$field->label);
 
+					//datum
+					if ($rules->type == 'datum' && !Valid::date($val))
+						$this->_errors[$field][] = sprintf('<strong>%s</strong> is geen geldige datum', $this->json->field->$field->label);
+
 					//postcode
 					if ($rules->type == 'postcode' && !Valid::postcode($val))
 						$this->_errors[$field][] = sprintf('<strong>%s</strong> is geen geldige postcode', $this->json->field->$field->label);
@@ -238,6 +242,25 @@ class Validator extends Json
 					if (strlen($val) > $rules->maxlength)
 						$this->_errors[$field][] = sprintf('<strong>%s</strong> is te lang en mag maximaal %s tekens bevatten', $this->json->field->$field->label, $rules->maxlength);
 				}
+
+				//min/max value onlu with int|decimal|factor
+				if( isset($rules->type) && ( $rules->type == 'int' || $rules->type == 'decimal' || $rules->type == 'factor' ))
+				{
+					//max value
+					if( isset($rules->maxval) )
+					{
+						if ( $val > $rules->maxval)
+							$this->_errors[$field][] = sprintf('De waarde van <strong>%s</strong> is te hoog, maximaal toegestane waarde: %s', $this->json->field->$field->label, $rules->maxval);
+					}
+
+					//min value
+					if( isset($rules->minval) )
+					{
+						if ( $val > $rules->minval)
+							$this->_errors[$field][] = sprintf('De waarde van <strong>%s</strong> is te laag, minimale waarde: %s', $this->json->field->$field->label, $rules->minval);
+					}
+				}
+
 
 
 				//check radio values

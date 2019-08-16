@@ -93,9 +93,6 @@ class CI_Controller{}
  * @property Upload_model $uploadfiles
  * @property User_model $user
  * @property Werkgever_model $werkgever
- * @property CI_DB_driver $db_user                This is the platform-independent base Active Record implementation class.
- * @property CI_DB_forge $dbforge                 Database Utility Class
- * @property CI_DB_result $query          	 	  This is the platform-independent base Active Record implementation class. *
  * @property CI_Benchmark $benchmark              This class enables you to mark points and calculate the time difference between them.<br />  Memory consumption can also be displayed.
  * @property CI_Calendar $calendar                This class enables the creation of calendars
  * @property CI_Cart $cart                        Shopping Cart Class

@@ -89,7 +89,7 @@
 
 
 <!-- Page content -->
-<div class="page-content pt-0">
+<div id="vue-app" class="page-content pt-0">
 
 
 	<!-- Content area -->
@@ -99,6 +99,8 @@
 </div>
 <!-- /page content -->
 
+<!-- vue main js -->
+<script src="vue/dist/build.js"></script>
 
 </body>
 </html>

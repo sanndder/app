@@ -5,7 +5,7 @@
 
 {block "content"}
 
-	<script src="/app/node_modules/vue/dist/vue.js"></script>
+
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	|| Main content
@@ -34,7 +34,7 @@
 
 							<ul class="nav nav-tabs nav-tabs-bottom mb-0">
 								<li class="nav-item">
-									<a href="#card-toolbar-tab1" @click.prevent="isActive = !isActive" class="nav-link" v-bind:class="{active:isActive}">
+									<a href="#card-toolbar-tab1" @click.prevent="" class="nav-link">
 										2019
 									</a>
 								</li>
@@ -53,7 +53,7 @@
 
 						<div class="card-body tab-content">
 							<div class="tab-pane fade show active" id="card-toolbar-tab1">
-								This is the first card tab content
+								<datepicker></datepicker>
 							</div>
 
 							<div class="tab-pane fade" id="card-toolbar-tab2">
@@ -71,8 +71,6 @@
 						{/literal}
 					</div>
 					<!-- /default tabs -->
-
-					<script src="/app/recources/vue/app.js?{$t}"></script>
 
 				</div><!-- /col -->
 			</div><!-- /row -->

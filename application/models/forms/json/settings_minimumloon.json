@@ -1,0 +1,83 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "datum_per": {
+      "label": "Ingangsdatum",
+      "rules": {
+        "required": true,
+        "type": "date"
+      }
+    },
+    "21_jaar": {
+      "label": "21 jaar en ouder",
+      "rules": {
+        "required": true,
+        "minval": 1630,
+        "maxval": 2600,
+        "type": "decimal"
+      }
+    },
+    "20_jaar": {
+      "label": "20 jaar",
+      "rules": {
+        "required": true,
+        "minval": 1300,
+        "maxval": 2300,
+        "type": "decimal"
+      }
+    },
+    "19_jaar": {
+      "label": "19 jaar",
+      "rules": {
+        "required": true,
+        "minval": 950,
+        "maxval": 1950,
+        "type": "decimal"
+      }
+    },
+    "18_jaar": {
+      "label": "18 jaar",
+      "rules": {
+        "required": true,
+        "minval": 800,
+        "maxval": 1800,
+        "type": "decimal"
+      }
+    },
+    "17_jaar": {
+      "label": "17 jaar",
+      "rules": {
+        "required": true,
+        "minval": 640,
+        "maxval": 1640,
+        "type": "decimal"
+      }
+    },
+    "16_jaar": {
+      "label": "16 jaar",
+      "rules": {
+        "required": true,
+        "minval": 560,
+        "maxval": 1560,
+        "type": "decimal"
+      }
+    },
+    "15_jaar": {
+      "label": "15 jaar",
+      "rules": {
+        "required": true,
+        "minval": 490,
+        "maxval": 1490,
+        "type": "decimal"
+      }
+    }
+  }
+}
