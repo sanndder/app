@@ -4,13 +4,16 @@
 {block "header-title"}Ureninvoer{/block}
 
 {block "content"}
+	<script src="recources/js/verloning_invoer/main.js"></script>
+	<script src="recources/js/verloning_invoer/templates.js"></script>
+
 
 	<script>
 		{literal}
 
         $( document ).ready(function() {
            //
-			$( '.vi-list-inleners .vi-list-item').on('click', function(){
+			$(document).on('click',  '.vi-list-inleners .vi-list-item', function(){
 			    $('.vi-list-inleners li').removeClass('vi-list-item-active');
 			   	$(this).addClass('vi-list-item-active');
 
@@ -46,15 +49,23 @@
 
 
 					<div class="row">
-						<div class="col-md-2 p-0">
+						<div class="col-md-2 p-0 append-button">
+
+							<button class="btn btn-primary" data-v-action="click">klik</button>
 
 							<ul class="vi-list mt-2 vi-list-inleners">
 								<li class="vi-list-header">Inleners</li>
+							</ul>
+
+							{*
+							<ul class="vi-list mt-2 vi-list-inleners">
+
 								<li class="vi-list-item" data-id="1"><span>1001Tafelkleden.com</span></li>
 								<li class="vi-list-item" data-id="2"><span>4you Personeelsdiensten</span></li>
 								<li class="vi-list-item" data-id="3"><span>Aardappelgroothandel Jansen-Dongen B.V.</span></li>
 								<li class="vi-list-item" data-id="4"><span>Inhoudingen</span></li>
 							</ul>
+						*}
 
 						</div><!-- /col -->
 

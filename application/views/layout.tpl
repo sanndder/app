@@ -100,7 +100,7 @@
 <!-- /page content -->
 
 <!-- vue main js -->
-<script src="vue/dist/build.js"></script>
+<!--<script src="vue/dist/build.js"></script>-->
 
 </body>
 </html>
