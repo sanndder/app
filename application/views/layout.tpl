@@ -67,6 +67,7 @@
 <!-- Page header -->
 <div class="page-header">
 	<div class="page-header-content header-elements-md-inline">
+
 		<div class="page-title d-flex">
 			<h4>
 				<i class="{block name='header-icon'}{/block} mr-2"></i>
@@ -84,6 +85,7 @@
 		</div>
 		*}
 	</div>
+
 </div>
 <!-- /page header -->
 

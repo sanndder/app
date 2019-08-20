@@ -9,99 +9,107 @@
 	<script>
         {literal}
 
+        $( document ).ready( function() {
+            //
+            $( document ).on( 'click', '.vi-list-inleners .vi-list-item', function() {
+                $( '.vi-list-inleners li' ).removeClass( 'vi-list-item-active' );
+                $( this ).addClass( 'vi-list-item-active' );
+
+                $( '.vi-list-werknemers' ).hide();
+                $( '.vi-tabs' ).hide();
+
+                id = $( this ).data( 'id' );
+
+                $( '.list-' + id ).show();
+            } );
+
+            $( '.vi-list-werknemers .vi-list-item' ).on( 'click', function() {
+                $( '.vi-list-werknemers li' ).removeClass( 'vi-list-item-active' );
+                $( this ).addClass( 'vi-list-item-active' );
+                $( '.vi-tabs' ).show();
+
+            } );
+        } );
 
         {/literal}
 	</script>
-	<!-- Main sidebar -->
-	<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start">
-
-		<!-- Sidebar mobile toggler -->
-		<div class="sidebar-mobile-toggler text-center">
-			<a href="javascript:void(0)" class="sidebar-mobile-main-toggle">
-				<i class="icon-arrow-left8"></i>
-			</a>
-			<span class="font-weight-semibold">Instellingen menu</span>
-			<a href="javascript:void(0)" class="sidebar-mobile-expand">
-				<i class="icon-screen-full"></i>
-				<i class="icon-screen-normal"></i>
-			</a>
-		</div>
-		<!-- /sidebar mobile toggler -->
-
-		<!-- Sidebar content -->
-		<div class="sidebar-content">
-			<div class="card card-sidebar-mobile">
-
-				<!-- Main navigation -->
-				<div class="card-body p-0">
-					<div class="card-header bg-transparent p-2">
-
-						<ul class="nav nav-sidebar p-0" data-nav-type="accordion">
-							<li class="nav-item-header font-weight-bolder pl-2 pr-2 pb-1 pt-0">
-								<div class="text-uppercase font-size-xs line-height-xs">Tijdvak</div>
-							</li>
-						</ul>
-
-						<ul class="list-inline list-inline-condensed mb-0">
-							<li class="list-inline-item dropdown pl-0" data-ajax-list="true" data-value="w">
-								<a href="javascript:void(0)" class="btn btn-link text-left text-default dropdown-toggle pl-2" data-toggle="dropdown" style="width: 100px;">
-									Week
-								</a>
-								<div class="dropdown-menu">
-									<a href="javascript:void(0)" class="dropdown-item" data-value="w" data-vi-action="setTijdvak">Week</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-value="4w" data-vi-action="setTijdvak">4 Weken</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-value="m" data-vi-action="setTijdvak">Maand</a>
-								</div>
-							</li>
-							<li class="list-inline-item dropdown" data-ajax-list="true"data-value="30">
-								<a href="javascript:void(0)" class="btn btn-link text-default dropdown-toggle" data-toggle="dropdown">
-									31
-								</a>
-								<div class="dropdown-menu">
-									<a href="javascript:void(0)" class="dropdown-item" data-id="30">30</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-id="29">29</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-id="28">28</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-id="27">27</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-id="26">26</a>
-								</div>
-							</li>
-						</ul>
-					</div>
-
-					<ul class="nav nav-sidebar" data-nav-type="accordion">
-						<li class="nav-item-header font-weight-bolder">
-							<div class="text-uppercase font-size-xs line-height-xs">Inleners</div>
-						</li>
-						<li class="nav-item">
-							<a href="javascript:void(0)" class="nav-link">
-								<span>1001Tafelkleden.com</span>
-							</a>
-							<a href="javascript:void(0)" class="nav-link">
-								<span>4you Personeelsdiensten</span>
-							</a>
-						</li>
-						<!-- /main -->
-					</ul>
-				</div>
-				<!-- /main navigation -->
-
-			</div>
-		</div>
-		<!-- /sidebar content -->
-
-	</div>
-	<!-- /main sidebar  -->
-
 	<!-- Main content -->
 	<div class="content-wrapper">
 		<!-- Content area -->
 		<div class="content">
+
+			<div class="navbar navbar-expand-lg navbar-light navbar-component rounded">
+				<div class="text-center d-lg-none w-100">
+					<button type="button" class="navbar-toggler dropdown-toggle" data-toggle="collapse"
+					        data-target="#navbar-filter">
+						<i class="icon-unfold mr-2"></i>
+						Tijdvakinstellingen
+					</button>
+				</div>
+
+				<div class="navbar-collapse collapse" id="navbar-filter">
+					<span class="navbar-text font-weight-semibold mr-3">
+						Tijdvak:
+					</span>
+
+					<ul class="navbar-nav flex-wrap">
+						<li class="nav-item dropdown">
+							<a href="javascript:void(0)" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+								Week
+							</a>
+
+							<div class="dropdown-menu">
+								<a href="javascript:void(0)" class="dropdown-item">Maand</a>
+								<a href="javascript:void(0)" class="dropdown-item">4 weken</a>
+							</div>
+						</li>
+
+						<li class="nav-item dropdown">
+							<a href="javascript:void(0)" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown"
+							   aria-expanded="false">
+								31
+							</a>
+
+							<div class="dropdown-menu">
+								<a href="javascript:void(0)" class="dropdown-item">30</a>
+								<a href="javascript:void(0)" class="dropdown-item">29</a>
+								<a href="javascript:void(0)" class="dropdown-item">28</a>
+								<a href="javascript:void(0)" class="dropdown-item">27</a>
+							</div>
+						</li>
+
+					</ul>
+
+
+				</div>
+			</div>
 
 			<!-- Basic card -->
 			<div class="card">
 				<!-- card  body-->
 				<div class="card-body p-0">
 
+
+					<div class="row">
+						<div class="col-md-2 p-0 append-button">
+
+                            {*
+														<ul class="vi-list mt-2 vi-list-inleners">
+															<li class="vi-list-header">Inleners</li>
+														</ul>*}
+
+
+							<ul class="vi-list mt-2 vi-list-inleners">
+
+								<li class="vi-list-item" data-id="1"><span>1001Tafelkleden.com</span></li>
+								<li class="vi-list-item" data-id="2"><span>4you Personeelsdiensten</span></li>
+								<li class="vi-list-item" data-id="3">
+									<span>Aardappelgroothandel Jansen-Dongen B.V.</span></li>
+								<li class="vi-list-item" data-id="4"><span>Inhoudingen</span></li>
+							</ul>
+
+
+						</div><!-- /col -->
 
 						<div class="col-xxl-2 col-lg-3 p-0">
 
@@ -132,6 +140,7 @@
 								<li class="vi-list-item"><span>Wijnen, Marcel (I.L.M.) (15003)</li>
 								<li class="vi-list-item"><span>Zwiers, Karel (K.I.M.) (15010)</li>
 							</ul>
+
 
 						</div><!-- /col -->
 						<div class="col-xxl-8 col-lg-7 p-0 vi-tabs" style="display: none">

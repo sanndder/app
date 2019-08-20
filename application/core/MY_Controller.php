@@ -15,6 +15,7 @@ class MY_Controller extends CI_Controller
 		parent::__construct();
 
 		//base_url naar smarty
+		$this->smarty->assign( 'time' , time() );
 		$this->smarty->assign( 'base_url' , BASE_URL );
 		$this->smarty->assign( 'app_name' , APP_NAME );
 

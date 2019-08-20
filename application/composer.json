@@ -1,6 +1,7 @@
 {
     "require": {
         "mpdf/mpdf": "^8.0",
-        "claviska/simpleimage": "^3.3"
+        "claviska/simpleimage": "^3.3",
+       "ext-json": "*"
     }
 }

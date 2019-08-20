@@ -8,7 +8,8 @@ const ENV = 'development';
 var ajaxRequestPending = false;
 
 //data object for sending
-const base_url = 'http://192.168.1.2/app';
+//const base_url = 'http://192.168.1.2/app';
+const base_url = document.baseURI;
 
 //data object for sending
 var data = {};
@@ -43,15 +44,33 @@ let xhr = {
                 data: this.data,
                 dataType: 'json',
                 method: 'POST'
-            } ).fail( function( request, status, error ) {
+            }).fail( function( request, status, error ) {
                 //error to console
                 //TODO: production error handling
                 console.warn( '--AJAX ERROR--' );
+                log( request );
                 log( status );
                 log( error );
-            } ).done( function( json ) {
+
+                var errorData = {};
+
+                errorData.url = this.url;
+                errorData.module = 'verloning invoer';
+                errorData.data = data;
+                errorData.statusText = request.statusText;
+                errorData.responseText = request.responseText;
+
+                //save data to log file
+                $.ajax( {
+                    url: base_url + 'log/ajaxerror',
+                    data: errorData,
+                    dataType: 'json',
+                    method: 'POST'
+                });
+
+            }).done( function( json ) {
                 log( '--AJAX REQUEST DONE--' );
-            } );
+            });
         }else
         {
             alert('Even geduld a.u.b.');
@@ -64,7 +83,10 @@ let xhr = {
 let invoer = {
 
     //tijdvak setter
-    setTijdvak: tijdvak => data.tijdvak = tijdvak,
+    setTijdvak(tijdvak) {
+        data.tijdvak = tijdvak
+    },
+
     //jaar setter
     setJaar: jaar => data.jaar = jaar,
     //periode setter
@@ -72,12 +94,13 @@ let invoer = {
 
     //events aan dom binden
     events() {
-        $(document).on('click', '[data-v-action="click"]', () =>  invoer.getInleners() );
+        //$(document).on('click', '[data-vi-action="click"]', () =>  invoer.getInleners() );
+        $(document).on('click', '[data-vi-action="setTijdvak"]', function(){invoer.setTijdvak( $(this).data('value') ) })
     },
 
     //ajax get Inleners
     getInleners() {
-        xhr.url = base_url + '/test/ajax';
+        xhr.url = base_url + 'test/ajax';
         xhr.data = data;
 
         var response = xhr.call();

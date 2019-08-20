@@ -18,7 +18,6 @@
 		<div class="sidebar-content">
 			<div class="card card-sidebar-mobile">
 
-
 				<!-- Main navigation -->
 				<div class="card-body p-0">
 					<ul class="nav nav-sidebar" data-nav-type="accordion">
@@ -58,3 +57,4 @@
 
 	</div>
 	<!-- /main sidebar  -->
+

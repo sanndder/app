@@ -208,7 +208,7 @@ class Werkgever extends MY_Controller
 
 		$this->load->model('upload_model', 'uploadfiles');
 		$this->uploadfiles->setUploadDir( $dir );
-		$this->uploadfiles->setDatabaseTable( 'uitzenders_handtekening' );
+		$this->uploadfiles->setDatabaseTable( 'werkgevers_logo' );
 		$this->uploadfiles->setPrefix( $type . '_' );
 		$this->uploadfiles->uploadfilesToDatabase();
 

@@ -29,8 +29,6 @@ class Test extends MY_Controller {
 	public function ajax()
 	{
 		$inleners = array('1001Tafelkleden.com','4you Personeelsdiensten','Aardappelgroothandel Jansen-Dongen B.V.');
-		
-		
 		echo json_encode($inleners);
 	}
 
