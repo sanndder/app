@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-defined('BASE_URL') OR define('BASE_URL', 'http://192.168.1.2/app');
-//defined('BASE_URL') OR define('BASE_URL', 'http://82.74.122.107/app/');
+//defined('BASE_URL') OR define('BASE_URL', 'http://192.168.1.2/app');
+defined('BASE_URL') OR define('BASE_URL', 'http://82.74.122.107/app/');
 defined('APP_NAME') OR define('APP_NAME', 'App');
 defined('DB_SECRET') OR define('DB_SECRET', 'ZKPZeS5FqrmPbzyyMZ7FVZiRlYQ5dm');
 defined('UPLOAD_SECRET') OR define('UPLOAD_SECRET', 'ZKloqrmPbzyyMZ7FdsfVZiRlYQ5d3m');

@@ -95,7 +95,20 @@ let invoer = {
     //events aan dom binden
     events() {
         //$(document).on('click', '[data-vi-action="click"]', () =>  invoer.getInleners() );
-        $(document).on('click', '[data-vi-action="setTijdvak"]', function(){invoer.setTijdvak( $(this).data('value') ) })
+        $(document).on('click', '[data-vi-action="setTijdvak"]', function(){invoer.setTijdvak( $(this).data('value') ) });
+
+        //focus op de table row wanneer een veld actief word
+        $(document).on('focus', '.table-vi-uren input', function(){ $('.table-vi-uren tr').removeClass('focus'); $(this).closest('tr').addClass('focus'); });
+        $(document).on('click', '.table-vi-uren select', function(){ $('.table-vi-uren tr').removeClass('focus'); $(this).closest('tr').addClass('focus'); });
+
+        //tab change triggers textfit
+        //TODO verplaatsen naar laden van werknemer gegevens
+        $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+            var el = document.getElementsByClassName('fit-text');
+            //fittext voor werknemer naam, alleen als element breder is dan 0
+            if( el[0].clientWidth > 0)
+             textFit(document.getElementsByClassName('fit-text'),{ maxFontSize:14});
+        })
     },
 
     //ajax get Inleners
@@ -145,5 +158,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
     invoer.setJaar( 2019 );
     invoer.setPeriode( 30 );
 
-    log( data )
+    log( data );
+
 } );
