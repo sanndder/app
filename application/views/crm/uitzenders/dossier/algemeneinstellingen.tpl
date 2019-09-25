@@ -41,7 +41,6 @@
 
 							<form method="post" action="">
 
-
 								{*settings*}
 								{assign "label_lg" "3"}
 								{assign "div_xl" "8"}
@@ -130,7 +129,7 @@
 										</form>
 									{else}
 
-										<img src="{$uitzender->handtekening('url')}" />
+										<img src="{$uitzender->handtekening('url')}" style="max-width: 400px; max-height: 200px;" />
 										<br />
 										<br />
 										<a href="crm/uitzenders/dossier/algemeneinstellingen/{$uitzender->uitzender_id}?delhandtekening" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Handtekening verwijderen</a>
@@ -177,7 +176,7 @@
 										</form>
 									{else}
 
-										<img src="{$uitzender->logo('url')}" />
+										<img src="{$uitzender->logo('url')}" style="max-width: 500px; max-height: 300px;" />
 										<br />
 										<br />
 										<a href="crm/uitzenders/dossier/algemeneinstellingen/{$uitzender->uitzender_id}?dellogo" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Logo verwijderen</a>

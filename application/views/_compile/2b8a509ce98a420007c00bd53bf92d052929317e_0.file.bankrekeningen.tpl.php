@@ -1,55 +1,56 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-08-07 22:24:13
+/* Smarty version 3.1.33, created on 2019-09-11 10:59:46
   from 'C:\xampp\htdocs\app\application\views\instellingen\werkgever\bankrekeningen.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5d4b336daa5791_09437826',
+  'unifunc' => 'content_5d78b782cb7ff3_02435469',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '2b8a509ce98a420007c00bd53bf92d052929317e' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\instellingen\\werkgever\\bankrekeningen.tpl',
-      1 => 1564405926,
+      1 => 1568192365,
       2 => 'file',
     ),
   ),
   'includes' => 
   array (
     'file:instellingen/werkgever/_sidebar.tpl' => 1,
+    'file:instellingen/werkgever/_topbar.tpl' => 1,
   ),
 ),false)) {
-function content_5d4b336daa5791_09437826 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5d78b782cb7ff3_02435469 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_11483561015d4b336da7a806_78711426', "title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_15022627615d78b782c85362_94874267', "title");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_13536358265d4b336da7e691_49190703', "header-icon");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_651340645d78b782c891f5_79649093', "header-icon");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_2197071835d4b336da82516_91137680', "header-title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_7377427975d78b782c8d072_60221167', "header-title");
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_18980065785d4b336da86393_79380689', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_2169116775d78b782c90ef4_20271349', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, '../../layout.tpl');
 }
 /* {block "title"} */
-class Block_11483561015d4b336da7a806_78711426 extends Smarty_Internal_Block
+class Block_15022627615d78b782c85362_94874267 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_11483561015d4b336da7a806_78711426',
+    0 => 'Block_15022627615d78b782c85362_94874267',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -59,12 +60,12 @@ Instellingen<?php
 }
 /* {/block "title"} */
 /* {block "header-icon"} */
-class Block_13536358265d4b336da7e691_49190703 extends Smarty_Internal_Block
+class Block_651340645d78b782c891f5_79649093 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-icon' => 
   array (
-    0 => 'Block_13536358265d4b336da7e691_49190703',
+    0 => 'Block_651340645d78b782c891f5_79649093',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -74,12 +75,12 @@ icon-cog<?php
 }
 /* {/block "header-icon"} */
 /* {block "header-title"} */
-class Block_2197071835d4b336da82516_91137680 extends Smarty_Internal_Block
+class Block_7377427975d78b782c8d072_60221167 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-title' => 
   array (
-    0 => 'Block_2197071835d4b336da82516_91137680',
+    0 => 'Block_7377427975d78b782c8d072_60221167',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -89,12 +90,12 @@ Instellingen werkgever<?php
 }
 /* {/block "header-title"} */
 /* {block "content"} */
-class Block_18980065785d4b336da86393_79380689 extends Smarty_Internal_Block
+class Block_2169116775d78b782c90ef4_20271349 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_18980065785d4b336da86393_79380689',
+    0 => 'Block_2169116775d78b782c90ef4_20271349',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -121,6 +122,9 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 							</div><!-- /col -->
 						</div><!-- /row -->
 					<?php }?>
+
+                    <?php $_smarty_tpl->_subTemplateRender('file:instellingen/werkgever/_topbar.tpl', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
+?>
 
 					<form method="post" action="">
 

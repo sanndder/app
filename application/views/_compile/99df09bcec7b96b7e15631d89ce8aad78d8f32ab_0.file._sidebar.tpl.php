@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-08-20 13:26:53
+/* Smarty version 3.1.33, created on 2019-09-24 23:27:37
   from 'C:\xampp\htdocs\app\application\views\instellingen\werkgever\_sidebar.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5d5bd8fdc25036_12600589',
+  'unifunc' => 'content_5d8a8a499aaaa9_25700828',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '99df09bcec7b96b7e15631d89ce8aad78d8f32ab' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\instellingen\\werkgever\\_sidebar.tpl',
-      1 => 1566300413,
+      1 => 1569360456,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5d5bd8fdc25036_12600589 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5d8a8a499aaaa9_25700828 (Smarty_Internal_Template $_smarty_tpl) {
 ?>	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start">
 
@@ -44,19 +44,12 @@ function content_5d5bd8fdc25036_12600589 (Smarty_Internal_Template $_smarty_tpl)
 				<!-- Main navigation -->
 				<div class="card-body p-0">
 					<ul class="nav nav-sidebar" data-nav-type="accordion">
+						<li class="nav-item-header font-weight-bolder">
+							<div class="text-uppercase font-size-xs line-height-xs">Algemene instellingen</div>
+						</li>
 						<li class="nav-item">
 							<a href="instellingen/werkgever/users" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'users') {?>active<?php }?>">
 								<span>Gebruikers</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="instellingen/werkgever/bedrijfsgegevens" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'bedrijfsgegevens') {?>active<?php }?>">
-								<span>Bedrijfsgegevens</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a href="instellingen/werkgever/bankrekeningen" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'bankrekeningen') {?>active<?php }?>">
-								<span>Bankrekeningen</span>
 							</a>
 						</li>
 						<li class="nav-item">
@@ -65,8 +58,26 @@ function content_5d5bd8fdc25036_12600589 (Smarty_Internal_Template $_smarty_tpl)
 							</a>
 						</li>
 						<li class="nav-item">
+							<a href="instellingen/werkgever/feestdagen" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'feestdagen') {?>active<?php }?>">
+								<span>Feestdagen</span>
+							</a>
+						</li>
+						<li class="nav-item-header font-weight-bolder">
+							<div class="text-uppercase font-size-xs line-height-xs">Instellingen entiteiten</div>
+						</li>
+						<li class="nav-item">
+							<a href="instellingen/werkgever/bedrijfsgegevens" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'bedrijfsgegevens') {?>active<?php }?>">
+								<span>Bedrijfsgegevens</span>
+							</a>
+						</li>
+						<li class="nav-item">
 							<a href="instellingen/werkgever/av" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'av') {?>active<?php }?>">
 								<span>Algemene voorwaarden</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="instellingen/werkgever/bankrekeningen" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'bankrekeningen') {?>active<?php }?>">
+								<span>Bankrekeningen</span>
 							</a>
 						</li>
 						<!-- /main -->

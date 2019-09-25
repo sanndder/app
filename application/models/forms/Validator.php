@@ -256,7 +256,7 @@ class Validator extends Json
 					//min value
 					if( isset($rules->minval) )
 					{
-						if ( $val > $rules->minval)
+						if ( $val < $rules->minval)
 							$this->_errors[$field][] = sprintf('De waarde van <strong>%s</strong> is te laag, minimale waarde: %s', $this->json->field->$field->label, $rules->minval);
 					}
 				}

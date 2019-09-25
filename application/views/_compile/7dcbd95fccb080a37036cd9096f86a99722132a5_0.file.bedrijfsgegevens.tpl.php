@@ -1,56 +1,57 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-08-07 22:24:12
+/* Smarty version 3.1.33, created on 2019-09-24 17:07:45
   from 'C:\xampp\htdocs\app\application\views\instellingen\werkgever\bedrijfsgegevens.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5d4b336c092fa7_73525305',
+  'unifunc' => 'content_5d8a3141bea5e3_99297310',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '7dcbd95fccb080a37036cd9096f86a99722132a5' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\instellingen\\werkgever\\bedrijfsgegevens.tpl',
-      1 => 1562763295,
+      1 => 1569337663,
       2 => 'file',
     ),
   ),
   'includes' => 
   array (
     'file:instellingen/werkgever/_sidebar.tpl' => 1,
+    'file:instellingen/werkgever/_topbar.tpl' => 1,
   ),
 ),false)) {
-function content_5d4b336c092fa7_73525305 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5d8a3141bea5e3_99297310 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_13249651695d4b336c04ca93_13049619', "title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_2677113025d8a3141ba0251_93702276', "title");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_16764283115d4b336c050910_96926089', "header-icon");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_4695741825d8a3141ba40d3_73719737', "header-icon");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_1193376625d4b336c054794_87516491', "header-title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_7259597085d8a3141ba7f57_35600595', "header-title");
 ?>
 
 <?php $_smarty_tpl->_assignInScope('uploader', "true");?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_5989215885d4b336c058614_29567905', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_17132078565d8a3141babdd3_48863579', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, '../../layout.tpl');
 }
 /* {block "title"} */
-class Block_13249651695d4b336c04ca93_13049619 extends Smarty_Internal_Block
+class Block_2677113025d8a3141ba0251_93702276 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_13249651695d4b336c04ca93_13049619',
+    0 => 'Block_2677113025d8a3141ba0251_93702276',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -60,12 +61,12 @@ Instellingen<?php
 }
 /* {/block "title"} */
 /* {block "header-icon"} */
-class Block_16764283115d4b336c050910_96926089 extends Smarty_Internal_Block
+class Block_4695741825d8a3141ba40d3_73719737 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-icon' => 
   array (
-    0 => 'Block_16764283115d4b336c050910_96926089',
+    0 => 'Block_4695741825d8a3141ba40d3_73719737',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -75,12 +76,12 @@ icon-cog<?php
 }
 /* {/block "header-icon"} */
 /* {block "header-title"} */
-class Block_1193376625d4b336c054794_87516491 extends Smarty_Internal_Block
+class Block_7259597085d8a3141ba7f57_35600595 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-title' => 
   array (
-    0 => 'Block_1193376625d4b336c054794_87516491',
+    0 => 'Block_7259597085d8a3141ba7f57_35600595',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -90,12 +91,12 @@ Instellingen werkgever<?php
 }
 /* {/block "header-title"} */
 /* {block "content"} */
-class Block_5989215885d4b336c058614_29567905 extends Smarty_Internal_Block
+class Block_17132078565d8a3141babdd3_48863579 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_5989215885d4b336c058614_29567905',
+    0 => 'Block_17132078565d8a3141babdd3_48863579',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -109,6 +110,9 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 	<div class="content-wrapper">
 		<!-- Content area -->
 		<div class="content">
+
+            <?php $_smarty_tpl->_subTemplateRender('file:instellingen/werkgever/_topbar.tpl', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
+?>
 
 			<!-------------------------------------------------------------------------------------------------------------------------------------------------
 			|| Bedrijfsgegevens
@@ -318,6 +322,58 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?></span><?php }?>
 			</div><!-- /basic card -->
 
 
+
+			<!-------------------------------------------------------------------------------------------------------------------------------------------------
+			|| Ondertekening
+			-------------------------------------------------------------------------------------------------------------------------------------------------->
+			<div class="card">
+				<div class="card-header header-elements-inline">
+					<h5 class="card-title">Handtekening</h5>
+				</div>
+
+				<div class="card-body">
+
+					<div class="row">
+						<div class="col-xl-6 col-lg-12">
+
+                                                        <?php if ($_smarty_tpl->tpl_vars['handtekening']->value === NULL) {?>
+								<?php echo '<script'; ?>
+>
+                                    
+                                    $(document).ready(function ()
+                                    {
+                                        $('#fileupload2').fileinput('refresh', {uploadUrl: 'upload/uploadhantekeningwerkgever/<?php echo $_SESSION['entiteit_id'];?>
+'});
+                                        $('#fileupload2').on('fileuploaded', function() {
+                                            window.location.reload();
+                                        });
+
+                                    });
+                                    
+								<?php echo '</script'; ?>
+>
+
+								<form action="#">
+									<input name="file" type="file" id="fileupload2" class="file-input">
+								</form>
+                            <?php } else { ?>
+
+								<img src="<?php echo $_smarty_tpl->tpl_vars['handtekening']->value;?>
+" style="max-width: 400px; max-height: 200px;" />
+								<br />
+								<br />
+								<a href="<?php echo $_smarty_tpl->tpl_vars['base_url']->value;?>
+/instellingen/werkgever/bedrijfsgegevens/?delhandtekening" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Handtekening verwijderen</a>
+                            <?php }?>
+
+						</div><!-- /col -->
+
+					</div><!-- /row -->
+
+				</div><!-- /card body -->
+			</div><!-- /basic card -->
+
+
 			<!-------------------------------------------------------------------------------------------------------------------------------------------------
 			|| Logo
 			-------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -331,50 +387,35 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?></span><?php }?>
 					<div class="row">
 						<div class="col-xl-6 col-lg-12">
 
-							<?php echo '<script'; ?>
+                                                        <?php if ($_smarty_tpl->tpl_vars['logo']->value === NULL) {?>
+								<?php echo '<script'; ?>
 >
-								
-                                $(document).ready(function ()
-                                {
-                                    $('#fileupload').fileinput('refresh', {uploadUrl: 'instellingen/werkgever/upload/logo'});
-                                });
-								
-							<?php echo '</script'; ?>
+                                    
+                                    $(document).ready(function ()
+                                    {
+                                        $('#fileupload').fileinput('refresh', {uploadUrl: 'upload/uploadlogowerkgever/<?php echo $_SESSION['entiteit_id'];?>
+'});
+                                        $('#fileupload').on('fileuploaded', function() {
+                                            window.location.reload();
+                                        });
+
+                                    });
+                                    
+								<?php echo '</script'; ?>
 >
 
-							<form action="#">
-								<input name="file" type="file" id="fileupload" class="file-input">
-							</form>
+								<form action="#">
+									<input name="file" type="file" id="fileupload" class="file-input">
+								</form>
+                            <?php } else { ?>
 
-						</div><!-- /col -->
-						<div class="col-xl-6 col-lg-12">
-
-
-						</div><!-- /col -->
-
-					</div><!-- /row -->
-
-				</div><!-- /card body -->
-			</div><!-- /basic card -->
-
-
-			<!-------------------------------------------------------------------------------------------------------------------------------------------------
-			|| Ondertekening
-			-------------------------------------------------------------------------------------------------------------------------------------------------->
-			<div class="card">
-				<div class="card-header header-elements-inline">
-					<h5 class="card-title">Ondertekening</h5>
-				</div>
-
-				<div class="card-body">
-
-					<div class="row">
-						<div class="col-xl-6 col-lg-12">
-
-
-						</div><!-- /col -->
-						<div class="col-xl-6 col-lg-12">
-
+								<img src="<?php echo $_smarty_tpl->tpl_vars['logo']->value;?>
+" style="max-width: 500px; max-height: 300px;" />
+								<br />
+								<br />
+								<a href="<?php echo $_smarty_tpl->tpl_vars['base_url']->value;?>
+/instellingen/werkgever/bedrijfsgegevens/?dellogo" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Logo verwijderen</a>
+                            <?php }?>
 
 						</div><!-- /col -->
 

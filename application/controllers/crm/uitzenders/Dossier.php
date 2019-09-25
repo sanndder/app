@@ -1,4 +1,8 @@
 <?php
+
+use models\forms\Formbuilder;
+use models\Uitzenders\Uitzender;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -27,7 +31,7 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function overzicht( $uitzender_id = NULL )
 	{
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		//redirect indien nodig
 		if( $uitzender->complete == 0 )
@@ -58,7 +62,7 @@ class Dossier extends MY_Controller
 		$formbuidler = new models\forms\Formbuilder();
 
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		//del logo
 		if( isset($_GET['dellogo']) )
@@ -113,10 +117,10 @@ class Dossier extends MY_Controller
 	public function bedrijfsgegevens( $uitzender_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set']) )
@@ -165,7 +169,7 @@ class Dossier extends MY_Controller
 		$formbuidler = new models\forms\Formbuilder();
 
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set'] ))
@@ -214,7 +218,7 @@ class Dossier extends MY_Controller
 		$formbuidler = new models\forms\Formbuilder();
 
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set'] ))
@@ -260,7 +264,7 @@ class Dossier extends MY_Controller
 	public function contactpersonen( $uitzender_id = NULL )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		$contactpersonen = $uitzender->contactpersonen();
 		$this->smarty->assign('contactpersonen', $contactpersonen);
@@ -276,7 +280,7 @@ class Dossier extends MY_Controller
 	public function documenten( $uitzender_id = NULL )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/documenten.tpl');
@@ -289,7 +293,7 @@ class Dossier extends MY_Controller
 	public function notities( $uitzender_id = NULL )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/notities.tpl');
@@ -302,7 +306,7 @@ class Dossier extends MY_Controller
 	public function facturen( $uitzender_id = NULL )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/facturen.tpl');
@@ -315,7 +319,7 @@ class Dossier extends MY_Controller
 	public function inleners( $uitzender_id = NULL )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/inleners.tpl');
@@ -328,7 +332,7 @@ class Dossier extends MY_Controller
 	public function werknemers( $uitzender_id = NULL )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/werknemers.tpl');

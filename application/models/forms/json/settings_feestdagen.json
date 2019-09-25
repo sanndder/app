@@ -1,0 +1,30 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "datum": {
+      "label": "Datum",
+      "rules": {
+        "required": true,
+        "type": "date"
+      }
+    },
+    "omschrijving": {
+      "label": "Omschrijving",
+      "rules": {
+        "required": true,
+        "minlength": 3,
+        "maxlength": 100,
+        "trim": true,
+        "striptags": true
+      }
+    }
+  }
+}

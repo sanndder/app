@@ -6,7 +6,7 @@
 
 {block "content"}
 
-    {include file='instellingen/werkgever/_sidebar.tpl' active='minimumloon'}
+    {include file='instellingen/werkgever/_sidebar.tpl' active='feestdagen'}
 
 	<!-- Main content -->
 	<div class="content-wrapper">
@@ -18,7 +18,7 @@
 			-------------------------------------------------------------------------------------------------------------------------------------------------->
 			<div class="card">
 				<div class="card-header header-elements-inline">
-					<h5 class="card-title">Minimumloon aanpassen</h5>
+					<h5 class="card-title">Feestdagen aanpassen</h5>
 				</div>
 
 				<div class="card-body">
@@ -33,38 +33,25 @@
 							<!-- /row -->
                         {/if}
 
-                        {if count($formdata) > 0}
-							<table class="table">
-                                {foreach $formdata as $row}
-									<tr>
-										<td style="width: 200px;">{$row.label}</td>
-										<td>
-											<div class="input-group" style="width: 200px">
-                                                {if $row@index > 0}
-													<span class="input-group-prepend">
-												<span class="input-group-text">€</span>
-											</span>
-                                                {/if}
-												<input name="{$row@key}" type="text" class="form-control text-right" value="{$row.value}">
-											</div>
-										</td>
-										<td>
-											{if isset($row.error)}
-												{foreach $row.error as $e}
-													<span class="text-danger">{$e}</span><br />
-												{/foreach}
-											{/if}
-										</td>
-									</tr>
-                                {/foreach}
-							</table>
-                        {/if}
+
+						<table>
+							<tr>
+								<th>Datum</th>
+								<th>Omschrijving</th>
+							</tr>
+							<tr>
+								<td>
+									<input name="datum" value="" type="text" class="form-control" />
+								</td>
+							</tr>
+						</table>
+
 
 
 						<div class="row">
 							<div class="col-lg-12">
 								<button type="submit" name="set" class="btn btn-success">
-									<i class="icon-checkmark2 mr-1"></i>Opslaan
+									<i class="icon-add mr-1"></i>Toevoegen
 								</button>
 							</div><!-- /col -->
 						</div><!-- /row -->

@@ -1,6 +1,8 @@
 <?php
 
+use models\forms\Formbuilder;
 use models\Instellingen\Minimumloon;
+use models\Instellingen\Feestdagen;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -11,13 +13,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Werkgever extends MY_Controller
 {
 
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// Constructor
 	//-----------------------------------------------------------------------------------------------------------------
 	public function __construct()
 	{
 		parent::__construct();
+		
+		//entiteiten afhandelen
+		$this->smarty->assign('entiteiten', $this->werkgever->listEntiteiten() );
+		$this->smarty->assign('replace', 'entity_id='.$this->session->entiteit_id );
 	}
 
 
@@ -35,16 +40,16 @@ class Werkgever extends MY_Controller
 	public function minimumloon()
 	{
 		//$werkgever = new models\Werkgever();
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//minimumloon class
 		$minimumloon = new Minimumloon();
 
-		//set bedrijfsgegevens
+		//set minimumloon
 		if( isset($_POST['set'] ))
 		{
 			$minimumloon_data = $minimumloon->updateMinimumloon();
-			$errors = $this->werkgever->errors();
+			$errors = $minimumloon->errors();
 
 			//msg
 			if( $errors === false )
@@ -58,13 +63,45 @@ class Werkgever extends MY_Controller
 			$errors = false; //no errors
 		}
 
-
-
 		$formdata = $formbuidler->table( 'settings_minimumloon' )->data( $minimumloon_data )->errors( $errors )->build();
-		//show($formdata);
 		$this->smarty->assign('formdata', $formdata);
 
 		$this->smarty->display('instellingen/werkgever/minimumloon.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// aanpassen feestdagen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function feestdagen()
+	{
+		//$werkgever = new models\Werkgever();
+		$formbuidler = new Formbuilder();
+		
+		//minimumloon class
+		$feestdagen = new Feestdagen();
+		
+		//set bedrijfsgegevens
+		if( isset($_POST['set'] ))
+		{
+			$minimumloon_data = $feestdagen->updateMinimumloon();
+			$errors = $feestdagen->errors();
+			
+			//msg
+			if( $errors === false )
+				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			else
+				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
+		}
+		else
+		{
+			$feestdagen_list = $feestdagen->getAll();
+			$errors = false; //no errors
+		}
+		
+		$formdata = $formbuidler->table( 'settings_feestdagen' )->data( $feestdagen_list )->errors( $errors )->build();
+		$this->smarty->assign('formdata', $formdata);
+		
+		$this->smarty->display('instellingen/werkgever/feestdagen.tpl');
 	}
 
 
@@ -75,6 +112,20 @@ class Werkgever extends MY_Controller
 	{
 		//$werkgever = new models\Werkgever();
 		$formbuidler = new models\forms\Formbuilder();
+		
+		//del logo
+		if( isset($_GET['dellogo']) )
+		{
+			$this->werkgever->delLogo();
+			redirect($this->config->item('base_url') . '/instellingen/werkgever/bedrijfsgegevens' ,'location');
+		}
+		
+		//del handtekening
+		if( isset($_GET['delhandtekening']) )
+		{
+			$this->werkgever->delHandtekening();
+			redirect($this->config->item('base_url') . '/instellingen/werkgever/bedrijfsgegevens' ,'location');
+		}
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set'] ))
@@ -104,6 +155,8 @@ class Werkgever extends MY_Controller
 		$formdata = $formbuidler->table( 'werkgever_bedrijfsgegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
 		//show($formdata);
 		$this->smarty->assign('formdata', $formdata);
+		$this->smarty->assign('handtekening', $this->werkgever->handtekening( 'url' ) );
+		$this->smarty->assign('logo', $this->werkgever->logo( 'url' ) );
 
 		$this->smarty->display('instellingen/werkgever/bedrijfsgegevens.tpl');
 	}
@@ -115,7 +168,7 @@ class Werkgever extends MY_Controller
 	public function bankrekeningen()
 	{
 		//new formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//eerst alle rekeningen laden
 		$bankrekeningen_database = $this->werkgever->bankrekeningen();

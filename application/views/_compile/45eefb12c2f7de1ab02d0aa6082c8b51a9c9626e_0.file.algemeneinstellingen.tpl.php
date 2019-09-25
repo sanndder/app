@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-08-07 15:42:03
+/* Smarty version 3.1.33, created on 2019-09-24 16:02:40
   from 'C:\xampp\htdocs\app\application\views\crm\uitzenders\dossier\algemeneinstellingen.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5d4ad52b978104_58067286',
+  'unifunc' => 'content_5d8a22009f4f69_67954695',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '45eefb12c2f7de1ab02d0aa6082c8b51a9c9626e' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\crm\\uitzenders\\dossier\\algemeneinstellingen.tpl',
-      1 => 1565094995,
+      1 => 1569333760,
       2 => 'file',
     ),
   ),
@@ -21,36 +21,36 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:crm/uitzenders/dossier/_sidebar.tpl' => 1,
   ),
 ),false)) {
-function content_5d4ad52b978104_58067286 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5d8a22009f4f69_67954695 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_16436011265d4ad52b935a77_89343538', "title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_16902133865d8a220099b1c2_35675067', "title");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_12958694115d4ad52b9398f4_36801858', "header-icon");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_13871003075d8a220099f041_41002247', "header-icon");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_7600145905d4ad52b93d772_22234094', "header-title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_6330770035d8a22009a2ec4_78326692', "header-title");
 ?>
 
 <?php $_smarty_tpl->_assignInScope('uploader', "true");?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_20154432505d4ad52b945478_70483994', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_10345167735d8a22009aabd4_13184378', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, '../../../layout.tpl');
 }
 /* {block "title"} */
-class Block_16436011265d4ad52b935a77_89343538 extends Smarty_Internal_Block
+class Block_16902133865d8a220099b1c2_35675067 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_16436011265d4ad52b935a77_89343538',
+    0 => 'Block_16902133865d8a220099b1c2_35675067',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -60,12 +60,12 @@ Uitzender<?php
 }
 /* {/block "title"} */
 /* {block "header-icon"} */
-class Block_12958694115d4ad52b9398f4_36801858 extends Smarty_Internal_Block
+class Block_13871003075d8a220099f041_41002247 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-icon' => 
   array (
-    0 => 'Block_12958694115d4ad52b9398f4_36801858',
+    0 => 'Block_13871003075d8a220099f041_41002247',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -75,12 +75,12 @@ icon-office<?php
 }
 /* {/block "header-icon"} */
 /* {block "header-title"} */
-class Block_7600145905d4ad52b93d772_22234094 extends Smarty_Internal_Block
+class Block_6330770035d8a22009a2ec4_78326692 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-title' => 
   array (
-    0 => 'Block_7600145905d4ad52b93d772_22234094',
+    0 => 'Block_6330770035d8a22009a2ec4_78326692',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -90,12 +90,12 @@ Uitzender - <?php echo $_smarty_tpl->tpl_vars['uitzender']->value->bedrijfsnaam;
 }
 /* {/block "header-title"} */
 /* {block "content"} */
-class Block_20154432505d4ad52b945478_70483994 extends Smarty_Internal_Block
+class Block_10345167735d8a22009aabd4_13184378 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_20154432505d4ad52b945478_70483994',
+    0 => 'Block_10345167735d8a22009aabd4_13184378',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -138,7 +138,6 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 						<div class="card-body">
 
 							<form method="post" action="">
-
 
 																<?php $_smarty_tpl->_assignInScope('label_lg', "3");?>
 								<?php $_smarty_tpl->_assignInScope('div_xl', "8");?>
@@ -260,7 +259,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?></span><?php }?>
 									<?php } else { ?>
 
 										<img src="<?php echo $_smarty_tpl->tpl_vars['uitzender']->value->handtekening('url');?>
-" />
+" style="max-width: 400px; max-height: 200px;" />
 										<br />
 										<br />
 										<a href="crm/uitzenders/dossier/algemeneinstellingen/<?php echo $_smarty_tpl->tpl_vars['uitzender']->value->uitzender_id;?>
@@ -311,7 +310,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?></span><?php }?>
 									<?php } else { ?>
 
 										<img src="<?php echo $_smarty_tpl->tpl_vars['uitzender']->value->logo('url');?>
-" />
+" style="max-width: 500px; max-height: 300px;" />
 										<br />
 										<br />
 										<a href="crm/uitzenders/dossier/algemeneinstellingen/<?php echo $_smarty_tpl->tpl_vars['uitzender']->value->uitzender_id;?>

@@ -19,6 +19,8 @@
 		<!-- Content area -->
 		<div class="content">
 
+            {include file='instellingen/werkgever/_topbar.tpl'}
+
 			<!-- Basic card -->
 			<div class="card">
 				<div class="card-body">

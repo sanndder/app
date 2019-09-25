@@ -6,6 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  **/
 class MY_Controller extends CI_Controller
 {
+	
 	//-------------------------------------------------------------------------------------------------------------------------
 	// Constructor voor MY_Controller
 	//-------------------------------------------------------------------------------------------------------------------------
@@ -17,6 +18,8 @@ class MY_Controller extends CI_Controller
 		//base_url naar smarty
 		$this->smarty->assign( 'time' , time() );
 		$this->smarty->assign( 'base_url' , BASE_URL );
+		$this->smarty->assign( 'current_url' , current_url() );
+		$this->smarty->assign( 'qs' , $_SERVER['QUERY_STRING'] );
 		$this->smarty->assign( 'app_name' , APP_NAME );
 
 		//logout

@@ -214,7 +214,7 @@ class Upload_model extends MY_Model
 		$insert['file_size'] = filesize($this->_file_path);
 		$insert['user_id'] = $this->user->user_id;
 
-		$this->db_user->insert('uitzenders_logo', $insert);
+		$this->db_user->insert( $this->_table, $insert);
 
 	}
 
@@ -238,7 +238,7 @@ class Upload_model extends MY_Model
 		}
 
 		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES ('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."')";
-		$sql = "INSERT INTO uitzenders_handtekening (file, ".$this->_field.",user_id) 
+		$sql = "INSERT INTO $this->_table (file, ".$this->_field.",user_id)
 				VALUES (AES_ENCRYPT('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."', UNHEX(SHA2('".UPLOAD_SECRET."',512))),
 				".$this->_id.",
 				".$this->user->user_id."				

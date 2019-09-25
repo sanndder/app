@@ -4,7 +4,7 @@ namespace models\Inleners;
 
 use models\Connector;
 use models\Forms\Validator;
-use models\Utils\Dbhelper;
+use models\Utils\DBhelper;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -189,7 +189,7 @@ class Inlener extends Connector
 		$sql = "SELECT * FROM inleners_contactpersonen WHERE deleted = 0 AND inlener_id = $this->inlener_id ORDER BY achternaam ASC, voorletters ASC";
 		$query = $this->db_user->query($sql);
 
-		$data = Dbhelper::toArray( $query, 'contact_id', 'NULL' );
+		$data = DBhelper::toArray( $query, 'contact_id', 'NULL' );
 		return $data;
 	}
 

@@ -13,6 +13,8 @@
 		<!-- Content area -->
 		<div class="content">
 
+            {include file='instellingen/werkgever/_topbar.tpl'}
+
 			<!-------------------------------------------------------------------------------------------------------------------------------------------------
 			|| Bedrijfsgegevens
 			-------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -143,6 +145,54 @@
 			</div><!-- /basic card -->
 
 
+
+			<!-------------------------------------------------------------------------------------------------------------------------------------------------
+			|| Ondertekening
+			-------------------------------------------------------------------------------------------------------------------------------------------------->
+			<div class="card">
+				<div class="card-header header-elements-inline">
+					<h5 class="card-title">Handtekening</h5>
+				</div>
+
+				<div class="card-body">
+
+					<div class="row">
+						<div class="col-xl-6 col-lg-12">
+
+                            {* upload alleen wanneer er geen logo is *}
+                            {if $handtekening === NULL }
+								<script>
+                                    {literal}
+                                    $(document).ready(function ()
+                                    {
+                                        $('#fileupload2').fileinput('refresh', {uploadUrl: 'upload/uploadhantekeningwerkgever/{/literal}{$smarty.session.entiteit_id}{literal}'});
+                                        $('#fileupload2').on('fileuploaded', function() {
+                                            window.location.reload();
+                                        });
+
+                                    });
+                                    {/literal}
+								</script>
+
+								<form action="#">
+									<input name="file" type="file" id="fileupload2" class="file-input">
+								</form>
+                            {else}
+
+								<img src="{$handtekening}" style="max-width: 400px; max-height: 200px;" />
+								<br />
+								<br />
+								<a href="{$base_url}/instellingen/werkgever/bedrijfsgegevens/?delhandtekening" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Handtekening verwijderen</a>
+                            {/if}
+
+						</div><!-- /col -->
+
+					</div><!-- /row -->
+
+				</div><!-- /card body -->
+			</div><!-- /basic card -->
+
+
 			<!-------------------------------------------------------------------------------------------------------------------------------------------------
 			|| Logo
 			-------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -156,48 +206,31 @@
 					<div class="row">
 						<div class="col-xl-6 col-lg-12">
 
-							<script>
-								{literal}
-                                $(document).ready(function ()
-                                {
-                                    $('#fileupload').fileinput('refresh', {uploadUrl: 'instellingen/werkgever/upload/logo'});
-                                });
-								{/literal}
-							</script>
+                            {* upload alleen wanneer er geen logo is *}
+                            {if $logo === NULL }
+								<script>
+                                    {literal}
+                                    $(document).ready(function ()
+                                    {
+                                        $('#fileupload').fileinput('refresh', {uploadUrl: 'upload/uploadlogowerkgever/{/literal}{$smarty.session.entiteit_id}{literal}'});
+                                        $('#fileupload').on('fileuploaded', function() {
+                                            window.location.reload();
+                                        });
 
-							<form action="#">
-								<input name="file" type="file" id="fileupload" class="file-input">
-							</form>
+                                    });
+                                    {/literal}
+								</script>
 
-						</div><!-- /col -->
-						<div class="col-xl-6 col-lg-12">
+								<form action="#">
+									<input name="file" type="file" id="fileupload" class="file-input">
+								</form>
+                            {else}
 
-
-						</div><!-- /col -->
-
-					</div><!-- /row -->
-
-				</div><!-- /card body -->
-			</div><!-- /basic card -->
-
-
-			<!-------------------------------------------------------------------------------------------------------------------------------------------------
-			|| Ondertekening
-			-------------------------------------------------------------------------------------------------------------------------------------------------->
-			<div class="card">
-				<div class="card-header header-elements-inline">
-					<h5 class="card-title">Ondertekening</h5>
-				</div>
-
-				<div class="card-body">
-
-					<div class="row">
-						<div class="col-xl-6 col-lg-12">
-
-
-						</div><!-- /col -->
-						<div class="col-xl-6 col-lg-12">
-
+								<img src="{$logo}" style="max-width: 500px; max-height: 300px;" />
+								<br />
+								<br />
+								<a href="{$base_url}/instellingen/werkgever/bedrijfsgegevens/?dellogo" class="btn btn-danger btn-sm"><i class="icon-cross2 mr-1"></i>Logo verwijderen</a>
+                            {/if}
 
 						</div><!-- /col -->
 

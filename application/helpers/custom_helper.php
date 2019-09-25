@@ -653,8 +653,7 @@ if (!function_exists('show'))
 {
 	function show($array = '[leeg]', $name = '', $width = 1250)
 	{
-
-		if ($_SERVER['REMOTE_ADDR'] == '66.249.81.35' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2')
+		if ($_SERVER['REMOTE_ADDR'] == '66.249.81.35' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1)
 		{
 			echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:" . $width . "px;'>";
 

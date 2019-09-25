@@ -31,6 +31,20 @@ class Image extends MY_Controller {
 
 		die();
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// url naar logo werkgever
+	//-----------------------------------------------------------------------------------------------------------------
+	public function logowerkgever( $entiteit_id = '' )
+	{
+		$this->werkgever->setEntiteitID( $entiteit_id );
+		$file = $this->werkgever->logo();
+		
+		header('Content-type: image/jpeg');
+		readfile($file);
+		
+		die();
+	}
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// url naar handtekening uitzender
@@ -47,6 +61,23 @@ class Image extends MY_Controller {
 		header('Content-type: image/jpeg');
 		echo($file);
 
+		die();
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// url naar handtekening uitzender
+	//-----------------------------------------------------------------------------------------------------------------
+	public function handtekeningwerkgever( $entiteit_id = '' )
+	{
+		//Deze pagina mag alleen bezocht worden door werkgever
+		if( $this->user->user_type != 'werkgever' )forbidden();
+		
+		$this->werkgever->setEntiteitID( $entiteit_id );
+		$file = $this->werkgever->handtekening();
+		
+		header('Content-type: image/jpeg');
+		echo($file);
+		
 		die();
 	}
 

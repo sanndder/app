@@ -12,7 +12,7 @@
     "datum_per": {
       "label": "Ingangsdatum",
       "rules": {
-        "required": true,
+        "required": false,
         "type": "date"
       }
     },

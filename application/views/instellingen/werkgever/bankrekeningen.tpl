@@ -24,6 +24,8 @@
 						</div><!-- /row -->
 					{/if}
 
+                    {include file='instellingen/werkgever/_topbar.tpl'}
+
 					<form method="post" action="">
 
 						{foreach $bankrekeningen as $formdata}

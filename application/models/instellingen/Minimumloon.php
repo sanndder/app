@@ -5,7 +5,7 @@ namespace models\Instellingen;
 use models\Connector;
 use models\Forms\Valid;
 use models\Forms\Validator;
-use models\Utils\Dbhelper;
+use models\Utils\DBhelper;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -82,9 +82,43 @@ class Minimumloon extends Connector
 	 * minimumloon naar database
 	 *
 	 */
-	public function updateMinimumloon() :bool
+	public function updateMinimumloon() :array
 	{
-
+		$validator = new Validator();
+		$validator->table( 'settings_minimumloon' )->input( $_POST )->run();
+		
+		$input = $validator->data();
+		
+		//geen fouten, nieuwe insert doen wanneer er wijzigingen zijn
+		if( $validator->success() )
+		{
+			//zijn er daadwerkelijk wijzigingen?
+			if( inputIsDifferent( $input, $this->getData() ))
+			{
+				//alle vorige entries als deleted
+				$sql = "UPDATE settings_minimumloon SET deleted = 1, deleted_on = NOW(), deleted_by = ".$this->user->user_id." WHERE deleted = 0";
+				$this->db_user->query($sql);
+				
+				//alleen wanneer de update lukt om dubbele entries te voorkomen
+				if ($this->db_user->affected_rows() != -1)
+				{
+					$input['user_id'] = $this->user->user_id;
+					$this->db_user->insert('settings_minimumloon', $input);
+				}
+				else
+				{
+					$this->_error[] = 'Database error: update mislukt';
+				}
+				
+			}
+		}
+		//fouten aanwezig
+		else
+		{
+			$this->_error = $validator->errors();
+		}
+		
+		return $input;
 	}
 
 
