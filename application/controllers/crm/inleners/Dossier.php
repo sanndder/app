@@ -174,7 +174,7 @@ class Dossier extends MY_Controller
 			if( $errors === false )
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
-				if( $inlener->contactpersonen_complete != 1 )
+				if( $inlener->contactpersoon_complete != 1 )
 				{
 					redirect( $this->config->item('base_url') . 'crm/inleners/dossier/contactpersonen/' . $inlener->inlener_id ,'location');
 					die();

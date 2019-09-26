@@ -148,6 +148,14 @@ class Validator extends Json
 			//factor
 			if ( isset($rules->type) && $rules->type == 'factor')
 				$val = prepareAmountForDatabase($val);
+			
+			//reverse date
+			if ( isset($rules->type) && $rules->type == 'datum')
+			{
+				//TODO localization
+				$val = reverseDate($val);
+			}
+			
 
 			//empty to NULL
 			if( $val == '' ) $val = NULL;

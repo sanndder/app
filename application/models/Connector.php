@@ -36,7 +36,7 @@ class Connector
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Get bedrijfsgegevens
+	 * Connect calss to database
 	 *
 	 */
 	public function connect( $werkgever_id = '' )
@@ -73,8 +73,73 @@ class Connector
 			$this->db_user = $CI->db_user;// first time also copy
 		}
 	}
-
-
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * SELECT * FROM table LIMIT 1 and return row array
+	 *
+	 */
+	public function select_row( string $table, array $where = array() ) :?array
+	{
+		$sql = "SELECT * FROM $table WHERE deleted = 0 ";
+		
+		//add where
+		if( count($where) > 0 )
+			$sql .= " AND ".key($where). " = '".current($where)."' LIMIT 1";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		return $query->row_array();
+	}
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * SELECT * FROM table and return array with or without custom index
+	 *
+	 */
+	public function select_all( string $table, string $index = '' ) :?array
+	{
+		$sql = "SELECT * FROM $table WHERE deleted = 0";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $index != '' )
+				$key = $row[$index];
+			
+			if( isset($key) )
+				$data[$key] = $row;
+			else
+				$data[] = $row;
+		}
+		
+		return $data;
+	}
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * DELETE row
+	 *
+	 */
+	public function delete_row( string $table, array $where = array() ) :bool
+	{
+		$sql = "UPDATE $table
+				SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . "
+				WHERE deleted = 0 AND ".key($where). " = ? ";
+		
+		$this->db_user->query($sql, array(intval(current($where))));
+		
+		if( $this->db_user->affected_rows() > 0 )
+			return true;
+		
+		return false;
+	}
 }
 
 

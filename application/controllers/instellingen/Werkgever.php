@@ -3,6 +3,7 @@
 use models\forms\Formbuilder;
 use models\Instellingen\Minimumloon;
 use models\Instellingen\Feestdagen;
+use models\Verloning\Urentypes;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -70,6 +71,48 @@ class Werkgever extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
+	// aanpassen urentypes
+	//-----------------------------------------------------------------------------------------------------------------
+	public function urentypes()
+	{
+		//urentypes class
+		$urentypes = new Urentypes();
+		$urentypes_categorien = $urentypes->categorien();
+		
+		//del urentype
+		if( isset($_POST['del'] ))
+		{
+			//msg
+			if( $urentypes->delete( $_POST['del'] ) )
+				$this->smarty->assign('msg', msg('success', 'Urentype verwijderd!'));
+			else
+				$this->smarty->assign('msg', msg('warning', 'Urentype kon niet worden verwijderd!'));
+		}
+		
+		//set urentype
+		if( isset($_POST['set'] ))
+		{
+			//add
+			$urentypes->add();
+
+			//then msg
+			if($urentypes->errors() === false )
+				$this->smarty->assign('msg', msg('success', 'Urentype toegevoegd!'));
+			else
+				$this->smarty->assign( 'errors', $urentypes->errors() );
+		}
+		
+		$urentypes_array = $urentypes->getAll();
+		
+		//show($urentypes_array);
+		$this->smarty->assign('urentypes_array', $urentypes_array);
+		$this->smarty->assign('urentypes_categorien', $urentypes_categorien);
+		
+		$this->smarty->display('instellingen/werkgever/urentypes.tpl');
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
 	// aanpassen feestdagen
 	//-----------------------------------------------------------------------------------------------------------------
 	public function feestdagen()
@@ -80,26 +123,34 @@ class Werkgever extends MY_Controller
 		//minimumloon class
 		$feestdagen = new Feestdagen();
 		
-		//set bedrijfsgegevens
-		if( isset($_POST['set'] ))
+		//set urentype
+		if( isset($_POST['del'] ))
 		{
-			$minimumloon_data = $feestdagen->updateMinimumloon();
-			$errors = $feestdagen->errors();
-			
 			//msg
-			if( $errors === false )
-				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			if( $feestdagen->delete( $_POST['del'] ) )
+				$this->smarty->assign('msg', msg('success', 'Feestdag verwijderd!'));
 			else
-				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
-		}
-		else
-		{
-			$feestdagen_list = $feestdagen->getAll();
-			$errors = false; //no errors
+				$this->smarty->assign('msg', msg('warning', 'Feestdag kon niet worden verwijderd!'));
 		}
 		
-		$formdata = $formbuidler->table( 'settings_feestdagen' )->data( $feestdagen_list )->errors( $errors )->build();
-		$this->smarty->assign('formdata', $formdata);
+		//set feestdag
+		if( isset($_POST['set'] ))
+		{
+			$feestdagen->add();
+			
+			//msg
+			if( $feestdagen->errors() === false )
+				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			else
+				$this->smarty->assign('errors', $feestdagen->errors() );
+		}
+		
+		//haal alle feestdagen voor 1 jaar terug en volgende op
+		$feestdagen_list = $feestdagen->getAll();
+		$this->smarty->assign('vandaag', date('Y-m-d') );
+		$this->smarty->assign('ditjaar', date('Y') );
+		$this->smarty->assign('dagnaam', getDagNaam() );
+		$this->smarty->assign('feestdagen_list', $feestdagen_list);
 		
 		$this->smarty->display('instellingen/werkgever/feestdagen.tpl');
 	}
@@ -247,37 +298,5 @@ class Werkgever extends MY_Controller
 
 		$this->smarty->display('instellingen/werkgever/av.tpl');
 	}
-
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// AJAX upload
-	//-----------------------------------------------------------------------------------------------------------------
-	public function upload( $type = '' )
-	{
-		if( $type == 'logo' )
-		{
-			$dir = 'werkgever/logo';
-		}
-
-		$this->load->model('upload_model', 'uploadfiles');
-		$this->uploadfiles->setUploadDir( $dir );
-		$this->uploadfiles->setDatabaseTable( 'werkgevers_logo' );
-		$this->uploadfiles->setPrefix( $type . '_' );
-		$this->uploadfiles->uploadfilesToDatabase();
-
-		if( $this->uploadfiles->errors() === false)
-		{
-			$preview[] = 'http://via.placeholder.com/150';
-			$config[] = array('url' => '/test', 'caption' => 'test.jpg', 'key' => 101, 'size' => 100);
-			$result = [ 'initialPreview' => $preview,'initialPreviewConfig' => $config, 'initialPreviewAsData' => true];
-		}
-		else
-			$result['error'] = $this->uploadfiles->errors();
-
-		header('Content-Type: application/json'); // set json response headers
-		echo json_encode($result);
-		die();
-
-	}
-
+	
 }

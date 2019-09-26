@@ -20,10 +20,12 @@ class DBhelper{
 	 * @param query is het codeignitor query object
 	 * @return mixed
 	 */
-	public static function toArray( $query, $key_field = NULL, $return = 'false' )
+	public static function toArray( $query, $key_field = NULL, $return = 'NULL' )
 	{
 		//init
 		$do_name_check = NULL;
+		$multi_level_array = false;
+
 
 		//empty
 		if ($query->num_rows() == 0)
@@ -37,7 +39,17 @@ class DBhelper{
 		}
 
 		$data = array();
-
+		
+		//multi level?
+		if( $key_field !== NULL )
+		{
+			if( strpos( $key_field, '[]' ) !== false )
+			{
+				$key_field = str_replace( '[]','', $key_field );
+				$multi_level_array = true;
+			}
+		}
+		
 		foreach ($query->result_array() as $row)
 		{
 			//zijn de naam velden aanwezig
@@ -57,7 +69,12 @@ class DBhelper{
 			if( $key_field !== NULL )
 			{
 				$key = $row[$key_field];
-				$data[$key] = $row;
+				
+				if( $multi_level_array )
+					$data[$key][] = $row;
+				else
+					$data[$key] = $row;;
+				
 			}
 			else
 				$data[] = $row;

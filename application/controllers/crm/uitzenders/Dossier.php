@@ -181,7 +181,7 @@ class Dossier extends MY_Controller
 			if( $errors === false )
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
-				if( $uitzender->contactpersonen_complete != 1 )
+				if( $uitzender->contactpersoon_complete != 1 )
 				{
 					redirect( $this->config->item('base_url') . 'crm/uitzenders/dossier/contactpersonen/' . $uitzender->uitzender_id ,'location');
 					die();

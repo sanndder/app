@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-09-24 23:27:37
+/* Smarty version 3.1.33, created on 2019-09-25 14:23:36
   from 'C:\xampp\htdocs\app\application\views\instellingen\werkgever\_sidebar.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5d8a8a499aaaa9_25700828',
+  'unifunc' => 'content_5d8b5c487c6cc2_71058205',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '99df09bcec7b96b7e15631d89ce8aad78d8f32ab' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\instellingen\\werkgever\\_sidebar.tpl',
-      1 => 1569360456,
+      1 => 1569414215,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5d8a8a499aaaa9_25700828 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5d8b5c487c6cc2_71058205 (Smarty_Internal_Template $_smarty_tpl) {
 ?>	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start">
 
@@ -60,6 +60,11 @@ function content_5d8a8a499aaaa9_25700828 (Smarty_Internal_Template $_smarty_tpl)
 						<li class="nav-item">
 							<a href="instellingen/werkgever/feestdagen" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'feestdagen') {?>active<?php }?>">
 								<span>Feestdagen</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="instellingen/werkgever/urentypes" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'urentypes') {?>active<?php }?>">
+								<span>Urentypes</span>
 							</a>
 						</li>
 						<li class="nav-item-header font-weight-bolder">

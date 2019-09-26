@@ -668,6 +668,26 @@ if (!function_exists('show'))
 	}
 }
 
+if (!function_exists('vshow'))
+{
+	function vshow($array = '[leeg]', $name = '', $width = 1250)
+	{
+		if ($_SERVER['REMOTE_ADDR'] == '66.249.81.35' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1)
+		{
+			echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:" . $width . "px;'>";
+			
+			if ($name != '')
+				echo $name . "<br />";
+			
+			echo "<pre>";
+			print_r(var_dump($array));
+			echo "</pre>";
+			echo "</div>";
+		}
+	}
+}
+
+
 if (!function_exists('p'))
 {
 	function p($width = 500)

@@ -308,32 +308,6 @@ class Werknemer extends Connector
 	}
 
 
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 *  del logo
-	 */
-	public function delLogo()
-	{
-		$sql = "UPDATE werknemers_logo
-					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-					WHERE deleted = 0 AND werknemer_id = $this->werknemer_id";
-
-		$this->db_user->query($sql);
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 *  del handtekening
-	 */
-	public function delHandtekening()
-	{
-		$sql = "UPDATE werknemers_handtekening
-					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-					WHERE deleted = 0 AND werknemer_id = $this->werknemer_id";
-
-		$this->db_user->query($sql);
-	}
-
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

@@ -154,13 +154,7 @@ class Uitzender extends Connector
 	 */
 	public function factuurgegevens()
 	{
-		$sql = "SELECT * FROM uitzenders_factuurgegevens WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
+		return $this->select_row( 'uitzenders_factuurgegevens', array( 'uitzender_id' => $this->uitzender_id ) );
 	}
 
 
@@ -170,13 +164,7 @@ class Uitzender extends Connector
 	 */
 	public function bedrijfsgegevens()
 	{
-		$sql = "SELECT * FROM uitzenders_bedrijfsgegevens WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
+		return $this->select_row( 'uitzenders_bedrijfsgegevens', array( 'uitzender_id' => $this->uitzender_id ) );
 	}
 
 
@@ -199,13 +187,7 @@ class Uitzender extends Connector
 	 */
 	public function emailadressen()
 	{
-		$sql = "SELECT * FROM uitzenders_emailadressen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
+		return $this->select_row( 'uitzenders_emailadressen', array( 'uitzender_id' => $this->uitzender_id ) );
 	}
 
 
@@ -233,15 +215,7 @@ class Uitzender extends Connector
 	 */
 	public function factoren()
 	{
-		$sql = "SELECT factor_normaal, factor_overuren FROM uitzenders_factoren WHERE deleted = 0 AND uitzender_id = $this->uitzender_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		$row = $query->row_array();
-
-		return $row;
+		return $this->select_row( 'uitzenders_factoren', array( 'uitzender_id' => $this->uitzender_id ) );
 	}
 
 
@@ -313,11 +287,7 @@ class Uitzender extends Connector
 	 */
 	public function delLogo()
 	{
-		$sql = "UPDATE uitzenders_logo
-					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-					WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
-
-		$this->db_user->query($sql);
+		return $this->delete_row( 'uitzenders_logo', array( 'uitzender_id' => $this->uitzender_id ) );
 	}
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -326,11 +296,7 @@ class Uitzender extends Connector
 	 */
 	public function delHandtekening()
 	{
-		$sql = "UPDATE uitzenders_handtekening
-					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-					WHERE deleted = 0 AND uitzender_id = $this->uitzender_id";
-
-		$this->db_user->query($sql);
+		return $this->delete_row( 'uitzenders_handtekening', array( 'uitzender_id' => $this->uitzender_id ) );
 	}
 
 
@@ -371,7 +337,7 @@ class Uitzender extends Connector
 		$input = $validator->data();
 
 		//juitse paramter meegeven
-		if ($where !== NULL)
+		if ( $where !== NULL)
 			$id = current($where);
 		else
 			$id = NULL;

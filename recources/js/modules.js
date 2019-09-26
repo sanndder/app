@@ -267,6 +267,34 @@ var Datatables = function ()
     }
 }();
 
+// Setup module
+// ------------------------------
+
+var Datepickers = function() {
+
+    // Pickadate picker
+    var _componentPickadate = function() {
+        if( !$().pickadate ){
+            console.warn( 'Warning - picker.js and/or picker.date.js is not loaded.' );
+            return;
+        }
+
+        // Basic options
+        $( '.pickadate' ).pickadate({
+            selectYears: true,
+            selectMonths: true,
+            close: '',
+            selectYears: 10
+        });
+
+    };
+    return {
+        init: function() {
+            _componentPickadate();
+        }
+    }
+}();
+
 // ------------------------------
 // Initialize modules
 // ------------------------------
@@ -277,4 +305,5 @@ document.addEventListener('DOMContentLoaded', function ()
     Uniform.init();
     Datatables.init();
     Elements.init();
+    Datepickers.init();
 });

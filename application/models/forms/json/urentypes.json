@@ -1,0 +1,49 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "urentype_categorie_id": {
+      "label": "Categorie ID",
+      "rules": {
+        "required": true,
+        "type": "int"
+      }
+    },
+    "naam": {
+      "label": "Naam",
+      "rules": {
+        "required": true,
+        "minlength": 3,
+        "maxlength": 100,
+        "tolower" : true,
+        "trim": true,
+        "striptags": true
+      }
+    },
+    "factor": {
+      "label": "Standaard factor",
+      "rules": {
+        "required": true,
+        "minval": 1,
+        "maxval": 1.99,
+        "type": "decimal"
+      }
+    },
+    "percentage": {
+      "label": "Percentage",
+      "rules": {
+        "required": true,
+        "minval": 1,
+        "maxval": 300,
+        "type": "decimal"
+      }
+    }
+  }
+}

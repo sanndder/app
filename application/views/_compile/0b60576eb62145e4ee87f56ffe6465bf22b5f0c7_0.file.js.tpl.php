@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-08-16 15:29:54
+/* Smarty version 3.1.33, created on 2019-09-25 11:11:28
   from 'C:\xampp\htdocs\app\application\views\_page\js.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5d56afd2d92ca7_34383781',
+  'unifunc' => 'content_5d8b2f400956d5_73217577',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '0b60576eb62145e4ee87f56ffe6465bf22b5f0c7' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\_page\\js.tpl',
-      1 => 1565962193,
+      1 => 1569402683,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5d56afd2d92ca7_34383781 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5d8b2f400956d5_73217577 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!-- Core JS files -->
 <?php echo '<script'; ?>
  src="template/global_assets/js/main/jquery.min.js"><?php echo '</script'; ?>
@@ -42,6 +42,15 @@ function content_5d56afd2d92ca7_34383781 (Smarty_Internal_Template $_smarty_tpl)
 >
 <?php echo '<script'; ?>
  src="template/global_assets/js/plugins/forms/styling/switchery.min.js"><?php echo '</script'; ?>
+>
+<?php echo '<script'; ?>
+ src="template/global_assets/js/plugins/pickers/pickadate/picker.js"><?php echo '</script'; ?>
+>
+<?php echo '<script'; ?>
+ src="template/global_assets/js/plugins/pickers/pickadate/picker.date.js"><?php echo '</script'; ?>
+>
+<?php echo '<script'; ?>
+ src="template/global_assets/js/plugins/pickers/pickadate/translations/nl_NL.js"><?php echo '</script'; ?>
 >
 
 <!-- /core JS files -->

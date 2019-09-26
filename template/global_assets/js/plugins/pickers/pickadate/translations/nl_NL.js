@@ -7,7 +7,8 @@ jQuery.extend( jQuery.fn.pickadate.defaults, {
     weekdaysShort: [ 'zo', 'ma', 'di', 'wo', 'do', 'vr', 'za' ],
     today: 'vandaag',
     clear: 'verwijderen',
+    close: 'sluiten',
     firstDay: 1,
-    format: 'dddd d mmmm yyyy',
+    format: 'dd-mm-yyyy',
     formatSubmit: 'yyyy/mm/dd'
 });

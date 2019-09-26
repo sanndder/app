@@ -1,5 +1,6 @@
 {
   "remove": [
+    "datum_submit",
     "set",
     "id",
     "user_id",
@@ -13,7 +14,7 @@
       "label": "Datum",
       "rules": {
         "required": true,
-        "type": "date"
+        "type": "datum"
       }
     },
     "omschrijving": {

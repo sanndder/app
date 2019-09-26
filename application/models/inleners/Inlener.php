@@ -311,34 +311,7 @@ class Inlener extends Connector
 	}
 
 
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 *  del logo
-	 */
-	public function delLogo()
-	{
-		$sql = "UPDATE inleners_logo
-					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-					WHERE deleted = 0 AND inlener_id = $this->inlener_id";
-
-		$this->db_user->query($sql);
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 *  del handtekening
-	 */
-	public function delHandtekening()
-	{
-		$sql = "UPDATE inleners_handtekening
-					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
-					WHERE deleted = 0 AND inlener_id = $this->inlener_id";
-
-		$this->db_user->query($sql);
-	}
-
-
+	
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
