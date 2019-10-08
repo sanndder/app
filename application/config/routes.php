@@ -65,5 +65,5 @@ $route['crm/werknemers'] 						= 'crm/werknemers/overzicht';
 $route['ureninvoer'] 							= 'ureninvoer/ureninvoer/index';
 
 
-$route['instellingen/werkgever/users/(:any)'] 					= 'users/index/$1';
-$route['instellingen/werkgever/users'] 							= 'users/index';
+$route['instellingen/werkgever/users/(:any)'] 					= 'instellingen/users/index/$1';
+$route['instellingen/werkgever/users'] 							= 'instellingen/users/index';

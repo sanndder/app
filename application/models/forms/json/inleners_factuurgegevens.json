@@ -30,21 +30,31 @@
         "maxlength": 50
       }
     },
-    "factuur_emailen": {
-      "label": "Factuur emailen",
+    "frequentie": {
+      "label": "Factuur frequentie",
       "rules": {
         "required": true
       },
       "radio": {
         "inline": true,
         "options": {
-          "1": "Ja",
-          "0": "Nee"
+          "w": "Week",
+          "4w": "4 Weken",
+          "m": "Maand"
         }
       }
     },
     "termijn": {
-      "label": "Betalingstermijn",
+      "label": "Betaaltermijn",
+      "rules": {
+        "required": true
+      },
+      "list": {
+        "options": "betaaltermijnen"
+      }
+    },
+    "factuur_emailen": {
+      "label": "Factuur emailen",
       "rules": {
         "required": true
       },
@@ -72,13 +82,16 @@
     "g_rekening_percentage": {
       "label": "Percentage G-rekening",
       "rules": {
-        "required": true
+        "required": "conditional",
+        "required_parent": "g_rekening",
+        "required_value_true": "1"
       },
-      "radio": {
-        "inline": true,
+      "list": {
         "options": {
-          "1": "Ja",
-          "0": "Nee"
+          "15": "15",
+          "20": "20",
+          "25": "25",
+          "30": "30"
         }
       }
     },

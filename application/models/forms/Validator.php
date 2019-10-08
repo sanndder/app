@@ -177,8 +177,18 @@ class Validator extends Json
 			$rules = $this->json->field->$field->rules;
 
 			//is field empty, but required?
-			if ($val == '' && isset($rules->required) && $rules->required === true)
+			if ( $val == '' && isset($rules->required) && $rules->required === true)
 				$this->_errors[$field][] = sprintf('%s is verplicht', $this->json->field->$field->label);
+			
+			//is field required when other field is filled?
+			if( isset($rules->required) && $rules->required === 'conditional' )
+			{
+				if($this->_input[$rules->required_parent] == $rules->required_value_true )
+				{
+					if ( $val == '' )
+						$this->_errors[$field][] = sprintf('%s is verplicht', $this->json->field->$field->label);
+				}
+			}
 
 			//field is not empty
 			if ($val != '')

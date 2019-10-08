@@ -38,7 +38,11 @@
 	<!-- datatable -->
     {if isset($datatable)}
 		<script src="template/global_assets/js/plugins/tables/datatables/datatables.min.js" type="text/javascript"></script>
-		<script src="template/global_assets/js/plugins/forms/selects/select2.min.js" type="text/javascript"></script>
+    {/if}
+
+	<!-- select2 -->
+    {if isset($select2) || isset($datatable)}
+	    <script src="template/global_assets/js/plugins/forms/selects/select2.min.js" type="text/javascript"></script>
     {/if}
 
 	<!-- /JS plugins -->

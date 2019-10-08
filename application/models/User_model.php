@@ -14,6 +14,10 @@ class User_model extends MY_Model
 	public $user_id = NULL;
 	public $user_type = NULL;
 	public $werkgever_id = NULL;
+	public $werknemer_id = NULL;
+	public $inlener_id = NULL;
+	public $uitzender_id = NULL;
+	//public $logindata = NULL;
 
 	private $_errors = array();
 
@@ -27,19 +31,18 @@ class User_model extends MY_Model
 		parent::__construct();
 
 		//user as global var
-		$this->logindata = $this->session->userdata('logindata');
+		$logindata = $this->session->userdata('logindata');
 
 		//main user
-		if( isset($this->logindata['main']['user_id']) && $this->logindata['main']['user_id'] != NULL )
+		if( isset($logindata['main']['user_id']) && $logindata['main']['user_id'] != NULL )
 		{
-			$this->user_id = $this->logindata['main']['user_id'];
-			$this->username = $this->logindata['main']['username'];
-			$this->user_name = $this->logindata['main']['user_name'];
-			$this->user_type = $this->logindata['main']['user_type'];
-			$this->werkgever_id = $this->logindata['werkgever_id'];
+			$this->user_id = $logindata['main']['user_id'];
+			$this->username = $logindata['main']['username'];
+			$this->user_name = $logindata['main']['user_name'];
+			$this->user_type = $logindata['main']['user_type'];
+			$this->werkgever_id = $logindata['werkgever_id'];
 
 			$this->smarty->assign( 'user_name' , $this->user_name );
-
 		}
 	}
 

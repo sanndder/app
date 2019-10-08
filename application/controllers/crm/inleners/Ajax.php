@@ -1,4 +1,9 @@
 <?php
+
+use models\forms\Formbuilder;
+use models\Inleners\Inlener;
+use models\Verloning\Urentypes;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -20,6 +25,29 @@ class Ajax extends MY_Controller
 
 
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// validate input urentype
+	//-----------------------------------------------------------------------------------------------------------------
+	public function validateurentype()
+	{
+		$urentypes = new Urentypes();
+		
+		//valideren
+		$urentypes->validateInlenerUrentype();
+		
+		//init response
+		$response = array( 'status' => 'error' );
+		
+		//msg
+		if( $urentypes->errors() === false )
+			$response['status'] = 'success';
+		else
+			$response['error'] = $urentypes->errors();
+		
+		echo json_encode( $response );
+	}
+	
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// get contactpersoon JSON
@@ -27,7 +55,7 @@ class Ajax extends MY_Controller
 	public function getcontactpersoon( $inlener_id = NULL, $contact_id = 0 )
 	{
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		//allemaal ophalen
 		$contactpersoon = $inlener->contactpersoon($contact_id);
@@ -57,7 +85,7 @@ class Ajax extends MY_Controller
 	public function setcontactpersoon( $inlener_id = NULL, $contact_id = 0 )
 	{
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();

@@ -30,7 +30,7 @@
     "factor": {
       "label": "Standaard factor",
       "rules": {
-        "required": true,
+        "required": false,
         "minval": 1,
         "maxval": 1.99,
         "type": "decimal"

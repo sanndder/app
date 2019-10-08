@@ -132,6 +132,12 @@ class Formbuilder extends Json {
 			{
 				$this->_formdata[$field]['radio'] = json_decode(json_encode($info->radio), true);
 			}
+			
+			//select list?
+			if( isset($info->list) )
+			{
+				$this->_formdata[$field]['list'] = json_decode(json_encode($info->list), true);
+			}
 
 		}
 		//show($this->_formdata);

@@ -118,7 +118,7 @@
 			</div><!-- /main navigation -->
 
 			<!---------------------------------------------------------------------------------------------------------
-			||Snel zoeken
+			||Weergave instellingen
 			---------------------------------------------------------------------------------------------------------->
 			<div class="card card-sidebar-mobile d-none d-lg-block d-xl-block">
 
@@ -131,7 +131,6 @@
 				<div class="card-body" style="height: 80px; ">
 
 					<div id="move-length-dropdown" style="float: left; margin-left: -20px;">
-
 					</div>
 
 				</div>
@@ -155,6 +154,7 @@
 			<!-- Basic card -->
 			<div class="card">
 
+				{*
 				<div class="bg-light rounded-top">
 					<div class="navbar navbar-light bg-light navbar-expand-lg py-lg-2 rounded-top">
 						<div class="text-center d-lg-none w-100">
@@ -177,13 +177,13 @@
 
 						</div>
 					</div>
-				</div>
+				</div>*}
 
 				<!-- header -->
 				<!-- card  body-->
 				<div class="card-body">
 				<div class="media flex-column flex-md-row">
-					<a href="#" class="d-none d-md-block mr-md-3 mb-3 mb-md-0">
+					<a href="javascript:void(0)" class="d-none d-md-block mr-md-3 mb-3 mb-md-0">
 						<span class="btn bg-teal-400 btn-icon btn-lg rounded-round">
 							<span class="letter-icon">U</span>
 						</span>
@@ -192,6 +192,13 @@
 					<div class="media-body">
 						<h6 class="mb-0">Uitzenderoverzicht</h6>
 						<div class="letter-icon-title font-weight-semibold">{count($uitzenders)} uitzenders in tabel</div>
+					</div>
+
+					<div class="justify-content-between">
+						<a href="crm/uitzenders/dossier/bedrijfsgegevens" class="btn bg-teal-400">
+							<i class="icon-plus-circle2 icon mr-1"></i>
+							<span>Nieuwe uitzender</span>
+						</a>
 					</div>
 				</div>
 
@@ -236,4 +243,36 @@
 	</div>
 	<!-- /main content -->
 
+	<div class="sidebar sidebar-light sidebar-main d-none d-xxl-block sidebar-sections sidebar-expand-lg align-self-start">
+
+		<!-- Sidebar content -->
+		<div class="sidebar-content">
+
+			<!-- Latest updates -->
+			<div class="card">
+				<div class="card-header bg-transparent header-elements-inline">
+					<span class="text-uppercase font-size-sm font-weight-semibold">Laatst bezocht</span>
+				</div>
+
+				<div class="card-body">
+					<ul class="media-list">
+						<li class="media">
+							<div class="media-body">
+								<a href="crm/uitzenders/dossier/overzicht/254">
+									<div class="float-left" style="width: 45px;">254</div>
+									<div>ABC Bedrijfsservice BV</div>
+								</a>
+
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+			<!-- /latest updates -->
+
+		</div>
+		<!-- /sidebar content -->
+
+	</div>
 {/block}

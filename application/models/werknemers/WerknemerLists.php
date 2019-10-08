@@ -36,8 +36,35 @@ class WerknemerLists extends Connector {
 		//call parent constructor for connecting to database
 		parent::__construct();
 	}
-
-
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * list werknemers for inlener
+	 *
+	 * @return array or boolean
+	 */
+	static function inlener( $inlener_id )
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$sql = "SELECT werknemers_gegevens.werknemer_id, achternaam, voorletters, voornaam, tussenvoegsel
+				FROM werknemers_inleners
+				LEFT JOIN werknemers_gegevens ON werknemers_gegevens.werknemer_id = werknemers_inleners.werknemer_id
+				WHERE werknemers_gegevens.deleted = 0 ORDER BY achternaam";
+		$query = $db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+			$data[$row['werknemer_id']] = make_name($row);
+		
+		return $data;
+	}
+	
+	
+	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * aanpassen welke columns er opgehaald moeten worden, standaard alles

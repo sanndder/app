@@ -1,4 +1,10 @@
 <?php
+
+use models\Facturatie\Betaaltermijnen;
+use models\forms\Formbuilder;
+use models\Inleners\Inlener;
+use models\Verloning\Urentypes;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -27,7 +33,7 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function overzicht( $inlener_id = NULL )
 	{
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		//redirect indien nodig
 		if( $inlener->complete == 0 )
@@ -52,10 +58,10 @@ class Dossier extends MY_Controller
 	public function algemeneinstellingen( $inlener_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		//del logo
 		if( isset($_GET['dellogo']) )
@@ -110,10 +116,10 @@ class Dossier extends MY_Controller
 	public function bedrijfsgegevens( $inlener_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set']) )
@@ -159,10 +165,10 @@ class Dossier extends MY_Controller
 	public function factuurgegevens( $inlener_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set'] ))
@@ -191,12 +197,13 @@ class Dossier extends MY_Controller
 			$factuurgegevens =  $inlener->factuurgegevens();
 			$errors = false; //no errors
 		}
-
+		//show($factuurgegevens);
 		$formdata = $formbuidler->table( 'inleners_factuurgegevens' )->data( $factuurgegevens )->errors( $errors )->build();
 		$this->smarty->assign('formdata', $formdata);
 
 		//show($formdata);
 
+		$this->smarty->assign('list', array( 'betaaltermijnen' => Betaaltermijnen::list() ));
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/factuurgegevens.tpl');
 	}
@@ -208,10 +215,10 @@ class Dossier extends MY_Controller
 	public function emailadressen( $inlener_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set'] ))
@@ -256,33 +263,32 @@ class Dossier extends MY_Controller
 	public function verloninginstellingen( $inlener_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
-		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
-
-		//del logo
-		if( isset($_GET['dellogo']) )
-		{
-			$inlener->delLogo();
-			redirect($this->config->item('base_url') . '/crm/inleners/dossier/algemeneinstellingen/' . $inlener_id ,'location');
-		}
-
-		//del handtekening
-		if( isset($_GET['delhandtekening']) )
-		{
-			$inlener->delHandtekening();
-			redirect($this->config->item('base_url') . '/crm/inleners/dossier/algemeneinstellingen/' . $inlener_id ,'location');
-		}
-
-		//set bedrijfsgegevens
-		if( isset($_POST['set']) )
+		//init objects
+		$inlener = new Inlener( $inlener_id );		
+		$urentypes = new Urentypes();
+		
+		//del data
+		if( isset($_POST['del']) )
 		{
 			//sitch
+			switch ($_POST['del'])
+			{
+				//delete, pak de key van veld omschrijving voor ID
+				case 'inleners_factoren': $inlener->delFactoren( key( $_POST['omschrijving'] ) );
+			}
+		}
+		
+		//set data
+		if( isset($_POST['set']) )
+		{
+			//switch for each tab
 			switch ($_POST['set']) {
-				case 'inleners_factoren':
-					$factoren = $inlener->setFactoren();
-					break;
+				//extra factoren toevoegen
+				case 'inleners_factoren': $inlener->setFactoren();
+				//urentype aan inlener koppelen
+				case 'add_urentype_to_inlener': $urentypes->addUrentypeToInlener( $inlener_id, $_POST );
 			}
 
 			$errors = $inlener->errors();
@@ -295,13 +301,13 @@ class Dossier extends MY_Controller
 		}
 		else
 		{
-			$factoren =  $inlener->factoren();
 			$errors = false; //no errors
 		}
 
-		//form maken
-		$formdata = $formbuidler->table( 'inleners_factoren' )->data( $factoren )->errors( $errors )->build();
-		$this->smarty->assign('formdata', $formdata);
+		
+		
+		$this->smarty->assign( 'urentypes', $urentypes->getAll() );
+		$this->smarty->assign( 'factoren', $inlener->factoren() );
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/verloninginstellingen.tpl');
@@ -314,7 +320,7 @@ class Dossier extends MY_Controller
 	public function contactpersonen( $inlener_id = NULL )
 	{
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		$contactpersonen = $inlener->contactpersonen();
 		$this->smarty->assign('contactpersonen', $contactpersonen);
@@ -330,7 +336,7 @@ class Dossier extends MY_Controller
 	public function documenten( $inlener_id = NULL )
 	{
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/documenten.tpl');
@@ -343,7 +349,7 @@ class Dossier extends MY_Controller
 	public function notities( $inlener_id = NULL )
 	{
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/notities.tpl');
@@ -356,7 +362,7 @@ class Dossier extends MY_Controller
 	public function facturen( $inlener_id = NULL )
 	{
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/facturen.tpl');
@@ -369,7 +375,7 @@ class Dossier extends MY_Controller
 	public function inleners( $inlener_id = NULL )
 	{
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/inleners.tpl');
@@ -382,7 +388,7 @@ class Dossier extends MY_Controller
 	public function werknemers( $inlener_id = NULL )
 	{
 		//init inlener object
-		$inlener = new \models\Inleners\Inlener( $inlener_id );
+		$inlener = new Inlener( $inlener_id );
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/werknemers.tpl');

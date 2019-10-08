@@ -234,7 +234,7 @@ class Werknemer extends Connector
 	 */
 	public function factoren()
 	{
-		$sql = "SELECT factor_normaal, factor_overuren FROM werknemers_factoren WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
+		$sql = "SELECT factor_hoog, factor_laag FROM werknemers_factoren WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
 		$query = $this->db_user->query($sql);
 
 		if ($query->num_rows() == 0)

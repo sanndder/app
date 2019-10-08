@@ -231,17 +231,19 @@ class Inlener extends Connector
 	/*
 	 * get factoren
 	 */
-	public function factoren()
+	public function factoren( $factor_id = NULL )
 	{
-		$sql = "SELECT factor_normaal, factor_overuren FROM inleners_factoren WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		$row = $query->row_array();
-
-		return $row;
+		$data = $this->select_all( 'inleners_factoren', 'factor_id' );
+		
+		if( $data !== NULL && $factor_id !== NULL)
+		{
+			if( isset( $data[$factor_id] ) )
+				return $data[$factor_id];
+			else
+				return NULL;
+		}
+		
+		return $data;
 	}
 
 
@@ -461,10 +463,46 @@ class Inlener extends Connector
 	 */
 	public function setFactoren()
 	{
-		$input = $this->_set('inleners_factoren', 'factoren');
-		return $input;
+		//omzetten naar single level array
+		if( is_array($_POST['factor_hoog']) )
+		{
+			$factor_id = key($_POST['factor_hoog']);
+			$_POST['default_factor'] = $_POST['default_factor'][$factor_id];
+			$_POST['omschrijving'] = $_POST['omschrijving'][$factor_id];
+			$_POST['factor_hoog'] = $_POST['factor_hoog'][$factor_id];
+			$_POST['factor_laag'] = $_POST['factor_laag'][$factor_id];
+		}
+		//nieuwe factor
+		else
+		{
+			//hoogste contact id ophalen, autoincrement is niet van toepassing (zit op andere kolom)
+			$sql = "SELECT MAX(factor_id) AS factor_id FROM inleners_factoren";
+			$query = $this->db_user->query($sql);
+			
+			$data = $query->row_array();
+			
+			$_POST['factor_id'] = $factor_id  = $data['factor_id'] + 1;
+			$_POST['inlener_id'] = $this->inlener_id;
+		}
+		
+		$input = $this->_set('inleners_factoren', 'factoren', array('factor_id' => $factor_id) );
+
+		//$input = $this->_set('inleners_factoren', 'factoren');
+		//return $input;
 	}
 
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * delete factoren
+	 *
+	 */
+	public function delFactoren( $factor_id )
+	{
+		$this->delete_row( 'inleners_factoren', array('factor_id' => $factor_id)  );
+	}
+	
+	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Sla bedrijfsgegevens op na controle

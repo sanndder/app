@@ -11,7 +11,7 @@
     "deleted_on"
   ],
   "field": {
-    "factor_normaal": {
+    "factor_hoog": {
       "label": "Factor normale uren",
       "rules": {
         "required": true,
@@ -21,7 +21,7 @@
         "type": "factor"
       }
     },
-    "factor_overuren": {
+    "factor_laag": {
       "label": "Factor overuren",
       "rules": {
         "required": true,

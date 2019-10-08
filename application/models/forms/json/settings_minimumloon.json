@@ -3,6 +3,7 @@
     "set",
     "id",
     "user_id",
+    "datum_per_submit",
     "timestamp",
     "deleted",
     "deleted_by",
@@ -13,7 +14,7 @@
       "label": "Ingangsdatum",
       "rules": {
         "required": false,
-        "type": "date"
+        "type": "datum"
       }
     },
     "21_jaar": {

@@ -62,7 +62,7 @@ var SweetAlert = function ()
             var $btn = $(this);
             var delId = $btn.data('id');
             var $form = $btn.parents('form');
-
+            console.log($form);
             var title = $btn.data('title');
 
             swalInit({
@@ -196,7 +196,7 @@ var Datatables = function ()
                 [10, 15, 20, 25, 50, -1],
                 ['10 rijen', '15 rijen', '20 rijen', '25 rijen', '50 rijen', 'Alle rijen']
             ],
-            dom: '<"datatable-scroll"t><"datatable-footer"><"pull-left"pl>',
+            dom: '<"datatable-scroll"t><"datatable-footer"><"text-left"pl>',
             language: {
                 search: '<span>Snel zoeken:</span> _INPUT_',
                 searchPlaceholder: 'Type om te zoeken...',
@@ -295,6 +295,32 @@ var Datepickers = function() {
     }
 }();
 
+
+var Select2Selects = function() {
+
+
+    //
+    // Setup module components
+    //
+
+    // Select2 examples
+    var _componentSelect2 = function() {
+        if (!$().select2) {
+            console.warn('Warning - select2.min.js is not loaded.');
+            return;
+        }
+
+        // Select with search
+        $('.select-search').select2();
+
+    };
+    return {
+        init: function() {
+            _componentSelect2();
+        }
+    }
+}();
+
 // ------------------------------
 // Initialize modules
 // ------------------------------
@@ -306,4 +332,5 @@ document.addEventListener('DOMContentLoaded', function ()
     Datatables.init();
     Elements.init();
     Datepickers.init();
+    Select2Selects.init();
 });

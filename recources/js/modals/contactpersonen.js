@@ -108,7 +108,6 @@ function setContact( obj, entityType, entityId )
     })
     .done(function( json )
     {
-
         //spinner
         $btn.find('.icon-spinner2').removeClass('icon-spinner2').removeClass('spinner').addClass('icon-checkmark2');
         $modal.find('.text-danger').html('');

@@ -42,10 +42,18 @@
 											<div class="input-group" style="width: 200px">
                                                 {if $row@index > 0}
 													<span class="input-group-prepend">
-												<span class="input-group-text">€</span>
-											</span>
+														<span class="input-group-text">€</span>
+													</span>
+	                                                <input name="{$row@key}" type="text" class="form-control text-right" value="{$row.value}">
+
+                                                {else}
+	                                                <div class="input-group">
+														<span class="input-group-prepend">
+															<span class="input-group-text"><i class="icon-calendar5"></i></span>
+														</span>
+		                                                <input name="{$row@key}" value="{$row.value}" type="text" class="form-control pickadate"/>
+	                                                </div>
                                                 {/if}
-												<input name="{$row@key}" type="text" class="form-control text-right" value="{$row.value}">
 											</div>
 										</td>
 										<td>

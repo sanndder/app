@@ -1,4 +1,7 @@
 <?php
+
+use models\Users\UserLists;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -23,13 +26,14 @@ class Users extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-
-
-
-		$usertype = 'werkgever';
-
-		$this->smarty->assign('usertype', $usertype);
-		$this->smarty->display('users/overzicht.tpl');
+		//show($this->user);
+		
+		$userslist = new UserLists();
+		$users = $userslist->all();
+	
+		$this->smarty->assign('users', $users);
+		$this->smarty->assign('usertype', $this->user->user_type);
+		$this->smarty->display('instellingen/users/overzicht.tpl');
 	}
 
 }

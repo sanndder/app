@@ -11,7 +11,30 @@
     "deleted_on"
   ],
   "field": {
-    "factor_normaal": {
+    "factor_id": {
+      "label": "Factor",
+      "rules": {
+        "required": true,
+        "type": "int"
+      }
+    },
+    "inlener_id": {
+      "label": "Inlener ID",
+      "rules": {
+        "required": true,
+        "type": "int"
+      }
+    },
+    "omschrijving": {
+      "label": "Omschrijving",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 100,
+        "striptags": true
+      }
+    },
+    "factor_hoog": {
       "label": "Factor normale uren",
       "rules": {
         "required": true,
@@ -21,7 +44,7 @@
         "type": "factor"
       }
     },
-    "factor_overuren": {
+    "factor_laag": {
       "label": "Factor overuren",
       "rules": {
         "required": true,
@@ -29,6 +52,13 @@
         "maxlength": 5,
         "removespaces": true,
         "type": "factor"
+      }
+    },
+    "default_factor": {
+      "label": "Standaard",
+      "rules": {
+        "required": true,
+        "type": "int"
       }
     }
   }

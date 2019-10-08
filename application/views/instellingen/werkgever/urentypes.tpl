@@ -60,9 +60,10 @@
 								<td style="width:100px;" class="pr-2">
 									<input name="percentage" value="" type="text" class="form-control text-right make-naam" autocomplete="off" required/>
 								</td>
+								{*
 								<td style="width:100px;" class="pr-2">
 									<input name="factor" value="" type="text" class="form-control text-right make-naam" autocomplete="off" required/>
-								</td>
+								</td>*}
 								<td style="width:400px;" class="pr-2">
 									<input name="naam" value="" type="text" class="form-control urentype-naam" autocomplete="off" required/>
 								</td>
@@ -132,18 +133,20 @@
 													<th style="width: 20px;"></th>
 													<th class="pl-1">Naam</th>
 													<th class="text-right" style="width: 110px">Percentage</th>
-													<th class="text-right" style="width: 110px">Factor</th>
+													{*<th class="text-right" style="width: 110px">Factor</th>*}
 												</tr>
                                                 {foreach $array as $u}
 													<tr>
 														<td class="pl-2 pr-0">
+															{if $u.urentype_id != 1}
 															<button type="button" class="sweet-confirm p-0 btn" data-id="{$u.urentype_id}" data-popup="tooltip" data-placement="top" data-title="Urentype verwijderen">
 																<i class="icon-trash text-danger"></i>
 															</button>
+                                                            {/if}
 														</td>
 														<td class="pl-1">{$u.naam}</td>
 														<td class="text-right">{$u.percentage}</td>
-														<td class="text-right">{$u.factor}</td>
+                                                        {*<td class="text-right">{$u.factor}</td>*}
 													</tr>
                                                 {/foreach}
 											</table>

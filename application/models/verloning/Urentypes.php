@@ -5,6 +5,7 @@ namespace models\Verloning;
 use models\Connector;
 use models\Forms\Validator;
 use models\Utils\DBhelper;
+use models\Werknemers\WerknemerLists;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 
@@ -54,9 +55,107 @@ class Urentypes extends Connector
 	 */
 	public function delete( $urentype_id )
 	{
-		return $this->delete_row( 'urentypes', array( 'urentype_id' => $urentype_id ) );
+		//Urentype ID 1 mag nooit weg!
+		if( $urentype_id != 1 )
+			return $this->delete_row( 'urentypes', array( 'urentype_id' => $urentype_id ) );
+	}
+
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * validate input for inlener
+	 *
+	 */
+	public function validateInlenerUrentype( $post = NULL )
+	{
+		if( $post === NULL ) $post = $_POST;
+		
+		//chekc of ID bestaat
+		$result = $this->select_row( 'urentypes', array('urentype_id' => intval($post['urentype_id']) ) );
+		
+		if( $result === NULL )
+			$this->_error['urentype_id'] = 'Er is een ongeldig urentype gekozen';
+		
+		//is doorbelasten gekozen
+		if( !isset($post['doorbelasten_uitzender']) || ($post['doorbelasten_uitzender'] != 0 && $post['doorbelasten_uitzender'] != 1) )
+			$this->_error['doorbelasten_uitzender'] = 'Maak een keuze a.u.b.';
+		
+		//is standaard tarief
+		if( isset($post['standaard_verkooptarief']) && $post['standaard_verkooptarief'] != '' )
+		{
+			if( !is_numeric(prepareAmountForDatabase($post['standaard_verkooptarief'])) )
+				$this->_error['standaard_verkooptarief'] = 'Er is een ongeldig bedrag ingevuld';
+		}
+		
+		//show($result);
 	}
 	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * validate input for inlener
+	 *
+	 */
+	public function addUrentypeToInlener( $inlener_id, $post )
+	{
+		//eerst controleren
+		$this->validateInlenerUrentype( $post );
+		
+		//stoppen bij error
+		if( $this->_error !== NULL )
+			return false;
+		
+		//cleanup
+		$insert['inlener_id'] = $inlener_id;
+		$insert['urentype_id'] = $post['urentype_id'];
+		$insert['doorbelasten_uitzender'] = $post['doorbelasten_uitzender'];
+		$insert['label'] = strip_tags(substr(trim($post['label']),0,100));
+		if( $post['standaard_verkooptarief'] != '' )
+			$insert['standaard_verkooptarief'] = prepareAmountForDatabase($post['standaard_verkooptarief']);
+		
+		$this->db_user->insert( 'inleners_urentypes', $insert );
+		
+		//TODO: aan werknemers toevoegen
+		$urentype_id_inlener = $this->db_user->insert_id();
+		
+		if( $urentype_id_inlener < 1 )
+		{
+			$this->_error[] = 'Er gaat was mis bij het toevoegen van een urentype';
+			return false;
+		}
+		
+		//toevoegen aan werknemers
+		$this->addUrentypeToWerknemers( $inlener_id, $insert );
+		
+		
+		//show($result);
+	}
+	
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Add urentype to werknemers, new and old
+	 * insert moet al gevalideerd zijn
+	 */
+	public function addUrentypeToWerknemers( $inlener_id, $urentype )
+	{
+		//welke werknemers werken voor deze inlener
+		$werknemers = WerknemerLists::inlener( $inlener_id );
+		
+		//TODO: list van maken
+		//voor elk van deze werknemers de uurlonen ophalen
+		$sql = "SELECT * FROM werknemers_uurloon WHERE deleted = 0 AND werknemer_id IN (".array_keys_to_string($werknemers).")";
+		$query = $this->db_user->query( $sql );
+		
+		foreach( $query->result_array() as $row )
+		{
+			$data[$row['werknemer_id']][$row['id']] = $row;
+		}
+		
+		//urentype toevoegen aan alle werknemers, voor elk uurloon
+		
+		show($werknemers);
+	}
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

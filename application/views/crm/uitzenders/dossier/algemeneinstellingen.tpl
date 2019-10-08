@@ -51,9 +51,9 @@
 									<legend class="text-uppercase font-size-sm font-weight-bold">Standaard factoren</legend>
 									<div class="mb-3">Deze factoren worden overgenomen voor nieuw aangemelde inleners.</div>
 
-									<!-- factor_normaal -->
-									{if isset($formdata.factor_normaal)}
-										{assign "field" "factor_normaal"}
+									<!-- factor_hoog -->
+									{if isset($formdata.factor_hoog)}
+										{assign "field" "factor_hoog"}
 										<div class="form-group row">
 											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
 												:</label>
@@ -66,9 +66,9 @@
 										</div>
 									{/if}
 
-									<!-- factor_overuren -->
-									{if isset($formdata.factor_overuren)}
-										{assign "field" "factor_overuren"}
+									<!-- factor_laag -->
+									{if isset($formdata.factor_laag)}
+										{assign "field" "factor_laag"}
 										<div class="form-group row">
 											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
 												:</label>

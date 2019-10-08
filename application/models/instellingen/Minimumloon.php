@@ -237,7 +237,7 @@ class Minimumloon extends Connector
 		$this->table['40'] = array();
 		$this->table['38'] = array();
 		$this->table['36'] = array();
-
+		
 		foreach ( $this->table as $categorie => $array )
 		{
 			for ( $i = 21; $i > 14; $i--)
