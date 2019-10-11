@@ -4,3 +4,20 @@
 /* lijst items op laten lichten*/
 ul.list-hover li{padding: 3px 4px; margin-top: 1px; transition: all ease-in-out .20s}
 ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1875rem; cursor:pointer}
+
+/* sidebar */
+.page-wrapper{
+    transition: margin-right .5s;
+}
+
+.sidebar-right{
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+    transition: 0.5s;
+}

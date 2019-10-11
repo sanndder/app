@@ -293,7 +293,7 @@ class Dossier extends MY_Controller
 				//urentype aan inlener koppelen
 				case 'add_urentype_to_inlener':
 					$urentypes->addUrentypeToInlener( $inlener_id, $_POST );
-					redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener.'?tab=tab-urentypes' ,'location' );
+					redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-urentypes' ,'location' );
 			}
 
 			$errors = $inlener->errors();

@@ -1,4 +1,8 @@
 <?php
+
+use models\Verloning\Urentypes;
+use models\Werknemers\Werknemer;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -24,56 +28,24 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// get contactpersoon JSON
 	//-----------------------------------------------------------------------------------------------------------------
-	public function getcontactpersoon( $werknemer_id = NULL, $contact_id = 0 )
+	public function toggleurentype()
 	{
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
-
-		//allemaal ophalen
-		$contactpersoon = $werknemer->contactpersoon($contact_id);
-
-		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
-
-		//contactpersoon is bekend
-		if(isset($contactpersoon))
-		{
-			$formdata = $formbuidler->table( 'werknemers_contactpersonen' )->data( $contactpersoon )->build();
-			echo json_encode($formdata);
-		}
-
-		//nieuwe toevoegen
-		if( $contact_id == 0 )
-		{
-			$formdata = $formbuidler->table( 'werknemers_contactpersonen' )->build();
-			echo json_encode($formdata);
-		}
-	}
-
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// set contactpersoon
-	//-----------------------------------------------------------------------------------------------------------------
-	public function setcontactpersoon( $werknemer_id = NULL, $contact_id = 0 )
-	{
-		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
-
-		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
-
-		$contactpersoon = $werknemer->setContactpersoon( $contact_id );
-		$errors = $werknemer->errors();
-
+		$urentypes = new Urentypes();
+		
+		$urentypes->setWerknemerUrentypeID( $_GET['id'] )->setActiveStatus( $_GET['state'] );
+		
 		//init response
 		$response = array( 'status' => 'error' );
-
+		
 		//msg
-		if( $errors === false )
+		if( $urentypes->errors() === false )
 			$response['status'] = 'success';
 		else
-			$response['error'] = $errors;
-
+			$response['error'] = $urentypes->errors();
+		
 		echo json_encode( $response );
+		
 	}
+	
 }

@@ -1455,6 +1455,10 @@ pre {
   color: #333;
   background-color: rgba(0, 0, 0, 0.13); }
 
+.table-hover-light tbody tr:hover {
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.04); }
+
 .table-primary,
 .table-primary > th,
 .table-primary > td {
@@ -6002,7 +6006,6 @@ a.close.disabled {
   position: sticky !important; }
 
 .fixed-top {
-  position: fixed;
   top: 0;
   right: 0;
   left: 0;

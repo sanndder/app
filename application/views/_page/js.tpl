@@ -14,6 +14,7 @@
 
 <!-- Theme JS files -->
 <script src="template/assets/js/app.js"></script>
+<script src="recources/js/scripts.js?{$time}"></script>
 <!-- /theme JS files -->
 
 <!-- Theme JS files -->

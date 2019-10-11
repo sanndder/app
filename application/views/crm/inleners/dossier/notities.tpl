@@ -27,7 +27,7 @@
 			{/if}
 
 			<div class="row">
-				<div class="col-md-10">
+				<div class="col-md-11">
 
 					<!-- Basic card -->
 					<div class="card mb-2">

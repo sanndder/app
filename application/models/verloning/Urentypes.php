@@ -25,8 +25,12 @@ class Urentypes extends Connector
 	 */
 	private $_error = NULL;
 	
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/**
+	 * @var int
+	 */
+	private $_werknemer_urentype_id = NULL;
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * constructor
 	 */
@@ -36,6 +40,39 @@ class Urentypes extends Connector
 		parent::__construct();
 
 	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * werknemer urentype id
+	 */
+	public function setWerknemerUrentypeID( $id )
+	{
+		$this->_werknemer_urentype_id = intval( $id );
+		return $this;
+	}
+	
+	
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Get categorien
+	 */
+	public function setActiveStatus( $status )
+	{
+		if( $status == 'true' )
+			$update['urentype_active'] = 1;
+		else
+			$update['urentype_active'] = 0;
+		
+		$this->db_user->where( 'id', $this->_werknemer_urentype_id );
+		$this->db_user->update( 'werknemers_urentypes', $update );
+		
+		if( $this->db_user->affected_rows() != 1 )
+			$this->_error[] = 'Database error';
+		
+	}
+	
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -45,6 +82,8 @@ class Urentypes extends Connector
 	{
 		return $this->select_all( 'urentypes_categorien', 'urentype_categorie_id' );
 	}
+
+
 
 
 
@@ -116,17 +155,16 @@ class Urentypes extends Connector
 		
 		$this->db_user->insert( 'inleners_urentypes', $insert );
 		
-		//TODO: aan werknemers toevoegen
-		$urentype_id_inlener = $this->db_user->insert_id();
+		$inlener_urentype_id = $this->db_user->insert_id();
 		
-		if( $urentype_id_inlener < 1 )
+		if( $inlener_urentype_id < 1 )
 		{
 			$this->_error[] = 'Er gaat was mis bij het toevoegen van een urentype';
 			return false;
 		}
 		
 		//toevoegen aan werknemers
-		$this->addUrentypeToWerknemers( $inlener_id, $insert );
+		$this->addUrentypeToWerknemers( $inlener_id, $inlener_urentype_id, $insert );
 		
 		
 		//show($result);
@@ -138,7 +176,7 @@ class Urentypes extends Connector
 	 * Add urentype to werknemers, new and old
 	 * insert moet al gevalideerd zijn
 	 */
-	public function addUrentypeToWerknemers( $inlener_id, $urentype )
+	public function addUrentypeToWerknemers( $inlener_id, $inlener_urentype_id, $urentype )
 	{
 		//welke werknemers werken voor deze inlener
 		$werknemers = WerknemerGroup::inlener( $inlener_id );
@@ -154,6 +192,7 @@ class Urentypes extends Connector
 		
 		foreach( $query->result_array() as $row )
 		{
+			$insert['inlener_urentype_id'] = $inlener_urentype_id;
 			$insert['inlener_id'] = $inlener_id;
 			$insert['werknemer_id'] = $row['werknemer_id'];
 			$insert['uurloon_id'] = $row['uurloon_id'];
