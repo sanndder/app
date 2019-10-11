@@ -1,4 +1,8 @@
 <?php
+
+use models\forms\Formbuilder;
+use models\Werknemers\Werknemer;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -27,7 +31,7 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function overzicht( $werknemer_id = NULL )
 	{
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		//redirect indien nodig
 		if( $werknemer->complete == 0 )
@@ -53,10 +57,10 @@ class Dossier extends MY_Controller
 	public function algemeneinstellingen( $werknemer_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 
 		//set gegevens
@@ -98,10 +102,10 @@ class Dossier extends MY_Controller
 	public function gegevens( $werknemer_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		//TEMP upload ID voor scan
 		if( isset($_POST['scan']) )
@@ -172,7 +176,7 @@ class Dossier extends MY_Controller
 		$formbuidler = new models\forms\Formbuilder();
 
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		//set gegevens
 		if( isset($_POST['set'] ))
@@ -221,7 +225,7 @@ class Dossier extends MY_Controller
 		$formbuidler = new models\forms\Formbuilder();
 
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		//set gegevens
 		if( isset($_POST['set'] ))
@@ -267,7 +271,7 @@ class Dossier extends MY_Controller
 	public function contactpersonen( $werknemer_id = NULL )
 	{
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		$contactpersonen = $werknemer->contactpersonen();
 		$this->smarty->assign('contactpersonen', $contactpersonen);
@@ -283,7 +287,7 @@ class Dossier extends MY_Controller
 	public function documenten( $werknemer_id = NULL )
 	{
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
@@ -296,7 +300,7 @@ class Dossier extends MY_Controller
 	public function notities( $werknemer_id = NULL )
 	{
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/notities.tpl');
@@ -309,7 +313,7 @@ class Dossier extends MY_Controller
 	public function facturen( $werknemer_id = NULL )
 	{
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/facturen.tpl');
@@ -322,7 +326,7 @@ class Dossier extends MY_Controller
 	public function werknemers( $werknemer_id = NULL )
 	{
 		//init werknemer object
-		$werknemer = new \models\Werknemers\Werknemer( $werknemer_id );
+		$werknemer = new Werknemer( $werknemer_id );
 
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/werknemers.tpl');

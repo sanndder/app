@@ -23,8 +23,8 @@ class Overzicht extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-		$inlenerlist = new \models\Inleners\InlenerLists();
-		$inleners = $inlenerlist->all( $_GET );
+		$inlenergroup = new \models\Inleners\InlenerGroup();
+		$inleners = $inlenergroup->all( $_GET );
 
 		//show($inleners);
 

@@ -1,6 +1,6 @@
 <?php
 
-use models\Users\UserLists;
+use models\Users\UserGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -28,8 +28,8 @@ class Users extends MY_Controller {
 	{
 		//show($this->user);
 		
-		$userslist = new UserLists();
-		$users = $userslist->all();
+		$usersgroup = new UserGroup();
+		$users = $usersgroup->all();
 	
 		$this->smarty->assign('users', $users);
 		$this->smarty->assign('usertype', $this->user->user_type);

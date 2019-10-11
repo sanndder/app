@@ -156,6 +156,40 @@
 									</button>
 								</div>
 
+								{foreach $matrix as $urentype}
+
+									<table class="table">
+										<thead>
+											<tr>
+												<th colspan="4">{$urentype.naam} {if $urentype.label != ''}- {$urentype.label}{/if}</th>
+											</tr>
+										</thead>
+										<tbody>
+											{if isset($urentype.werknemers) && is_array($urentype.werknemers)}
+											{foreach $urentype.werknemers as $w}
+											<tr>
+												<td class="" style="width: 35px">
+													{if $urentype.urentype_id != 1 || ($urentype.urentype_id == 1 && $urentype.label != '')}
+													<div class="form-check">
+														<label class="form-check-label">
+															<input data-id="{$w.id}" type="checkbox" class="form-input-styled-info urentype-active" checked>
+														</label>
+													</div>
+                                                    {/if}
+												</td>
+												<td style="width: 75px">{$w.werknemer_id}</td>
+												<td>{$w.werknemer_naam}</td>
+												<td style="width: 125px">
+													<input data-id="{$w.id}" value="{$w.verkooptarief}" type="text" class="form-control text-right" />
+												</td>
+											</tr>
+                                            {/foreach}
+                                            {/if}
+										</tbody>
+									</table>
+
+								{/foreach}
+
 							</div>
 
 							<!-------------------------------------------------------------------------------------------------------------------------------------------------

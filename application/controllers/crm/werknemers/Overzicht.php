@@ -1,4 +1,7 @@
 <?php
+
+use models\Werknemers\WerknemerGroup;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -23,8 +26,8 @@ class Overzicht extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-		$werknemerlist = new \models\Werknemers\WerknemerLists();
-		$werknemers = $werknemerlist->all( $_GET );
+		$werknemergroup = new WerknemerGroup();
+		$werknemers = $werknemergroup->all( $_GET );
 
 		//show($werknemers);
 

@@ -2381,7 +2381,7 @@
       <RefTableName>inleners_status</RefTableName>
       <RefColNames>inlener_id</RefColNames>
     </foreign-key>
-    <column id="545" parent="270" name="id">
+    <column id="545" parent="270" name="inlener_urentype_id">
       <Position>1</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <NotNull>1</NotNull>
@@ -2451,7 +2451,7 @@
     </index>
     <key id="558" parent="270" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
-      <ColNames>id</ColNames>
+      <ColNames>inlener_urentype_id</ColNames>
       <Primary>1</Primary>
     </key>
     <foreign-key id="559" parent="270" name="inleners_urentypes">
@@ -4132,194 +4132,234 @@
       <DefaultExpression>1</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="877" parent="296" name=" werknemer_id">
+    <column id="877" parent="296" name="inlener_id">
       <Position>3</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="878" parent="296" name="urentype_id_inlener">
+    <column id="878" parent="296" name="werknemer_id">
       <Position>4</Position>
-      <DataType>int(11)|0s</DataType>
+      <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="879" parent="296" name="verkooptarief">
+    <column id="879" parent="296" name="inlener_urentype_id">
       <Position>5</Position>
-      <DataType>decimal(5,2 digit)|0s</DataType>
+      <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="880" parent="296" name="inlener_id">
+    <column id="880" parent="296" name="urentype_id">
       <Position>6</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="881" parent="296" name="user_id">
+    <column id="881" parent="296" name="uurloon_id">
       <Position>7</Position>
+      <DataType>int(1)|0s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>1</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="882" parent="296" name="verkooptarief">
+      <Position>8</Position>
+      <DataType>decimal(5,2 digit)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="883" parent="296" name="user_id">
+      <Position>9</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="882" parent="296" name="timestamp">
-      <Position>8</Position>
+    <column id="884" parent="296" name="timestamp">
+      <Position>10</Position>
       <DataType>timestamp|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="883" parent="296" name="deleted">
-      <Position>9</Position>
+    <column id="885" parent="296" name="deleted">
+      <Position>11</Position>
       <DataType>tinyint(1)|0s</DataType>
       <DefaultExpression>0</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="884" parent="296" name="deleted_by">
-      <Position>10</Position>
+    <column id="886" parent="296" name="deleted_by">
+      <Position>12</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="885" parent="296" name="deleted_on">
-      <Position>11</Position>
+    <column id="887" parent="296" name="deleted_on">
+      <Position>13</Position>
       <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <index id="886" parent="296" name=" werknemer_id">
-      <ColNames> werknemer_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="887" parent="296" name="inlener_id">
+    <index id="888" parent="296" name="inlener_id">
       <ColNames>inlener_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="888" parent="296" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="889" parent="297" name="id">
-      <Position>1</Position>
-      <DataType>int(11) unsigned|0s</DataType>
-      <NotNull>1</NotNull>
-      <SequenceIdentity>1</SequenceIdentity>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="890" parent="297" name="werknemer_id">
-      <Position>2</Position>
-      <DataType>int(11) unsigned|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="891" parent="297" name="default_uurloon">
-      <Position>3</Position>
-      <DataType>tinyint(1)|0s</DataType>
-      <NotNull>1</NotNull>
-      <DefaultExpression>0</DefaultExpression>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="892" parent="297" name="uurloon">
-      <Position>4</Position>
-      <DataType>decimal(5,2 digit)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="893" parent="297" name="user_id">
-      <Position>5</Position>
-      <DataType>int(11) unsigned|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="894" parent="297" name="timestamp">
-      <Position>6</Position>
-      <DataType>timestamp|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="895" parent="297" name="deleted">
-      <Position>7</Position>
-      <DataType>tinyint(1)|0s</DataType>
-      <NotNull>1</NotNull>
-      <DefaultExpression>0</DefaultExpression>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="896" parent="297" name="deleted_by">
-      <Position>8</Position>
-      <DataType>int(11) unsigned|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="897" parent="297" name="deleted_on">
-      <Position>9</Position>
-      <DataType>datetime|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <index id="898" parent="297" name="werknemer_id">
+    <index id="889" parent="296" name=" werknemer_id">
       <ColNames>werknemer_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="899" parent="297" name="PRIMARY">
+    <index id="890" parent="296" name="inlener_urentype_id">
+      <ColNames>inlener_urentype_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="891" parent="296" name="urentype_id">
+      <ColNames>urentype_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="892" parent="296" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="900" parent="297" name="werknemers_uurloon_werknemer_id">
+    <foreign-key id="893" parent="296" name="werknemers_urentypes_inlener_id">
+      <ColNames>inlener_id</ColNames>
+      <RefTableName>inleners_status</RefTableName>
+      <RefColNames>inlener_id</RefColNames>
+    </foreign-key>
+    <foreign-key id="894" parent="296" name="werknemers_urentypes_werknemer_id">
       <ColNames>werknemer_id</ColNames>
       <RefTableName>werknemers_status</RefTableName>
       <RefColNames>werknemer_id</RefColNames>
     </foreign-key>
-    <column id="901" parent="298" name="id">
+    <foreign-key id="895" parent="296" name="werknemers_urentypes_inlener_urentype_id">
+      <ColNames>inlener_urentype_id</ColNames>
+      <RefTableName>inleners_urentypes</RefTableName>
+      <RefColNames>inlener_urentype_id</RefColNames>
+    </foreign-key>
+    <foreign-key id="896" parent="296" name="werknemers_urentypes_urentype_id">
+      <ColNames>urentype_id</ColNames>
+      <RefTableName>urentypes</RefTableName>
+      <RefColNames>urentype_id</RefColNames>
+    </foreign-key>
+    <column id="897" parent="297" name="id">
       <Position>1</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="902" parent="298" name="werknemer_id">
+    <column id="898" parent="297" name="werknemer_id">
       <Position>2</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="903" parent="298" name="vakantiegeld_direct">
+    <column id="899" parent="297" name="uurloon_id">
+      <Position>3</Position>
+      <DataType>tinyint(1)|0s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>1</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="900" parent="297" name="uurloon">
+      <Position>4</Position>
+      <DataType>decimal(5,2 digit)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="901" parent="297" name="user_id">
+      <Position>5</Position>
+      <DataType>int(11) unsigned|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="902" parent="297" name="timestamp">
+      <Position>6</Position>
+      <DataType>timestamp|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="903" parent="297" name="deleted">
+      <Position>7</Position>
+      <DataType>tinyint(1)|0s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>0</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="904" parent="297" name="deleted_by">
+      <Position>8</Position>
+      <DataType>int(11) unsigned|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="905" parent="297" name="deleted_on">
+      <Position>9</Position>
+      <DataType>datetime|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <index id="906" parent="297" name="werknemer_id">
+      <ColNames>werknemer_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="907" parent="297" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="908" parent="297" name="werknemers_uurloon_werknemer_id">
+      <ColNames>werknemer_id</ColNames>
+      <RefTableName>werknemers_status</RefTableName>
+      <RefColNames>werknemer_id</RefColNames>
+    </foreign-key>
+    <column id="909" parent="298" name="id">
+      <Position>1</Position>
+      <DataType>int(11) unsigned|0s</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="910" parent="298" name="werknemer_id">
+      <Position>2</Position>
+      <DataType>int(11) unsigned|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="911" parent="298" name="vakantiegeld_direct">
       <Position>3</Position>
       <DataType>tinyint(1)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="904" parent="298" name="vakantieuren_direct">
+    <column id="912" parent="298" name="vakantieuren_direct">
       <Position>4</Position>
       <DataType>tinyint(1)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="905" parent="298" name="atv_direct">
+    <column id="913" parent="298" name="atv_direct">
       <Position>5</Position>
       <DataType>tinyint(1)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="906" parent="298" name="inhouden_zorgverzekering">
+    <column id="914" parent="298" name="inhouden_zorgverzekering">
       <Position>6</Position>
       <DataType>tinyint(1)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="907" parent="298" name="user_id">
+    <column id="915" parent="298" name="user_id">
       <Position>7</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="908" parent="298" name="timestamp">
+    <column id="916" parent="298" name="timestamp">
       <Position>8</Position>
       <DataType>timestamp|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="909" parent="298" name="deleted">
+    <column id="917" parent="298" name="deleted">
       <Position>9</Position>
       <DataType>tinyint(1)|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>0</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="910" parent="298" name="deleted_by">
+    <column id="918" parent="298" name="deleted_by">
       <Position>10</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="911" parent="298" name="deleted_on">
+    <column id="919" parent="298" name="deleted_on">
       <Position>11</Position>
       <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <index id="912" parent="298" name="werknemer_id">
+    <index id="920" parent="298" name="werknemer_id">
       <ColNames>werknemer_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="913" parent="298" name="PRIMARY">
+    <key id="921" parent="298" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>

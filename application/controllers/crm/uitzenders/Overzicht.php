@@ -1,6 +1,6 @@
 <?php
 
-use models\Uitzenders\UitzenderLists;
+use models\Uitzenders\UitzenderGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -30,8 +30,8 @@ class Overzicht extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-		$uitzenderlist = new UitzenderLists();
-		$uitzenders = $uitzenderlist->all( $_GET );
+		$uitzendergroup = new UitzenderGroup();
+		$uitzenders = $uitzendergroup->all( $_GET );
 
 		//show($uitzenders);
 

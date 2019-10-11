@@ -5,7 +5,7 @@ namespace models\Verloning;
 use models\Connector;
 use models\Forms\Validator;
 use models\Utils\DBhelper;
-use models\Werknemers\WerknemerLists;
+use models\Werknemers\WerknemerGroup;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 
@@ -110,6 +110,7 @@ class Urentypes extends Connector
 		$insert['urentype_id'] = $post['urentype_id'];
 		$insert['doorbelasten_uitzender'] = $post['doorbelasten_uitzender'];
 		$insert['label'] = strip_tags(substr(trim($post['label']),0,100));
+		$insert['user_id'] = $this->user->user_id;
 		if( $post['standaard_verkooptarief'] != '' )
 			$insert['standaard_verkooptarief'] = prepareAmountForDatabase($post['standaard_verkooptarief']);
 		
@@ -140,7 +141,11 @@ class Urentypes extends Connector
 	public function addUrentypeToWerknemers( $inlener_id, $urentype )
 	{
 		//welke werknemers werken voor deze inlener
-		$werknemers = WerknemerLists::inlener( $inlener_id );
+		$werknemers = WerknemerGroup::inlener( $inlener_id );
+		
+		//afbreken als er nog geen werknemers zijn
+		if( $werknemers === NULL )
+			return false;
 		
 		//TODO: list van maken
 		//voor elk van deze werknemers de uurlonen ophalen
@@ -149,12 +154,20 @@ class Urentypes extends Connector
 		
 		foreach( $query->result_array() as $row )
 		{
-			$data[$row['werknemer_id']][$row['id']] = $row;
+			$insert['inlener_id'] = $inlener_id;
+			$insert['werknemer_id'] = $row['werknemer_id'];
+			$insert['uurloon_id'] = $row['uurloon_id'];
+			$insert['urentype_active'] = 1;
+			$insert['urentype_id'] = $urentype['urentype_id'];
+			$insert['user_id'] = $this->user->user_id;
+			if(isset($urentype['standaard_verkooptarief']))
+				$insert['verkooptarief'] = $urentype['standaard_verkooptarief'];
+			
+			$insert_batch[] = $insert;
 		}
 		
-		//urentype toevoegen aan alle werknemers, voor elk uurloon
+		$this->db_user->insert_batch( 'werknemers_urentypes', $insert_batch );
 		
-		show($werknemers);
 	}
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

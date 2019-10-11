@@ -4,6 +4,7 @@ use models\Facturatie\Betaaltermijnen;
 use models\forms\Formbuilder;
 use models\Inleners\Inlener;
 use models\Verloning\Urentypes;
+use models\Verloning\UrentypesGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -268,6 +269,7 @@ class Dossier extends MY_Controller
 		//init objects
 		$inlener = new Inlener( $inlener_id );		
 		$urentypes = new Urentypes();
+		$urentypesgroup = new UrentypesGroup();
 		
 		//del data
 		if( isset($_POST['del']) )
@@ -286,9 +288,12 @@ class Dossier extends MY_Controller
 			//switch for each tab
 			switch ($_POST['set']) {
 				//extra factoren toevoegen
-				case 'inleners_factoren': $inlener->setFactoren();
+				case 'inleners_factoren':
+					$inlener->setFactoren();
 				//urentype aan inlener koppelen
-				case 'add_urentype_to_inlener': $urentypes->addUrentypeToInlener( $inlener_id, $_POST );
+				case 'add_urentype_to_inlener':
+					$urentypes->addUrentypeToInlener( $inlener_id, $_POST );
+					redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener.'?tab=tab-urentypes' ,'location' );
 			}
 
 			$errors = $inlener->errors();
@@ -303,11 +308,13 @@ class Dossier extends MY_Controller
 		{
 			$errors = false; //no errors
 		}
-
 		
+		$matrix = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
+		//show($matrix);
 		
 		$this->smarty->assign( 'urentypes', $urentypes->getAll() );
 		$this->smarty->assign( 'factoren', $inlener->factoren() );
+		$this->smarty->assign( 'matrix', $matrix );
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/verloninginstellingen.tpl');

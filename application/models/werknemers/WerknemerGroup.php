@@ -13,7 +13,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  * Alle lijsten van werknemers moeten via deze class
  *
  */
-class WerknemerLists extends Connector {
+class WerknemerGroup extends Connector {
 
 	/*
 	 * set columns for SELECT query
