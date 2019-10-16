@@ -100,9 +100,14 @@ class Connector
 	 * SELECT * FROM table and return array with or without custom index
 	 *
 	 */
-	public function select_all( string $table, string $index = '' ) :?array
+	public function select_all( string $table, string $index = '', $where = array() ) :?array
 	{
 		$sql = "SELECT * FROM $table WHERE deleted = 0";
+		
+		//add where
+		if( count($where) > 0 )
+			$sql .= " AND ".key($where). " = '".current($where)."' ";
+		
 		$query = $this->db_user->query( $sql );
 		
 		if( $query->num_rows() == 0 )

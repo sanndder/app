@@ -3,8 +3,9 @@
 namespace models\Inleners;
 
 use models\Connector;
-use models\Forms\Validator;
-use models\Utils\DBhelper;
+use models\forms\Validator;
+use models\uitzenders\Uitzender;
+use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -24,7 +25,9 @@ class Inlener extends Connector
 
 	public $inlener_id = NULL; // @var int
 	public $bedrijfsnaam = NULL; // @var string
-
+	public $uitzender_id = NULL; // @var int
+	private $_uitzender_id_new = NULL; // @var int
+	
 	public $contacten = NULL; // @var string
 
 
@@ -71,6 +74,69 @@ class Inlener extends Connector
 	}
 
 
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	* Koppel inlener aan uitzender, voor nu alleen 1 op 1
+	*/
+	public function koppelenAanUitzender( $uitzender_id )
+	{
+		//maar 1 koppeling toestaand
+		if( $this->uitzenderID() !== NULL )
+		{
+			$this->_error[] = 'Inlener is al gekoppeld, dubbele koppeling niet toegestaan';
+			return false;
+		}
+		
+		$insert['inlener_id'] = $this->inlener_id;
+		$insert['uitzender_id'] = intval($uitzender_id);
+		$insert['user_id'] = $this->user->user_id;
+		
+		$this->db_user->insert( 'inleners_uitzenders', $insert );
+		
+		if( $this->db_user->insert_id() < 1 )
+			$this->_error[] = 'Inlener kon niet worden gekoppeld aan uitzender (database fout)';
+	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	* Koppeling weer weghalen
+	*
+	*/
+	public function delKoppelingUitzender( $uitzender_id )
+	{
+		$sql = "UPDATE inleners_uitzenders
+				SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . "
+				WHERE deleted = 0 AND inlener_id = ".$this->inlener_id." AND uitzender_id = ".intval($uitzender_id)." ";
+		
+		$this->db_user->query($sql);
+		
+		if( $this->db_user->affected_rows() < 1 )
+			$this->_error[] = 'Er gaat wat mis (database fout)';
+	}
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	* Haal uitzender ID op als die er is
+	*
+	*/
+	public function uitzenderID()
+	{
+		if( $this->uitzender_id !== NULL )
+			return  $this->uitzender_id;
+		
+		$row = $this->select_row( 'inleners_uitzenders', array('inlener_id' => $this->inlener_id) );
+		if( $row === NULL )
+			return NULL;
+		
+		$this->uitzender_id = $row['uitzender_id'];
+		
+		return $row['uitzender_id'];
+	}
+	
+	
+	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * get data
@@ -233,7 +299,7 @@ class Inlener extends Connector
 	 */
 	public function factoren( $factor_id = NULL )
 	{
-		$data = $this->select_all( 'inleners_factoren', 'factor_id' );
+		$data = $this->select_all( 'inleners_factoren', 'factor_id', array( 'inlener_id' => $this->inlener_id ) );
 		
 		if( $data !== NULL && $factor_id !== NULL)
 		{
@@ -311,10 +377,82 @@ class Inlener extends Connector
 		//die();
 
 	}
-
-
 	
-
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Instellingen goed zetten voor inlener
+	 * factoren en urentypes aanmaken
+	 * @return boolean
+	 */
+	private function _finish()
+	{
+		$this->_setStandaardFactoren();
+		$this->_setStandaardUren();
+	
+	}
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * factoren aanmaken
+	 * @return boolean
+	 */
+	private function _setStandaardFactoren()
+	{
+		//geen dubbele entries
+		if( $this->select_row( 'inleners_factoren', array( 'inlener_id' => $this->inlener_id ) ) !== NULL )
+			return false;
+		
+		//standaard
+		$insert['factor_hoog'] = 1.7;
+		$insert['factor_laag'] = 1.45;
+		
+		//factoren van uitzender ophalen
+		if( $this->uitzenderID() !== NULL )
+		{
+			$uitzender = new Uitzender( $this->uitzenderID() );
+			$factoren = $uitzender->factoren();
+			
+			$insert['factor_hoog'] = $factoren['factor_hoog'];
+			$insert['factor_laag'] = $factoren['factor_laag'];
+		}
+		
+		$insert['default_factor'] = 1;
+		$insert['factor_id'] = 1; //eerste altijd ID 1
+		$insert['inlener_id'] = $this->inlener_id;
+		$insert['omschrijving'] = 'standaard factoren';
+		$insert['user_id'] = $this->user->user_id;
+		
+		$this->db_user->insert( 'inleners_factoren', $insert );
+		return true;
+	}
+	
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * uren aanmaken
+	 * @return boolean
+	 */
+	private function _setStandaardUren()
+	{
+		//geen dubbele entries
+		if( $this->select_row( 'inleners_urentypes', array( 'inlener_id' => $this->inlener_id ) ) !== NULL )
+			return false;
+		
+		//standaard
+		$insert['urentype_id'] = 1; //eerste altijd ID 1, is normale uren
+		$insert['default_urentype'] = 1; //default aangeven
+		$insert['inlener_id'] = $this->inlener_id;
+		$insert['doorbelasten_uitzender'] = 0;
+		$insert['user_id'] = $this->user->user_id;
+		
+		$this->db_user->insert( 'inleners_urentypes', $insert );
+		return true;
+		
+	}
+	
+	
+	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Nieuwe inlener aanmaken
@@ -322,7 +460,7 @@ class Inlener extends Connector
 	 * Entry in status tabel maken, dit levert inlener_id op
 	 * @return boolean
 	 */
-	public function _new()
+	private function _new()
 	{
 		$insert['complete'] = 0;
 		$this->db_user->insert('inleners_status', $insert);
@@ -330,6 +468,11 @@ class Inlener extends Connector
 		if ($this->db_user->insert_id() > 0)
 		{
 			$this->inlener_id = $this->db_user->insert_id();
+			
+			//koppeling uitzender aanmaken indien gewenst
+			if( $this->_uitzender_id_new !== NULL )
+				$this->koppelenAanUitzender( $this->_uitzender_id_new );
+				
 			return true;
 		}
 
@@ -343,8 +486,15 @@ class Inlener extends Connector
 	 * Geeft ingevoerde data terug
 	 * @return array
 	 */
-	public function _set($table = '', $method = '', $where = NULL)
+	private function _set($table = '', $method = '', $where = NULL)
 	{
+		//uitzender ID loskoppelen
+		if( isset($_POST['uitzender_id']) && intval($_POST['uitzender_id']) > 0 )
+			$this->_uitzender_id_new = intval($_POST['uitzender_id']);
+		
+		//altijd er uit
+		unset($_POST['uitzender_id']);
+		
 		$validator = new Validator();
 		$validator->table($table)->input($_POST)->run();
 
@@ -410,6 +560,10 @@ class Inlener extends Connector
 		{
 			$this->_error = $validator->errors();
 		}
+		
+		//eventueel uitzender_id mee teruggeven voor eerste aanmelding
+		if( $this->_uitzender_id_new !== NULL )
+			$input['uitzender_id'] = $this->_uitzender_id_new;
 
 		return $input;
 	}
@@ -445,9 +599,14 @@ class Inlener extends Connector
 				$this->emailadressen_complete == 1 &&
 				$this->factuurgegevens_complete == 1 &&
 				$this->contactpersoon_complete == 1
-			)
+				)
+			{
 				$update_status['complete'] = 1;
-
+				
+				//acties voor aanmaken nieuwe inlener
+				$this->_finish();
+			}
+			
 			//update
 			$this->db_user->where('inlener_id', $this->inlener_id);
 			$this->db_user->update('inleners_status', $update_status);

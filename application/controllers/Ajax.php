@@ -1,15 +1,16 @@
 <?php
 
-use models\users\UserGroup;
+use models\forms\Formbuilder;
+use models\utils\history;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
 /**
- * Test class
+ * Instellingen controller
  */
-
-class Users extends MY_Controller {
-
+class Ajax extends MY_Controller
+{
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// Constructor
@@ -17,23 +18,23 @@ class Users extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		//show( $this->user->user_type );
+
+		//Deze pagina mag alleen bezocht worden door werkgever
+		if( $this->user->user_type != 'werkgever' )forbidden();
+
+
 	}
-
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// test method
-	//-----------------------------------------------------------------------------------------------------------------
-	public function index()
-	{
-		//show($this->user);
-		
-		$usersgroup = new UserGroup();
-		$users = $usersgroup->all();
 	
-		$this->smarty->assign('users', $users);
-		$this->smarty->assign('usertype', $this->user->user_type);
-		$this->smarty->display('instellingen/users/overzicht.tpl');
+	//-----------------------------------------------------------------------------------------------------------------
+	// get history
+	//-----------------------------------------------------------------------------------------------------------------
+	public function gethistory( $table, $field, $index )
+	{
+		$log = new History();
+		$data = $log->table( $table )->index( array($field => $index ) )->data();
+		
+		if( is_array($data) )
+			echo json_encode($data);
 	}
 
 }

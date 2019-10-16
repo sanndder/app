@@ -3,9 +3,9 @@
 namespace models\Verloning;
 
 use models\Connector;
-use models\Forms\Validator;
-use models\Utils\DBhelper;
-use models\Werknemers\WerknemerGroup;
+use models\forms\Validator;
+use models\utils\DBhelper;
+use models\werknemers\WerknemerGroup;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 
@@ -98,7 +98,7 @@ class UrentypesGroup extends Connector
 	{
 		//alle urentypes voor inlener ophalen
 		$urentypes = $this->urentypes();
-		
+
 		//alle werknemers ophalen
 		$sql = "SELECT werknemers_urentypes.id, werknemers_urentypes.urentype_active, werknemers_urentypes.werknemer_id, werknemers_urentypes.verkooptarief, werknemers_urentypes.urentype_id, werknemers_urentypes.uurloon_id,
        				   werknemers_urentypes.inlener_urentype_id, werknemers_gegevens.achternaam, werknemers_gegevens.voornaam, werknemers_gegevens.voorletters, werknemers_gegevens.tussenvoegsel, werknemers_uurloon.uurloon
@@ -114,7 +114,7 @@ class UrentypesGroup extends Connector
 		$query = $this->db_user->query( $sql );
 		
 		if( $query->num_rows() == 0 )
-			return NULL;
+			return $urentypes;
 		
 		foreach( $query->result_array() as $row )
 		{

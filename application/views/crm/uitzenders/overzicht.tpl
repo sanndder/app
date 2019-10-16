@@ -258,11 +258,12 @@
 					<ul class="media-list">
 						<li class="media">
 							<div class="media-body">
-								<a href="crm/uitzenders/dossier/overzicht/254">
-									<div class="float-left" style="width: 45px;">254</div>
-									<div>ABC Bedrijfsservice BV</div>
-								</a>
-
+								{foreach $last_visits as $visit}
+									<a href="crm/uitzenders/dossier/overzicht/{$visit.uitzender_id}">
+										<div class="float-left" style="width: 45px;">{$visit.uitzender_id}</div>
+										<div class="mb-1">{$visit.bedrijfsnaam|truncate:28:'...':true}</div>
+									</a>
+								{/foreach}
 							</div>
 						</li>
 

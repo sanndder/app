@@ -1,6 +1,7 @@
 <?php
 
-use models\Uitzenders\UitzenderGroup;
+use models\uitzenders\UitzenderGroup;
+use models\utils\VisitsLogger;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -20,8 +21,6 @@ class Overzicht extends MY_Controller
 
 		//Deze pagina mag alleen bezocht worden door werkgever
 		if( $this->user->user_type != 'werkgever' )forbidden();
-
-
 	}
 
 
@@ -30,12 +29,15 @@ class Overzicht extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
+		$log = new VisitsLogger();
+		
 		$uitzendergroup = new UitzenderGroup();
 		$uitzenders = $uitzendergroup->all( $_GET );
 
 		//show($uitzenders);
 
 		$this->smarty->assign('uitzenders', $uitzenders);
+		$this->smarty->assign('last_visits', $log->getLastCRMVisits('uitzender') );
 		$this->smarty->display('crm/uitzenders/overzicht.tpl');
 	}
 

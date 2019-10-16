@@ -3,8 +3,8 @@
 namespace models\Werknemers;
 
 use models\Connector;
-use models\Forms\Validator;
-use models\Utils\DBhelper;
+use models\forms\Validator;
+use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');

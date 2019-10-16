@@ -1,7 +1,8 @@
 <?php
 
 use models\forms\Formbuilder;
-use models\Uitzenders\Uitzender;
+use models\uitzenders\Uitzender;
+use models\utils\VisitsLogger;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -24,6 +25,10 @@ class Dossier extends MY_Controller
 
 		//method naar smarty
 		$this->smarty->assign('method', $this->router->method);
+		
+		//log visit
+		$log = new VisitsLogger();
+		$log->logCRMVisit( 'uitzender', $this->uri->segment(5));
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------

@@ -152,7 +152,7 @@ class Upload extends MY_Controller {
 	public function index()
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Inlener( 256 );
+		$uitzender = new \models\uitzenders\Inlener( 256 );
 
 
 		/*

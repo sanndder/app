@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Users;
+namespace models\users;
 
 use models\Connector;
 

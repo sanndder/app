@@ -3,6 +3,7 @@
 namespace models\Uitzenders;
 
 use models\Connector;
+use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -35,6 +36,32 @@ class UitzenderGroup extends Connector {
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
+	}
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * List van uitzenders
+	 */
+	static function list()
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$sql = "SELECT uitzenders_bedrijfsgegevens.uitzender_id, uitzenders_bedrijfsgegevens.bedrijfsnaam
+				FROM uitzenders_status
+				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_bedrijfsgegevens.uitzender_id = uitzenders_status.uitzender_id
+				WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_status.archief = 0
+				ORDER BY uitzenders_bedrijfsgegevens.bedrijfsnaam";
+		
+		$query = $db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+			$data[$row['uitzender_id']] = $row['bedrijfsnaam'];
+		
+		return $data;
 	}
 
 

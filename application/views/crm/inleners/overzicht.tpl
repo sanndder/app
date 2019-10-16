@@ -155,30 +155,6 @@
 			<!-- Basic card -->
 			<div class="card">
 
-				<div class="bg-light rounded-top">
-					<div class="navbar navbar-light bg-light navbar-expand-lg py-lg-2 rounded-top">
-						<div class="text-center d-lg-none w-100">
-							<button type="button" class="navbar-toggler w-100 h-100" data-toggle="collapse" data-target="#inbox-toolbar-toggle-read">
-								<i class="icon-circle-down2"></i>
-							</button>
-						</div>
-
-						<div class="navbar-collapse text-center text-lg-left flex-wrap collapse" id="inbox-toolbar-toggle-read">
-							<div class="mt-3 mt-lg-0 mr-lg-3">
-								<div class="btn-group">
-									<a type="button" class="btn btn-light" href="crm/inleners/dossier/bedrijfsgegevens">
-										<i class="icon-plus-circle2"></i>
-										<span class="d-none d-lg-inline-block ml-2">Nieuwe inlener</span>
-									</a>
-								</div>
-							</div>
-
-							<div class="navbar-text ml-lg-auto"></div>
-
-						</div>
-					</div>
-				</div>
-
 				<!-- header -->
 				<!-- card  body-->
 				<div class="card-body">
@@ -192,6 +168,13 @@
 					<div class="media-body">
 						<h6 class="mb-0">Inleneroverzicht</h6>
 						<div class="letter-icon-title font-weight-semibold">{count($inleners)} inleners in tabel</div>
+					</div>
+
+					<div class="justify-content-between">
+						<a href="crm/inleners/dossier/bedrijfsgegevens" class="btn bg-teal-400">
+							<i class="icon-plus-circle2 icon mr-1"></i>
+							<span>Nieuwe inlener</span>
+						</a>
 					</div>
 				</div>
 
@@ -235,5 +218,38 @@
 		<!-- /content area -->
 	</div>
 	<!-- /main content -->
+	<div class="sidebar sidebar-light sidebar-main d-none d-xxl-block sidebar-sections sidebar-expand-lg align-self-start">
+
+		<!-- Sidebar content -->
+		<div class="sidebar-content">
+
+			<!-- Latest updates -->
+			<div class="card">
+				<div class="card-header bg-transparent header-elements-inline">
+					<span class="text-uppercase font-size-sm font-weight-semibold">Laatst bezocht</span>
+				</div>
+
+				<div class="card-body">
+					<ul class="media-list">
+						<li class="media">
+							<div class="media-body">
+                                {foreach $last_visits as $visit}
+									<a href="crm/inleners/dossier/overzicht/{$visit.inlener_id}">
+										<div class="float-left" style="width: 45px;">{$visit.inlener_id}</div>
+										<div class="mb-1">{$visit.bedrijfsnaam|truncate:28:'...':true}</div>
+									</a>
+                                {/foreach}
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+			<!-- /latest updates -->
+
+		</div>
+		<!-- /sidebar content -->
+
+	</div>
 
 {/block}

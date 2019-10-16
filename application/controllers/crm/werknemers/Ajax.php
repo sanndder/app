@@ -1,7 +1,7 @@
 <?php
 
-use models\Verloning\Urentypes;
-use models\Werknemers\Werknemer;
+use models\verloning\Urentypes;
+use models\werknemers\Werknemer;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 

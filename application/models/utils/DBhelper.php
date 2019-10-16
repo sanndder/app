@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Utils;
+namespace models\utils;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 

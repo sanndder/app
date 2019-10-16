@@ -51,7 +51,9 @@ class WerknemerGroup extends Connector {
 		$sql = "SELECT werknemers_gegevens.werknemer_id, achternaam, voorletters, voornaam, tussenvoegsel
 				FROM werknemers_inleners
 				LEFT JOIN werknemers_gegevens ON werknemers_gegevens.werknemer_id = werknemers_inleners.werknemer_id
-				WHERE werknemers_gegevens.deleted = 0 ORDER BY achternaam";
+				WHERE werknemers_inleners.inlener_id = $inlener_id
+				AND werknemers_gegevens.deleted = 0 AND werknemers_inleners.deleted = 0
+				ORDER BY achternaam";
 		$query = $db_user->query( $sql );
 		
 		if( $query->num_rows() == 0 )

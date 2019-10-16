@@ -232,4 +232,38 @@
 	</div>
 	<!-- /main content -->
 
+	<div class="sidebar sidebar-light sidebar-main d-none d-xxl-block sidebar-sections sidebar-expand-lg align-self-start">
+
+		<!-- Sidebar content -->
+		<div class="sidebar-content">
+
+			<!-- Latest updates -->
+			<div class="card">
+				<div class="card-header bg-transparent header-elements-inline">
+					<span class="text-uppercase font-size-sm font-weight-semibold">Laatst bezocht</span>
+				</div>
+
+				<div class="card-body">
+					<ul class="media-list">
+						<li class="media">
+							<div class="media-body">
+                                {foreach $last_visits as $visit}
+									<a href="crm/werknemers/dossier/overzicht/{$visit.werknemer_id}">
+										<div class="float-left" style="width: 45px;">{$visit.werknemer_id}</div>
+										<div class="mb-1">{$visit.naam|truncate:28:'...':true}</div>
+									</a>
+                                {/foreach}
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+			<!-- /latest updates -->
+
+		</div>
+		<!-- /sidebar content -->
+
+	</div>
+
 {/block}

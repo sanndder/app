@@ -1,30 +1,30 @@
 <?php
 
-namespace models\instellingen;
+namespace models\utils;
 
 use models\Connector;
-use models\forms\Valid;
-use models\forms\Validator;
-use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 
 
 /*
- * Minimumloonc class
+ * History class
  *
  *
  *
  */
 
-class Feestdagen extends Connector
+class History extends Connector
 {
+
+	private $_table = NULL; // @var string
+	private $_index = NULL; // @var array
+
 	/*
 	 * @var array
 	 */
 	private $_error = NULL;
-
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -36,78 +36,80 @@ class Feestdagen extends Connector
 		//call parent constructor for connecting to database
 		parent::__construct();
 	}
+
+
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * add feestdag
-	 *
+	 * Set index
+	 * indexfield => value
 	 */
-	public function add()
+	public function index( $index )
 	{
-		$validator = new Validator();
-		$validator->table('settings_feestdagen')->input($_POST)->run();
+		$this->_index = $index;
 		
-		$input = $validator->data();
+		return $this;
+	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Set table
+	 * Only allowed tables
+	 */
+	public function table( $table )
+	{
+		if( $table == 'inlener_bedrijfsgegevens' ) $this->_table = 'inleners_bedrijfsgegevens';
 		
-		//geen fouten, nieuwe insert doen
-		if ($validator->success())
-		{
-			//select_row
-			
-			//bestaat urentype al?
-			$sql = "SELECT id FROM settings_feestdagen WHERE deleted = 0 AND datum = '".$input['datum']."' LIMIT 1";
-			$query = $this->db_user->query( $sql );
-			
-			if( $query->num_rows() > 0 )
-			{
-				$this->_error[] = 'Feestdag is al toegevoegd. U kunt feestdagen slecht éénmaal per jaar toevoegen.';
-				return false;
-			}
-			
-			$input['user_id'] = $this->user->user_id;
-			$input['jaar'] = substr( $input['datum'],0,4 );
-			
-			$this->db_user->insert( 'settings_feestdagen', $input );
-		}
-		//fouten aanwezig
-		else
-			$this->_error = $validator->errors();
+		//abort for security reasons
+		if( $this->_table === NULL )
+			die('ERROR');
 		
-	
+		return $this;
 	}
 	
-	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Delete feestdage
+	 * get data
 	 *
 	 */
-	public function delete( $id )
+	public function data()
 	{
-		return $this->delete_row( 'settings_feestdagen', array( 'id' => $id ) );
-	}
-	
-	
-	
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * list all feestdagen
-	 *
-	 */
-	public function getAll()
-	{
-		$sql = "SELECT * FROM settings_feestdagen WHERE deleted = 0 AND jaar >= YEAR(CURDATE())-1 AND jaar <= YEAR(CURDATE())+1 ORDER BY jaar DESC, datum ASC";
+		$sql = "SELECT $this->_table.user_id, $this->_table.timestamp, $this->_table.* FROM $this->_table WHERE ";
+		
+		//indexes
+		foreach( $this->_index as $field => $value )
+			$sql .= " $field = ".intval($value)." AND";
+
+		//delete last "and"
+		$sql = substr($sql,0,-4);
+		
+		//order
+		$sql .= " ORDER BY timestamp DESC";
+		
 		$query = $this->db_user->query( $sql );
 		
-		return DBHelper::toArray( $query, 'jaar[]' );
-	
+		if( $query->num_rows() == 0 )
+			return array();
+		
+		foreach( $query->result_array() as $row )
+		{
+			unset($row['id']);
+			unset($row['deleted']);
+			unset($row['deleted_on']);
+			unset($row['deleted_by']);
+			unset($row['inlener_id']);
+			
+			$data[] = $row;
+		}
+		
+		return $data;
 	}
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 *
 	 * @return array or boolean
 	 */
 	public function errors()

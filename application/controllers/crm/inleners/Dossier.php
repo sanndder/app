@@ -1,10 +1,13 @@
 <?php
 
-use models\Facturatie\Betaaltermijnen;
+use models\facturatie\Betaaltermijnen;
 use models\forms\Formbuilder;
-use models\Inleners\Inlener;
-use models\Verloning\Urentypes;
-use models\Verloning\UrentypesGroup;
+use models\inleners\Inlener;
+use models\uitzenders\UitzenderGroup;
+use models\utils\History;
+use models\utils\VisitsLogger;
+use models\verloning\Urentypes;
+use models\verloning\UrentypesGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -27,6 +30,10 @@ class Dossier extends MY_Controller
 
 		//method naar smarty
 		$this->smarty->assign('method', $this->router->method);
+		
+		//log visit
+		$log = new VisitsLogger();
+		$log->logCRMVisit( 'inlener', $this->uri->segment(5));
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -46,7 +53,10 @@ class Dossier extends MY_Controller
 		}
 
 		//show($inleners);
-
+		
+		$this->smarty->assign('bedrijfsgegevens', $inlener->bedrijfsgegevens());
+		$this->smarty->assign('emailadressen', $inlener->emailadressen() );
+		
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/overzicht.tpl');
 	}
@@ -58,54 +68,32 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function algemeneinstellingen( $inlener_id = NULL )
 	{
-		//load the formbuilder
-		$formbuidler = new Formbuilder();
-
 		//init inlener object
 		$inlener = new Inlener( $inlener_id );
-
-		//del logo
-		if( isset($_GET['dellogo']) )
+		
+		//default
+		$errors = false;
+		
+		//del
+		if( isset($_POST['del']) )
 		{
-			$inlener->delLogo();
-			redirect($this->config->item('base_url') . '/crm/inleners/dossier/algemeneinstellingen/' . $inlener_id ,'location');
+			$inlener->delKoppelingUitzender( $_POST['uitzender_id'] );
 		}
 
-		//del handtekening
-		if( isset($_GET['delhandtekening']) )
-		{
-			$inlener->delHandtekening();
-			redirect($this->config->item('base_url') . '/crm/inleners/dossier/algemeneinstellingen/' . $inlener_id ,'location');
-		}
-
-		//set bedrijfsgegevens
+		//set data
 		if( isset($_POST['set']) )
 		{
-			//sitch
-			switch ($_POST['set']) {
-				case 'inleners_factoren':
-					$factoren = $inlener->setFactoren();
-					break;
-			}
-
+			$inlener->koppelenAanUitzender( $_POST['uitzender_id'] );
 			$errors = $inlener->errors();
 
 			//msg
 			if( $errors === false )
-				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+				$this->smarty->assign('msg', msg('success', 'Inlener gekoppeld!'));
 			else
-				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
+				$this->smarty->assign('msg', msg('warning', $errors ));
 		}
-		else
-		{
-			$factoren =  $inlener->factoren();
-			$errors = false; //no errors
-		}
-
-		//form maken
-		$formdata = $formbuidler->table( 'inleners_factoren' )->data( $factoren )->errors( $errors )->build();
-		$this->smarty->assign('formdata', $formdata);
-
+	
+		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/algemeneinstellingen.tpl');
 	}
@@ -116,6 +104,10 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function bedrijfsgegevens( $inlener_id = NULL )
 	{
+		$log = new History();
+		$data = $log->table( 'inlener_bedrijfsgegevens')->index( array('inlener_id' => 3 ) )->data();
+		//show($data);
+		
 		//load the formbuilder
 		$formbuidler = new Formbuilder();
 
@@ -155,6 +147,7 @@ class Dossier extends MY_Controller
 
 		//show($inlener);
 
+		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/bedrijfsgegevens.tpl');
 	}
@@ -263,9 +256,6 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function verloninginstellingen( $inlener_id = NULL )
 	{
-		//load the formbuilder
-		$formbuidler = new Formbuilder();
-
 		//init objects
 		$inlener = new Inlener( $inlener_id );		
 		$urentypes = new Urentypes();
@@ -290,6 +280,7 @@ class Dossier extends MY_Controller
 				//extra factoren toevoegen
 				case 'inleners_factoren':
 					$inlener->setFactoren();
+					redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id ,'location' );
 				//urentype aan inlener koppelen
 				case 'add_urentype_to_inlener':
 					$urentypes->addUrentypeToInlener( $inlener_id, $_POST );

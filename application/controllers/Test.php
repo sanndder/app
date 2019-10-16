@@ -48,7 +48,7 @@ class Test extends MY_Controller {
 	public function validation()
 	{
 
-		$validator = new models\Forms\Validator();
+		$validator = new models\forms\Validator();
 		$validator->table( 'test' )->input( $data )->run();
 
 		$this->smarty->display('test/validation.tpl');

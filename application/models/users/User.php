@@ -1,10 +1,10 @@
 <?php
 
-namespace models\Users;
+namespace models\users;
 
 use models\Connector;
-use models\Forms\Validator;
-use models\Utils\DBhelper;
+use models\forms\Validator;
+use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');

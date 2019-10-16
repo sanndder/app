@@ -1,9 +1,9 @@
 <?php
 
 use models\forms\Formbuilder;
-use models\Instellingen\Minimumloon;
-use models\Instellingen\Feestdagen;
-use models\Verloning\Urentypes;
+use models\instellingen\Minimumloon;
+use models\instellingen\Feestdagen;
+use models\verloning\Urentypes;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 

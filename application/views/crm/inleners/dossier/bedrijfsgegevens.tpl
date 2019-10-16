@@ -1,19 +1,19 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Inlener{/block}
 {block "header-icon"}icon-office{/block}
+{assign "select2" "true"}
 {block "header-title"}
-	{if $inlener->inlener_id == 0}
+    {if $inlener->inlener_id == 0}
 		Nieuwe inlener aanmelden
 	{else}
 		Inlener - {$inlener->bedrijfsnaam}
 	{/if}
-
 {/block}
 
 {block "content"}
 
 	{include file='crm/inleners/dossier/_sidebar.tpl' active='bedrijfsgegevens'}
-
+    {include file='_modals/geschiedenis.tpl'}
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	|| Main content
@@ -38,23 +38,59 @@
 
 					<!-- Basic card -->
 					<div class="card">
-
 						<!-- card  body-->
 						<div class="card-body">
 
 							<form method="post" action="">
 
-								<!-- opslaan -->
-								<div class="row">
-									<div class="col-lg-12 mb-3">
-										<button type="submit" name="set" class="btn btn-success btn-sm"><i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan</button>
-									</div><!-- /col -->
-								</div><!-- /row -->
+                                {*settings*}
+                                {assign "label_lg" "3"}
+                                {assign "div_xl" "8"}
+                                {assign "div_md" "8"}
 
-								{*settings*}
-								{assign "label_lg" "3"}
-								{assign "div_xl" "8"}
-								{assign "div_md" "8"}
+
+                                {* bij nieuwe inlener ook uitzender kiezen *}
+                                {if $inlener->complete != 1}
+
+								<fieldset class="mb-3">
+									<legend class="text-uppercase font-size-sm font-weight-bold">Uitzender</legend>
+
+	                                <div class="form-group row">
+		                                <label class="col-lg-{$label_lg} col-form-label">Uitzender:</label>
+		                                <div class="col-form-label col-xl-{$div_xl} col-md-{$div_md} pt-0">
+			                                <select name="uitzender_id" class="form-control select-search">
+				                                <option value="0">Geen uitzender (payrollklant)</option>
+                                                {if $uitzenders !== NULL}
+                                                    {foreach $uitzenders as $u}
+						                                <option {if $formdata.uitzender_id.value == $u@key} selected{/if} value="{$u@key}">{$u@key} - {$u}</option>
+                                                    {/foreach}
+                                                {/if}
+			                                </select>
+
+		                                </div>
+	                                </div>
+								</fieldset>
+
+                                {/if}
+
+								<!------ opslaan --------->
+								<div class="row">
+                                    {* bovenste knop alleen wanneer inlener compleet *}
+                                    {if $inlener->complete == 1}
+									<div class="col-lg-6 mb-3">
+										<button type="submit" name="set" class="btn btn-success btn-sm"><i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan</button>
+									</div>
+                                    {/if}
+
+                                    {* geschiedenis alleen wanneer inlener compleet *}
+                                    {if $inlener->complete == 1}
+									<div class="col-lg-6 text-right mb-3">
+										<span data-title="Wijzigingen weergeven" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="showHistory('inlener_bedrijfsgegevens', 'inlener_id', {$inlener->inlener_id} )">
+											<i class="icon-history icon-2x mr-2"></i>
+										</span>
+									</div>
+									{/if}
+								</div><!-- /row -->
 
 
 								<fieldset class="mb-3">
@@ -69,8 +105,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -87,8 +121,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -105,8 +137,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -123,8 +153,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -145,8 +173,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -181,8 +207,6 @@
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -199,8 +223,6 @@
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -217,8 +239,6 @@
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -240,8 +260,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -258,8 +276,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -276,8 +292,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>

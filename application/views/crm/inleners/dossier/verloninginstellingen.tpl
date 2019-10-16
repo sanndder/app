@@ -178,12 +178,17 @@
 													<td>{$urentype.naam}</td>
 													<td>{$urentype.percentage|number_format:2:',':'.'}%</td>
 													<td>
+                                                        {* standaard uren niet aanpasbaar*}
+                                                        {if $urentype.default_urentype != 1}
 														<input name="" value="{$urentype.label}" type="text" class="form-control"/>
+                                                        {/if}
 													</td>
 													<td>
 														<input name="" value="{$urentype.standaard_verkooptarief|number_format:2:',':'.'}" type="text" class="form-control text-right"/>
 													</td>
 													<td>
+														{* standaard uren niet aanpasbaar*}
+                                                        {if $urentype.default_urentype != 1}
 														<div class="form-check form-check-inline">
 															<label class="form-check-label">
 																<span>
@@ -192,6 +197,7 @@
 																Ja
 															</label>
 														</div>
+
 														<div class="form-check form-check-inline">
 															<label class="form-check-label">
 																<span>
@@ -200,6 +206,7 @@
 																Nee
 															</label>
 														</div>
+														{/if}
 													</td>
 													<td>
 
@@ -240,7 +247,7 @@
                                                 {foreach $urentype.werknemers as $w}
 													<tr  class="{if !$w.urentype_active} text-grey-200{/if}">
 														<td>
-                                                            {if $urentype.urentype_id != 1 || ($urentype.urentype_id == 1 && $urentype.label != '')}
+                                                            {if $urentype.default_urentype != 1}
 																<div class="form-check">
 																	<label class="form-check-label">
 																		<input data-id="{$w.id}"  type="checkbox" class="form-input-styled-info toggle-urentype-active" {if $w.urentype_active} checked{/if}>

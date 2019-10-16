@@ -1,6 +1,7 @@
 <?php
 
-use models\Werknemers\WerknemerGroup;
+use models\utils\VisitsLogger;
+use models\werknemers\WerknemerGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -26,12 +27,15 @@ class Overzicht extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
+		$log = new VisitsLogger();
+		
 		$werknemergroup = new WerknemerGroup();
 		$werknemers = $werknemergroup->all( $_GET );
 
 		//show($werknemers);
 
 		$this->smarty->assign('werknemers', $werknemers);
+		$this->smarty->assign('last_visits', $log->getLastCRMVisits('werknemer') );
 		$this->smarty->display('crm/werknemers/overzicht.tpl');
 	}
 

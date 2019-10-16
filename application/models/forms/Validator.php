@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Forms;
+namespace models\forms;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -175,7 +175,7 @@ class Validator extends Json
 		{
 			//copy for cleaner code
 			$rules = $this->json->field->$field->rules;
-
+			
 			//is field empty, but required?
 			if ( $val == '' && isset($rules->required) && $rules->required === true)
 				$this->_errors[$field][] = sprintf('%s is verplicht', $this->json->field->$field->label);
@@ -191,7 +191,7 @@ class Validator extends Json
 			}
 
 			//field is not empty
-			if ($val != '')
+			if ( $val != '' )
 			{
 				//is var type set
 				if (isset($rules->type))

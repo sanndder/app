@@ -3,9 +3,9 @@
 namespace models\Verloning;
 
 use models\Connector;
-use models\Forms\Validator;
-use models\Utils\DBhelper;
-use models\Werknemers\WerknemerGroup;
+use models\forms\Validator;
+use models\utils\DBhelper;
+use models\werknemers\WerknemerGroup;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 

@@ -27,7 +27,7 @@ class Ajax extends MY_Controller
 	public function getcontactpersoon( $uitzender_id = NULL, $contact_id = 0 )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new \models\uitzenders\Uitzender( $uitzender_id );
 
 		//allemaal ophalen
 		$contactpersoon = $uitzender->contactpersoon($contact_id);
@@ -57,7 +57,7 @@ class Ajax extends MY_Controller
 	public function setcontactpersoon( $uitzender_id = NULL, $contact_id = 0 )
 	{
 		//init uitzender object
-		$uitzender = new \models\Uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new \models\uitzenders\Uitzender( $uitzender_id );
 
 		//load the formbuilder
 		$formbuidler = new models\forms\Formbuilder();

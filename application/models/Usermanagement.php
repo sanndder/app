@@ -110,7 +110,6 @@ class Usermanagement {
 	 */
 	public function updatePassword()
 	{
-		show($_POST);
 		//get old password
 		$sql = "SELECT * FROM users WHERE user_id = ? LIMIT 1";
 		$query = $this->db_admin->query($sql, array($this->_user_id));

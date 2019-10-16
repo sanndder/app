@@ -10,6 +10,13 @@
     "deleted_on"
   ],
   "field": {
+    "uitzender_id": {
+      "label": "Uitzender ID eerste aanmelding",
+      "rules": {
+        "required": false,
+        "type": "int"
+      }
+    },
     "bedrijfsnaam": {
       "label": "Bedrijfsnaam",
       "rules": {

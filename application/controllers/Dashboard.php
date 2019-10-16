@@ -1,14 +1,11 @@
 <?php
-
-use models\users\UserGroup;
-
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Test class
+ * Account en userbeheer
  */
 
-class Users extends MY_Controller {
+class Dashboard extends MY_Controller {
 
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -17,23 +14,30 @@ class Users extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		//show( $this->user->user_type );
+
+		//beveiligen
+		if(	$this->uri->segment(2) != $this->user->user_type )
+			redirect( $this->config->item( 'base_url' ) . 'dashboard/' . $this->user->user_type  ,'location' );
 	}
-
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// test method
-	//-----------------------------------------------------------------------------------------------------------------
-	public function index()
-	{
-		//show($this->user);
-		
-		$usersgroup = new UserGroup();
-		$users = $usersgroup->all();
 	
-		$this->smarty->assign('users', $users);
-		$this->smarty->assign('usertype', $this->user->user_type);
-		$this->smarty->display('instellingen/users/overzicht.tpl');
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Werkgever
+	//-----------------------------------------------------------------------------------------------------------------
+	public function werkgever()
+	{
+		
+		
+		$this->smarty->display('dashboard/werkgever.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// uitzender
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uitzender()
+	{
+	
+	
 	}
 
 }

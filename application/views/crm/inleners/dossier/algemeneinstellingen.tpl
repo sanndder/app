@@ -2,7 +2,7 @@
 {block "title"}Inlener{/block}
 {block "header-icon"}icon-office{/block}
 {block "header-title"}Inlener - {$inlener->bedrijfsnaam}{/block}
-{assign "uploader" "true"}
+{assign "select2" "true"}
 
 {block "content"}
 
@@ -41,49 +41,54 @@
 
 							<form method="post" action="">
 
+								<fieldset class="mb-1">
+									<legend class="text-uppercase font-size-sm font-weight-bold">Uitzender</legend>
 
-								{*settings*}
-								{assign "label_lg" "3"}
-								{assign "div_xl" "8"}
-								{assign "div_md" "8"}
+									{* inlener is gekoppeld *}
+									{if $inlener->uitzenderID() != NULL}
+										<div class="mb-3">
+											<a href="crm/uitzenders/dossier/overzicht/{$inlener->uitzenderID()}">
+												{$inlener->uitzenderID()} - {$uitzenders[$inlener->uitzenderID()]}
+											</a>
+										</div>
 
+										<input type="hidden" name="uitzender_id" value="{$inlener->uitzenderID()}" />
+										<button type="submit" name="del" class="btn btn-danger">
+											<i class="icon-unlink mr-1"></i>
+											Koppeling verwijderen
+										</button>
 
+										{* inlener is NIET gekoppeld *}
+									{else}
+										<div class="form-group row">
+											<label class="col-form-label col-md-2">
+												Koppelen aan uitzender
+											</label>
+											<div class="col-lg-6 col-md-8">
 
+												<select name="uitzender_id" class="form-control select-search">
+													<option value="0">Geen uitzender (payrollklant)</option>
+													{if $uitzenders !== NULL}
+														{foreach $uitzenders as $u}
+															<option value="{$u@key}">{$u@key} - {$u}</option>
+														{/foreach}
+													{/if}
+												</select>
+
+											</div>
+										</div>
+
+										<button type="submit" name="set" class="btn btn-success">
+											<i class="icon-link mr-1"></i>
+											Inlener koppelen
+										</button>
+									{/if}
+
+								</fieldset>
 
 							</form>
 
 						</div><!-- /card body-->
-					</div><!-- /basic card -->
-
-					<!-------------------------------------------------------------------------------------------------------------------------------------------------
-					|| Handtekening
-					-------------------------------------------------------------------------------------------------------------------------------------------------->
-					<div class="card">
-						<div class="card-header header-elements-inline">
-							<h5 class="card-title"></h5>
-						</div>
-
-						<div class="card-body">
-
-
-
-						</div><!-- /card body -->
-					</div><!-- /basic card -->
-
-
-					<!-------------------------------------------------------------------------------------------------------------------------------------------------
-					|| Logo
-					-------------------------------------------------------------------------------------------------------------------------------------------------->
-					<div class="card">
-						<div class="card-header header-elements-inline">
-							<h5 class="card-title"></h5>
-						</div>
-
-						<div class="card-body">
-
-
-
-						</div><!-- /card body -->
 					</div><!-- /basic card -->
 
 

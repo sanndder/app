@@ -64,7 +64,7 @@
 						{/if}
 
 						<!-- li Contactpersonen, verplaatsen naar einde lijst wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $inlener->complete != 1}order-4{/if}">
+						<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
 							<a {if $inlener->factuurgegevens_complete != NULL}href="crm/inleners/dossier/contactpersonen/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->factuurgegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'contactpersonen'}active{/if}">
 									{* afwijkende icons voor nieuwe aanmelding *}
 									{if $inlener->contactpersoon_complete == NULL}
@@ -190,6 +190,7 @@
 							</a>
 						</li>
 
+                        {if $inlener->complete == 1 }
 						<!-- li Verloningsgegevens, andere volgorde wanneer nieuwe aanmelding -->
 						<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
 							<a href="crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}" class="nav-link {if $active == 'verloninginstellingen'}active{/if}">
@@ -198,6 +199,7 @@
 								Verloning
 							</a>
 						</li>
+						{/if}
 
 					</ul>
 				</div>

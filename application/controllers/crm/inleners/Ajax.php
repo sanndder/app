@@ -1,8 +1,8 @@
 <?php
 
 use models\forms\Formbuilder;
-use models\Inleners\Inlener;
-use models\Verloning\Urentypes;
+use models\inleners\Inlener;
+use models\verloning\Urentypes;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 

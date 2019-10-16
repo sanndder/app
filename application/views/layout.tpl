@@ -107,9 +107,16 @@
 </div>
 
 <div class="sidebar-right">
-	test fds fds fds fs
-	fs
-	fs
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			NL96SNSB0821159593
+		</div><!-- /col -->
+	</div><!-- /row -->
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			NL854569182B01
+		</div><!-- /col -->
+	</div><!-- /row -->
 </div>
 
 

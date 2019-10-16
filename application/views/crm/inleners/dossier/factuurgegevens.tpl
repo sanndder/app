@@ -112,7 +112,7 @@
 											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
 												:</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-
+												<input type="hidden" name="{$field}" value="">
                                                 {foreach $formdata.$field.radio.options as $option}
 													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
 														<label class="form-check-label">

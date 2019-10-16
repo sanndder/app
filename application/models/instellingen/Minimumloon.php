@@ -1,11 +1,11 @@
 <?php
 
-namespace models\Instellingen;
+namespace models\instellingen;
 
 use models\Connector;
-use models\Forms\Valid;
-use models\Forms\Validator;
-use models\Utils\DBhelper;
+use models\forms\Valid;
+use models\forms\Validator;
+use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
