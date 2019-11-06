@@ -54,7 +54,6 @@
 <!-- Div wrapper to push page to the left -->
 <div class="page-wrapper">
 	<!-- Multiple fixed navbars wrapper -->
-	<div class="fixed-top">
 
 		<!-- Main navbar -->
         {include file='_page/header.tpl'}
@@ -64,7 +63,6 @@
         {include file='_menu/werkgever.tpl'}
 		<!-- /secondary navbar -->
 
-	</div>
 	<!-- /multiple fixed navbars wrapper -->
 
 

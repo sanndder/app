@@ -35,10 +35,6 @@ var Elements = function ()
 // ------------------------------
 var SweetAlert = function ()
 {
-    //
-    // Setup module components
-    //
-
     // Sweet Alerts
     var _componentSweetAlert = function ()
     {
@@ -106,10 +102,6 @@ var SweetAlert = function ()
 var Uniform = function ()
 {
 
-    //
-    // Setup module components
-    //
-
     // Uniform
     var _componentUniform = function ()
     {
@@ -143,11 +135,6 @@ var Uniform = function ()
         });
     };
 
-
-    //
-    // Return objects assigned to module
-    //
-
     return {
         init: function ()
         {
@@ -162,11 +149,6 @@ var Uniform = function ()
 
 var Datatables = function ()
 {
-
-    //
-    // Setup module components
-    //
-
     // Basic Datatable examples
     var _componentDatatableBasic = function ()
     {
@@ -253,11 +235,6 @@ var Datatables = function ()
         });
     };
 
-
-    //
-    // Return objects assigned to module
-    //
-
     return {
         init: function ()
         {
@@ -271,13 +248,26 @@ var Datatables = function ()
 // ------------------------------
 
 var Datepickers = function() {
-
     // Pickadate picker
     var _componentPickadate = function() {
         if( !$().pickadate ){
             console.warn( 'Warning - picker.js and/or picker.date.js is not loaded.' );
             return;
         }
+
+        /*
+        $('.show-datepicker').on('click', function(){
+            // Basic options
+            const picker = new Picker( document.getElementsByClassName('input-picker'),{
+                selectYears: true,
+                selectMonths: true,
+                min: [1920,1,1],
+                max: true,
+                close: '',
+                selectYears: 100
+            });
+            picker.show();
+        });*/
 
         // Basic options
         $( '.pickadate' ).pickadate({
@@ -297,12 +287,6 @@ var Datepickers = function() {
 
 
 var Select2Selects = function() {
-
-
-    //
-    // Setup module components
-    //
-
     // Select2 examples
     var _componentSelect2 = function() {
         if (!$().select2) {
@@ -313,10 +297,39 @@ var Select2Selects = function() {
         // Select with search
         $('.select-search').select2();
 
+        // Select with search error
+        $('.select-search-error').select2(
+            {containerCssClass: 'border-danger'}
+        );
+
     };
     return {
         init: function() {
             _componentSelect2();
+        }
+    }
+}();
+
+
+// Setup module
+// ------------------------------
+
+var NavbarMultipleSticky = function() {
+
+    // Sticky.js
+    var _componentSticky = function() {
+        if (!$().stick_in_parent) {
+            console.warn('Warning - sticky.min.js is not loaded.');
+            return;
+        }
+        // Initialize
+        $('.navbar-sticky').stick_in_parent();
+    };
+
+
+    return {
+        init: function() {
+            _componentSticky();
         }
     }
 }();
@@ -333,4 +346,5 @@ document.addEventListener('DOMContentLoaded', function ()
     Elements.init();
     Datepickers.init();
     Select2Selects.init();
+    NavbarMultipleSticky.init();
 });

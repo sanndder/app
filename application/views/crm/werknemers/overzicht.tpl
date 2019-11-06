@@ -198,30 +198,34 @@
 				<!-- table -->
 				<table class="table datatable-basic table-striped table-hover table-xs" data-page-length="15" data-order="[[0,&quot;asc&quot; ],[2,&quot;asc&quot; ]]">
 					<thead class="">
-					<tr>
-						<th></th>
-						<th style="width: 75px;">ID</th>
-						<th>Naam</th>
-						<th class="text-center">Actions</th>
-					</tr>
+						<tr>
+							<th></th>
+							<th style="width: 75px;">ID</th>
+							<th>Naam</th>
+							<th>Uitzender</th>
+							<th class="text-center">Actions</th>
+						</tr>
 					</thead>
-					{if isset($werknemers) && is_array($werknemers) && count($werknemers) > 0}
+                    {if isset($werknemers) && is_array($werknemers) && count($werknemers) > 0}
 						<tbody>
-						{foreach $werknemers as $u}
-							<tr style="{if $u.complete == 0}background-color: #EEE;{/if}{if $u.archief == 1}color: #F44336;{/if}">
-								<td>{$u.complete}</td>
-								<td>{$u.werknemer_id}</td>
-								<td>
-									{if $u.complete == 0}
-										<span class="badge bg-success  mr-1">NIEUW</span>
-									{/if}
-									<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$u.werknemer_id}">{$u.naam}</a>
-								</td>
-								<td></td>
-							</tr>
-						{/foreach}
+                            {foreach $werknemers as $u}
+								<tr style="{if $u.complete == 0}background-color: #EEE;{/if}{if $u.archief == 1}color: #F44336;{/if}">
+									<td>{$u.complete}</td>
+									<td>{$u.werknemer_id}</td>
+									<td>
+                                        {if $u.complete == 0}
+											<span class="badge bg-success  mr-1">NIEUW</span>
+                                        {/if}
+										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$u.werknemer_id}">{$u.naam}</a>
+									</td>
+									<td>
+										{*<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.uitzender}</a>*}
+									</td>
+									<td></td>
+								</tr>
+                            {/foreach}
 						</tbody>
-					{/if}
+                    {/if}
 				</table>
 
 

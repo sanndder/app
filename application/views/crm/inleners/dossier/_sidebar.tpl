@@ -104,13 +104,6 @@
 								</a>
 							</li>
 
-							<!-- li Inleners -->
-							<li class="nav-item">
-								<a href="crm/inleners/dossier/inleners/{$inlener->inlener_id}" class="nav-link {if $active == 'inleners'}active{/if}">
-									<i class="icon-user-tie mr-2"></i>Inleners
-								</a>
-							</li>
-
 							<!-- li Werknemers -->
 							<li class="nav-item">
 								<a href="crm/inleners/dossier/werknemers/{$inlener->inlener_id}" class="nav-link {if $active == 'werknemers'}active{/if}">

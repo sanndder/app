@@ -740,7 +740,7 @@ body {
 @media (min-width: 768px) {
   .sidebar-expand-md {
     position: sticky;
-    top:110px;
+    top:65px;
     margin-left: 0.625rem;
     margin-right: 0.625rem;
     margin-bottom: 1.25rem;
@@ -799,10 +799,11 @@ body {
   .sidebar-expand-md {
     border: 0; } }
 
+
 @media (min-width: 992px) {
   .sidebar-expand-lg {
     position: sticky;
-    top:110px;
+    top:65px;
     margin-left: 0.625rem;
     margin-right: 0.625rem;
     margin-bottom: 1.25rem;

@@ -1543,7 +1543,7 @@ select[size] {
     border-color: rgba(0, 0, 0, 0.125); }
 
 .navbar-brand img {
-  height: 1rem;
+  height: 28px;
   display: block; }
 
 .navbar-text {
@@ -1959,7 +1959,8 @@ select[size] {
 
 .navbar-dark {
   color: rgba(255, 255, 255, 0.9);
-  background-color: #293a50;
+  /*background-color: #002E65;*/
+  background-color: #002E65;
   border-bottom-color: rgba(255, 255, 255, 0.1); }
   .page-header-content + .navbar-dark,
   .content + .navbar-dark,

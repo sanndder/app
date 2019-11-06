@@ -72,7 +72,7 @@
         msgImageHeightLarge: 'Hoogte van het foto bestand "{name}" kan niet hoger zijn dan {size} px.',
         msgImageResizeError: 'Kon de foto afmetingen niet lezen om te verkleinen.',
         msgImageResizeException: 'Fout bij het verkleinen van de foto.<pre>{errors}</pre>',
-        msgAjaxError: 'Er ging iets mis met de {operation} actie. Gelieve later opnieuw te proberen!',
+        msgAjaxError: 'Er ging iets mis met de {operation} actie. Probeer het later opnieuw!',
         msgAjaxProgressError: '{operation} mislukt',
         msgDuplicateFile: 'File "{name}" of same size "{size} KB" has already been selected earlier. Skipping duplicate selection.',
         msgResumableUploadRetriesExceeded:  'Upload aborted beyond <b>{max}</b> retries for file <b>{file}</b>! Error Details: <pre>{error}</pre>',

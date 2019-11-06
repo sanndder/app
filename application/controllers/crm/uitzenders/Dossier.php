@@ -1,8 +1,10 @@
 <?php
 
 use models\forms\Formbuilder;
+use models\Inleners\InlenerGroup;
 use models\uitzenders\Uitzender;
 use models\utils\VisitsLogger;
+use models\werknemers\WerknemerGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -28,7 +30,7 @@ class Dossier extends MY_Controller
 		
 		//log visit
 		$log = new VisitsLogger();
-		$log->logCRMVisit( 'uitzender', $this->uri->segment(5));
+		$log->logCRMVisit( 'uitzender', $this->uri->segment(5) );
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -138,10 +140,7 @@ class Dossier extends MY_Controller
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $uitzender->emailadressen_complete != 1 )
-				{
 					redirect( $this->config->item('base_url') . 'crm/uitzenders/dossier/emailadressen/' . $uitzender->uitzender_id ,'location');
-					die();
-				}
 
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
@@ -187,10 +186,8 @@ class Dossier extends MY_Controller
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $uitzender->contactpersoon_complete != 1 )
-				{
 					redirect( $this->config->item('base_url') . 'crm/uitzenders/dossier/contactpersonen/' . $uitzender->uitzender_id ,'location');
-					die();
-				}
+
 
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
@@ -236,10 +233,8 @@ class Dossier extends MY_Controller
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $uitzender->factuurgegevens_complete != 1 )
-				{
 					redirect( $this->config->item('base_url') . 'crm/uitzenders/dossier/factuurgegevens/' . $uitzender->uitzender_id ,'location');
-					die();
-				}
+
 
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
@@ -325,8 +320,13 @@ class Dossier extends MY_Controller
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		
+		//inleners voor deze uitzender
+		$inlenergroup = new InlenerGroup();
+		$inleners = $inlenergroup->all( array('uitzender_id' => $uitzender_id ) );
 
 		$this->smarty->assign('uitzender', $uitzender);
+		$this->smarty->assign('inleners', $inleners);
 		$this->smarty->display('crm/uitzenders/dossier/inleners.tpl');
 	}
 
@@ -338,8 +338,12 @@ class Dossier extends MY_Controller
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		
+		$werknemergroup = new WerknemerGroup();
+		$werknemers = $werknemergroup->all( array('uitzender_id' => $uitzender_id) );
 
 		$this->smarty->assign('uitzender', $uitzender);
+		$this->smarty->assign('werknemers', $werknemers);
 		$this->smarty->display('crm/uitzenders/dossier/werknemers.tpl');
 	}
 

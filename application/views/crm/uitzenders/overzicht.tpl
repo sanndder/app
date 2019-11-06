@@ -154,7 +154,7 @@
 			<!-- Basic card -->
 			<div class="card">
 
-				{*
+                {*
 				<div class="bg-light rounded-top">
 					<div class="navbar navbar-light bg-light navbar-expand-lg py-lg-2 rounded-top">
 						<div class="text-center d-lg-none w-100">
@@ -182,25 +182,25 @@
 				<!-- header -->
 				<!-- card  body-->
 				<div class="card-body">
-				<div class="media flex-column flex-md-row">
-					<a href="javascript:void(0)" class="d-none d-md-block mr-md-3 mb-3 mb-md-0">
+					<div class="media flex-column flex-md-row">
+						<a href="javascript:void(0)" class="d-none d-md-block mr-md-3 mb-3 mb-md-0">
 						<span class="btn bg-teal-400 btn-icon btn-lg rounded-round">
 							<span class="letter-icon">U</span>
 						</span>
-					</a>
-
-					<div class="media-body">
-						<h6 class="mb-0">Uitzenderoverzicht</h6>
-						<div class="letter-icon-title font-weight-semibold">{count($uitzenders)} uitzenders in tabel</div>
-					</div>
-
-					<div class="justify-content-between">
-						<a href="crm/uitzenders/dossier/bedrijfsgegevens" class="btn bg-teal-400">
-							<i class="icon-plus-circle2 icon mr-1"></i>
-							<span>Nieuwe uitzender</span>
 						</a>
+
+						<div class="media-body">
+							<h6 class="mb-0">Uitzenderoverzicht</h6>
+							<div class="letter-icon-title font-weight-semibold">{count($uitzenders)} uitzenders in tabel</div>
+						</div>
+
+						<div class="justify-content-between">
+							<a href="crm/uitzenders/dossier/bedrijfsgegevens" class="btn bg-teal-400">
+								<i class="icon-plus-circle2 icon mr-1"></i>
+								<span>Nieuwe uitzender</span>
+							</a>
+						</div>
 					</div>
-				</div>
 
 
 				</div><!-- /card body-->
@@ -209,30 +209,30 @@
 				<!-- table -->
 				<table class="table datatable-basic table-striped table-hover table-xs" data-page-length="15" data-order="[[0,&quot;asc&quot; ],[2,&quot;asc&quot; ]]">
 					<thead class="">
-					<tr>
-						<th></th>
-						<th style="width: 75px;">ID</th>
-						<th>Bedrijfsnaam</th>
-						<th class="text-center">Actions</th>
-					</tr>
+						<tr>
+							<th></th>
+							<th style="width: 75px;">ID</th>
+							<th>Bedrijfsnaam</th>
+							<th class="text-center">Actions</th>
+						</tr>
 					</thead>
-					{if isset($uitzenders) && is_array($uitzenders) && count($uitzenders) > 0}
+                    {if isset($uitzenders) && is_array($uitzenders) && count($uitzenders) > 0}
 						<tbody>
-						{foreach $uitzenders as $u}
-							<tr style="{if $u.complete == 0}background-color: #EEE;{/if}{if $u.archief == 1}color: #F44336;{/if}">
-								<td>{$u.complete}</td>
-								<td>{$u.uitzender_id}</td>
-								<td>
-									{if $u.complete == 0}
-										<span class="badge bg-success  mr-1">NIEUW</span>
-									{/if}
-									<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.bedrijfsnaam}</a>
-								</td>
-								<td></td>
-							</tr>
-						{/foreach}
+                            {foreach $uitzenders as $u}
+								<tr style="{if $u.complete == 0}background-color: #EEE;{/if}{if $u.archief == 1}color: #F44336;{/if}">
+									<td>{$u.complete}</td>
+									<td>{$u.uitzender_id}</td>
+									<td>
+                                        {if $u.complete == 0}
+											<span class="badge bg-success  mr-1">NIEUW</span>
+                                        {/if}
+										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.bedrijfsnaam}</a>
+									</td>
+									<td></td>
+								</tr>
+                            {/foreach}
 						</tbody>
-					{/if}
+                    {/if}
 				</table>
 
 
@@ -242,7 +242,6 @@
 		<!-- /content area -->
 	</div>
 	<!-- /main content -->
-
 	<div class="sidebar sidebar-light sidebar-main d-none d-xxl-block sidebar-sections sidebar-expand-lg align-self-start">
 
 		<!-- Sidebar content -->
@@ -258,12 +257,12 @@
 					<ul class="media-list">
 						<li class="media">
 							<div class="media-body">
-								{foreach $last_visits as $visit}
+                                {foreach $last_visits as $visit}
 									<a href="crm/uitzenders/dossier/overzicht/{$visit.uitzender_id}">
 										<div class="float-left" style="width: 45px;">{$visit.uitzender_id}</div>
 										<div class="mb-1">{$visit.bedrijfsnaam|truncate:28:'...':true}</div>
 									</a>
-								{/foreach}
+                                {/foreach}
 							</div>
 						</li>
 

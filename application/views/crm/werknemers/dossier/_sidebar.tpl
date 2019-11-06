@@ -63,22 +63,22 @@
 							</li>
 						{/if}
 
-						<!-- li Contactpersonen, verplaatsen naar einde lijst wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $werknemer->complete != 1}order-4{/if}">
-							<a {if $werknemer->factuurgegevens_complete != NULL}href="crm/werknemers/dossier/contactpersonen/{$werknemer->werknemer_id}"{/if} class="nav-link {if $werknemer->factuurgegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'contactpersonen'}active{/if}">
-									{* afwijkende icons voor nieuwe aanmelding *}
-									{if $werknemer->contactpersoon_complete == NULL}
-										<i class="icon-checkbox-unchecked2 mr-2"></i>
-									{else}
-										{if $werknemer->complete == 0}
-											{if $werknemer->gegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
-											{if $werknemer->gegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
-										{else}
-											{* standaard icon *}
-											<i class="icon-address-book3 mr-2"></i>
-										{/if}
-									{/if}
-								Contactpersonen
+						<!-- li Documenten, andere volgorde wanneer nieuwe aanmelding -->
+						<li class="nav-item {if $werknemer->complete != 1}order-2{/if}">
+							<a {if $werknemer->gegevens_complete != NULL}href="crm/werknemers/dossier/documenten/{$werknemer->werknemer_id}"{/if} class="nav-link {if $werknemer->gegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'documenten'}active{/if}">
+                                {* afwijkende icons voor nieuwe aanmelding *}
+                                {if $werknemer->documenten_complete == NULL}
+									<i class="icon-checkbox-unchecked2 mr-2"></i>
+                                {else}
+                                    {if $werknemer->complete == 0}
+                                        {if $werknemer->gegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+                                        {if $werknemer->gegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
+                                    {else}
+                                        {* standaard icon *}
+										<i class="icon-file-text2 mr-2"></i>
+                                    {/if}
+                                {/if}
+								Documenten
 							</a>
 						</li>
 
@@ -90,37 +90,23 @@
 								</a>
 							</li>
 
-							<!-- li Documenten -->
+							<!-- li Urenbriefjes -->
 							<li class="nav-item">
-								<a href="crm/werknemers/dossier/documenten/{$werknemer->werknemer_id}" class="nav-link {if $active == 'documenten'}active{/if}">
-									<i class="icon-file-text2 mr-2"></i>Documenten
+								<a href="crm/werknemers/dossier/urenbriefjes/{$werknemer->werknemer_id}" class="nav-link {if $active == 'urenbriefjes'}active{/if}">
+									<i class="icon-alarm mr-2"></i>Urenbriefjes
 								</a>
 							</li>
 
-							<!-- li Facturen -->
+							<!-- li Loonstroken -->
 							<li class="nav-item">
-								<a href="crm/werknemers/dossier/facturen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'facturen'}active{/if}">
-									<i class="icon-coin-euro mr-2"></i>Facturen
+								<a href="crm/werknemers/dossier/loonstroken/{$werknemer->werknemer_id}" class="nav-link {if $active == 'loonstroken'}active{/if}">
+									<i class="icon-user-tie mr-2"></i>Loonstroken
 								</a>
 							</li>
 
-							<!-- li Inleners -->
-							<li class="nav-item">
-								<a href="crm/werknemers/dossier/inleners/{$werknemer->werknemer_id}" class="nav-link {if $active == 'inleners'}active{/if}">
-									<i class="icon-user-tie mr-2"></i>Inleners
-								</a>
-							</li>
-
-							<!-- li Werknemers -->
-							<li class="nav-item">
-								<a href="crm/werknemers/dossier/werknemers/{$werknemer->werknemer_id}" class="nav-link {if $active == 'werknemers'}active{/if}">
-									<i class="icon-user mr-2"></i>Werknemers
-								</a>
-							</li>
 
 							<!-- Header Instellingen -->
 							<li class="nav-item-header">Instellingen</li>
-
 
 							<!-- li Algemene instellingen -->
 							<li class="nav-item {if $werknemer->complete != 1}order-1{/if}">
@@ -148,47 +134,10 @@
 										<i class="icon-cog mr-2"></i>
 									{/if}
 								{/if}
-								Gegevens
+								Persoonsgegevens
 							</a>
 						</li>
 
-						<!-- li Emailinstellingen, andere volgorde wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $werknemer->complete != 1}order-2{/if}">
-							<a {if $werknemer->gegevens_complete != NULL}href="crm/werknemers/dossier/emailadressen/{$werknemer->werknemer_id}"{/if} class="nav-link {if $werknemer->gegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'emailadressen'}active{/if}">
-								{* afwijkende icons voor nieuwe aanmelding *}
-								{if $werknemer->emailadressen_complete == NULL}
-									<i class="icon-checkbox-unchecked2 mr-2"></i>
-								{else}
-									{if $werknemer->complete == 0}
-									{if $werknemer->gegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
-										{if $werknemer->gegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
-									{else}
-										{* standaard icon *}
-										<i class="icon-cog mr-2"></i>
-									{/if}
-								{/if}
-								Emailinstellingen
-							</a>
-						</li>
-
-						<!-- li Factuurgegevens, andere volgorde wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $werknemer->complete != 1}order-3{/if}">
-							<a {if $werknemer->emailadressen_complete != NULL}href="crm/werknemers/dossier/factuurgegevens/{$werknemer->werknemer_id}"{/if} class="nav-link {if $werknemer->emailadressen_complete == NULL}nav-link-disabled{/if} {if $active == 'factuurgegevens'}active{/if}">
-								{* afwijkende icons voor nieuwe aanmelding *}
-								{if $werknemer->factuurgegevens_complete == NULL}
-									<i class="icon-checkbox-unchecked2 mr-2"></i>
-								{else}
-									{if $werknemer->complete == 0}
-										{if $werknemer->gegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
-										{if $werknemer->gegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
-									{else}
-										{* standaard icon *}
-										<i class="icon-cog mr-2"></i>
-									{/if}
-								{/if}
-								Factuurgegevens
-							</a>
-						</li>
 
 					</ul>
 				</div>

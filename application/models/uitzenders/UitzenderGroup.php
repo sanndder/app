@@ -37,6 +37,30 @@ class UitzenderGroup extends Connector {
 		//call parent constructor for connecting to database
 		parent::__construct();
 	}
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Bedrijfsnaam van 1 uitzender ophalen
+	 */
+	static function bedrijfsnaam( $uitzender_id )
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$sql = "SELECT uitzenders_bedrijfsgegevens.bedrijfsnaam FROM uitzenders_bedrijfsgegevens
+				WHERE uitzenders_bedrijfsgegevens.deleted = 0
+				AND uitzender_id = ".intval($uitzender_id)." LIMIT 1";
+		
+		$query = $db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$data = $query->row_array();
+		
+		return $data['bedrijfsnaam'];
+	}
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

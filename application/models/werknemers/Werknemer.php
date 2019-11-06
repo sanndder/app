@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Werknemers;
+namespace models\werknemers;
 
 use models\Connector;
 use models\forms\Validator;
@@ -35,7 +35,7 @@ class Werknemer extends Connector
 	public $archief = NULL;
 	public $emailadressen_complete = NULL;
 	public $contactpersoon_complete = NULL;
-	public $factuurgegevens_complete = NULL;
+	public $documenten_complete = NULL;
 	public $gegevens_complete = NULL;
 
 	public $next = array();
@@ -106,7 +106,7 @@ class Werknemer extends Connector
 		$this->complete = $this->_status['complete'];
 		$this->archief = $this->_status['archief'];
 		$this->gegevens_complete = $this->_status['gegevens_complete'];
-		$this->factuurgegevens_complete = $this->_status['factuurgegevens_complete'];
+		$this->documenten_complete = $this->_status['documenten_complete'];
 		$this->contactpersoon_complete = $this->_status['contactpersoon_complete'];
 		$this->emailadressen_complete = $this->_status['emailadressen_complete'];
 
@@ -147,24 +147,7 @@ class Werknemer extends Connector
 			}
 		}
 	}
-
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * get factuurgegevens
-	 */
-	public function factuurgegevens()
-	{
-		$sql = "SELECT * FROM werknemers_factuurgegevens WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
-	}
-
-
+	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * get bedrijsfgegevens
@@ -173,109 +156,9 @@ class Werknemer extends Connector
 	{
 		$sql = "SELECT * FROM werknemers_gegevens WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
 		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
+		
+		return DBhelper::toRow($query, 'NULL');
 	}
-
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * get contactpersonen
-	 */
-	public function contactpersonen()
-	{
-		$sql = "SELECT * FROM werknemers_contactpersonen WHERE deleted = 0 AND werknemer_id = $this->werknemer_id ORDER BY achternaam ASC, voorletters ASC";
-		$query = $this->db_user->query($sql);
-
-		$data = DBhelper::toArray($query, 'contact_id', 'NULL');
-		return $data;
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * get emailadressen
-	 */
-	public function emailadressen()
-	{
-		$sql = "SELECT * FROM werknemers_emailadressen WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
-	}
-
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * get contactpersonen
-	 */
-	public function contactpersoon($contact_id)
-	{
-		$sql = "SELECT * FROM werknemers_contactpersonen WHERE contact_id = $contact_id AND deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		$row = $query->row_array();
-		$row['naam'] = make_name($row);
-
-		return $row;
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * get factoren
-	 */
-	public function factoren()
-	{
-		$sql = "SELECT factor_hoog, factor_laag FROM werknemers_factoren WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		$row = $query->row_array();
-
-		return $row;
-	}
-
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 *  get logo
-	 */
-	public function logo($method = 'path')
-	{
-		$sql = "SELECT * FROM werknemers_logo WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		$row = $query->row_array();
-
-		//full path
-		$file_path = UPLOAD_DIR . '/werkgever_dir_' . $this->user->werkgever_id . '/' . $row['file_dir'] . '/' . $row['file_name'];
-
-		//check
-		if (!file_exists($file_path))
-			return false;
-
-		if ($method == 'path')
-			return $file_path;
-
-		if ($method == 'url')
-			return 'image/logowerknemer/' . $this->werknemer_id . '?' . $row['id'];
-
-		return $row;
-	}
-
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -436,7 +319,7 @@ class Werknemer extends Connector
 			//controle op alle sub statussen
 			if (
 				$this->gegevens_complete == 1 &&
-				$this->emailadressen_complete == 1 &&
+				$this->documenten_complete == 1 &&
 				$this->factuurgegevens_complete == 1 &&
 				$this->contactpersoon_complete == 1
 			)
@@ -448,95 +331,19 @@ class Werknemer extends Connector
 		}
 	}
 
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Sla factoren op na controle
-	 *
-	 */
-	public function setFactoren()
-	{
-		$input = $this->_set('werknemers_factoren', 'factoren');
-		return $input;
-	}
+	
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Sla gegevens op na controle
 	 *
 	 */
-	public function setBedrijfsgegevens()
+	public function setGegevens()
 	{
 		$input = $this->_set('werknemers_gegevens', 'gegevens');
 		return $input;
 	}
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Sla emailadressen op na controle
-	 *
-	 */
-	public function setEmailadressen()
-	{
-		$input = $this->_set('werknemers_emailadressen', 'emailadressen');
-		return $input;
-	}
-
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Sla factuurgegevens op na controle
-	 * @return array
-	 */
-	public function setFactuurgegevens()
-	{
-		$input = $this->_set('werknemers_factuurgegevens', 'factuurgegevens');
-		return $input;
-
-	}
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Sla contactpersoon op na controle
-	 * Maak eventueel een nieuw contact aan
-	 * @return array
-	 */
-	public function setContactpersoon($contact_id)
-	{
-		$new = false;
-
-		//nieuw contact aanmaken indien nodig
-		if ($contact_id == 0)
-		{
-			//hoogste contact id ophalen, autoincrement is niet van toepassing (zit op andere kolom)
-			$sql = "SELECT MAX(contact_id) AS contact_id FROM werknemers_contactpersonen";
-			$query = $this->db_user->query($sql);
-
-			$data = $query->row_array();
-
-			$insert['contact_id'] = $data['contact_id'] + 1;
-			$insert['werknemer_id'] = $this->werknemer_id;
-			$this->db_user->insert('werknemers_contactpersonen', $insert);
-
-			if ($this->db_user->insert_id() > 0)
-			{
-				$new = true;
-				$contact_id = $insert['contact_id'];
-			}
-
-		}
-
-		$input = $this->_set('werknemers_contactpersonen', 'contactpersoon', array('contact_id' => $contact_id));
-
-		//zijn er erros, dan weer uit de database
-		if ($new == true && $this->errors() !== false)
-		{
-			$sql = "DELETE FROM werknemers_contactpersonen WHERE contact_id = $contact_id LIMIT 1";
-			$this->db_user->query($sql);
-		}
-
-		return $input;
-	}
+	
 
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

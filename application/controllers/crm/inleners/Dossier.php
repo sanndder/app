@@ -8,6 +8,7 @@ use models\utils\History;
 use models\utils\VisitsLogger;
 use models\verloning\Urentypes;
 use models\verloning\UrentypesGroup;
+use models\werknemers\WerknemerGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -57,6 +58,7 @@ class Dossier extends MY_Controller
 		$this->smarty->assign('bedrijfsgegevens', $inlener->bedrijfsgegevens());
 		$this->smarty->assign('emailadressen', $inlener->emailadressen() );
 		
+		$this->smarty->assign('uitzender', UitzenderGroup::bedrijfsnaam( $inlener->uitzenderID() ) );
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/overzicht.tpl');
 	}
@@ -125,10 +127,8 @@ class Dossier extends MY_Controller
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $inlener->emailadressen_complete != 1 )
-				{
 					redirect( $this->config->item('base_url') . 'crm/inleners/dossier/emailadressen/' . $inlener->inlener_id ,'location');
-					die();
-				}
+
 
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
@@ -175,10 +175,7 @@ class Dossier extends MY_Controller
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $inlener->contactpersoon_complete != 1 )
-				{
 					redirect( $this->config->item('base_url') . 'crm/inleners/dossier/contactpersonen/' . $inlener->inlener_id ,'location');
-					die();
-				}
 
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
@@ -225,10 +222,8 @@ class Dossier extends MY_Controller
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $inlener->factuurgegevens_complete != 1 )
-				{
 					redirect( $this->config->item('base_url') . 'crm/inleners/dossier/factuurgegevens/' . $inlener->inlener_id ,'location');
-					die();
-				}
+
 
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
@@ -366,20 +361,7 @@ class Dossier extends MY_Controller
 		$this->smarty->display('crm/inleners/dossier/facturen.tpl');
 	}
 
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// inleners pagina
-	//-----------------------------------------------------------------------------------------------------------------
-	public function inleners( $inlener_id = NULL )
-	{
-		//init inlener object
-		$inlener = new Inlener( $inlener_id );
-
-		$this->smarty->assign('inlener', $inlener);
-		$this->smarty->display('crm/inleners/dossier/inleners.tpl');
-	}
-
-
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// werknemers pagina
 	//-----------------------------------------------------------------------------------------------------------------
@@ -387,8 +369,14 @@ class Dossier extends MY_Controller
 	{
 		//init inlener object
 		$inlener = new Inlener( $inlener_id );
+		
+		$werknemergroup = new WerknemerGroup();
+		$werknemers = $werknemergroup->all( array('inlener_id' => $inlener_id) );
+		
+		//show($werknemers);
 
 		$this->smarty->assign('inlener', $inlener);
+		$this->smarty->assign('werknemers', $werknemers);
 		$this->smarty->display('crm/inleners/dossier/werknemers.tpl');
 	}
 

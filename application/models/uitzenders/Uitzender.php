@@ -271,7 +271,6 @@ class Uitzender extends Connector
 		if( $method == 'url' )
 			return 'image/handtekeninguitzender/' . $this->uitzender_id . '?' . $data['id'];
 
-
 		if( $method == 'path' )
 			return $data['file'];
 

@@ -1,4 +1,8 @@
 <?php
+
+use models\Documenten\IDbewijs;
+use models\uitzenders\Uitzender;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -23,7 +27,7 @@ class Image extends MY_Controller {
 	public function logouitzender( $uitzender_id = '' )
 	{
 		//init uitzender object
-		$uitzender = new \models\uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 		$file = $uitzender->logo();
 
 		header('Content-type: image/jpeg');
@@ -55,7 +59,7 @@ class Image extends MY_Controller {
 		if( $this->user->user_type != 'werkgever' )forbidden();
 
 		//init uitzender object
-		$uitzender = new \models\uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 		$file = $uitzender->handtekening();
 
 		header('Content-type: image/jpeg');
@@ -77,6 +81,23 @@ class Image extends MY_Controller {
 		
 		header('Content-type: image/jpeg');
 		echo($file);
+		
+		die();
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// url naar handtekening uitzender
+	//-----------------------------------------------------------------------------------------------------------------
+	public function idbewijs( $side, $user_type, $user_id, $file_id  )
+	{
+		//init uitzender object
+		$idbewijs = new IDbewijs();
+		
+		if( $user_type == 'werknemer' )
+			$idbewijs->werknemer( $user_id );
+		
+		header('Content-type: image/jpeg');
+		echo( $idbewijs->image( $side, $file_id ) );
 		
 		die();
 	}

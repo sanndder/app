@@ -1,6 +1,7 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Werknemer{/block}
 {block "header-icon"}icon-office{/block}
+{assign "select2" "true"}
 {block "header-title"}
 	{if $werknemer->werknemer_id == 0}
 		Nieuwe werknemer aanmelden
@@ -36,50 +37,6 @@
 			<div class="row">
 				<div class="col-xl-10">
 
-					{*
-					<!-- Basic card -->
-					<div class="card">
-
-						<!-- card  body-->
-						<div class="card-body">
-
-							<div class="scan-button">
-								<a href="javascript:void()" class="btn btn-outline-primary" onclick="showUpload( this)" disabled="none">
-									<i class="icon-vcard mr-2" style="font-size: 40px"></i>
-									<span style="font-size: 18px">ID-bewijs scannen</span>
-								</a>
-							</div>
-
-							<div class="scan-upload" style="display: block;">
-								<form method="post" enctype="multipart/form-data">
-									<div class="form-group row">
-										<div class="col-lg-10">
-											<div class="custom-file">
-												<input name="file" type="file" class="custom-file-input" id="customFile">
-												<label class="custom-file-label" for="customFile">ID bewijs zoeken</label>
-											</div>
-										</div>
-									</div>
-									<button name="scan" class="btn btn-success" type="submit">
-										Scannen
-									</button>
-								</form>
-							</div>
-							
-							<script>
-								{literal}
-									function showUpload(obj)
-									{
-									    $(obj).hide();
-									    $('.scan-upload').show();
-                                    }
-								{/literal}
-							</script>
-
-						</div>
-
-					</div>*}
-
 					<!-- Basic card -->
 					<div class="card">
 
@@ -90,9 +47,16 @@
 
 								<!-- opslaan -->
 								<div class="row">
-									<div class="col-lg-12 mb-3">
-										<button type="submit" name="set" class="btn btn-success btn-sm"><i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan</button>
+									<div class="col-lg-6 mb-3">
+                                        {if $werknemer->complete == 1 }
+											<button type="submit" name="set" class="btn btn-success btn-sm"><i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan</button>
+                                        {/if}
 									</div><!-- /col -->
+									<div class="col-lg-6 text-right mb-3">
+										<span data-title="Formulier invullen" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="fillForm()">
+											<i class="icon-pencil3 mr-2" style="font-size: 22px"></i>
+										</span>
+									</div>
 								</div><!-- /row -->
 
 								{*settings*}
@@ -103,6 +67,34 @@
 
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Persoonsgegevens</legend>
+
+									<!-- geslacht -->
+                                    {if isset($formdata.geslacht)}
+                                        {assign "field" "geslacht"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<select name="{$field}" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" style="width: 150px">
+                                                    {if !isset($formdata.$field.list.empty)}
+														<option value=""></option>
+                                                    {/if}
+                                                    {if is_array($formdata.$field.list.options)}
+                                                        {assign "options" $formdata.$field.list.options}
+                                                    {else}
+                                                        {assign "options" $list[$formdata.$field.list.options]}
+                                                    {/if}
+                                                    {foreach $options as $option}
+														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+                                                    {/foreach}
+												</select>
+
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
 
 									<!-- voorletters -->
 									{if isset($formdata.voorletters)}
@@ -129,10 +121,7 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{if isset($carddata.voornaam)}{$carddata.voornaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
 												{/foreach}</span>{/if}
 											</div>
 										</div>
@@ -163,20 +152,157 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{if isset($carddata.achternaam)}{$carddata.achternaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
 												{/foreach}</span>{/if}
 											</div>
 										</div>
 									{/if}
 
+									<!-- achternaam -->
+                                    {if isset($formdata.bsn)}
+                                        {assign "field" "bsn"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<input value="{if isset($carddata.achternaam)}{$carddata.achternaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+
+
+									<!-- gb datum -->
+                                    {if isset($formdata.gb_datum)}
+                                        {assign "field" "gb_datum"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<div class="input-group"  style="width: 250px;">
+													<input value="{if isset($carddata.achternaam)}{$carddata.achternaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="date" class="form-control input-picker{if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+													<span class="input-group-prepend show-datepicker">
+														<span class="input-group-text {if isset($formdata.$field.error)}border-danger{/if}" style="cursor: pointer">
+															<i class="icon-calendar3"></i>
+														</span>
+													</span>
+												</div>
+												{if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+
+									<!-- nationaltieit_id -->
+                                    {if isset($formdata.nationaltieit_id)}
+                                        {assign "field" "nationaltieit_id"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<select name="{$field}" class="form-control select-search{if isset($formdata.$field.error)}-error{/if}" id="div-{$field}">
+                                                    {if !isset($formdata.$field.list.empty)}
+														<option value="">Selecteer een nationaliteit</option>
+                                                    {/if}
+                                                    {if is_array($formdata.$field.list.options)}
+                                                        {assign "options" $formdata.$field.list.options}
+                                                    {else}
+                                                        {assign "options" $list[$formdata.$field.list.options]}
+                                                    {/if}
+                                                    {foreach $options as $option}
+														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+                                                    {/foreach}
+												</select>
+
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
 
 								</fieldset>
 
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Contactgegevens</legend>
+
+									<!-- telefoon -->
+                                    {if isset($formdata.telefoon)}
+                                        {assign "field" "telefoon"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+
+									<!-- mobiel -->
+                                    {if isset($formdata.mobiel)}
+                                        {assign "field" "mobiel"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+
+									<!-- email -->
+                                    {if isset($formdata.email)}
+                                        {assign "field" "email"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+
+									<br />
+
+									<!-- woonland -->
+                                    {if isset($formdata.woonland_id)}
+                                        {assign "field" "woonland_id"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<select name="{$field}" class="form-control select-search">
+                                                    {if !isset($formdata.$field.list.empty)}
+														<option value="">Selecteer een nationaliteit</option>
+                                                    {/if}
+                                                    {if is_array($formdata.$field.list.options)}
+                                                        {assign "options" $formdata.$field.list.options}
+                                                    {else}
+                                                        {assign "options" $list[$formdata.$field.list.options]}
+                                                    {/if}
+                                                    {foreach $options as $option}
+														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+                                                    {/foreach}
+												</select>
+
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
 
 									<!-- straat -->
 									{if isset($formdata.straat)}
@@ -187,10 +313,7 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
 												{/foreach}</span>{/if}
 											</div>
 										</div>
@@ -205,10 +328,7 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
 												{/foreach}</span>{/if}
 											</div>
 										</div>
@@ -223,10 +343,7 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
 												{/foreach}</span>{/if}
 											</div>
 										</div>
@@ -241,10 +358,7 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
 												{/foreach}</span>{/if}
 											</div>
 										</div>
@@ -257,11 +371,9 @@
 											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
 												:</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>

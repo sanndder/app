@@ -18,11 +18,13 @@ class Upload_model extends MY_Model
 	private $_random_name_prefix = ''; //random naam prefix
 
 	private $_file_name = NULL; //name after upload
-	private $_file_path = NULL; //name after upload
+	private $_file_path = NULL; //path after upload
+	private $_file_ext = NULL; //extentions after upload
 
 	private $_field = ''; //welk veld is key
 	private $_id = ''; //id voor table
-
+	
+	private $_allowed_file_types = '*'; //allowed file types
 
 	private $_error = NULL;
 
@@ -60,10 +62,23 @@ class Upload_model extends MY_Model
 	{
 		$array['file_name'] = $this->_file_name;
 		$array['file_dir'] = $this->_dir;
+		$array['file_ext'] = $this->_file_ext = getFileExtension($this->_file_name);
 
 		return $array;
 	}
 
+
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Welke bestanden mogen worden geupload
+	 *
+	 * @return void
+	 */
+	public function setAllowedFileTypes( $allowed = '' )
+	{
+		$this->_allowed_file_types = $allowed;
+	}
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -164,7 +179,7 @@ class Upload_model extends MY_Model
 
 		//config
 		$config['upload_path'] = $this->_path;
-		$config['allowed_types'] = '*';
+		$config['allowed_types'] = $this->_allowed_file_types;
 		$config['overwrite'] = TRUE;
 		$config['file_ext_tolower'] = TRUE;
 		$config['remove_spaces'] = TRUE;
@@ -234,9 +249,23 @@ class Upload_model extends MY_Model
 					SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
 					WHERE deleted = 0 AND $this->_field = $this->_id";
 			$this->db_user->query($sql);
-
 		}
 
+		//check type
+		if( $this->_allowed_file_types != '*' )
+		{
+			$ext = getFileExtension($_FILES['file']['name']);
+			
+			$types = explode('|', $this->_allowed_file_types );
+			
+			if( !in_array($ext, $types) )
+			{
+				$this->_error = 'Bestandstype niet toegestaan';
+				return false;
+			}
+		}
+		
+		
 		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES ('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."')";
 		$sql = "INSERT INTO $this->_table (file, ".$this->_field.",user_id)
 				VALUES (AES_ENCRYPT('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."', UNHEX(SHA2('".UPLOAD_SECRET."',512))),

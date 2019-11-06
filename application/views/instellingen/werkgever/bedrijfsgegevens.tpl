@@ -186,7 +186,6 @@
                             {/if}
 
 						</div><!-- /col -->
-
 					</div><!-- /row -->
 
 				</div><!-- /card body -->

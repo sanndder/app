@@ -1,6 +1,7 @@
 {
   "remove": [
     "set",
+    "gb_datum_submit",
     "id",
     "user_id",
     "werknemer_id",
@@ -15,8 +16,7 @@
       "rules": {
         "required": true
       },
-      "radio": {
-        "inline": true,
+      "list": {
         "options": {
           "m": "Mannelijk",
           "v": "Vrouwelijk"
@@ -63,8 +63,35 @@
         "removechars": "_"
       }
     },
+    "bsn": {
+      "label": "BSN",
+      "rules": {
+        "required": true,
+        "minlength": 8,
+        "maxlength": 9,
+        "removespaces": false,
+        "removechars": "_,.,-",
+        "type": "bsn"
+      }
+    },
+    "gb_datum": {
+      "label": "Geboortedatum",
+      "rules": {
+        "required": true,
+        "type": "date"
+      }
+    },
+    "nationaltieit_id": {
+      "label": "Nationaliteit",
+      "rules": {
+        "required": true
+      },
+      "list": {
+        "options": "nationaliteiten"
+      }
+    },
     "email": {
-      "label": "Email",
+      "label": "Emailadres",
       "rules": {
         "required": true,
         "minlength": 6,
@@ -81,6 +108,26 @@
         "maxlength": 20,
         "removespaces": false,
         "removechars": ".,_"
+      }
+    },
+    "mobiel": {
+      "label": "Mobiel",
+      "rules": {
+        "required": false,
+        "minlength": 10,
+        "maxlength": 20,
+        "removespaces": false,
+        "removechars": ".,_"
+      }
+    },
+    "woonland_id": {
+      "label": "Woonland",
+      "rules": {
+        "required": true
+      },
+      "list": {
+        "empty": false,
+        "options": "landen"
       }
     },
     "straat": {
@@ -125,34 +172,6 @@
         "required": true,
         "minlength": 2,
         "maxlength": 100
-      }
-    },
-    "postbus_nummer": {
-      "label": "Postbusnummer",
-      "rules": {
-        "required": false,
-        "minlength": 1,
-        "maxlength": 5
-      }
-    },
-    "postbus_postcode": {
-      "label": "Postbus postcode",
-      "rules": {
-        "required": false,
-        "minlength": 6,
-        "maxlength": 8,
-        "toupper": true,
-        "removespaces": true,
-        "removechars": "-,.,_",
-        "type": "postcode"
-      }
-    },
-    "postbus_plaats": {
-      "label": "Postbus plaats",
-      "rules": {
-        "required": false,
-        "minlength": 2,
-        "maxlength": 40
       }
     }
   }

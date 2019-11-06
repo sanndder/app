@@ -1,4 +1,4 @@
-<div class="navbar navbar-expand-lg navbar-light">
+<div class="navbar navbar-expand-lg navbar-light navbar-sticky">
 	<!-- hidden buttons for mobile view -->
 	<div class="text-left d-lg-none">
 		<!-- left side bar -->

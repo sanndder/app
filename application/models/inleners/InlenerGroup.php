@@ -16,12 +16,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class InlenerGroup extends Connector {
 
 	/*
-	 * set columns for SELECT query
-	 * @var array
-	 */
-	private $_cols = '*';
-
-	/*
 	 * @var array
 	 */
 	private $_error = NULL;
@@ -37,22 +31,6 @@ class InlenerGroup extends Connector {
 		parent::__construct();
 	}
 
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * aanpassen welke columns er opgehaald moeten worden, standaard alles
-	 * param is door komma gescheiden lijst
-	 * @return void
-	 */
-	public function setColumns( $cols = NULL )
-	{
-		if( $cols != NULL )
-		{
-			$this->_cols = $cols;
-		}
-	}
-
-
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Alle inleners ophalen aan de hand van de zoekcriteria
@@ -63,10 +41,12 @@ class InlenerGroup extends Connector {
 		$data = array();
 
 		//start query
-		$sql = "SELECT $this->_cols 
+		$sql = "SELECT inleners_bedrijfsgegevens.*, inleners_status.*, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender, uitzenders_bedrijfsgegevens.uitzender_id
 				FROM inleners_status
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
-				WHERE inleners_bedrijfsgegevens.deleted = 0";
+				LEFT JOIN inleners_uitzenders ON inleners_status.inlener_id = inleners_uitzenders.inlener_id
+				LEFT JOIN uitzenders_bedrijfsgegevens ON inleners_uitzenders.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_uitzenders.deleted = 0 AND uitzenders_bedrijfsgegevens.deleted = 0";
 
 		//archief ook?
 		if( isset($param['actief']) && !isset($param['archief']) )
@@ -83,7 +63,9 @@ class InlenerGroup extends Connector {
 		if( isset($param['q1']) && $param['q1'] != '' )
 			$sql .= " AND (inleners_bedrijfsgegevens.bedrijfsnaam LIKE '%". addslashes($_GET['q1'])."%' OR inleners_status.inlener_id LIKE '%". addslashes($_GET['q1'])."%' ) ";
 
-
+		//specifieke uitzender?
+		if( isset($param['uitzender_id']) )
+			$sql .= " AND inleners_uitzenders.uitzender_id = ".intval($param['uitzender_id'])." ";
 
 		//go
 		$query = $this->db_user->query($sql);

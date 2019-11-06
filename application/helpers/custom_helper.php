@@ -92,6 +92,19 @@ if (!function_exists('checkAndCreateDir'))
 	}
 }
 
+//=====================================================================
+// //naam samenstellen
+//=====================================================================
+if (!function_exists('getFileExtension'))
+{
+	function getFileExtension( $file_name = '' )
+	{
+		$x = explode('.', $file_name);
+		return strtolower(end($x));
+	}
+}
+
+
 
 //=====================================================================
 // //naam samenstellen

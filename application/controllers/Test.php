@@ -1,4 +1,11 @@
 <?php
+
+use models\Documenten\IDbewijs;
+use models\File\File;
+use models\File\Img;
+use models\File\Pdf;
+
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -53,7 +60,36 @@ class Test extends MY_Controller {
 
 		$this->smarty->display('test/validation.tpl');
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// test method
+	//-----------------------------------------------------------------------------------------------------------------
+	public function image()
+	{
 
+		//load file
+		$img = new Img('werknemer/idbewijs/id_0547813001573059839_PCCSe8am.jpg');
+		
+		$img->trimWhiteSpace();
+		
+		//nieuwe ID starten
+		//$idbewijs = new IDbewijs();
+		//$idbewijs->werknemer( 14003 )->imgObjectToDatabase( 'front', $img );
+		
+		
+		die();
+		header('Content-type: image/jpeg');
+		echo $idbewijs->image();
+		
+		die();
+		
+		//img class aden om plaatje te resizen
+		//$image = new Img( $file_array );
+		//$image->setMaxWidthHeight( 700, 400 )->setQuality(80)->resize();
+			
+			
+	
+	}
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// test method

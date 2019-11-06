@@ -183,6 +183,29 @@
 				--------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 				<div class="col-md-3">
 
+					<!------------------------------------------------------- card: Uitzender ------------------------------------------------------>
+					<div class="card">
+						<div class="card-header bg-transparent header-elements-inline">
+							<span class="text-uppercase font-size-sm font-weight-semibold">Uitzender</span>
+							<div class="header-elements">
+								<div class="list-icons">
+									<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}" data-popup="tooltip" data-placement="top" data-title="Wijzig uitzender">
+										<i class="icon-pencil7"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+
+						<div class="card-body">
+							{if $inlener->uitzenderID() == NULL}
+								<i>Inlener is niet aan uitzender gekoppeld</i>
+							{else}
+                                {$inlener->uitzenderID()} - {$uitzender}
+							{/if}
+
+						</div>
+					</div><!-- /card: Uitzender  -->
+
 					<!------------------------------------------------------- card: Accountmanager ------------------------------------------------------>
 					<div class="card">
 						<div class="card-header bg-transparent header-elements-inline">

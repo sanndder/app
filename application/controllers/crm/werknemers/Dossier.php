@@ -1,6 +1,9 @@
 <?php
 
+use models\Documenten\IDbewijs;
 use models\forms\Formbuilder;
+use models\utils\Carbagecollector;
+use models\utils\Codering;
 use models\utils\VisitsLogger;
 use models\werknemers\Werknemer;
 
@@ -42,7 +45,7 @@ class Dossier extends MY_Controller
 		if( $werknemer->complete == 0 )
 		{
 			if( $werknemer->gegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/gegevens/' . $werknemer_id ,'location');
-			if( $werknemer->emailadressen_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/emailadressen/' . $werknemer_id ,'location');
+			if( $werknemer->documenten_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/documenten/' . $werknemer_id ,'location');
 			if( $werknemer->factuurgegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/factuurgegevens/' . $werknemer_id ,'location');
 			if( $werknemer->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/contactpersonen/' . $werknemer_id ,'location');
 		}
@@ -111,44 +114,19 @@ class Dossier extends MY_Controller
 
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
-
-		//TEMP upload ID voor scan
-		if( isset($_POST['scan']) )
-		{
-			$this->load->model('upload_model', 'uploadfiles');
-			$this->uploadfiles->setUploadDir( 'werknemer/id' );
-			$this->uploadfiles->setPrefix( 'id_' );
-			$this->uploadfiles->uploadfiles();
-
-			$file_array = $this->uploadfiles->getFileArray();
-
-			//img class laden om plaatje te resizen
-			$image = new \models\File\Img( $file_array );
-			$image->setMaxWidthHeight( 600, 400 )->setQuality(80)->resize();
-
-			//make api call
-			$api = new \models\Api\Scan();
-			$carddata = $api->setFile( $file_array )->call();
-			show($carddata);
-			$this->smarty->assign('carddata', $carddata );
-
-		}
-
+		
 		//set gegevens
 		if( isset($_POST['set']) )
 		{
-			$bedrijfsgevens = $werknemer->setBedrijfsgegevens();
+			$bedrijfsgevens = $werknemer->setGegevens();
 			$errors = $werknemer->errors();
 
 			//msg
 			if( $errors === false )
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
-				if( $werknemer->emailadressen_complete != 1 )
-				{
-					redirect( $this->config->item('base_url') . 'crm/werknemers/dossier/emailadressen/' . $werknemer->werknemer_id ,'location');
-					die();
-				}
+				if( $werknemer->documenten_complete != 1 )
+					redirect( $this->config->item('base_url') . 'crm/werknemers/dossier/documenten/' . $werknemer->werknemer_id ,'location');
 
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
@@ -165,127 +143,14 @@ class Dossier extends MY_Controller
 		$formdata = $formbuidler->table( 'werknemers_gegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
 		$this->smarty->assign('formdata', $formdata);
 
-		//show($werknemer);
-
+		//show(Codering::listNationaliteiten());
+		$this->smarty->assign('list', array( 'nationaliteiten' => Codering::listNationaliteiten(), 'landen' => Codering::listLanden() ));
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/gegevens.tpl');
 	}
 
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// Factuurgegevens
-	//-----------------------------------------------------------------------------------------------------------------
-	public function Factuurgegevens( $werknemer_id = NULL )
-	{
-		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
-
-		//init werknemer object
-		$werknemer = new Werknemer( $werknemer_id );
-
-		//set gegevens
-		if( isset($_POST['set'] ))
-		{
-			$factuurgegevens = $werknemer->setFactuurgegevens();
-			$errors = $werknemer->errors();
-
-			//msg
-			if( $errors === false )
-			{
-				//nieuwe aanmelding doorzetten naar volgende pagina
-				if( $werknemer->contactpersoon_complete != 1 )
-				{
-					redirect( $this->config->item('base_url') . 'crm/werknemers/dossier/contactpersonen/' . $werknemer->werknemer_id ,'location');
-					die();
-				}
-
-				//bestaande uiztender melding tonen
-				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
-			}
-			else
-				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
-		}
-		else
-		{
-			$factuurgegevens =  $werknemer->factuurgegevens();
-			$errors = false; //no errors
-		}
-
-		$formdata = $formbuidler->table( 'werknemers_factuurgegevens' )->data( $factuurgegevens )->errors( $errors )->build();
-		$this->smarty->assign('formdata', $formdata);
-
-		//show($formdata);
-
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/factuurgegevens.tpl');
-	}
-
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// Factuurgegevens
-	//-----------------------------------------------------------------------------------------------------------------
-	public function Emailadressen( $werknemer_id = NULL )
-	{
-		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
-
-		//init werknemer object
-		$werknemer = new Werknemer( $werknemer_id );
-
-		//set gegevens
-		if( isset($_POST['set'] ))
-		{
-			$emailadressen = $werknemer->setEmailadressen();
-			$errors = $werknemer->errors();
-
-			//msg
-			if( $errors === false )
-			{
-				//nieuwe aanmelding doorzetten naar volgende pagina
-				if( $werknemer->factuurgegevens_complete != 1 )
-				{
-					redirect( $this->config->item('base_url') . 'crm/werknemers/dossier/factuurgegevens/' . $werknemer->werknemer_id ,'location');
-					die();
-				}
-
-				//bestaande uiztender melding tonen
-				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
-			}
-			else
-				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
-		}
-		else
-		{
-			$emailadressen =  $werknemer->emailadressen();
-			$errors = false; //no errors
-		}
-
-		$formdata = $formbuidler->table( 'werknemers_emailadressen' )->data( $emailadressen )->errors( $errors )->build();
-		$this->smarty->assign('formdata', $formdata);
-
-		//show($formdata);
-
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/emailadressen.tpl');
-	}
-
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// documenten pagina
-	//-----------------------------------------------------------------------------------------------------------------
-	public function contactpersonen( $werknemer_id = NULL )
-	{
-		//init werknemer object
-		$werknemer = new Werknemer( $werknemer_id );
-
-		$contactpersonen = $werknemer->contactpersonen();
-		$this->smarty->assign('contactpersonen', $contactpersonen);
-
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/contactpersonen.tpl');
-	}
-
-
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// documenten pagina
 	//-----------------------------------------------------------------------------------------------------------------
@@ -293,9 +158,20 @@ class Dossier extends MY_Controller
 	{
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
+		
+		//id bewijs is appart object
+		$idbewijs = new IDbewijs();
+		$idbewijs->werknemer( $werknemer_id );
 
 		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+		$this->smarty->assign('id_voorkant', $idbewijs->url( 'voorkant' ));
+		
+		//afwijkende template voor
+		if( $werknemer->documenten_complete != 1 )
+			$this->smarty->display('crm/werknemers/dossier/documenten_wizard.tpl');
+		else
+			$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+		
 	}
 
 

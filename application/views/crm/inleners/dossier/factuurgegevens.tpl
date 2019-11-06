@@ -157,7 +157,7 @@
 										</div>
                                     {/if}
 
-									<!-- Factuur betaaltermijn -->
+									<!-- g rekening percentage -->
                                     {if isset($formdata.g_rekening_percentage)}
                                         {assign "field" "g_rekening_percentage"}
 										<div class="form-group row">

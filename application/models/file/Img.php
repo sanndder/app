@@ -7,9 +7,9 @@ use claviska\SimpleImage;
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
- * File class
+ * Image class
  *
- * File handlig for all file types
+ * File handlig for image file types
  *
  */
 class Img extends File{
@@ -88,8 +88,35 @@ class Img extends File{
 		//set info
 		$this->_setInfo();
 
+		return $this;
 	}
+	
 
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Set max width and height for resize
+	 *
+	 * @return object
+	 */
+	public function trimWhiteSpace()
+	{
+		//absoluut path for windows
+		if( ENVIRONMENT == 'development' )
+			$open_path = 'C:/xampp/htdocs/app/' . $this->_file_path;
+		else
+			$open_path = $this->_file_path;
+		
+		$im = new \Imagick( $open_path );
+		
+		/* Trim the image. */
+		$im->trimImage(0.2);
+		
+		/* Ouput the image */
+		header("Content-Type: image/" . $im->getImageFormat());
+		echo $im;
+	}
+	
+	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Set max width and height for resize
@@ -128,9 +155,66 @@ class Img extends File{
 			$this->_simpleimage->bestFit( $this->_max_width, $this->_max_height )->toFile( $this->_file_path, NULL, $this->_quality );
 		else
 			$this->_simpleimage->resize( $this->_max_width, $this->_max_height )->toFile( $this->_file_path, NULL, $this->_quality  );
+		
+		return $this;
 	}
-
-
+	
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * png en gif naar jpg
+	 * https://www.invoiceberry.com/blog/convert-png-and-gif-pictures-to-jpeg-pictures-with-php/
+	 * @return object
+	 */
+	public function toJpg( $keep_origional = false )
+	{
+		if( $this->_file_ext == 'jpg' )
+			return $this;
+		
+		//new file path
+		$new_path = str_replace( '.'.$this->_file_ext, '.jpg', $this->_file_path );
+		
+		if ( $this->_file_ext == 'png' ) $new_pic = imagecreatefrompng($this->_file_path);
+		if ( $this->_file_ext == 'gif' ) $new_pic = imagecreatefromgif($this->_file_path);
+		
+		// Create a new true color image with the same size
+		$w = imagesx($new_pic);
+		$h = imagesy($new_pic);
+		$white = imagecreatetruecolor($w, $h);
+		
+		// Fill the new image with white background
+		$bg = imagecolorallocate($white, 255, 255, 255);
+		imagefill($white, 0, 0, $bg);
+		
+		// Copy original transparent image onto the new image
+		imagecopy($white, $new_pic, 0, 0, 0, 0, $w, $h);
+		
+		$new_pic = $white;
+		
+		imagejpeg($new_pic, $new_path);
+		imagedestroy($new_pic);
+		
+		if( !$keep_origional )
+		{
+			unlink($this->_file_path);
+			$this->_file_path = $new_path;
+			$this->_file_name = str_replace( '.'.$this->_file_ext, '.jpg', $this->_file_name );
+			
+			$this->_setImageType();
+			$this->_setInfo();
+		}
+		else
+		{
+			$img['file_name'] = str_replace( '.'.$this->_file_ext, '.jpg', $this->_file_name );
+			$img['file_dir'] = $this->_file_dir;
+			return new Img( $img );
+		}
+		
+		return $this;
+	}
+	
+	
+	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Set current width height and ratio
@@ -143,6 +227,12 @@ class Img extends File{
 		$this->_current_height = $this->_simpleimage->getHeight();
 
 		$this->_ratio = $this->_simpleimage->getAspectRatio();
+		
+		//extensie
+		$this->_file_ext = getFileExtension($this->_file_name);
+		
+		//size
+		$this->_file_size = filesize($this->_file_path);
 
 	}
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Werknemers;
+namespace models\werknemers;
 
 use models\Connector;
 
@@ -14,12 +14,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  *
  */
 class WerknemerGroup extends Connector {
-
-	/*
-	 * set columns for SELECT query
-	 * @var array
-	 */
-	private $_cols = '*';
 
 	/*
 	 * @var array
@@ -69,21 +63,6 @@ class WerknemerGroup extends Connector {
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * aanpassen welke columns er opgehaald moeten worden, standaard alles
-	 * param is door komma gescheiden lijst
-	 * @return void
-	 */
-	public function setColumns( $cols = NULL )
-	{
-		if( $cols != NULL )
-		{
-			$this->_cols = $cols;
-		}
-	}
-
-
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
 	 * Alle werknemers ophalen aan de hand van de zoekcriteria
 	 */
 	public function all( $param = NULL )
@@ -92,10 +71,17 @@ class WerknemerGroup extends Connector {
 		$data = array();
 
 		//start query
-		$sql = "SELECT $this->_cols 
+		$sql = "SELECT werknemers_status.*, werknemers_gegevens.*,
+       					werknemers_uitzenders.uitzender_id,
+       					werknemers_inleners.inlener_id
 				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_gegevens.werknemer_id = werknemers_status.werknemer_id
-				WHERE werknemers_gegevens.deleted = 0";
+				LEFT JOIN werknemers_uitzenders ON werknemers_status.werknemer_id = werknemers_uitzenders.werknemer_id
+				LEFT JOIN werknemers_inleners ON werknemers_status.werknemer_id = werknemers_inleners.werknemer_id
+				WHERE werknemers_gegevens.deleted = 0
+				  AND (werknemers_uitzenders.deleted = 0 OR werknemers_uitzenders.deleted IS NULL )
+				  AND (werknemers_inleners.deleted = 0 OR werknemers_inleners.deleted IS NULL  )
+				";
 
 		//archief ook?
 		if( isset($param['actief']) && !isset($param['archief']) )
@@ -111,8 +97,17 @@ class WerknemerGroup extends Connector {
 		//zoeken, q1 is voor ID en bedrijfsnaam, q2 is voor overig
 		if( isset($param['q1']) && $param['q1'] != '' )
 			$sql .= " AND (werknemers_gegevens.bedrijfsnaam LIKE '%". addslashes($_GET['q1'])."%' OR werknemers_status.werknemer_id LIKE '%". addslashes($_GET['q1'])."%' ) ";
+		
+		//specifieke uitzender?
+		if( isset($param['uitzender_id']) )
+			$sql .= " AND werknemers_uitzenders.uitzender_id = ".intval($param['uitzender_id'])." ";
 
-
+		//specifieke inlener?
+		if( isset($param['inlener_id']) )
+			$sql .= " AND werknemers_inleners.inlener_id = ".intval($param['inlener_id'])." ";
+		
+		//group
+			$sql .= " GROUP BY werknemers_status.werknemer_id";
 
 		//go
 		$query = $this->db_user->query($sql);
