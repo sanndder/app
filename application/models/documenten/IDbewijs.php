@@ -2,6 +2,7 @@
 
 namespace models\Documenten;
 use models\Connector;
+use models\forms\Valid;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -24,6 +25,7 @@ class IDbewijs extends Connector {
 	private $_url_achterkant = NULL;
 	private $_file_voorkant = NULL;
 	private $_file_achterkant = NULL;
+	private $_vervaldatum = NULL;
 	
 	private $_file_id = NULL;
 	
@@ -47,6 +49,29 @@ class IDbewijs extends Connector {
 		
 	}
 
+
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * check if ID bewijs is complete
+	 * @return object
+	 */
+	public function complete()
+	{
+		//reload data
+		$this->_getIDbewijsFromDatabase();
+		
+		//check fields
+		if(
+			$this->_vervaldatum !== NULL &&
+			$this->_file_voorkant !== NULL
+		)
+			return true;
+		
+		return false;
+		
+	}
+
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * entity is werknemer
@@ -62,7 +87,86 @@ class IDbewijs extends Connector {
 		
 		return $this;
 	}
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * validate vervaldatum
+	 * @return object
+	 */
+	public function _validateVervalDatum( $datum )
+	{
+		//to internatiol format
+		$datum = reverseDate($datum);
+		
+		//valid date
+		if( !Valid::date($datum))
+		{
+			$this->_error[] = 'Ingevoerde datum is ongeldig';
+			return false;
+		}
+		
+		//cannot be in the past
+		if( $datum < date('Y-m-d') )
+		{
+			$this->_error[] = 'ID bewijs mag niet verlopen zijn';
+			return false;
+		}
+		
+	}
+	
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set vervaldatum
+	 * @return object
+	 */
+	public function setVervalDatum( $datum )
+	{
+		if( $this->_validateVervalDatum($datum) === false )
+			return false;
+		
+		$this->db_user->where( 'werknemer_id', $this->_entity_id );
+		$this->db_user->update( $this->_table, array( 'vervaldatum' => reverseDate($datum) ) );
+	}
 
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * delete ID
+	 * @return object
+	 */
+	public function deleteID( $side = '' )
+	{
+		if( $side == 'voorkant' )
+			$side = 1;
+		elseif( $side == 'achterkant' )
+			$side = 2;
+		else
+			return NULL;
+		
+		$sql = "UPDATE $this->_table
+				SET
+				    file_".$side." = NULL,
+				    file_".$side."_size = NULL
+				WHERE
+					$this->_key = $this->_entity_id
+				LIMIT 1
+				";
+		
+		$this->db_user->query($sql);
+		
+		//delete datum if necessary
+		$sql = "SELECT id, file_1, file_2 FROM $this->_table WHERE $this->_key = $this->_entity_id LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		$data = $query->row_array();
+		
+		if( $data['file_1'] === NULL && $data['file_2'] === NULL )
+		{
+			$this->db_user->where( 'id', $data['id'] );
+			$this->db_user->update( $this->_table, array( 'vervaldatum' => NULL ) );
+		}
+		
+	}
 
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -131,6 +235,17 @@ class IDbewijs extends Connector {
 	}
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * @return date
+	 */
+	public function vervaldatum()
+	{
+		return $this->_vervaldatum;
+	}
+	
+	
+	
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * set table voor id bewijs
 	 * @return object
@@ -140,7 +255,7 @@ class IDbewijs extends Connector {
 		$sql = "SELECT
 					AES_DECRYPT( $this->_table.file_1, UNHEX(SHA2('".UPLOAD_SECRET."' ,512)) ) AS file_1,
 					AES_DECRYPT( $this->_table.file_2, UNHEX(SHA2('".UPLOAD_SECRET."' ,512)) ) AS file_2,
-					id
+					id, vervaldatum
 				FROM $this->_table
 				WHERE $this->_key = $this->_entity_id AND deleted = 0
 				LIMIT 1";
@@ -157,6 +272,7 @@ class IDbewijs extends Connector {
 		$data = $query->row_array();
 		
 		$this->_file_id = $data['id'];
+		$this->_vervaldatum = $data['vervaldatum'];
 		
 		if( $data['file_1'] !== NULL )
 		{
@@ -164,7 +280,7 @@ class IDbewijs extends Connector {
 			$this->_url_voorkant = 'image/idbewijs/voorkant/werknemer/' . $this->_entity_id . '/' . $data['id'];
 		}
 		
-		if( $data['file_1'] !== NULL )
+		if( $data['file_2'] !== NULL )
 		{
 			$this->_file_achterkant = $data['file_2'];
 			$this->_url_achterkant = 'image/idbewijs/achterkant/werknemer/' . $this->_entity_id . '/' . $data['id'];

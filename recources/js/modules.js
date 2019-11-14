@@ -277,6 +277,18 @@ var Datepickers = function() {
             selectYears: 10
         });
 
+        var d = new Date();
+        var year = d.getFullYear();
+
+        $( '.pickadate-id' ).pickadate({
+            selectYears: true,
+            selectMonths: true,
+            close: '',
+            selectYears: 15,
+            min: [year,1,1]
+        });
+
+
     };
     return {
         init: function() {

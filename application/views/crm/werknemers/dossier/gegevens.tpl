@@ -381,7 +381,42 @@
 									{/if}
 								</fieldset>
 
+								<fieldset class="mb-3">
+									<legend class="text-uppercase font-size-sm font-weight-bold">Bankgegevens</legend>
 
+									<!-- iban -->
+                                    {if isset($formdata.iban)}
+                                        {assign "field" "iban"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
+													<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+
+                                    {if isset($formdata.tav)}
+                                        {assign "field" "tav"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:<br />
+												<i style="font-size: 11px">Alleen bij afwijkende naam, bijvoorbeeld van een bewindvoerder.</i>
+											</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
+													<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+								</fieldset>
 
 
 								<!-- opslaan -->

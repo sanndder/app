@@ -21,3 +21,13 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
     overflow-x: hidden;
     transition: 0.5s;
 }
+
+
+/* ID upload */
+.img-idbewijs{
+    border:1px solid rgba(0, 0, 0, 0.125);
+    padding: 5px;
+    border-radius: 3px;
+    display: block;
+    clear: both;
+}

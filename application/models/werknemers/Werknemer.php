@@ -33,10 +33,10 @@ class Werknemer extends Connector
 
 	public $complete = NULL;
 	public $archief = NULL;
-	public $emailadressen_complete = NULL;
-	public $contactpersoon_complete = NULL;
-	public $documenten_complete = NULL;
 	public $gegevens_complete = NULL;
+	public $documenten_complete = NULL;
+	public $dienstverband_complete = NULL;
+	public $verloning_complete = NULL;
 
 	public $next = array();
 	public $prev = array();
@@ -107,8 +107,8 @@ class Werknemer extends Connector
 		$this->archief = $this->_status['archief'];
 		$this->gegevens_complete = $this->_status['gegevens_complete'];
 		$this->documenten_complete = $this->_status['documenten_complete'];
-		$this->contactpersoon_complete = $this->_status['contactpersoon_complete'];
-		$this->emailadressen_complete = $this->_status['emailadressen_complete'];
+		$this->dienstverband_complete = $this->_status['dienstverband_complete'];
+		$this->verloning_complete = $this->_status['verloning_complete'];
 
 		//set public vars
 		$this->naam = $this->_status['naam'];
@@ -119,7 +119,8 @@ class Werknemer extends Connector
 		$this->prev['id'] = $this->werknemer_id;    //default self
 		$this->prev['naam'] = $this->naam;  //default self
 
-		$sql = "SELECT werknemers_status.werknemer_id, werknemers_gegevens.achternaam, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam, werknemers_gegevens.tussenvoegsel FROM werknemers_status 
+		$sql = "SELECT werknemers_status.werknemer_id, werknemers_gegevens.achternaam, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam, werknemers_gegevens.tussenvoegsel
+				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_status.werknemer_id = werknemers_gegevens.werknemer_id
 				WHERE ( 
 						werknemers_status.werknemer_id = IFNULL((SELECT min(werknemers_status.werknemer_id) FROM werknemers_status WHERE werknemers_status.werknemer_id > $this->werknemer_id AND werknemers_status.archief = 0 AND werknemers_status.complete = 1),0) 
@@ -160,37 +161,7 @@ class Werknemer extends Connector
 		return DBhelper::toRow($query, 'NULL');
 	}
 
-	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 *  get handtekeneing
-	 */
-	public function handtekening($method = 'path')
-	{
-		$sql = "SELECT AES_DECRYPT( werknemers_handtekening.file, UNHEX(SHA2('" . UPLOAD_SECRET . "' ,512)) ) AS file, id 
-				FROM werknemers_handtekening 
-				WHERE werknemer_id = $this->werknemer_id AND deleted = 0
-				LIMIT 1";
-
-		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		$data = $query->row_array();
-
-		if ($method == 'url')
-			return 'image/handtekeningwerknemer/' . $this->werknemer_id . '?' . $data['id'];
-
-
-		if ($method == 'path')
-			return $data['file'];
-
-		//echo "<img src='data:image/jpeg;base64," . base64_encode( $data['file'] )."'>";
-		//die();
-
-	}
-
-
+	
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -320,8 +291,8 @@ class Werknemer extends Connector
 			if (
 				$this->gegevens_complete == 1 &&
 				$this->documenten_complete == 1 &&
-				$this->factuurgegevens_complete == 1 &&
-				$this->contactpersoon_complete == 1
+				$this->dienstverband_complete == 1 &&
+				$this->verloning_complete == 1
 			)
 				$update_status['complete'] = 1;
 
@@ -331,6 +302,27 @@ class Werknemer extends Connector
 		}
 	}
 
+
+	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Document status naar complete of er weer af
+	 *
+	 */
+	public function documenten_complete( $complete = true )
+	{
+		if( $complete )
+			$this->_updateStatus( 'documenten_complete' );
+		else
+		{
+			$update_status['documenten_complete'] = NULL;
+			$update_status['complete'] = 0;
+			
+			//update
+			$this->db_user->where('werknemer_id', $this->werknemer_id);
+			$this->db_user->update('werknemers_status', $update_status);
+		}
+			
+	}
 	
 
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

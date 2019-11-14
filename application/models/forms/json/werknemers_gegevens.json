@@ -63,6 +63,26 @@
         "removechars": "_"
       }
     },
+    "iban": {
+      "label": "IBAN",
+      "rules": {
+        "required": true,
+        "minlength": 10,
+        "maxlength": 100,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "toupper" :true,
+        "type": "iban"
+      }
+    },
+    "tav": {
+      "label": "Ter attentie van",
+      "rules": {
+        "required": false,
+        "minlength": 3,
+        "maxlength": 100
+      }
+    },
     "bsn": {
       "label": "BSN",
       "rules": {

@@ -46,8 +46,7 @@ class Dossier extends MY_Controller
 		{
 			if( $werknemer->gegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/gegevens/' . $werknemer_id ,'location');
 			if( $werknemer->documenten_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/documenten/' . $werknemer_id ,'location');
-			if( $werknemer->factuurgegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/factuurgegevens/' . $werknemer_id ,'location');
-			if( $werknemer->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/contactpersonen/' . $werknemer_id ,'location');
+			//if( $werknemer->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/contactpersonen/' . $werknemer_id ,'location');
 		}
 
 		//show($werknemers);
@@ -162,12 +161,44 @@ class Dossier extends MY_Controller
 		//id bewijs is appart object
 		$idbewijs = new IDbewijs();
 		$idbewijs->werknemer( $werknemer_id );
+		
+		//ID opslaan vanuit wizard
+		if( isset($_POST['set_wizard']) )
+		{
+			$idbewijs->setVervalDatum( $_POST['vervaldatum'] );
+			
+			if( $idbewijs->errors() !== false)
+				$this->smarty->assign('msg', msg('warning', $idbewijs->errors() ));
+			else
+			{
+				//check of alles compleet is
+				if( $idbewijs->complete() )
+				{
+					//set documenten als complete
+					$werknemer->documenten_complete();
+					
+					//nieuwe aanmelding doorzetten naar volgende pagina
+					if( $werknemer->documenten_complete != 1 )
+						redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer->werknemer_id, 'location' );
+				}
+				else
+				{
+					//set documenten als NIET complete
+					$werknemer->documenten_complete( false );
+					$this->smarty->assign( 'msg', msg( 'warning', 'U moet een kopie van het ID bewijs uploaden voordat u verder kunt' ) );
+				}
+			}
+			
+		}
+		
 
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->assign('id_voorkant', $idbewijs->url( 'voorkant' ));
+		$this->smarty->assign('id_achterkant', $idbewijs->url( 'achterkant' ));
+		$this->smarty->assign('vervaldatum', $idbewijs->vervaldatum() );
 		
 		//afwijkende template voor
-		if( $werknemer->documenten_complete != 1 )
+		if( $werknemer->complete != 1 )
 			$this->smarty->display('crm/werknemers/dossier/documenten_wizard.tpl');
 		else
 			$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
@@ -189,28 +220,15 @@ class Dossier extends MY_Controller
 
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// facturen pagina
+	// instellingen dienstverband
 	//-----------------------------------------------------------------------------------------------------------------
-	public function facturen( $werknemer_id = NULL )
+	public function dienstverband( $werknemer_id = NULL )
 	{
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 
 		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/facturen.tpl');
-	}
-
-
-	//-----------------------------------------------------------------------------------------------------------------
-	// werknemers pagina
-	//-----------------------------------------------------------------------------------------------------------------
-	public function werknemers( $werknemer_id = NULL )
-	{
-		//init werknemer object
-		$werknemer = new Werknemer( $werknemer_id );
-
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/werknemers.tpl');
+		$this->smarty->display('crm/werknemers/dossier/dienstverband.tpl');
 	}
 
 }

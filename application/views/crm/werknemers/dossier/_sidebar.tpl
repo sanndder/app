@@ -90,6 +90,20 @@
 								</a>
 							</li>
 
+							<!-- li reserveringen -->
+							<li class="nav-item">
+								<a href="crm/werknemers/dossier/reserveringen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'reserveringen'}active{/if}">
+									<i class="icon-file-stats mr-2"></i>Reserveringen
+								</a>
+							</li>
+
+							<!-- li ziekmeldingen -->
+							<li class="nav-item">
+								<a href="crm/werknemers/dossier/ziekmeldingen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'ziekmeldingen'}active{/if}">
+									<i class="icon-folder-plus2 mr-2"></i>Ziekmeldingen
+								</a>
+							</li>
+
 							<!-- li Urenbriefjes -->
 							<li class="nav-item">
 								<a href="crm/werknemers/dossier/urenbriefjes/{$werknemer->werknemer_id}" class="nav-link {if $active == 'urenbriefjes'}active{/if}">
@@ -100,7 +114,14 @@
 							<!-- li Loonstroken -->
 							<li class="nav-item">
 								<a href="crm/werknemers/dossier/loonstroken/{$werknemer->werknemer_id}" class="nav-link {if $active == 'loonstroken'}active{/if}">
-									<i class="icon-user-tie mr-2"></i>Loonstroken
+									<i class="icon-stack-text mr-2"></i>Loonstroken
+								</a>
+							</li>
+
+							<!-- li loonbeslagen -->
+							<li class="nav-item">
+								<a href="crm/werknemers/dossier/loonbeslagen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'loonbeslagen'}active{/if}">
+									<i class="icon-coin-euro mr-2"></i>Loonbeslagen
 								</a>
 							</li>
 
@@ -138,6 +159,43 @@
 							</a>
 						</li>
 
+						<!-- li Dienstverband, andere volgorde wanneer nieuwe aanmelding -->
+						<li class="nav-item {if $werknemer->complete != 1}order-3{/if}">
+							<a href="crm/werknemers/dossier/dienstverband/{$werknemer->werknemer_id}" class="nav-link {if $active == 'dienstverband'}active{/if}">
+                                {* afwijkende icons voor nieuwe aanmelding *}
+                                {if $werknemer->dienstverband_complete == NULL}
+									<i class="icon-checkbox-unchecked2 mr-2"></i>
+                                {else}
+                                    {if $werknemer->complete == 0}
+                                        {if $werknemer->dienstverband_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+                                        {if $werknemer->dienstverband_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
+                                    {else}
+                                        {* standaard icon *}
+										<i class="icon-cog mr-2"></i>
+                                    {/if}
+                                {/if}
+								Dienstverband
+							</a>
+						</li>
+
+						<!-- li Verloning, andere volgorde wanneer nieuwe aanmelding -->
+						<li class="nav-item {if $werknemer->complete != 1}order-4{/if}">
+							<a href="crm/werknemers/dossier/verloning/{$werknemer->werknemer_id}" class="nav-link {if $active == 'verloning'}active{/if}">
+                                {* afwijkende icons voor nieuwe aanmelding *}
+                                {if $werknemer->verloning_complete == NULL}
+									<i class="icon-checkbox-unchecked2 mr-2"></i>
+                                {else}
+                                    {if $werknemer->complete == 0}
+                                        {if $werknemer->verloning_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+                                        {if $werknemer->verloning_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
+                                    {else}
+                                        {* standaard icon *}
+										<i class="icon-cog mr-2"></i>
+                                    {/if}
+                                {/if}
+								Verloning
+							</a>
+						</li>
 
 					</ul>
 				</div>

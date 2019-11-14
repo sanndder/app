@@ -1,5 +1,6 @@
 <?php
 
+use models\Documenten\IDbewijs;
 use models\verloning\Urentypes;
 use models\werknemers\Werknemer;
 
@@ -22,7 +23,6 @@ class Ajax extends MY_Controller
 		//Deze pagina mag alleen bezocht worden door werkgever
 		if( $this->user->user_type != 'werkgever' )forbidden();
 
-
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -43,6 +43,30 @@ class Ajax extends MY_Controller
 			$response['status'] = 'success';
 		else
 			$response['error'] = $urentypes->errors();
+		
+		echo json_encode( $response );
+		
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// delete ID bewijs
+	//-----------------------------------------------------------------------------------------------------------------
+	public function deleteidbewijs( $werknemer_id, $side )
+	{
+		
+		
+		//init werknemer object
+		$idbewijs = new IDbewijs();
+		$idbewijs->werknemer($werknemer_id)->deleteID( $side );
+		
+		//init response
+		$response = array( 'status' => 'error' );
+		
+		//msg
+		if( $idbewijs->errors() === false )
+			$response['status'] = 'success';
+		else
+			$response['error'] = $idbewijs->errors();
 		
 		echo json_encode( $response );
 		
