@@ -9,8 +9,9 @@
 	<!-- Global stylesheets -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
 	<link href="{$base_url}/template/global_assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-	<link href="{$base_url}/template/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-	<link href="{$base_url}/template/assets/css/bootstrap_limitless.min.css" rel="stylesheet" type="text/css">
+	<link href="{$base_url}/template/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+	<link href="{$base_url}/template/assets/css/bootstrap_limitless.css" rel="stylesheet" type="text/css">
+	<link href="{$base_url}/template/assets/css/layout.css" rel="stylesheet" type="text/css">
 	<link href="{$base_url}/template/assets/css/layout.css" rel="stylesheet" type="text/css">
 	<link href="{$base_url}/template/assets/css/components.min.css" rel="stylesheet" type="text/css">
 	<link href="{$base_url}/template/assets/css/colors.min.css" rel="stylesheet" type="text/css">
@@ -48,8 +49,10 @@
 				<div class="card mb-0">
 					<div class="card-body">
 						<div class="text-center mb-3">
-							<i class="icon-reading icon-2x text-slate-300 border-slate-300 border-3 rounded-round p-3 mb-3 mt-1"></i>
-							<h5 class="mb-0">Login bij de app</h5>
+
+							<img src="{$base_url}/template/global_assets/images/abering_blauw_sm.png" style="width: 70px">
+
+							<h5 class="mb-0">Login bij Abering Online</h5>
 							<span class="d-block text-muted">Vul je gegevens in</span>
 						</div>
 
@@ -70,7 +73,7 @@
 						</div>
 
 						<div class="form-group">
-							<button name="login" type="submit" class="btn btn-primary btn-block">Inloggen <i class="icon-circle-right2 ml-2"></i></button>
+							<button name="login" type="submit" style="background-color: #002E65" class="btn btn-primary btn-block">Inloggen <i class="icon-circle-right2 ml-2"></i></button>
 						</div>
 
 						<div class="text-center">

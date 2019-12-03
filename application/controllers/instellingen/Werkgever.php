@@ -1,5 +1,7 @@
 <?php
 
+use models\Documenten\Template;
+use models\Documenten\TemplateGroup;
 use models\forms\Formbuilder;
 use models\instellingen\Minimumloon;
 use models\instellingen\Feestdagen;
@@ -20,7 +22,7 @@ class Werkgever extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		//entiteiten afhandelen
 		$this->smarty->assign('entiteiten', $this->werkgever->listEntiteiten() );
 		$this->smarty->assign('replace', 'entity_id='.$this->session->entiteit_id );
@@ -288,7 +290,50 @@ class Werkgever extends MY_Controller
 
 		$this->smarty->display('instellingen/werkgever/bankrekeningen.tpl');
 	}
-
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// overzicht documenten
+	//-----------------------------------------------------------------------------------------------------------------
+	public function documentenoverzicht()
+	{
+		//nieuwe template
+		if( isset($_POST['set']) )
+		{
+			$template = new Template();
+			$template->new( $_POST );
+			if( $template->errors() === false )
+				redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/documentenedit/' . $template->id() ,'location' );
+			else
+				$this->smarty->assign('msg', msg('warning', $template->errors() ));
+		}
+		
+		$templategroup = new TemplateGroup();
+		
+		$this->smarty->assign('categorieen', $templategroup->categorieen() );
+		$this->smarty->assign('templates', $templategroup->all() );
+		$this->smarty->display('instellingen/werkgever/documentenoverzicht.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// wijzigen documenten
+	//-----------------------------------------------------------------------------------------------------------------
+	public function documentenedit( $template_id)
+	{
+		$template = new Template( $template_id );
+		
+		//save document
+		if( isset($_POST['set']) && $_POST['set'] == 'save_document' )
+		{
+			$template->setBodyAndTitel();
+		}
+		
+		$this->smarty->assign('settings', $template->settings() );
+		$this->smarty->assign('titel', $template->titel() );
+		$this->smarty->assign('body', $template->body() );
+		
+		$this->smarty->display('instellingen/werkgever/documentenedit.tpl');
+	}
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// algemene voorwaarden

@@ -58,6 +58,11 @@
 							</a>
 						</li>
 						<li class="nav-item">
+							<a href="instellingen/werkgever/documentenoverzicht" class="nav-link {if $active == 'documenten'}active{/if}">
+								<span>Documenten</span>
+							</a>
+						</li>
+						<li class="nav-item">
 							<a href="instellingen/werkgever/bankrekeningen" class="nav-link {if $active == 'bankrekeningen'}active{/if}">
 								<span>Bankrekeningen</span>
 							</a>

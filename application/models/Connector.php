@@ -129,6 +129,23 @@ class Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * SELECT * FROM table and return array with or without custom index
+	 *
+	 */
+	public function max( string $table, string $field = '' ) :int
+	{
+		$sql = "SELECT MAX($field) AS max_val FROM $table";
+		$query = $this->db_user->query( $sql );
+		
+		$data = $query->row_array();
+		if( $data['max_val'] === NULL )
+			return 0;
+		
+		return  $data['max_val'];
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * DELETE row
 	 *
 	 */
