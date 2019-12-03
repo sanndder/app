@@ -83,6 +83,13 @@
 						</li>
 
 						{if $werknemer->complete == 1 }
+							<!-- li plaatsing -->
+							<li class="nav-item">
+								<a href="crm/werknemers/dossier/plaatsingen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'plaatsingen'}active{/if}">
+									<i class="far fa-handshake mr-2"></i>Plaatsingen
+								</a>
+							</li>
+
 							<!-- li Notities -->
 							<li class="nav-item">
 								<a href="crm/werknemers/dossier/notities/{$werknemer->werknemer_id}" class="nav-link {if $active == 'notities'}active{/if}">

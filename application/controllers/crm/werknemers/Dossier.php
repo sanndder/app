@@ -2,9 +2,12 @@
 
 use models\Documenten\IDbewijs;
 use models\forms\Formbuilder;
+use models\Uitzenders\UitzenderGroup;
 use models\utils\Carbagecollector;
 use models\utils\Codering;
 use models\utils\VisitsLogger;
+use models\werknemers\Plaatsing;
+use models\werknemers\PlaatsingCollection;
 use models\werknemers\Werknemer;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -188,10 +191,8 @@ class Dossier extends MY_Controller
 					$this->smarty->assign( 'msg', msg( 'warning', 'U moet een kopie van het ID bewijs uploaden voordat u verder kunt' ) );
 				}
 			}
-			
 		}
 		
-
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->assign('id_voorkant', $idbewijs->url( 'voorkant' ));
 		$this->smarty->assign('id_achterkant', $idbewijs->url( 'achterkant' ));
@@ -204,8 +205,41 @@ class Dossier extends MY_Controller
 			$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
 		
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// plaatsingen pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function plaatsingen( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		//ID opslaan vanuit wizard
+		if( isset($_POST['set']) )
+		{
+			//switch for verschillende forms
+			switch ($_POST['set']){
+				//extra factoren toevoegen
+				case 'set_uitzender':
+					$werknemer->setUitzender( $_POST['uitzender_id'] );
+					if( $werknemer->errors() === false )
+						$this->smarty->assign( 'msg', msg( 'success', 'Uitzender voor werknemer gewijzigd' ) );
+					else
+						$this->smarty->assign( 'msg', msg( 'warning', 'U moet een kopie van het ID bewijs uploaden voordat u verder kunt' ) );
+					break;
+			}
+		}
 
-
+		
+		//$this->smarty->assign('plaatsingen', $plaatsingen );
+		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
+		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->assign('werknemer_uitzender', $werknemer->uitzender());
+		$this->smarty->display('crm/werknemers/dossier/plaatsingen.tpl');
+	}
+	
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// notities pagina
 	//-----------------------------------------------------------------------------------------------------------------
@@ -229,6 +263,18 @@ class Dossier extends MY_Controller
 
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/dienstverband.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// instellingen dienstverband
+	//-----------------------------------------------------------------------------------------------------------------
+	public function verloning( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->display('crm/werknemers/dossier/verloning.tpl');
 	}
 
 }

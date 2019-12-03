@@ -1,5 +1,7 @@
 <?php
 
+use models\cao\CAO;
+use models\cao\CAOGroup;
 use models\facturatie\Betaaltermijnen;
 use models\forms\Formbuilder;
 use models\inleners\Inlener;
@@ -255,6 +257,7 @@ class Dossier extends MY_Controller
 		$inlener = new Inlener( $inlener_id );		
 		$urentypes = new Urentypes();
 		$urentypesgroup = new UrentypesGroup();
+		$CAOgroup = new CAOGroup();
 		
 		//del data
 		if( isset($_POST['del']) )
@@ -267,7 +270,19 @@ class Dossier extends MY_Controller
 			}
 		}
 		
-		//set data
+		//del cao
+		if( isset($_GET['delcao']) )
+		{
+			$cao = new CAO( $_GET['delcao'] );
+			$cao->delCAOFromInlener( $inlener_id );
+			if( $cao->errors() === false )
+				redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-cao' ,'location' );
+			
+			//msg wanneer geen redirect
+			$this->smarty->assign('msg', msg('warning', $cao->errors() ));
+		}
+			
+			//set data
 		if( isset($_POST['set']) )
 		{
 			//switch for each tab
@@ -275,24 +290,29 @@ class Dossier extends MY_Controller
 				//extra factoren toevoegen
 				case 'inleners_factoren':
 					$inlener->setFactoren();
-					redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id ,'location' );
+					if( $inlener->errors() === false )
+						redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id ,'location' );
+					$errors = $inlener->errors();
+					break;
 				//urentype aan inlener koppelen
 				case 'add_urentype_to_inlener':
 					$urentypes->addUrentypeToInlener( $inlener_id, $_POST );
-					redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-urentypes' ,'location' );
+					if( $urentypes->errors() === false )
+						redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-urentypes' ,'location' );
+					$errors = $urentypes->errors();
+					break;
+				//cao aan inlener koppelen
+				case 'add_cao_to_inlener':
+					$cao = new CAO( $_POST['cao_id'] );
+					$cao->addCAOToInlener( $inlener_id );
+					if( $cao->errors() === false )
+						redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-cao' ,'location' );
+					$errors = $cao->errors();
+					break;
 			}
 
-			$errors = $inlener->errors();
-
-			//msg
-			if( $errors === false )
-				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
-			else
-				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
-		}
-		else
-		{
-			$errors = false; //no errors
+			//msg wanneer geen redirect
+			$this->smarty->assign('msg', msg('warning', $errors ));
 		}
 		
 		$matrix = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
@@ -301,7 +321,9 @@ class Dossier extends MY_Controller
 		$this->smarty->assign( 'urentypes', $urentypes->getAll() );
 		$this->smarty->assign( 'factoren', $inlener->factoren() );
 		$this->smarty->assign( 'matrix', $matrix );
-
+		$this->smarty->assign( 'caos', $CAOgroup->all() );
+		$this->smarty->assign( 'caos_inlener', $CAOgroup->inlener( $inlener_id ) );
+		
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/verloninginstellingen.tpl');
 	}

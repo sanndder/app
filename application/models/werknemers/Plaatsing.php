@@ -1,9 +1,8 @@
 <?php
 
-namespace models\users;
+namespace models\werknemers;
 
 use models\Connector;
-use models\forms\Validator;
 use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))
@@ -11,36 +10,28 @@ if (!defined('BASEPATH'))
 
 
 /*
- * Uitzender class
+ * Werknemer class
  *
  *
  *
  */
 
-class User extends Connector
+class Plaatsing extends Connector
 {
-	
 	/**
 	 * @var int
 	 */
-	private $user_id;
+	private $_plaatsing_id;
+	private $_error;
 	
-	/**
-	 * @var array
-	 */
-	private $_error = NULL;
-
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * constructor
 	 */
-	public function __construct($user_id)
+	public function __construct()
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
-
-		//set ID
-		$this->setID($user_id);
 
 	}
 
@@ -49,16 +40,36 @@ class User extends Connector
 	/*
 	 * Set ID
 	 */
-	public function setID($user_id)
+	public function setID($plaatsing_id)
 	{
-		$this->user_id = intval($user_id);
+		$this->_plaatsing_id = intval($plaatsing_id);
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get ID
+	 */
+	public function getID()
+	{
+		return $this->_plaatsing_id;
+	}
+
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * name
+	 */
+	public function name()
+	{
+		return "Mijn naam is: " . $this->_plaatsing_id;
+	}
+	
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array|boolean
 	 */
 	public function errors()
 	{

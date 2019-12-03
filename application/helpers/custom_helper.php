@@ -158,7 +158,16 @@ if (!function_exists('msg'))
 		if (is_array($msg))
 		{
 			foreach ($msg as $val)
-				$data .= $val . '<br />';
+			{
+				if (is_array($val))
+				{
+					foreach ($val as $val2)
+						$data .= $val2 . '<br />';
+				}
+				else
+					$data .= $val . '<br />';
+			}
+			
 		}
 		else
 		{

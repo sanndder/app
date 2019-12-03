@@ -29,7 +29,6 @@
 
 							<div class="media">
 
-
 								<div class="media-body">
 									<div class="row">
 										<div class="col-md-12">

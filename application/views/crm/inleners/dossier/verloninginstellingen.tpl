@@ -46,6 +46,11 @@
 										</a>
 									</li>
 									<li class="nav-item">
+										<a href="#tab-cao" class="nav-link {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao'}active{/if}" data-toggle="tab">
+											CAO
+										</a>
+									</li>
+									<li class="nav-item">
 										<a href="#tab-urentypes" class="nav-link {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-urentypes'}active{/if}" data-toggle="tab">
 											Urentypes
 										</a>
@@ -104,7 +109,7 @@
 								</form>
 
 
-								<fieldset class="mb-3  mt-5">
+								<fieldset class="mb-0 mt-4">
 									<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Factoren overzicht</legend>
 								</fieldset>
 								<table>
@@ -141,6 +146,108 @@
 										</form>
                                     {/foreach}
 								</table>
+
+							</div><!-- /einde tab -->
+
+							<!-------------------------------------------------------------------------------------------------------------------------------------------------
+							|| CAO
+							-------------------------------------------------------------------------------------------------------------------------------------------------->
+							<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao'}show active{/if}" id="tab-cao">
+
+								<form method="post" action="">
+									<fieldset class="mb-3">
+										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Inlener zonder CAO</legend>
+
+										<div class="form-check">
+											<label class="form-check-label">
+												<input type="checkbox" class="form-input-styled-info">Inlener valt niet onder een CAO
+											</label>
+											<i class="icon-spinner2 spinner text-primary mr-1" style="display: none; margin-left: -27px"></i>
+										</div>
+
+									</fieldset>
+								</form>
+
+
+								<form method="post" action="">
+									<fieldset class="mb-3 mt-4">
+										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">CAO toevoegen</legend>
+
+										<table>
+											<tr>
+												<td class="pr-2" style="width: 500px">
+													<select required name="cao_id" class="form-control select-search">
+														<option value="">Selecteer een CAO</option>
+														{foreach $caos as $cao}
+															<option value="{$cao.id}">{$cao.name} (start: {$cao.duration_start|date_format: '%d-%m-%Y'})</option>
+														{/foreach}
+													</select>
+												</td>
+												<td>
+													<button type="submit" name="set" value="add_cao_to_inlener" class="btn btn-outline-success btn-sm">
+														<i class="icon-plus-circle2 mr-1"></i>Toevoegen
+													</button>
+												</td>
+											</tr>
+										</table>
+									</fieldset>
+								</form>
+
+
+								<fieldset class="mt-4">
+									<legend class="text-uppercase font-size-sm font-weight-bold text-primary">CAO overzicht</legend>
+								</fieldset>
+
+                                {foreach $caos_inlener as $cao}
+
+	                                <fieldset class="mb-0 mt-0">
+										<legend class="text-uppercase font-size-sm pl-2 mb-1 font-weight-bold" style="background-color: #EEE">
+                                            {$cao.cao_name}
+											<a href="{$base_url}/crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-cao&delcao={$cao@key}" class="float-right pr-3" style="color: red" data-popup="tooltip" data-placement="top" data-title="COA verwijderen">
+												<i class="icon-trash"></i>
+											</a>
+										</legend>
+									</fieldset>
+
+	                                <div class="row pb-3">
+		                                <div class="col-md-3">
+
+			                                <table class="ml-2">
+				                                <tr>
+					                                <th style="width: 100px;">Ingang</th>
+					                                <td>{$cao.duration_start|date_format: '%d-%m-%Y'}</td>
+				                                </tr>
+				                                <tr>
+					                                <th>Einde</th>
+					                                <td>{$cao.duration_end|date_format: '%d-%m-%Y'}</td>
+				                                </tr>
+				                                <tr>
+					                                <th>Avv</th>
+					                                <td>{if $cao.avv == 1}Ja{else}Nee{/if}</td>
+				                                </tr>
+			                                </table>
+
+		                                </div>
+		                                <div class="col-md-9">
+
+			                                <table>
+				                                <tr>
+					                                <th>Urentype</th>
+					                                <th>Percentage</th>
+				                                </tr>
+                                                {foreach $cao.werksoort as $werksoort}
+					                                <tr>
+						                                <td class="pr-3">{$werksoort.name}</td>
+						                                <td>{$werksoort.amount}%</td>
+						                                <td class="3"></td>
+					                                </tr>
+                                                {/foreach}
+			                                </table>
+
+		                                </div>
+	                                </div>
+
+                                {/foreach}
 
 							</div><!-- /einde tab -->
 

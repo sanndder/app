@@ -31,54 +31,6 @@ function log(message) {
     }
 }
 
-
-//ajax object
-let xhr = {
-    url: null,
-    data: data,
-    call() {
-        //one call at a time
-        if( ajaxRequestPending === false ){
-            return $.ajax( {
-                url: this.url,
-                data: this.data,
-                dataType: 'json',
-                method: 'POST'
-            }).fail( function( request, status, error ) {
-                //error to console
-                //TODO: production error handling
-                console.warn( '--AJAX ERROR--' );
-                log( request );
-                log( status );
-                log( error );
-
-                var errorData = {};
-
-                errorData.url = this.url;
-                errorData.module = 'verloning invoer';
-                errorData.data = data;
-                errorData.statusText = request.statusText;
-                errorData.responseText = request.responseText;
-
-                //save data to log file
-                $.ajax( {
-                    url: base_url + 'log/ajaxerror',
-                    data: errorData,
-                    dataType: 'json',
-                    method: 'POST'
-                });
-
-            }).done( function( json ) {
-                log( '--AJAX REQUEST DONE--' );
-            });
-        }else
-        {
-            alert('Even geduld a.u.b.');
-            return false;
-        }
-    }
-};
-
 //nvoer main object
 let invoer = {
 

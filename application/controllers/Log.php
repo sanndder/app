@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Test class
+ * Log class
  */
 
 class Log extends MY_Controller {
@@ -21,7 +21,7 @@ class Log extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function ajaxerror()
 	{
-		$log = new models\Log\Log();
+		$log = new \models\Log\Log();
 		$log->setDir( 'ajax' )->openFile()->writeData( $_POST )->saveFile();
 		
 		//show($_POST);

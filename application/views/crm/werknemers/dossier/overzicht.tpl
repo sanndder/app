@@ -29,6 +29,8 @@
 
 							<div class="media">
 
+								<img style="max-width: 300px; max-height: 120px;" class="align-self-start mr-4 d-none d-lg-block" src="">
+
 								<div class="media-body">
 									<div class="row">
 										<div class="col-md-12">

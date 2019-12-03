@@ -189,7 +189,7 @@
 							<a href="crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}" class="nav-link {if $active == 'verloninginstellingen'}active{/if}">
 								{* standaard icon *}
 								<i class="icon-cog mr-2"></i>
-								Verloning
+								CAO & Verloning
 							</a>
 						</li>
 						{/if}

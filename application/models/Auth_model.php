@@ -129,7 +129,7 @@ class Auth_model extends CI_Model
 	{
 		//get session
 		$logindata = $this->session->userdata('logindata');
-
+		
 		//check main user
 		$user_id = $logindata['main']['user_id'];
 		$user_type = $logindata['main']['user_type'];
@@ -199,15 +199,14 @@ class Auth_model extends CI_Model
 		$this->db_admin->update('users_sessions', $update);
 
 		//destroy browser session
-		$this->session->sess_destroy();
+		$this->session->unset_userdata('logindata');
+		$this->session->unset_userdata('entiteit_id');
+		
+		//store url in session
+		$this->session->set_userdata('ref_url', base_url(uri_string()) );
 
 		//redirect to
 		$url = $this->config->item('base_url') . 'login';
-
-		//if ref isset
-		/*
-		if( $this->_ref != NULL )
-			$url .= '?ref=' . htmlspecialchars($this->_ref);*/
 
 		redirect( $url ,'location');
 		die();

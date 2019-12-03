@@ -27,13 +27,17 @@ class Login extends EX_Controller {
 		{
 			//try login
 			if( $this->auth->login() )
-				redirect( $this->config->item('base_url') . 'crm/uitzenders' ,'location');
-
+			{
+				if( $this->session->ref_url !== NULL )
+					redirect( $this->session->ref_url, 'location' );
+				else
+					redirect( $this->config->item( 'base_url' ) . 'crm/uitzenders', 'location' );
+			}
+			
 			//display errors when login fails
 			if( $this->auth->errors() != false )
 				$this->smarty->assign('msg', msg('danger', $this->auth->errors() ));
 		}
-
 
 		$this->smarty->display('login.tpl');
 	}

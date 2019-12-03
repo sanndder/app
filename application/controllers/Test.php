@@ -1,10 +1,13 @@
 <?php
 
+use models\cao\CAO;
+use models\cao\CAOGroup;
 use models\Documenten\IDbewijs;
 use models\File\File;
 use models\File\Img;
 use models\File\Pdf;
-
+use models\werknemers\Plaatsing;
+use models\werknemers\PlaatsingCollection;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -86,18 +89,106 @@ class Test extends MY_Controller {
 		//img class aden om plaatje te resizen
 		//$image = new Img( $file_array );
 		//$image->setMaxWidthHeight( 700, 400 )->setQuality(80)->resize();
-			
-			
 	
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// test method
+	//-----------------------------------------------------------------------------------------------------------------
+	public function cao()
+	{
+		
+		
+		$this->smarty->display('test.tpl');
+	}
+	
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// test method
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-		$pdf = new models\pdf\PdfFactuur();
-		$pdf->setHeader()->setFooter()->view();
+		//docent
+		/*$cao = new CAO();
+		$cao->setID( 228 );
+		show( $cao->loontabellen() );
+		$cao->setSalaryTable( 2 )->setLeeftijd( 23 );
+		show($cao->jobs());*/
+		
+		//afbouw jeugd
+		/*
+		$cao = new CAO();
+		$cao->setID( 75 )->setLeeftijd( 20 );
+		show( $cao->loontabellen() );
+		$cao->setloontabel( 8 );
+		show( $cao->jobs());
+		$cao->setJob( 12794 );
+		show( $cao->schalen() );
+		$cao->setSchaal( '1b' );
+		show( $cao->periodieken() );
+		$cao->setPeriodiek( '1.00' );
+		
+		show ($cao->uurloon() );*/
+		
+		$caogroup = new CAOGroup();
+		
+		if( isset($_GET['cao_id']) )
+		{
+			$cao = new CAO( $_GET['cao_id'] );
+			$cao->setLeeftijd( 25 );
+			
+			$this->smarty->assign('loontabellen', $cao->loontabellen() );
+			
+			
+			if( isset($_GET['tabel_id']) )
+			{
+				$cao->setLoontabel( $_GET['tabel_id'] );
+				$this->smarty->assign('jobs', $cao->jobs() );
+			}
+			
+			if( isset($_GET['functie_id']) )
+			{
+				$cao->setJob( $_GET['functie_id'] );
+				$this->smarty->assign('schalen',  $cao->schalen() );
+			}
+			
+			if( isset($_GET['schaal_id']) )
+			{
+				$cao->setSchaal( $_GET['schaal_id'] );
+				
+				//geen of 1 optie? dan gelijk door
+				if( $cao->periodieken() === NULL || count($cao->periodieken() ) == 1 )
+					$this->smarty->assign('uurloon',  $cao->uurloon() );
+				else
+					$this->smarty->assign('periodieken',  $cao->periodieken() );
+			}
+			
+			if( isset($_GET['periodiek_id']) )
+			{
+				$cao->setPeriodiek( $_GET['periodiek_id'] );
+				$this->smarty->assign('uurloon',  $cao->uurloon() );
+			}
+			
+			if( $cao->errors() !== false )
+				$this->smarty->assign( 'msg', msg( 'warning', $cao->errors() ) );
+		}
+		
+		
+		
+		$this->smarty->assign('caos', $caogroup->all() );
+	
+		
+		$this->smarty->display('test.tpl');
+		
+		die();
+		
+		show( $cao->salaryTable() );
+		
+		//show( $cao->periodieken() );
+		
+		
+		//$pdf = new models\pdf\PdfFactuur();
+		//$pdf->setHeader()->setFooter()->view();
 
 		/*
 		$row['file_name'] = 'image.jpg';
