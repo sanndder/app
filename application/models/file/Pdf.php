@@ -28,13 +28,13 @@ class Pdf extends File{
 	/*
 	 * Init new file from array
 	 * @param file array
-	 * @return $this
+	 * @return object
 	 */
 	public function __construct( $input = NULL )
 	{
 		parent::__construct( $input );
 		
-		//laod fpdi
+		//load fpdi
 		$this->_fpdi = new Fpdi();
 
 		$this->_setInfo();
@@ -117,7 +117,7 @@ class Pdf extends File{
 	/*
 	 * PDF to JPG
 	 * https://stackoverflow.com/questions/8624886/pdf-to-jpg-conversion-using-php
-	 * @return int
+	 * @return object
 	 */
 	public function toJpg( $save_path = NULL )
 	{
@@ -147,20 +147,7 @@ class Pdf extends File{
 		
 		return new Img( $jpg );
 	}
-
-
 	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Get the type of image from file name
-	 * Only jpg, gif, png
-	 *
-	 * @return void
-	 */
-	private function _setImageType()
-	{
-
-	}
 }
 
 

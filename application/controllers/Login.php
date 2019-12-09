@@ -31,7 +31,7 @@ class Login extends EX_Controller {
 				if( $this->session->ref_url !== NULL )
 					redirect( $this->session->ref_url, 'location' );
 				else
-					redirect( $this->config->item( 'base_url' ) . 'crm/uitzenders', 'location' );
+					redirect( $this->config->item( 'base_url' ) . 'dashboard/werkgever', 'location' );
 			}
 			
 			//display errors when login fails

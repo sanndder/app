@@ -44,6 +44,11 @@
 								<span>Urentypes</span>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="instellingen/werkgever/vergoedingen" class="nav-link {if $active == 'vergoedingen'}active{/if}">
+								<span>Vergoedingen</span>
+							</a>
+						</li>
 						<li class="nav-item-header font-weight-bolder">
 							<div class="text-uppercase font-size-xs line-height-xs">Instellingen entiteiten</div>
 						</li>

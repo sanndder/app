@@ -106,11 +106,14 @@ class Auth_model extends CI_Model
 
 		//sessie aanmaken
 		$session['logindata']['werkgever_id'] = $user['werkgever_id'];
+		$session['logindata']['user_type'] = $user['user_type'];
 		$session['logindata']['main']['user_id'] = $user['user_id'];
 		$session['logindata']['main']['user_name'] = $user['naam'];
 		$session['logindata']['main']['username'] = $user['username'];
-		$session['logindata']['main']['user_type'] = 'werkgever';
+		$session['logindata']['main']['user_type'] = $user['user_type'];
 		$session['logindata']['main']['sid'] = $sid;
+		
+		if( $user['user_type'] == 'uitzender' ) $session['logindata']['main']['uitzender_id'] =  $user['uitzender_id'];
 
 		//session to database
 		$this->_loginSessionToDatabase( $user['user_id'], $secret, $sid );

@@ -5,7 +5,6 @@
 
 {block "content"}
 	<script src="recources/js/textFit.js"></script>
-	<script src="recources/js/verloning_invoer/main.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/templates.js?{$time}"></script>
 	<script>
         {literal}
@@ -161,7 +160,7 @@
 								<tr>
 									<td class="pr-4" style="width: 400px">
 										<h6 class="media-title font-weight-semibold" style="font-size: 14px">
-											<a href="#">19886 -  Cruz Tavarez van Tigchelhoven, Vincent (V.D.)</a>
+											<a href="javascript:void(0)">19886 -  Cruz Tavarez van Tigchelhoven, Vincent (V.D.)</a>
 										</h6>
 										<ul class="list-inline list-inline-dotted text-danger mb-2">
 											<li class="list-inline-item">Contract niet ondertekend</li>
@@ -227,7 +226,7 @@
 								<tr>
 									<td class="pr-4">
 										<h6 class="media-title font-weight-semibold" style="font-size: 14px">
-											<a href="#">14458 -  Davids, Willem-Jan (W.J.G.)</a>
+											<a href="javascript:void(0)">14458 -  Davids, Willem-Jan (W.J.G.)</a>
 										</h6>
 										<ul class="list-inline list-inline-dotted text-danger mb-2">
 										</ul>

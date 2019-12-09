@@ -1,5 +1,6 @@
 <?php
 
+use models\Documenten\DocumentFactory;
 use models\forms\Validator;
 use models\utils\DBhelper;
 
@@ -153,7 +154,51 @@ class Werkgever_model extends MY_Model
 
 
 
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * opslaan Algemene voorwaarden
+	 *
+	 */
+	public function setAV()
+	{
+		$sql = "UPDATE werkgever_av SET deleted = 1, deleted_on = NOW(), deleted_by = ".$this->user->user_id." WHERE deleted = 0";
+		$this->db_user->query($sql);
+		
+		$insert['voorwaarden'] = $_POST['editor'];
+		$insert['user_id'] = $this->user->user_id;
+		$insert['entiteit_id'] = $this->_entiteit_id;
+		
+		$this->db_user->insert( 'werkgever_av', $insert );
+	}
 
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Algemene voorwaarden naar pdf en instellen als actief
+	 *
+	 */
+	public function publicateAV()
+	{
+		//document aanmaken
+		$document = DocumentFactory::create( 'AlgemeneVoorwaarden' );
+		$document->pdf();
+	}
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * AV html ophalen
+	 *
+	 */
+	public function AVhtml()
+	{
+		$sql = "SELECT voorwaarden FROM werkgever_av WHERE deleted = 0 AND entiteit_id = $this->_entiteit_id";
+		$query = $this->db_user->query( $sql );
+		
+		$data = DBhelper::toRow( $query );
+		return $data['voorwaarden'];
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Del bankrekening

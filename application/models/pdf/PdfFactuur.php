@@ -17,7 +17,7 @@ class PdfFactuur extends PdfBuilder {
 	 * Init new file from array
 	 *
 	 *
-	 * @param file array
+	 * @param array
 	 * @return $this
 	 */
 	public function __construct()
@@ -44,7 +44,7 @@ class PdfFactuur extends PdfBuilder {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * header voor de factuur
-	 * @return this
+	 * @return object
 	 */
 	public function setHeader()
 	{
@@ -61,7 +61,7 @@ class PdfFactuur extends PdfBuilder {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * footer voor de factuur
-	 * @return this
+	 * @return object
 	 */
 	public function setFooter()
 	{
@@ -82,7 +82,7 @@ class PdfFactuur extends PdfBuilder {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array| boolean
 	 */
 	public function errors()
 	{

@@ -1,0 +1,37 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "naam": {
+      "label": "Vergoeding",
+      "rules": {
+        "required": true,
+        "minlength": 3,
+        "maxlength": 100,
+        "tolower" : true,
+        "trim": true,
+        "striptags": true
+      }
+    },
+    "belast": {
+      "label": "Belast/Onbelast",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Belast",
+          "0": "Onbelast"
+        }
+      }
+    }
+  }
+}

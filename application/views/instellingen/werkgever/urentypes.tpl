@@ -2,7 +2,6 @@
 {block "title"}Instellingen{/block}
 {block "header-icon"}icon-cog{/block}
 {block "header-title"}Instellingen werkgever{/block}
-{assign "uploader" "true"}
 
 {block "content"}
 
@@ -44,7 +43,6 @@
 							<tr>
 								<th>Type</th>
 								<th>Percentage</th>
-								<th>Factor</th>
 								<th>Naam</th>
 								<th></th>
 							</tr>

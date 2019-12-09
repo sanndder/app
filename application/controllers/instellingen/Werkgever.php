@@ -1,11 +1,13 @@
 <?php
 
-use models\Documenten\Template;
-use models\Documenten\TemplateGroup;
+use models\documenten\Template;
+use models\documenten\TemplateGroup;
 use models\forms\Formbuilder;
 use models\instellingen\Minimumloon;
 use models\instellingen\Feestdagen;
 use models\verloning\Urentypes;
+use models\Verloning\Vergoeding;
+use models\Verloning\VergoedingGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -111,6 +113,44 @@ class Werkgever extends MY_Controller
 		$this->smarty->assign('urentypes_categorien', $urentypes_categorien);
 		
 		$this->smarty->display('instellingen/werkgever/urentypes.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// aanpassen urentypes
+	//-----------------------------------------------------------------------------------------------------------------
+	public function vergoedingen()
+	{
+		//urentypes class
+		$vergoeding = new Vergoeding();
+		$vergoedingen = new VergoedingGroup();
+		
+		//del urentype
+		if( isset($_POST['del'] ))
+		{
+			//msg
+			if( $vergoeding->delete( $_POST['del'] ) )
+				$this->smarty->assign('msg', msg('success', 'Vergoeding verwijderd!'));
+			else
+				$this->smarty->assign('msg', msg('warning', 'Vergoeding kon niet worden verwijderd!'));
+		}
+		
+		//set urentype
+		if( isset($_POST['set'] ))
+		{
+			//add
+			$vergoeding->add();
+			
+			//then msg
+			if($vergoeding->errors() === false )
+				$this->smarty->assign('msg', msg('success', 'Vergoeding toegevoegd!'));
+			else
+				$this->smarty->assign( 'errors', $vergoeding->errors() );
+		}
+		
+		
+		//show($urentypes_array);
+		$this->smarty->assign('vergoedingen', $vergoedingen->all() );
+		$this->smarty->display('instellingen/werkgever/vergoedingen.tpl');
 	}
 	
 	
@@ -340,7 +380,23 @@ class Werkgever extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function av()
 	{
-
+		//submit
+		if( isset($_POST['set']) && $_POST['set'] == 'save' )
+		{
+			$this->werkgever->setAV();
+			if( $this->werkgever->errors() === false )
+				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen'));
+			else
+				$this->smarty->assign('msg', msg('warning', $this->werkgever->errors() ));
+		}
+		
+		//publiceren
+		if( isset($_POST['set']) && $_POST['set'] == 'activate' )
+		{
+			$this->werkgever->publicateAV();
+		}
+		
+		$this->smarty->assign('av', $this->werkgever->AVhtml() );
 		$this->smarty->display('instellingen/werkgever/av.tpl');
 	}
 	

@@ -1,0 +1,6 @@
+/*
+Factuur header
+Zelfde voor alle facturen
+ */
+body{font-family: "Helvetica"; font-size: 10pt; margin: 0; padding: 0}
+p{margin-bottom: 7px; margin-top: 7px;}

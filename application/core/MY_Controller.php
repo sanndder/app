@@ -35,6 +35,20 @@ class MY_Controller extends CI_Controller
 
 		//always load werkgever
 		$this->load->model('werkgever_model', 'werkgever');
+		
+		//deze classes niet redirecten
+		$no_redirect[] = 'welkom';
+		
+		//usertype model laden
+		if( $this->user->user_type == 'uitzender' )
+		{
+			$this->load->model('uitzender_model', 'uitzender');
+			if( $this->uitzender->blockAccess() && !in_array( $this->uri->segment(1), $no_redirect) )
+			{
+				
+				redirect( $this->config->item( 'base_url' ) . $this->uitzender->redirectUrl() ,'location' );
+			}
+		}
 	}
 
 }

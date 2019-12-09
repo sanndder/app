@@ -1,8 +1,8 @@
 <?php
 
-use models\Documenten\IDbewijs;
+use models\documenten\IDbewijs;
 use models\forms\Formbuilder;
-use models\Uitzenders\UitzenderGroup;
+use models\uitzenders\UitzenderGroup;
 use models\utils\Carbagecollector;
 use models\utils\Codering;
 use models\utils\VisitsLogger;
@@ -72,7 +72,6 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 
-
 		//set gegevens
 		if( isset($_POST['set']) )
 		{
@@ -93,13 +92,13 @@ class Dossier extends MY_Controller
 		}
 		else
 		{
-			$factoren =  $werknemer->factoren();
-			$errors = false; //no errors
+			//$factoren =  $werknemer->factoren();
+			//$errors = false; //no errors
 		}
 
 		//form maken
-		$formdata = $formbuidler->table( 'werknemers_factoren' )->data( $factoren )->errors( $errors )->build();
-		$this->smarty->assign('formdata', $formdata);
+		//$formdata = $formbuidler->table( 'werknemers_factoren' )->data( $factoren )->errors( $errors )->build();
+		//$this->smarty->assign('formdata', $formdata);
 
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/algemeneinstellingen.tpl');
@@ -239,6 +238,66 @@ class Dossier extends MY_Controller
 	}
 	
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// reserveringen pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function reserveringen( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// urenbriefjes pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function urenbriefjes( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// loonstroken pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function loonstroken( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// loonbeslagen pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function loonbeslagen( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// ziekmeldingen pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function ziekmeldingen( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// notities pagina
@@ -251,8 +310,8 @@ class Dossier extends MY_Controller
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/notities.tpl');
 	}
-
-
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// instellingen dienstverband
 	//-----------------------------------------------------------------------------------------------------------------

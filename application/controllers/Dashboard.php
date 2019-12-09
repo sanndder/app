@@ -36,8 +36,8 @@ class Dashboard extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function uitzender()
 	{
-	
-	
+		
+		$this->smarty->display('dashboard/uitzender.tpl');
 	}
 
 }

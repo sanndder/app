@@ -1,7 +1,7 @@
 <?php
 
 use models\forms\Formbuilder;
-use models\Inleners\InlenerGroup;
+use models\inleners\InlenerGroup;
 use models\uitzenders\Uitzender;
 use models\utils\VisitsLogger;
 use models\werknemers\WerknemerGroup;

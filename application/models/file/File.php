@@ -38,8 +38,8 @@ class File extends Connector {
 	 * Init new file from array
 	 *
 	 *
-	 * @param file array
-	 * @return $this
+	 * @param array
+	 * @return object
 	 */
 	public function __construct( $input = NULL )
 	{
