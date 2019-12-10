@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Documenten;
+namespace models\documenten;
 use models\Connector;
 use models\pdf\PdfBuilder;
 use models\utils\DBhelper;
@@ -15,19 +15,20 @@ class Document extends Connector {
 
 	protected $_error = NULL;
 	protected $_werknemer_id = NULL;
-	protected $_werknemer_info = NULL;
+	protected $_werknemer_info = array();
 	protected $_inlener_id = NULL;
-	protected $_inlener_info = NULL;
+	protected $_inlener_info = array();
 	protected $_uitzender_id = NULL;
-	protected $_uitzender_info = NULL;
+	protected $_uitzender_info = array();
 	protected $_entiteit_id = NULL;
-	protected $_werkgever_info = NULL;
+	protected $_werkgever_info = array();
 	
 	protected $_html = '';
 	
 	
 	
 	protected $pdf = NULL;
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -41,17 +42,6 @@ class Document extends Connector {
 		//default entiteit
 		$this->setEntiteitID();
 	}
-
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * view pdf
-	 * @return object
-	 */
-	public function preview()
-	{
-		$this->pdf->view();
-	}
-	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -176,6 +166,65 @@ class Document extends Connector {
 		$query = $this->db_user->query( $sql );
 		
 		$this->_uitzender_info = DBhelper::toRow($query);
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * dummy data gebruiken
+	 *
+	 * @return object
+	 */
+	public function dummy()
+	{
+		$this->_uitzender_info['bedrijfsnaam'] = 'FeelGoodPeople B.V.';
+		$this->_uitzender_info['straat'] = 'Uitzendsingel';
+		$this->_uitzender_info['huisnummer'] = '136';
+		$this->_uitzender_info['postcode'] = '4566GH';
+		$this->_uitzender_info['plaats'] = 'Hoofddorp';
+		$this->_uitzender_info['kvknr'] = '12345678';
+		$this->_uitzender_info['btwnr'] = 'NL123456789B01';
+		
+		$this->_uitzender_info['contactpersoon']['aanhef'] = 'de heer';
+		$this->_uitzender_info['contactpersoon']['naam'] = 'U.K.L. van Jongbloed';
+		
+
+		return $this;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Variabelen in de tekst vervangen
+	 *
+	 * @return void
+	 */
+	public function replaceVars()
+	{
+		
+		//beginnen met werkgever vars
+		foreach( $this->_werkgever_info as $field => $value )
+			$this->_html = str_replace( '{{werkgever.'.$field.'}}', $value, $this->_html );
+		
+		//werkgever handtekening
+		$CI = &get_instance();// Grab the super object
+		$this->_html = str_replace( '{{werkgever.handtekening}}', '<img style="margin-top:20px;max-height:75px; max-width:150px" src="data:image/jpeg;base64,'.base64_encode($CI->werkgever->handtekening()).'" />', $this->_html );
+		
+		//uitzender vars
+		foreach( $this->_uitzender_info as $field => $value )
+		{
+			if( !is_array($value))
+				$this->_html = str_replace( '{{uitzender.' . $field . '}}', $value, $this->_html );
+			else
+			{
+				foreach( $value as $field2 => $value2 )
+					$this->_html = str_replace( '{{uitzender.' . $field . '.' . $field2 . '}}', $value2, $this->_html );
+			}
+		}
+		
+		//datum/tijd vars
+		$this->_html = str_replace( '{{datum.datum}}', date('d-m-Y'), $this->_html );
+		
 	}
 	
 

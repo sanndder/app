@@ -54,8 +54,13 @@ class Uitzender_model extends MY_Model
 	 */
 	public function blockAccess()
 	{
-		$this->_redirect_url = 'welkom/uitzender';
-		return true;
+		if( $this->acceptedAV() === false )
+		{
+			$this->_redirect_url = 'welkom/uitzender';
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -67,6 +72,44 @@ class Uitzender_model extends MY_Model
 	public function redirectUrl()
 	{
 		return $this->_redirect_url;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Algemene voorwaarden accepteren
+	 *
+	 * @return boolean
+	 */
+	public function acceptedAV()
+	{
+		$sql = "SELECT id FROM uitzenders_av_accepted WHERE uitzender_id = $this->uitzender_id AND deleted = 0 LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return false;
+		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Algemene voorwaarden accepteren
+	 *
+	 * @return boolean
+	 */
+	public function acceptAV()
+	{
+		$insert['av_id'] = $this->werkgever->AVID();
+		$insert['uitzender_id'] = $this->uitzender_id;
+		$insert['accepted_by'] = $this->user->user_id;
+		$insert['accepted_ip'] = $_SERVER['REMOTE_ADDR'];
+		$insert['accepted_device'] = $_SERVER['HTTP_USER_AGENT'];
+		
+		$this->db_user->insert( 'uitzenders_av_accepted', $insert );
+		
+		if( $this->db_user->insert_id() > 0 )
+			return true;
+		return false;
 	}
 
 	

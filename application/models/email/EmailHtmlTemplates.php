@@ -24,7 +24,7 @@ class EmailHtmlTemplates
 	 * constructor stelt juiste template in
 	 *
 	 *
-	 * @param template string
+	 * @param string
 	 * @return object
 	 */
 	public function __construct( $template = '' )
@@ -59,6 +59,9 @@ class EmailHtmlTemplates
 	 */
 	public function _default()
 	{
+		$CI =& get_instance();
+		$bedrijfsgegevens = $CI->werkgever->bedrijfsgegevens();
+		
 		//head
 		$this->_html = '<!doctype html><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
 
@@ -70,24 +73,41 @@ class EmailHtmlTemplates
 							.ExternalClass * { line-height:100%; }
         
 							body{background-color: #F2F2F2; margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; text-align: center; font-family:Verdana, Arial, sans-serif; font-size: 12px }
-							.text-container{ display: block; border:1px solid #DDDDDD; background-color: #FFFFFF; width: 700px; text-align: left }
-							.text-container td{padding: 15px;}
+							.header{background-color: #002E65; width: 685px; color:#fff; text-align: left; font-size: 20px; padding-top:15px;  padding-bottom:15px; display: block; padding-left: 25px}
+							.footer{background-color: #002E65; width: 685px; height: 25px; color:#fff; text-align: center; font-size: 11px;}
+							.footer a, footer a:visited{ color:#fff !important;}
+							.text-container{ display: block;  background-color: #FFFFFF; width: 700px; text-align: left; border-width: 0px; border-collapse: collapse}
+							.text-container td.titel{padding:25px 25px 0 25px; font-size: 15px}
+							.text-container td.text{padding: 25px; line-height: 24px}
 						 </style>';
+		
+		//close head
+		$this->_html .= '</head>';
 
 		//body start
 		$this->_html .= '<body>';
-
+		
+		//blauw header
+		$this->_html .= '';
+		
 		$this->_html .= '<table class="text-container">';
-		$this->_html .= '<tr><td>';
-
-		//var in de body
-		$this->_html .= '{{body}}';
-
+		$this->_html .= '<tr><td class="header">'.$bedrijfsgegevens['bedrijfsnaam'].'</td></tr>';
+		
+		//titel var
+		$this->_html .= '<tr><td class="titel">';
+		$this->_html .= '{{titel}}';
 		$this->_html .= '</td></tr>';
+		
+		//var in de body
+		$this->_html .= '<tr><td class="text">';
+		$this->_html .= '{{body}}';
+		$this->_html .= '</td></tr>';
+		
+		$this->_html .= '<tr><td class="footer">'.$bedrijfsgegevens['straat'].' '.$bedrijfsgegevens['huisnummer'].' | '.$bedrijfsgegevens['postcode'].' '.$bedrijfsgegevens['plaats'].'|
+		'.$bedrijfsgegevens['telefoon'].' | '.$bedrijfsgegevens['email'].'</td></tr>';
+		
 		$this->_html .= '</table>';
-
-		//close head
-		$this->_html .= '</head>';
+		
 
 		//close body
 		$this->_html .= '</body></html>';

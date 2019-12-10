@@ -1,5 +1,7 @@
 <?php
 
+use models\documenten\Document;
+use models\documenten\DocumentFactory;
 use models\documenten\Template;
 use models\documenten\TemplateGroup;
 use models\forms\Formbuilder;
@@ -373,6 +375,18 @@ class Werkgever extends MY_Controller
 		$this->smarty->assign('body', $template->body() );
 		
 		$this->smarty->display('instellingen/werkgever/documentenedit.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// pdf preview documenten
+	//-----------------------------------------------------------------------------------------------------------------
+	public function documentenpreview( $template_id)
+	{
+		$template = new Template( $template_id );
+		
+		//document aanmaken
+		$document = DocumentFactory::createFromTemplateObject( $template );
+		$document->dummy()->build()->preview();
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------

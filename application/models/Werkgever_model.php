@@ -1,6 +1,6 @@
 <?php
 
-use models\Documenten\DocumentFactory;
+use models\documenten\DocumentFactory;
 use models\forms\Validator;
 use models\utils\DBhelper;
 
@@ -198,6 +198,22 @@ class Werkgever_model extends MY_Model
 		$data = DBhelper::toRow( $query );
 		return $data['voorwaarden'];
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * AV id ophalen
+	 *
+	 */
+	public function AVID()
+	{
+		$sql = "SELECT id FROM werkgever_av WHERE deleted = 0 AND entiteit_id = $this->_entiteit_id";
+		$query = $this->db_user->query( $sql );
+		
+		$data = DBhelper::toRow( $query );
+		return $data['id'];
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

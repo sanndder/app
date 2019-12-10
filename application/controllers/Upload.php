@@ -1,9 +1,9 @@
 <?php
 
-use models\Documenten\IDbewijs;
-use models\File\File;
-use models\File\Img;
-use models\File\Pdf;
+use models\documenten\IDbewijs;
+use models\file\File;
+use models\file\Img;
+use models\file\Pdf;
 use models\utils\Carbagecollector;
 
 defined('BASEPATH') OR exit('No direct script access allowed');

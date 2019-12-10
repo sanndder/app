@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-05 09:05:07
+/* Smarty version 3.1.33, created on 2019-12-10 07:06:14
   from 'C:\xampp\htdocs\app\application\views\dashboard\werkgever.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de8ba33c336b6_20049020',
+  'unifunc' => 'content_5def35d6285586_58072023',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '37b0e09da18ce967349f6c76840a5d88cb7ecbd6' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\dashboard\\werkgever.tpl',
-      1 => 1575448725,
+      1 => 1575919259,
       2 => 'file',
     ),
   ),
@@ -20,36 +20,35 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de8ba33c336b6_20049020 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5def35d6285586_58072023 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_6320311955de8ba33c23ca2_13249379', "title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_5914867665def35d6275b85_74929052', "title");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_17651255115de8ba33c27b27_86826548', "header-icon");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_16658051095def35d6279a06_08060371', "header-icon");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_18824855215de8ba33c2b9a3_40280155', "header-title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_21414046715def35d627d883_22982998', "header-title");
 ?>
 
-<?php $_smarty_tpl->_assignInScope('ckeditor', "true");?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_16329779685de8ba33c2f823_83411945', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19953429015def35d6281708_48704034', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, '../layout.tpl');
 }
 /* {block "title"} */
-class Block_6320311955de8ba33c23ca2_13249379 extends Smarty_Internal_Block
+class Block_5914867665def35d6275b85_74929052 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_6320311955de8ba33c23ca2_13249379',
+    0 => 'Block_5914867665def35d6275b85_74929052',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -59,12 +58,12 @@ Dashboard<?php
 }
 /* {/block "title"} */
 /* {block "header-icon"} */
-class Block_17651255115de8ba33c27b27_86826548 extends Smarty_Internal_Block
+class Block_16658051095def35d6279a06_08060371 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-icon' => 
   array (
-    0 => 'Block_17651255115de8ba33c27b27_86826548',
+    0 => 'Block_16658051095def35d6279a06_08060371',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -74,12 +73,12 @@ icon-home2<?php
 }
 /* {/block "header-icon"} */
 /* {block "header-title"} */
-class Block_18824855215de8ba33c2b9a3_40280155 extends Smarty_Internal_Block
+class Block_21414046715def35d627d883_22982998 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-title' => 
   array (
-    0 => 'Block_18824855215de8ba33c2b9a3_40280155',
+    0 => 'Block_21414046715def35d627d883_22982998',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -89,12 +88,12 @@ Dashboard<?php
 }
 /* {/block "header-title"} */
 /* {block "content"} */
-class Block_16329779685de8ba33c2f823_83411945 extends Smarty_Internal_Block
+class Block_19953429015def35d6281708_48704034 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_16329779685de8ba33c2f823_83411945',
+    0 => 'Block_19953429015def35d6281708_48704034',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {

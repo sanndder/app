@@ -42,6 +42,7 @@
  * @property Emailcentrum_model $emailcentrum
  * @property Upload_model $uploadfiles
  * @property Werkgever_model $werkgever
+ * @property Uitzender_model $uitzender
  * @property User_model $user
  * @property CI_DB_driver $db_user          	  This is the platform-independent base Active Record implementation class.
  * @property CI_DB_result $query          	 	  This is the platform-independent base Active Record implementation class. *

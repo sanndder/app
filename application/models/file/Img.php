@@ -1,7 +1,6 @@
 <?php
 
-namespace models\File;
-
+namespace models\file;
 use claviska\SimpleImage;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');

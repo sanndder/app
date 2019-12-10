@@ -117,3 +117,25 @@ $db['admin'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+$db['admin'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost',
+	'username' => 'app_admin',
+	'password' => 'Lf60jp~4',
+	'database' => 'app_admin',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);

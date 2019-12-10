@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Documenten;
+namespace models\documenten;
 use models\Connector;
 use models\utils\DBhelper;
 
@@ -56,7 +56,10 @@ class Template extends Connector {
 	public function load()
 	{
 		//settings
-		$sql = "SELECT * FROM documenten_templates_settings WHERE template_id = $this->_template_id AND deleted = 0 LIMIT 1";
+		$sql = "SELECT documenten_templates_settings.*, documenten_categorieen.categorie, documenten_categorieen.dir
+				FROM documenten_templates_settings
+				LEFT JOIN documenten_categorieen ON documenten_categorieen.categorie_id = documenten_templates_settings.categorie_id
+				WHERE documenten_templates_settings.template_id = $this->_template_id AND documenten_templates_settings.deleted = 0 LIMIT 1";
 		$query = $this->db_user->query( $sql );
 		
 		$this->_settings = DBhelper::toRow( $query );
@@ -111,16 +114,13 @@ class Template extends Connector {
 	public function setBodyAndTitel()
 	{
 		if( $_POST['titel'] != $this->_titel )
-		{
-			$insert['titel'] = strip_tags( $_POST['titel'] );
-			$this->_titel = $insert['titel'];
-		}
+			$this->_titel = strip_tags( $_POST['titel'] );
 		
 		if( $_POST['editor'] != $this->_body )
-		{
-			$insert['html'] = $_POST['editor'];
-			$this->_body = $insert['html'];
-		}
+			$this->_body = $_POST['editor'];
+		
+		$insert['titel'] = $this->_titel;
+		$insert['html'] = $this->_body;
 		
 		if( isset($insert) )
 		{
@@ -133,6 +133,35 @@ class Template extends Connector {
 			$insert['template_id'] = $this->_template_id;
 			$this->db_user->insert( 'documenten_templates_html', $insert );
 		}
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get categorie
+	 *
+	 * @return string|null
+	 */
+	public function categorie()
+	{
+		if( isset($this->_settings['categorie']) )
+			return $this->_settings['categorie'];
+		
+		return NULL;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get categorie
+	 *
+	 * @return string|null
+	 */
+	public function naam()
+	{
+		if( isset($this->_settings['template_name']) )
+			return $this->_settings['template_name'];
+		
+		return NULL;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

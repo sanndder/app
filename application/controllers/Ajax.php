@@ -1,13 +1,13 @@
 <?php
 
-use models\forms\Formbuilder;
 use models\utils\history;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 /**
- * Instellingen controller
+ * Ajax controller
+ * Voor algemene ajax call
  */
 class Ajax extends MY_Controller
 {
@@ -18,11 +18,6 @@ class Ajax extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
-		//Deze pagina mag alleen bezocht worden door werkgever
-		if( $this->user->user_type != 'werkgever' )forbidden();
-
-
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -35,6 +30,20 @@ class Ajax extends MY_Controller
 		
 		if( is_array($data) )
 			echo json_encode($data);
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// accept algemene voorwaarden
+	//-----------------------------------------------------------------------------------------------------------------
+	public function acceptAV()
+	{
+		if( $this->user->user_type == 'uitzender' )
+		{
+			if( $this->uitzender->acceptAV() )
+				echo true;
+			else
+				echo false;
+		}
 	}
 
 }

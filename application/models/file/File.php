@@ -1,6 +1,6 @@
 <?php
 
-namespace models\File;
+namespace models\file;
 use models\Connector;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');

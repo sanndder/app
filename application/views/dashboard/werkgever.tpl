@@ -2,7 +2,6 @@
 {block "title"}Dashboard{/block}
 {block "header-icon"}icon-home2{/block}
 {block "header-title"}Dashboard{/block}
-{assign "ckeditor" "true"}
 
 {block "content"}
 

@@ -38,6 +38,7 @@ class MY_Controller extends CI_Controller
 		
 		//deze classes niet redirecten
 		$no_redirect[] = 'welkom';
+		$no_redirect[] = 'ajax';
 		
 		//usertype model laden
 		if( $this->user->user_type == 'uitzender' )
@@ -45,7 +46,6 @@ class MY_Controller extends CI_Controller
 			$this->load->model('uitzender_model', 'uitzender');
 			if( $this->uitzender->blockAccess() && !in_array( $this->uri->segment(1), $no_redirect) )
 			{
-				
 				redirect( $this->config->item( 'base_url' ) . $this->uitzender->redirectUrl() ,'location' );
 			}
 		}

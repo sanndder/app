@@ -20,7 +20,7 @@
 				</a>
 
 				<div class="dropdown-menu dropdown-menu-right">
-					<a href="mijnaccount/index" class="dropdown-item"><i class="icon-cog5"></i> Mijn account</a>
+                    {if !isset($hide_menu)}<a href="mijnaccount/index" class="dropdown-item"><i class="icon-cog5"></i> Mijn account</a>{/if}
 					<a href="login/index?logout" class="dropdown-item"><i class="icon-switch2"></i> Uitloggen</a>
 				</div>
 			</li>

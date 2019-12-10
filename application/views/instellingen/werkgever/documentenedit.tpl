@@ -56,29 +56,81 @@
 								<textarea name="editor" id="editor">{$body}</textarea>
 
 							</div><!-- /col -->
-							<div class="col-lg-2">
+							<div class="col-lg-6">
 
-								<h6 class="mb-0 font-weight-semibold">
-									<em class="icon-pencil6 mr-2"></em>Variabelen invoegen</h6>
-								<div class="dropdown-divider mb-2"></div>
-								<span class="text-muted ml-1">Werkgever</span>
-								<ul data-var-categorie="werkgever" class="list list-unstyled mb-0 list-hover ckeditor-vars mt-1 ml-2">
-									<li data-var="bedrijfsnaam">Bedrijfsnaam</li>
-									<li data-var="straatnaam">Straatnaam</li>
-									<li data-var="huisnummer">Huisnummer</li>
-									<li data-var="postcode">Postcode</li>
-									<li data-var="kvknr">KvK nr</li>
-									<li data-var="btwnr">BTW nummer</li>
-									<li data-var="handtekening">Handtekening</li>
-								</ul>
+								<div class="row">
+									<div class="col-lg-12">
 
+										<h6 class="mb-0 font-weight-semibold">
+											<em class="icon-pencil6 mr-2"></em>Variabelen invoegen</h6>
+										<div class="dropdown-divider mb-2"></div>
 
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-3">
+										<span class="text-muted ml-1">Werkgever</span>
+
+										<ul data-var-categorie="werkgever" class="list list-unstyled mb-3 list-hover ckeditor-vars mt-1 ml-2">
+											<li data-var="bedrijfsnaam">Bedrijfsnaam</li>
+											<li data-var="straat">Straatnaam</li>
+											<li data-var="huisnummer">Huisnummer</li>
+											<li data-var="postcode">Postcode</li>
+											<li data-var="plaats">Plaats</li>
+											<li data-var="kvknr">KvK nr</li>
+											<li data-var="btwnr">BTW nummer</li>
+											<li data-var="handtekening">Handtekening</li>
+										</ul>
+
+										<span class="text-muted ml-1">Datum en tijd</span>
+										<ul data-var-categorie="datum" class="list list-unstyled mb-3 list-hover ckeditor-vars mt-1 ml-2">
+											<li data-var="datum">28-07-2019</li>
+										</ul>
+
+									</div><!-- /col -->
+									<div class="col-lg-3">
+										<span class="text-muted ml-1">Uitzender</span>
+
+										<ul data-var-categorie="uitzender" class="list list-unstyled mb-0 list-hover ckeditor-vars mt-1 ml-2">
+											<li data-var="bedrijfsnaam">Bedrijfsnaam</li>
+											<li data-var="straat">Straatnaam</li>
+											<li data-var="huisnummer">Huisnummer</li>
+											<li data-var="postcode">Postcode</li>
+											<li data-var="plaats">Plaats</li>
+											<li data-var="kvknr">KvK nr</li>
+											<li data-var="btwnr">BTW nummer</li>
+											<li data-var="contactpersoon.aanhef">Contactpersoon aanhef</li>
+											<li data-var="contactpersoon.naam">Contactpersoon naam volledig</li>
+											<li data-var="handtekening">Handtekening</li>
+										</ul>
+
+									</div>
+									<div class="col-lg-3">
+										<span class="text-muted ml-1">Inlener</span>
+
+										<ul data-var-categorie="inlener" class="list list-unstyled mb-0 list-hover ckeditor-vars mt-1 ml-2">
+											<li data-var="bedrijfsnaam">Bedrijfsnaam</li>
+											<li data-var="straat">Straatnaam</li>
+											<li data-var="huisnummer">Huisnummer</li>
+											<li data-var="postcode">Postcode</li>
+											<li data-var="plaats">Plaats</li>
+											<li data-var="kvknr">KvK nr</li>
+											<li data-var="btwnr">BTW nummer</li>
+											<li data-var="handtekening">Handtekening</li>
+										</ul>
+
+									</div><!-- /col -->
+								</div><!-- /row -->
 							</div><!-- /col -->
 						</div><!-- /row -->
 
 						<button type="submit" name="set" value="save_document" class="btn btn-success mt-2">
 							<i class="icon-check mr-1"></i>Document opslaan
 						</button>
+						<a target="_blank" href="instellingen/werkgever/documentenpreview/4" class="btn btn-light mt-2">
+							<i class="icon-file-pdf mr-1"></i>PDF Voorbeeld
+						</a>
 
 					</form>
 				</div><!-- /card body -->

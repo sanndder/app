@@ -1,6 +1,6 @@
 <?php
 
-use models\Documenten\IDbewijs;
+use models\documenten\IDbewijs;
 use models\verloning\Urentypes;
 use models\werknemers\Werknemer;
 

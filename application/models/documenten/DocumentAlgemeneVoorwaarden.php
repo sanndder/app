@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Documenten;
+namespace models\documenten;
 use models\pdf\PdfBuilder;
 use models\utils\DBhelper;
 

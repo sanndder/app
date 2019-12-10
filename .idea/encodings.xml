@@ -4,5 +4,8 @@
     <file url="file://$PROJECT_DIR$/application/views/pdf/facturen/factuur_footer.tpl" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/application/views/pdf/facturen/factuur_header.tpl" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/application/views/pdf/facturen/factuur_verkoop.tpl" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/application/views/pdf/footers/footer_full.tpl" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/application/views/pdf/headers/header_full.tpl" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/application/views/pdf/headers/header_simple.tpl" charset="windows-1252" />
   </component>
 </project>

@@ -1,6 +1,6 @@
 <?php
 
-use models\Documenten\IDbewijs;
+use models\documenten\IDbewijs;
 use models\uitzenders\Uitzender;
 
 defined('BASEPATH') OR exit('No direct script access allowed');

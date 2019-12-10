@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Documenten;
+namespace models\documenten;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 

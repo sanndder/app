@@ -40,3 +40,36 @@ function deleteIDbewijs( werknemer_id, side ){
       alert("Er gaat wat mis tijdens de AJAX call, herlaad de pagina en probeer het opnieuw");
    });
 }
+
+//
+// Accepteer Algemene Voorwaarden
+//
+function acceptAV() {
+
+   //spinner
+   $('.btn-av').find('i').removeClass('icon-check').addClass('icon-spinner2').addClass('spinner');
+
+   //set data
+   $.ajax({
+      url: 'ajax/acceptAV/' ,
+      type: 'post',
+      cache: false,
+      dataType: 'text'
+   })
+    .done(function( int )
+    {
+       if( int === '1' )
+       {
+          //hide stuff
+          $('.number-av').hide();
+          $('.btn-av').hide();
+          $('.check-av').show();
+       }
+       else
+          alert('Er gaat wat mis tijdens de AJAX call, wegschrijven naar de database is mislukt');
+    }).fail(function ()
+   {
+      $('.btn-av').find('i').addClass('icon-check').removeClass('icon-spinner2').removeClass('spinner');
+      alert("Er gaat wat mis tijdens de AJAX call, herlaad de pagina en probeer het opnieuw");
+   });
+}

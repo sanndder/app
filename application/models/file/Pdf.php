@@ -1,6 +1,6 @@
 <?php
 
-namespace models\File;
+namespace models\file;
 
 use setasign\Fpdi\Fpdi;
 

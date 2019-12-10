@@ -1,6 +1,6 @@
 <?php
 
-use models\Documenten\Template;
+use models\documenten\Template;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 

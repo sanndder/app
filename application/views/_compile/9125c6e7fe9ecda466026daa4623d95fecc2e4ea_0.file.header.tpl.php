@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-04 15:36:27
+/* Smarty version 3.1.33, created on 2019-12-09 20:24:13
   from 'C:\xampp\htdocs\app\application\views\_page\header.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de7c46b059d34_66000764',
+  'unifunc' => 'content_5dee9f5d8b21a2_35029809',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '9125c6e7fe9ecda466026daa4623d95fecc2e4ea' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\_page\\header.tpl',
-      1 => 1566300787,
+      1 => 1575919452,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de7c46b059d34_66000764 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5dee9f5d8b21a2_35029809 (Smarty_Internal_Template $_smarty_tpl) {
 ?><div class="navbar navbar-expand-md navbar-dark">
 	<div class="navbar-brand wmin-0 mr-5">
 		<img src="template/global_assets/images/logo_light.png" alt="">
@@ -44,7 +44,7 @@ function content_5de7c46b059d34_66000764 (Smarty_Internal_Template $_smarty_tpl)
 				</a>
 
 				<div class="dropdown-menu dropdown-menu-right">
-					<a href="mijnaccount/index" class="dropdown-item"><i class="icon-cog5"></i> Mijn account</a>
+                    <?php if (!isset($_smarty_tpl->tpl_vars['hide_menu']->value)) {?><a href="mijnaccount/index" class="dropdown-item"><i class="icon-cog5"></i> Mijn account</a><?php }?>
 					<a href="login/index?logout" class="dropdown-item"><i class="icon-switch2"></i> Uitloggen</a>
 				</div>
 			</li>

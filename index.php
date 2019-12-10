@@ -56,7 +56,7 @@
 
 //alleen lokaal op development
 if( $_SERVER['HTTP_HOST'] != '192.168.1.2' && $_SERVER['HTTP_HOST'] != '127.0.0.1' && $_SERVER['HTTP_HOST'] != '82.74.122.107')
-	define('ENVIRONMENT', 'development');
+	define('ENVIRONMENT', 'production');
 else
 	define('ENVIRONMENT', 'development');
 
@@ -79,7 +79,7 @@ switch (ENVIRONMENT)
 
 	case 'testing':
 	case 'production':
-		ini_set('display_errors', 0);
+		/*ini_set('display_errors', 0);
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
 			error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
@@ -87,7 +87,9 @@ switch (ENVIRONMENT)
 		else
 		{
 			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
-		}
+		}*/
+		error_reporting(-1);
+		ini_set('display_errors', 1);
 	break;
 
 	default:

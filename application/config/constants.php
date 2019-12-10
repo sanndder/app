@@ -2,13 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 //defined('BASE_URL') OR define('BASE_URL', 'http://simple-internet-solutions.nl/app');
-defined('BASE_URL') OR define('BASE_URL', 'http://192.168.1.2/app');
+defined('BASE_URL') OR define('BASE_URL', 'https://www.devisonline.nl');
 //defined('BASE_URL') OR define('BASE_URL', 'http://82.74.122.107/app/');
-defined('APP_NAME') OR define('APP_NAME', 'App');
+defined('APP_NAME') OR define('APP_NAME', 'Devis Online');
 defined('DB_SECRET') OR define('DB_SECRET', 'ZKPZeS5FqrmPbzyyMZ7FVZiRlYQ5dm');
 defined('UPLOAD_SECRET') OR define('UPLOAD_SECRET', 'ZKloqrmPbzyyMZ7FdsfVZiRlYQ5d3m');
 
-defined('UPLOAD_DIR') OR define('UPLOAD_DIR', 'userf1les_o7dm6');
+defined('UPLOAD_DIR') OR define('UPLOAD_DIR', '/var/www/vhosts/devisonline.nl/userf1les_o7dm6');
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace

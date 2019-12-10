@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Email;
+namespace models\email;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -53,9 +53,11 @@ class Email{
 	 * @var int
 	 */
 	private $_debug_level = 0;
-
-
-
+	/**
+	 * @var string
+	 */
+	private $_titel;
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * lege constructor maakt een nieuwe email aan, een ID meegegeven haalt een email uit de database op
@@ -84,6 +86,24 @@ class Email{
 	}
 
 
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Titel instellen
+	 *
+	 * @return void
+	 */
+	public function setTitel( $titel = '' )
+	{
+		//geen HTML? Dan tags er uit
+		if( $this->_html === false )
+			$this->_titel = strip_tags( $titel );
+		else
+			$this->_titel = $titel;
+		
+	}
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Body instellen
@@ -140,9 +160,11 @@ class Email{
 
 			//body inladen in template
 			$this->_body = str_replace( '{{body}}', $this->_body, $html);
-
+			$this->_body = str_replace( '{{titel}}', $this->_titel, $this->_body);
 		}
-
+		
+		
+		echo $this->_body;
 	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -154,28 +176,55 @@ class Email{
 	public function test()
 	{
 
-
-		$this->_mail->IsSMTP(); // enable SMTP
-		$this->_mail->SMTPDebug = $this->_debug_level; // debugging: 1 = errors and messages, 2 = messages only
-		$this->_mail->SMTPAuth = true; // authentication enabled
-		$this->_mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for Gmail
-		$this->_mail->Host = "smtp.gmail.com";
-		$this->_mail->Port = 465; // or 587
-
-
-		$this->_mail->Username = "sander.m.app1@gmail.com";
-		$this->_mail->Password = "Yutmoza86!";
-		$this->_mail->SetFrom("sander.m.app1@gmail.com");
-		$this->_mail->Subject = $this->_subject;
-
-		$this->_mail->Body = $this->_body;
-		$this->_mail->AddAddress("hsmeijering@home.nl");
-
-
-		if(!$this->_mail->Send()) {
-			$this->_error = $this->_mail->ErrorInfo;
-		} else {
-			show("Message has been sent");
+		if( ENVIRONMENT == 'development' )
+		{
+			$this->_mail->IsSMTP(); // enable SMTP
+			$this->_mail->SMTPDebug = $this->_debug_level; // debugging: 1 = errors and messages, 2 = messages only
+			$this->_mail->SMTPAuth = true; // authentication enabled
+			$this->_mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for Gmail
+			$this->_mail->Host = "smtp.gmail.com";
+			$this->_mail->Port = 465; // or 587
+			$this->_mail->CharSet = 'UTF-8';
+			
+			$this->_mail->Username = "sander.m.app1@gmail.com";
+			$this->_mail->Password = "Yutmoza86!";
+			$this->_mail->SetFrom( "sander.m.app1@gmail.com" );
+			$this->_mail->Subject = $this->_subject;
+			
+			$this->_mail->Body = $this->_body;
+			$this->_mail->AddAddress( "hsmeijering@home.nl" );
+			$this->_mail->AddAddress( "sanndder@hotmail.com" );
+			
+			if( !$this->_mail->Send() )
+			{
+				$this->_error = $this->_mail->ErrorInfo;
+			} else
+			{
+				show( "Message has been sent" );
+			}
+		}
+		if( ENVIRONMENT == 'production' )
+		{
+			$this->_mail->IsSMTP(); // enable SMTP
+			$this->_mail->SMTPDebug = $this->_debug_level; // debugging: 1 = errors and messages, 2 = messages only
+			$this->_mail->SMTPAuth = false; // authentication enabled
+			$this->_mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			$this->_mail->Port = 25; // or 587
+			
+			$this->_mail->SetFrom( "info@aberinghr.nl" );
+			$this->_mail->Subject = $this->_subject;
+			
+			$this->_mail->Body = $this->_body;
+			$this->_mail->AddAddress( "hsmeijering@home.nl" );
+			
+			if( !$this->_mail->Send() )
+			{
+				$this->_error = $this->_mail->ErrorInfo;
+			}
+			else
+			{
+				show( "Message has been sent" );
+			}
 		}
 	}
 
@@ -215,7 +264,7 @@ class Email{
 		$this->_debug_level = $level;
 
 		// melding footer laten zien
-		echo '<div class="email-debug-message">EMAIL DEBUG ACTIVE!</div>';
+		//echo '<div class="email-debug-message">EMAIL DEBUG ACTIVE!</div>';
 
 	}
 

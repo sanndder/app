@@ -2,10 +2,11 @@
 
 use models\cao\CAO;
 use models\cao\CAOGroup;
-use models\Documenten\IDbewijs;
-use models\File\File;
-use models\File\Img;
-use models\File\Pdf;
+use models\documenten\IDbewijs;
+use models\email\Email;
+use models\file\File;
+use models\file\Img;
+use models\file\Pdf;
 use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingCollection;
 
@@ -108,6 +109,20 @@ class Test extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
+		$email = new Email();
+		
+		
+		//$email->test();
+		$email->debug();
+		$email->setSubject('Testmail');
+		$email->setTitel('Welkom bij Abering Uitzend B.V.');
+		$email->setBody('In deze email vind u uw aanmeldlink voor onze online applicatie <b>Devis Online</b>. Nadat u uw gegevens heeft ingevuld zullen wij binnen één werkdag uw gegevens controleren
+						en uw account activeren. Daarna kunt u volledig gebruik maken van alle mogelijkheden van <b>Devis Online</b>.
+						<br /><br /> <a href="https://www.devisonline.nl/aanmelden/uitzender?wid=3">https://www.devisonline.nl/aanmelden/uitzender?wid=3</a><br /><br />Wij hopen op een fijne samenwerking!<br /><br />Abering Uitzend B.V.');
+		$email->useHtmlTemplate( 'default' );
+		$email->test();
+		
+		
 		//docent
 		/*$cao = new CAO();
 		$cao->setID( 228 );
@@ -129,7 +144,7 @@ class Test extends MY_Controller {
 		$cao->setPeriodiek( '1.00' );
 		
 		show ($cao->uurloon() );*/
-		
+		/*
 		$caogroup = new CAOGroup();
 		
 		if( isset($_GET['cao_id']) )
@@ -198,7 +213,7 @@ class Test extends MY_Controller {
 
 		//$row = 'test/image.jpg';
 
-		$img = new models\File\Img($row);
+		$img = new models\file\Img($row);
 
 
 		//$img->download();

@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Documenten;
+namespace models\documenten;
 use models\Connector;
 
 
@@ -18,15 +18,31 @@ class DocumentFactory extends Connector {
 		//juiste document starten
 		switch ( $documentType ) {
 			case 'AlgemeneVoorwaarden':
-				
 				$document = new DocumentAlgemeneVoorwaarden();
 				return $document;
-				
 				break;
 			default:
 				die('Class ' . $documentType . ' niet gevonden' );
 				break;
 		}
+	}
+	
+	static function createFromTemplateObject( Template $templateObject )
+	{
+		//welk type
+		$documentType = $templateObject->categorie();
+		
+		//juiste document starten
+		switch ( $documentType ) {
+			case 'samenwerking uitzender':
+				$document = new DocumentSamenwerkingUitzender( $templateObject );
+				break;
+			default:
+				die('Class ' . $documentType . ' niet gevonden' );
+				break;
+		}
+		
+		return $document;
 	}
 }
 

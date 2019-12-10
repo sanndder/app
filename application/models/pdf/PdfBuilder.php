@@ -2,7 +2,7 @@
 
 namespace models\pdf;
 
-use models\File\Pdf;
+use models\file\Pdf;
 use Mpdf\mpdf;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -71,8 +71,8 @@ class PdfBuilder{
 		//init mpdf object
 		$this->mpdf = new mpdf( $config );
 
-		$this->mpdf->SetTitle('PDF');
-		$this->mpdf->SetAuthor('App');
+		$this->mpdf->SetTitle($config['titel']);
+		$this->mpdf->SetAuthor('Devis Online');
 		$this->mpdf->SetDisplayMode('fullpage');
 		//$this->mpdf->SetProtection ( array('print','print-highres','assemble','extract','copy') );
 
@@ -88,13 +88,13 @@ class PdfBuilder{
 	 * View pdf in browser
 	 * @return array or boolean
 	 */
-	public function view()
+	public function preview()
 	{
-		//$this->mpdf->Output();
+		$this->mpdf->Output( $this->_file_name_display . '.pdf', \Mpdf\Output\Destination::INLINE);
 		
 		//temp
-		if( isset($_GET['p']) )
-			$this->mpdf->Output();
+		//if( isset($_GET['p']) )
+			//$this->mpdf->Output();
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

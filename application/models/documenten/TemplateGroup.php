@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Documenten;
+namespace models\documenten;
 use models\Connector;
 use models\utils\DBhelper;
 
