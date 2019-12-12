@@ -64,6 +64,10 @@ $route['crm/werknemers'] 						= 'crm/werknemers/overzicht';
 
 $route['ureninvoer'] 							= 'ureninvoer/ureninvoer/index';
 
-
 $route['instellingen/werkgever/users/(:any)'] 					= 'instellingen/users/index/$1';
 $route['instellingen/werkgever/users'] 							= 'instellingen/users/index';
+
+/*
+ * Aanmeldlinks doorverwijzen naar de aanmelding dossier
+ */
+$route['aanmelden/uitzender'] 					= 'crm/uitzenders/dossier/bedrijfsgegevens';

@@ -119,10 +119,54 @@ class Auth_model extends CI_Model
 		$this->_loginSessionToDatabase( $user['user_id'], $secret, $sid );
 
 		$this->session->set_userdata( $session );
-
+		
 		return true;
 	}
 
+
+	/*************************************************************************************************
+	 * Zonder login pagina's benaderen
+	 *
+	 * @return void
+	 */
+	public function validate_nologin()
+	{
+		if( isset($_SESSION['logindata']['wid']) && isset($_SESSION['logindata']['wg_hash']) )
+		{
+			$_GET['wid'] = $_SESSION['logindata']['wid'];
+			$_GET['wg_hash'] = $_SESSION['logindata']['wg_hash'];
+		}
+		
+		if( !isset($_GET['wid']) || !isset($_GET['wg_hash']) )
+			$this->logout( NULL, NULL );
+		
+		//werkgever ophalen
+		$sql = "SELECT werkgevers.*, AES_DECRYPT( werkgevers.db_password, UNHEX(SHA2('".DB_SECRET."' ,512)) ) AS db_password
+				FROM werkgevers
+				WHERE wid = ? AND wg_hash = ?
+				LIMIT 1";
+		$query = $this->db_admin->query( $sql, array( $_GET['wid'],$_GET['wg_hash']) );
+		
+		//werkgever niet gevonden
+		if( $query->num_rows() == 0 )
+			$this->logout( NULL, NULL );
+		
+		//data werkgever
+		$data = $query->row_array();
+		
+		//databse gegevens naar config
+		$this->config->set_item( 'db_name', $data['db_name'] );
+		$this->config->set_item( 'db_user', $data['db_user'] );
+		$this->config->set_item( 'db_password', $data['db_password'] );
+		
+		//sessie aanmaken
+		$session['logindata']['werkgever_id'] = $data['werkgever_id'];
+		$session['logindata']['wid'] = $data['wid'];
+		$session['logindata']['wg_hash'] = $data['wg_hash'];
+		$session['logindata']['user_type'] = 'external';
+		
+		$this->session->set_userdata( $session );
+	}
 
 	/*************************************************************************************************
 	 * check login
@@ -130,6 +174,7 @@ class Auth_model extends CI_Model
 	 */
 	public function check( $logout = false )
 	{
+		
 		//get session
 		$logindata = $this->session->userdata('logindata');
 		
@@ -141,7 +186,7 @@ class Auth_model extends CI_Model
 		//user wants to logout
 		if ($logout)
 			$this->logout( $user_id, $sid, 'user action');
-
+		
 		//TODO: move to other class
 		//$sql = "UPDATE werkgevers SET db_password = AES_ENCRYPT('_d00zRj0', UNHEX(SHA2('".DB_SECRET."',512))) WHERE werkgever_id = 1"; //_d00zRj0 for simple-internet-solutions
 		//$query = $this->db_admin->query($sql);

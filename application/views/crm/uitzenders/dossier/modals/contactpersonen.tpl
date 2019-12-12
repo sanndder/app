@@ -7,6 +7,11 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Contactpersoon <span class="var-action"></span></h5>
+                {if $ENV == 'development'}
+					<span data-title="Formulier invullen" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="fillForm()">
+						<i class="icon-pencil3 mr-2" style="font-size: 22px"></i>
+					</span>
+                {/if}
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 

@@ -20,15 +20,20 @@ class MY_Controller extends CI_Controller
 		$this->smarty->assign( 'base_url' , BASE_URL );
 		$this->smarty->assign( 'current_url' , current_url() );
 		$this->smarty->assign( 'qs' , $_SERVER['QUERY_STRING'] );
+		$this->smarty->assign( 'ENV' , ENVIRONMENT );
 		$this->smarty->assign( 'app_name' , APP_NAME );
-
-		//logout
-		$logout = false;
-		if( isset($_GET['logout']) )
-			$logout = true;
-
-		//validate user
-		$this->auth->check( $logout );
+		
+		//logout wanneer user klikt
+		$logout = false; if( isset($_GET['logout']) )$logout = true;
+		
+		//controllers die benaderd mogen worden zonder login
+		$no_login = array('aanmelden', 'crm');
+		
+		//validate user, wanneer ingelogd daan nooit no access
+		if( !in_array($this->uri->segment(1),$no_login) || isset($_SESSION['logindata']['main']) )
+			$this->auth->check( $logout );
+		else
+			$this->auth->validate_nologin();
 
 		//init user
 		$this->load->model('user_model', 'user');
@@ -49,6 +54,7 @@ class MY_Controller extends CI_Controller
 				redirect( $this->config->item( 'base_url' ) . $this->uitzender->redirectUrl() ,'location' );
 			}
 		}
+
 	}
 
 }

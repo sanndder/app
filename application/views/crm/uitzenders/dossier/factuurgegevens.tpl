@@ -37,6 +37,16 @@
 
 							<form method="post" action="">
 
+								<div class="row">
+                                    {if $ENV == 'development'}
+										<div class="col-lg-12 text-right mb-3">
+										<span data-title="Formulier invullen" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="fillForm()">
+											<i class="icon-pencil3 mr-2" style="font-size: 22px"></i>
+										</span>
+										</div>
+                                    {/if}
+								</div>
+
 
 								{*settings*}
 								{assign "label_lg" "3"}

@@ -71,8 +71,8 @@
 										<i class="icon-checkbox-unchecked2 mr-2"></i>
 									{else}
 										{if $uitzender->complete == 0}
-											{if $uitzender->bedrijfsgegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
-											{if $uitzender->bedrijfsgegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
+											{if $uitzender->contactpersoon_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+											{if $uitzender->contactpersoon_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
 										{else}
 											{* standaard icon *}
 											<i class="icon-address-book3 mr-2"></i>
@@ -160,8 +160,8 @@
 									<i class="icon-checkbox-unchecked2 mr-2"></i>
 								{else}
 									{if $uitzender->complete == 0}
-									{if $uitzender->bedrijfsgegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
-										{if $uitzender->bedrijfsgegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
+									{if $uitzender->emailadressen_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+										{if $uitzender->emailadressen_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
 									{else}
 										{* standaard icon *}
 										<i class="icon-cog mr-2"></i>
@@ -179,8 +179,8 @@
 									<i class="icon-checkbox-unchecked2 mr-2"></i>
 								{else}
 									{if $uitzender->complete == 0}
-										{if $uitzender->bedrijfsgegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
-										{if $uitzender->bedrijfsgegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
+										{if $uitzender->factuurgegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+										{if $uitzender->factuurgegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
 									{else}
 										{* standaard icon *}
 										<i class="icon-cog mr-2"></i>

@@ -49,7 +49,7 @@
 
 </head>
 
-<body class="">
+<body>
 
 <!-- Div wrapper to push page to the left -->
 <div class="page-wrapper">

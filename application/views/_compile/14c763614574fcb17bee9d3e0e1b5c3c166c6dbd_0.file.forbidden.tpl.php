@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-09 17:10:27
+/* Smarty version 3.1.33, created on 2019-12-12 10:26:27
   from 'C:\xampp\htdocs\app\application\views\forbidden.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5dee71f329b8a4_14780961',
+  'unifunc' => 'content_5df207c3d80199_54559579',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '14c763614574fcb17bee9d3e0e1b5c3c166c6dbd' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\forbidden.tpl',
-      1 => 1562149120,
+      1 => 1576142786,
       2 => 'file',
     ),
   ),
@@ -22,9 +22,12 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:_page/js.tpl' => 1,
     'file:_page/header.tpl' => 1,
     'file:_menu/werkgever.tpl' => 1,
+    'file:_menu/uitzender.tpl' => 1,
+    'file:_menu/inlener.tpl' => 1,
+    'file:_menu/werknemer.tpl' => 1,
   ),
 ),false)) {
-function content_5dee71f329b8a4_14780961 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5df207c3d80199_54559579 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, false);
 ?>
@@ -36,7 +39,7 @@ $_smarty_tpl->inheritance->init($_smarty_tpl, false);
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title><?php echo $_smarty_tpl->tpl_vars['app_name']->value;?>
  - <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19272080505dee71f3288011_80070125', 'title');
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_4524450145df207c3d51396_82053397', 'title');
 ?>
 </title>
 
@@ -92,7 +95,7 @@ $_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19272080505dee71f3
 
 </head>
 
-<body class="navbar-md-md-top">
+<body class="">
 
 <!-- Multiple fixed navbars wrapper -->
 <div class="fixed-top">
@@ -103,8 +106,20 @@ $_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19272080505dee71f3
 	<!-- /main navbar -->
 
 	<!-- Secondary navbar -->
-	<?php $_smarty_tpl->_subTemplateRender('file:_menu/werkgever.tpl', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
-?>
+    <?php if (!isset($_smarty_tpl->tpl_vars['hide_menu']->value)) {?>
+        <?php if ($_SESSION['logindata']['user_type'] == 'werkgever') {
+$_smarty_tpl->_subTemplateRender('file:_menu/werkgever.tpl', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
+}?>
+        <?php if ($_SESSION['logindata']['user_type'] == 'uitzender') {
+$_smarty_tpl->_subTemplateRender('file:_menu/uitzender.tpl', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
+}?>
+        <?php if ($_SESSION['logindata']['user_type'] == 'inlener') {
+$_smarty_tpl->_subTemplateRender('file:_menu/inlener.tpl', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
+}?>
+        <?php if ($_SESSION['logindata']['user_type'] == 'werknemer') {
+$_smarty_tpl->_subTemplateRender('file:_menu/werknemer.tpl', $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
+}?>
+    <?php }?>
 	<!-- /secondary navbar -->
 
 </div>
@@ -138,12 +153,12 @@ $_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19272080505dee71f3
 </html>
 <?php }
 /* {block 'title'} */
-class Block_19272080505dee71f3288011_80070125 extends Smarty_Internal_Block
+class Block_4524450145df207c3d51396_82053397 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_19272080505dee71f3288011_80070125',
+    0 => 'Block_4524450145df207c3d51396_82053397',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {

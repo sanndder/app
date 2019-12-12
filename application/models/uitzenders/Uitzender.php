@@ -39,6 +39,7 @@ class Uitzender extends Connector
 	public $contactpersoon_complete = NULL;
 	public $factuurgegevens_complete = NULL;
 	public $bedrijfsgegevens_complete = NULL;
+	public $aanmeld_ip = NULL;
 
 	public $next = array();
 	public $prev = array();
@@ -110,6 +111,7 @@ class Uitzender extends Connector
 		$this->factuurgegevens_complete = $this->_status['factuurgegevens_complete'];
 		$this->contactpersoon_complete = $this->_status['contactpersoon_complete'];
 		$this->emailadressen_complete = $this->_status['emailadressen_complete'];
+		$this->aanmeld_ip = $this->_status['ip'];
 
 		//set public vars
 		$this->bedrijfsnaam = $this->_status['bedrijfsnaam'];
@@ -310,23 +312,38 @@ class Uitzender extends Connector
 	public function _new()
 	{
 		$insert['complete'] = 0;
+		$insert['ip'] = $_SERVER['REMOTE_ADDR'];
 		$this->db_user->insert('uitzenders_status', $insert);
 
 		if ($this->db_user->insert_id() > 0)
 		{
 			$this->uitzender_id = $this->db_user->insert_id();
+			$this->_setCookie();
+			
 			return true;
 		}
 
 		return false;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Cookie aanmaken met uitzender ID
+	 * @return void
+	 */
+	public function _setCookie()
+	{
+		set_cookie('new_uitzender_id', $this->uitzender_id, 60*60*48 );//expire na 48 uur
+	}
+	
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Sla data op na controle
 	 * Oude gegevens worden als verwijderd aangemerkt
 	 * Geeft ingevoerde data terug
-	 * @return array
+	 * @return array|boolean
 	 */
 	public function _set($table = '', $method = '', $where = NULL)
 	{
@@ -377,11 +394,7 @@ class Uitzender extends Connector
 					$input['uitzender_id'] = $this->uitzender_id;
 					$input['user_id'] = $this->user->user_id;
 					$this->db_user->insert($table, $input);
-
-					//update status wanneer nodig
-					if( $this->complete == 0 )
-						$this->_updateStatus($method . '_complete');
-
+					
 				}
 				else
 				{
@@ -389,6 +402,10 @@ class Uitzender extends Connector
 				}
 
 			}
+			
+			//update status wanneer nodig
+			if( $this->complete == 0 )
+				$this->_updateStatus($method . '_complete');
 		}
 		//fouten aanwezig
 		else
@@ -416,9 +433,9 @@ class Uitzender extends Connector
 				$update_status[$property] = 0;// van leeg naar controle
 		}
 		//alleen werkgever mag controle uitvoeren
-		if ($this->$property === 0 && $this->user->user_type == 'werkgever')
+		if ($this->$property == 0 && $this->user->user_type == 'werkgever')
 			$update_status[$property] = 1;//van controle naar compleet
-
+		
 		//alleen uitvoeren wanneer nodig
 		if (isset($update_status))
 		{
@@ -431,7 +448,13 @@ class Uitzender extends Connector
 				$this->factuurgegevens_complete == 1 &&
 				$this->contactpersoon_complete == 1
 			)
+			{
 				$update_status['complete'] = 1;
+				
+				//coockie weghalen, geen fouten accepteren
+				@delete_cookie('new_uitzender_id');
+			}
+			
 
 			//update
 			$this->db_user->where('uitzender_id', $this->uitzender_id);

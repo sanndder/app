@@ -39,7 +39,7 @@
 
 </head>
 
-<body class="navbar-md-md-top">
+<body class="">
 
 <!-- Multiple fixed navbars wrapper -->
 <div class="fixed-top">
@@ -49,7 +49,12 @@
 	<!-- /main navbar -->
 
 	<!-- Secondary navbar -->
-	{include file='_menu/werkgever.tpl'}
+    {if !isset($hide_menu)}
+        {if $smarty.session.logindata.user_type == 'werkgever' }{include file='_menu/werkgever.tpl'}{/if}
+        {if $smarty.session.logindata.user_type == 'uitzender' }{include file='_menu/uitzender.tpl'}{/if}
+        {if $smarty.session.logindata.user_type == 'inlener' }{include file='_menu/inlener.tpl'}{/if}
+        {if $smarty.session.logindata.user_type == 'werknemer' }{include file='_menu/werknemer.tpl'}{/if}
+    {/if}
 	<!-- /secondary navbar -->
 
 </div>

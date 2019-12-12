@@ -1,4 +1,8 @@
 <?php
+
+use models\forms\Formbuilder;
+use models\uitzenders\Uitzender;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -16,8 +20,7 @@ class Ajax extends MY_Controller
 		parent::__construct();
 
 		//Deze pagina mag alleen bezocht worden door werkgever
-		if( $this->user->user_type != 'werkgever' )forbidden();
-
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'external' )forbidden();
 
 	}
 
@@ -27,7 +30,7 @@ class Ajax extends MY_Controller
 	public function getcontactpersoon( $uitzender_id = NULL, $contact_id = 0 )
 	{
 		//init uitzender object
-		$uitzender = new \models\uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		//allemaal ophalen
 		$contactpersoon = $uitzender->contactpersoon($contact_id);
@@ -57,12 +60,12 @@ class Ajax extends MY_Controller
 	public function setcontactpersoon( $uitzender_id = NULL, $contact_id = 0 )
 	{
 		//init uitzender object
-		$uitzender = new \models\uitzenders\Uitzender( $uitzender_id );
+		$uitzender = new Uitzender( $uitzender_id );
 
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
-		$contactpersoon = $uitzender->setContactpersoon( $contact_id );
+		$uitzender->setContactpersoon( $contact_id );
 		$errors = $uitzender->errors();
 
 		//init response

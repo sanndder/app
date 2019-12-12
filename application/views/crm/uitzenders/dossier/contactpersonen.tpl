@@ -30,7 +30,6 @@
 				<div class="col-md-10">
 
 
-
 					<!-- Basic card -->
 					<div class="card">
 
@@ -55,6 +54,14 @@
 					</div>
 				</div>
 			</div>
+
+			{if $contactpersonen == NULL}
+
+				<div class="">
+					<img style="width: 75px; margin-left: 50px; margin-top: -30px;" src="recources/img/arrow.png" />
+					<span style="display:inline-block; font-size: 16px; margin-left: 15px; margin-top: 30px;">Voeg een contactpersoon toe om uw inschrijving af te ronden</span>
+				</div>
+			{/if}
 
 
 			{foreach $contactpersonen as $contact}

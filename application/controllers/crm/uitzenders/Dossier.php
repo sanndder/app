@@ -23,7 +23,7 @@ class Dossier extends MY_Controller
 		parent::__construct();
 
 		//Deze pagina mag alleen bezocht worden door werkgever
-		if( $this->user->user_type != 'werkgever' )forbidden();
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'external' )forbidden();
 
 		//method naar smarty
 		$this->smarty->assign('method', $this->router->method);
@@ -31,6 +31,42 @@ class Dossier extends MY_Controller
 		//log visit
 		$log = new VisitsLogger();
 		$log->logCRMVisit( 'uitzender', $this->uri->segment(5) );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Dossier beveiligen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function checkaccess( Uitzender $uitzender )
+	{
+		//niet checken bij nieuwe aanmelding
+		if( $uitzender->uitzender_id != 0 )
+		{
+			//wanneer uitzender compleet is, dan mag er nooit extern benaderd worden
+			if( $uitzender->complete == 1 && $this->user->user_type == 'external' )
+				forbidden();
+			//externe users mogen alleen hun eigen aangemaakt uitzender bekijken
+			if( $uitzender->aanmeld_ip !== $_SERVER['REMOTE_ADDR'] && $this->user->user_type == 'external' )
+				forbidden();
+		}
+		//check for redirect bij terugkeren aanmelding
+		else
+		{
+			//wanneer er een eerdere aanmelding is dan aanroepen overzicht pagina, deze zet weer door naar de juiste pagina
+			if( get_cookie( 'new_uitzender_id' ) !== NULL )
+				$this->overzicht( get_cookie( 'new_uitzender_id' ) );
+		}
+
+		//redirect naar bedankt voor aangemelding
+		if( $this->user->user_type == 'external' && $uitzender->bedrijfsgegevens_complete == 0 && $uitzender->emailadressen_complete == 0 && $uitzender->factuurgegevens_complete == 0 && $uitzender->contactpersoon_complete == 0 )
+			redirect( $this->config->item( 'base_url' ) . 'crm/uitzenders/dossier/bedankt' ,'location' );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Bedankt voor aanmelding
+	//-----------------------------------------------------------------------------------------------------------------
+	public function bedankt()
+	{
+		$this->smarty->display('crm/uitzenders/dossier/bedankt.tpl');
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -59,18 +95,18 @@ class Dossier extends MY_Controller
 	}
 
 
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// Algemene instellingen
 	//-----------------------------------------------------------------------------------------------------------------
 	public function algemeneinstellingen( $uitzender_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
-
+		$this->checkaccess($uitzender);
+		
 		//del logo
 		if( isset($_GET['dellogo']) )
 		{
@@ -128,6 +164,7 @@ class Dossier extends MY_Controller
 
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set']) )
@@ -170,10 +207,11 @@ class Dossier extends MY_Controller
 	public function factuurgegevens( $uitzender_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set'] ))
@@ -221,6 +259,7 @@ class Dossier extends MY_Controller
 
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
 
 		//set bedrijfsgegevens
 		if( isset($_POST['set'] ))
@@ -265,6 +304,7 @@ class Dossier extends MY_Controller
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
 
 		$contactpersonen = $uitzender->contactpersonen();
 		$this->smarty->assign('contactpersonen', $contactpersonen);
@@ -281,6 +321,7 @@ class Dossier extends MY_Controller
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/documenten.tpl');
@@ -294,6 +335,7 @@ class Dossier extends MY_Controller
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess( $uitzender );
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/notities.tpl');
@@ -307,6 +349,7 @@ class Dossier extends MY_Controller
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/facturen.tpl');
@@ -320,6 +363,7 @@ class Dossier extends MY_Controller
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
 		
 		//inleners voor deze uitzender
 		$inlenergroup = new InlenerGroup();
@@ -338,6 +382,7 @@ class Dossier extends MY_Controller
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
 		
 		$werknemergroup = new WerknemerGroup();
 		$werknemers = $werknemergroup->all( array('uitzender_id' => $uitzender_id) );

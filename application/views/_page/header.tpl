@@ -11,6 +11,7 @@
 
 	<div class="collapse navbar-collapse" id="navbar-mobile">
 
+		{if isset($user_name)}
 		<ul class="navbar-nav ml-auto">
 
 			<li class="nav-item dropdown dropdown-user">
@@ -26,6 +27,8 @@
 			</li>
 
 		</ul>
+		{/if}
+
 	</div>
 
 </div>
