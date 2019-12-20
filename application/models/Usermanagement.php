@@ -4,7 +4,7 @@ namespace models;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-
+//TODO:Samenvoegen met user class
 /*
  * Usermanagement class
  *
@@ -79,25 +79,34 @@ class Usermanagement {
 	public function _passwordIsValid( $password )
 	{
 		$valid = true;
-
+		
 		if( strlen($password) < 6 )
 		{
-			$this->_error[] = 'Het door u gekozen wachtwoord is te kort, het wachtwoord moet minstens uit 6 tekens bestaand';
+			$this->_error[] = 'Het door u gekozen wachtwoord is te kort.';
 			$valid = false;
 		}
-
+		
 		if( strlen($password) > 50 )
 		{
-			$this->_error[] = 'Het door u gekozen wachtwoord is te lang, het wachtwoord mag maximaal uit 50 tekens bestaand';
+			$this->_error[] = 'Het door u gekozen wachtwoord is te lang';
+			$valid = false;
+		}
+		
+		if ( !preg_match('/[a-zA-Z]/', $password) || !preg_match('/\d/', $password) || !preg_match('/[^a-zA-Z\d]/', $password) )
+		{
+			//$this->_error[] = 'Het wachtwoord moet minstens één letter, één getal en één speciaal teken bevatten';
+			$this->_error[] = 'Wachtwoord voldoet niet aan de voorwaarden';
 			$valid = false;
 		}
 
+		
 		if( strpos($password, ' ') !== false )
 		{
 			$this->_error[] = 'Het door u gekozen wachtwoord mag geen spaties bevatten';
 			$valid = false;
 		}
-
+		
+		
 		return $valid;
 	}
 

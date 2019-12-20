@@ -98,21 +98,34 @@
 									</div>
 
 									<div class="col-md-1 text-right">
-										<button data-title="Contact persoon wijzigen" data-id="{$contact.contact_id}" type="button" class="btn btn-outline-info btn-icon rounded-round ml-1" onclick="modalContact(this, 'uitzender', {$uitzender->uitzender_id})" data-popup="tooltip" data-placement="top">
-											<em class="icon-pencil mr-sm"></em>
-										</button>
+										<form method="post" action="">
+											<button data-title="Contact persoon wijzigen" data-id="{$contact.contact_id}" type="button" class="btn btn-outline-info btn-icon rounded-round ml-1" onclick="modalContact(this, 'uitzender', {$uitzender->uitzender_id})" data-popup="tooltip" data-placement="top">
+												<em class="icon-pencil mr-sm"></em>
+											</button>
+											<button data-title="Contactpersoon verwijderen?" data-id="{$contact.contact_id}" name="del" type="button" class="sweet-confirm btn btn-outline-danger btn-icon rounded-round ml-1" data-popup="tooltip" data-placement="top" data-original-title="Verwijderen">
+												<em class="icon-cross mr-sm"></em>
+											</button>
+										</form>
 									</div>
 
 								</div><!-- /row -->
 
 							</div>
 						</div>
-					</div>
-					<!-- /col -->
-				</div>
-				<!-- /row -->
+
+					</div><!-- /col -->
+				</div><!-- /row -->
 
 			{/foreach}
+			<div class="row">
+				<div class="col-md-12">
+					<form method="post" action="">
+						<button type="submit" name="set" value="{key($contactpersonen)}" class="btn btn-success">
+							<i class="icon-check mr-1"></i>Contactpersoon goedkeuren
+						</button>
+					</form>
+				</div><!-- /col -->
+			</div><!-- /row -->
 
 
 		</div><!-- /content area -->

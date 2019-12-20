@@ -34,6 +34,7 @@ class DocumentAlgemeneVoorwaarden extends Document implements DocumentInterface 
 		$config['margin_bottom'] = 15;
 		
 		$config['format'] = 'P';
+		$config['titel'] = 'Algemene voorwaarden';
 		//$param['default_font'] = 'arial';
 		
 		//start mPDF library

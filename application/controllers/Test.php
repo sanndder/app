@@ -111,7 +111,6 @@ class Test extends MY_Controller {
 	{
 		$email = new Email();
 		
-		
 		//$email->test();
 		$email->debug();
 		$email->setSubject('Testmail');

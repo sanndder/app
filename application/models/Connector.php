@@ -18,6 +18,7 @@ class Connector
 {
 	protected $db_user = NULL;
 	protected $user = NULL;
+	protected $werkgever = NULL;
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,6 +47,7 @@ class Connector
 
 		//copy user
 		$this->user = $CI->user;
+		$this->werkgever = $CI->werkgever;
 
 		$config['hostname'] = 'localhost';
 		$config['username'] = $CI->config->item('db_user');

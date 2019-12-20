@@ -38,6 +38,7 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function checkaccess( Uitzender $uitzender )
 	{
+
 		//niet checken bij nieuwe aanmelding
 		if( $uitzender->uitzender_id != 0 )
 		{
@@ -57,7 +58,7 @@ class Dossier extends MY_Controller
 		}
 
 		//redirect naar bedankt voor aangemelding
-		if( $this->user->user_type == 'external' && $uitzender->bedrijfsgegevens_complete == 0 && $uitzender->emailadressen_complete == 0 && $uitzender->factuurgegevens_complete == 0 && $uitzender->contactpersoon_complete == 0 )
+		if( $this->user->user_type == 'external' && $uitzender->bedrijfsgegevens_complete === 0 && $uitzender->emailadressen_complete === 0 && $uitzender->factuurgegevens_complete === 0 && $uitzender->contactpersoon_complete === 0 )
 			redirect( $this->config->item( 'base_url' ) . 'crm/uitzenders/dossier/bedankt' ,'location' );
 	}
 	
@@ -305,7 +306,25 @@ class Dossier extends MY_Controller
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
 		$this->checkaccess($uitzender);
-
+		
+		//verwijderen
+		if( isset($_POST['del']))
+		{
+			//welk id is geklikt
+			if( $uitzender->delContactpersoon( $_POST['del'] ) === true )
+				$this->smarty->assign('msg', msg('success', 'Contactpersoon verwijderd'));
+			else
+				$this->smarty->assign('msg', msg('warning', 'Contactpersoon kon niet worden verwijderd'));
+		}
+		
+		//contactpersoon goedkeuren
+		if( isset($_POST['set']) )
+		{
+			$uitzender->approveContactpersoon( $_POST['set'] );
+			redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/users/add?id='.$uitzender_id.'&user_type=uitzender' ,'location' );
+		}
+		
+		
 		$contactpersonen = $uitzender->contactpersonen();
 		$this->smarty->assign('contactpersonen', $contactpersonen);
 

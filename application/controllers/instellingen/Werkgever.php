@@ -8,8 +8,8 @@ use models\forms\Formbuilder;
 use models\instellingen\Minimumloon;
 use models\instellingen\Feestdagen;
 use models\verloning\Urentypes;
-use models\Verloning\Vergoeding;
-use models\Verloning\VergoedingGroup;
+use models\verloning\Vergoeding;
+use models\verloning\VergoedingGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 

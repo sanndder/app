@@ -58,6 +58,20 @@
 			</li>
 
 			<li class="nav-item">
+				<a href="proforma" class="navbar-nav-link">
+					<i class="icon-calculator2 mr-2"></i>
+					Proforma
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a href="emailcentrum" class="navbar-nav-link">
+					<i class="icon-envelop3 mr-2"></i>
+					Emailcentrum
+				</a>
+			</li>
+
+			<li class="nav-item">
 				<a href="instellingen/werkgever" class="navbar-nav-link">
 					<i class="icon-cog mr-2"></i>
 					Instellingen

@@ -3,6 +3,7 @@
 namespace models\users;
 
 use models\Connector;
+use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -15,12 +16,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  */
 class UserGroup extends Connector {
 
-	/*
-	 * set columns for SELECT query
-	 * @var array
-	 */
-	private $_cols = 'user_id, username, user_type, admin, naam, email, email_confirmed, timestamp';
-	
 	/**
 	 * admin database
 	 * @var object
@@ -44,23 +39,39 @@ class UserGroup extends Connector {
 		
 		//user class needs acces to admin database
 		$CI =& get_instance();
-		//show($CI);
 		$this->db_admin = $CI->auth->db_admin;
 		
 	}
 
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * aanpassen welke columns er opgehaald moeten worden, standaard alles
-	 * param is door komma gescheiden lijst
-	 * @return void
+	 * lijst met users
+	 *
 	 */
-	public function setColumns( $cols = NULL )
+	static function list( $ids = array() )
 	{
-		if( $cols != NULL )
-			$this->_cols = $cols;
+		$list[NULL] = 'onbekend';
+		$list[0] = 'systeem';
+		
+		if( count($ids) == 0 )
+			return $list;
+		
+		$CI =& get_instance();
+		$db_admin = $CI->auth->db_admin;
+		
+		$sql = "SELECT user_id, naam FROM users WHERE user_id IN (".implode(',',$ids).")";
+		$query = $db_admin->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return $list;
+		
+		foreach( $query->result_array() as $row )
+			$list[$row['user_id']] = $row['naam'];
+		
+		return $list;
 	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -72,10 +83,8 @@ class UserGroup extends Connector {
 		$data = array();
 		
 		//start query
-		$sql = "SELECT $this->_cols 
-				FROM users
-				WHERE users.deleted = 0
-					AND users.werkgever_id = ".$this->user->werkgever_id." ";
+		$sql = "SELECT user_id, username, user_type, admin, naam, email, email_confirmed, timestamp, password, new_key_expires
+				FROM users	WHERE users.deleted = 0	AND users.werkgever_id = ".$this->user->werkgever_id." ";
 
 		//order
 		$sql .= " ORDER BY users.username";
@@ -88,8 +97,7 @@ class UserGroup extends Connector {
 		foreach ($query->result_array() as $row)
 		{
 			//nooit wachtwoord meenemen
-			unset($row['password']);
-			
+			if( $row['password'] !== NULL ) $row['password'] = 1;
 			$data[$row['user_id']] = $row;
 		}
 

@@ -76,8 +76,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -94,8 +92,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -130,8 +126,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -152,8 +146,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -170,8 +162,6 @@
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -188,8 +178,6 @@
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -206,8 +194,6 @@
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -224,8 +210,6 @@
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -247,8 +231,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -265,8 +247,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>
@@ -283,8 +263,6 @@
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
 													<br/>
 												{/foreach}</span>{/if}
 											</div>

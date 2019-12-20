@@ -182,6 +182,7 @@ class Uitzender extends Connector
 		$data = DBhelper::toArray( $query, 'contact_id', 'NULL' );
 		return $data;
 	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -552,6 +553,32 @@ class Uitzender extends Connector
 
 		return $input;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * del contactpersoon
+	 */
+	public function delContactpersoon( $id )
+	{
+		$sql = "UPDATE uitzenders_contactpersonen SET deleted = 1, deleted_on = NOW(), deleted_by = ".$this->user->user_id." WHERE deleted = 0 AND contact_id = $id";
+		$this->db_user->query($sql);
+		
+		if ($this->db_user->affected_rows() > 0 )
+			return true;
+		
+		return false;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * contactpersoon goedkeuren en aanmeldprocess afsluiten
+	 */
+	public function approveContactpersoon( $id )
+	{
+		$this->setContactpersoon( $id );
+	}
+
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

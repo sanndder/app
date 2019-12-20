@@ -44,7 +44,7 @@ class User_model extends MY_Model
 
 			$this->smarty->assign( 'user_name' , $this->user_name );
 		}
-		if( isset($logindata['user_type']) && isset($logindata['werkgever_id']))
+		elseif( isset($logindata['user_type']) && isset($logindata['werkgever_id']))
 		{
 			$this->user_type = $logindata['user_type'];
 			$this->werkgever_id = $logindata['werkgever_id'];

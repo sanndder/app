@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-04 15:36:27
+/* Smarty version 3.1.33, created on 2019-12-18 15:02:59
   from 'C:\xampp\htdocs\app\application\views\_menu\werkgever.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de7c46b069748_69071788',
+  'unifunc' => 'content_5dfa31933a2201_32036527',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '1a788fe132520766272accef9c891213bc47da8a' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\_menu\\werkgever.tpl',
-      1 => 1575450421,
+      1 => 1576677777,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de7c46b069748_69071788 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5dfa31933a2201_32036527 (Smarty_Internal_Template $_smarty_tpl) {
 ?><div class="navbar navbar-expand-lg navbar-light navbar-sticky">
 	<!-- hidden buttons for mobile view -->
 	<div class="text-left d-lg-none">
@@ -77,6 +77,20 @@ function content_5de7c46b069748_69071788 (Smarty_Internal_Template $_smarty_tpl)
 				<a href="ureninvoer" class="navbar-nav-link">
 					<i class="mi-timer mr-2" style="font-weight: bold"></i>
 					Ureninvoer
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a href="proforma" class="navbar-nav-link">
+					<i class="icon-calculator2 mr-2"></i>
+					Proforma
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a href="emailcentrum" class="navbar-nav-link">
+					<i class="icon-envelop3 mr-2"></i>
+					Emailcentrum
 				</a>
 			</li>
 

@@ -3,7 +3,7 @@
 namespace models\pdf;
 
 use models\file\Pdf;
-use Mpdf\mpdf;
+use Mpdf\Mpdf;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -69,9 +69,9 @@ class PdfBuilder{
         'collapseBlockMargins' => false,*/
 
 		//init mpdf object
-		$this->mpdf = new mpdf( $config );
+		$this->mpdf = new Mpdf( $config );
 
-		$this->mpdf->SetTitle($config['titel']);
+		$this->mpdf->SetTitle( $config['titel'] );
 		$this->mpdf->SetAuthor('Devis Online');
 		$this->mpdf->SetDisplayMode('fullpage');
 		//$this->mpdf->SetProtection ( array('print','print-highres','assemble','extract','copy') );

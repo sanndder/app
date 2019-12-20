@@ -27,7 +27,7 @@ class MY_Controller extends CI_Controller
 		$logout = false; if( isset($_GET['logout']) )$logout = true;
 		
 		//controllers die benaderd mogen worden zonder login
-		$no_login = array('aanmelden', 'crm');
+		$no_login = array('aanmelden', 'crm', 'usermanagement');
 		
 		//validate user, wanneer ingelogd daan nooit no access
 		if( !in_array($this->uri->segment(1),$no_login) || isset($_SESSION['logindata']['main']) )
@@ -71,6 +71,10 @@ class EX_Controller extends CI_Controller
 	{
 		//call parent constructor
 		parent::__construct();
+		
+		//uitloggen
+		if( isset($_GET['logout']) )
+			$this->auth->check( true );
 
 		//set EXTERNAL constant to true
 		defined('EXTERNAL_CONN') OR define('EXTERNAL_CONN', true);

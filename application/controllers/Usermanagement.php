@@ -1,11 +1,14 @@
 <?php
+
+use models\users\User;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Account en userbeheer
  */
 
-class Welkom extends MY_Controller {
+class Usermanagement extends MY_Controller {
 
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -14,25 +17,35 @@ class Welkom extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		
-		$this->smarty->assign( 'av', $this->werkgever->AVhtml() );
-		$this->smarty->assign( 'werkgever', $this->werkgever->bedrijfsgegevens() );
 	}
 	
 	
-
 	//-----------------------------------------------------------------------------------------------------------------
-	// uitzender
+	// activate new user
 	//-----------------------------------------------------------------------------------------------------------------
-	public function uitzender()
+	public function newuser()
 	{
-		//geen onterechte redirect
-		if( !$this->uitzender->blockAccess() )
-			redirect( $this->config->item( 'base_url' ) . 'dashboard/uitzender'  ,'location' );
-			
-		$this->smarty->assign( 'uitzender_id', $this->uitzender->uitzender_id );
-		$this->smarty->assign( 'accepted_av', $this->uitzender->acceptedAV() );
-		$this->smarty->display('welkom/uitzender.tpl');
+		if( !isset($_GET['user']) )forbidden();
+		
+		$user = new User();
+		$user->getByNewHash( $_GET['user'] );
+		
+		if( $user->newKeyExpired() )
+		{
+			$this->smarty->assign( 'expired', true );
+			$this->smarty->assign( 'msg', $user->errors() );
+		}
+		
+		//wijzig wachtwoord
+		if( isset($_POST['setpassword'] ))
+		{
+			if( $user->updatePassword( true ) === true )
+				$this->smarty->assign( 'success', true );
+			else
+				$this->smarty->assign('msg', msg('warning', $user->errors() ));
+		}
+		
+		$this->smarty->display('usermanagement/newuser.tpl');
 	}
 
 }

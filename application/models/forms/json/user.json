@@ -4,6 +4,7 @@
     "password",
     "user_type",
     "user_id",
+    "id",
     "new_key",
     "reset_key",
     "timestamp",
@@ -20,6 +21,19 @@
         "maxlength": 200,
         "removespaces": true,
         "type" : "email"
+      }
+    },
+    "admin": {
+      "label": "Admin rechten",
+      "rules": {
+        "required": false
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
       }
     },
     "naam": {

@@ -59,14 +59,14 @@
 						{if isset($msg)}{$msg}{/if}
 
 						<div class="form-group form-group-feedback form-group-feedback-left">
-							<input name="username" type="text" class="form-control" placeholder="Username">
+							<input name="username" type="text" class="form-control" placeholder="Emailadres">
 							<div class="form-control-feedback">
 								<i class="icon-user text-muted"></i>
 							</div>
 						</div>
 
 						<div class="form-group form-group-feedback form-group-feedback-left">
-							<input name="password" type="password" class="form-control" placeholder="Password">
+							<input name="password" type="password" class="form-control" placeholder="Wachtwoord">
 							<div class="form-control-feedback">
 								<i class="icon-lock2 text-muted"></i>
 							</div>

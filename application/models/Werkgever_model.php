@@ -23,6 +23,18 @@ class Werkgever_model extends MY_Model
 	private $_entiteit_id = NULL;
 	
 	/*
+	 * @var string
+	 * WID externe links
+	 */
+	private $_wid = NULL;
+	
+	/*
+	 * @var string
+	 * hash voro externe links
+	 */
+	private $_hash = NULL;
+	
+	/*
 	 * @var array
 	 * entiteiteb
 	 */
@@ -122,6 +134,52 @@ class Werkgever_model extends MY_Model
 		return $data;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * werkgever ID voor externe links
+	 *
+	 */
+	public function wid()
+	{
+		if( $this->_wid == NULL )
+			$this->_getWIDandHash();
+		
+		return  $this->_wid;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * werkgever hash voor externe links
+	 *
+	 */
+	public function hash()
+	{
+		if( $this->_hash == NULL )
+			$this->_getWIDandHash();
+		
+		return  $this->_hash;
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * WID en hash ophalen
+	 *
+	 */
+	private function _getWIDandHash()
+	{
+		$sql = "SELECT wid, wg_hash FROM werkgevers WHERE werkgever_id = ".$this->user->werkgever_id." LIMIT 1";
+		$query = $this->db_admin->query( $sql );
+		
+		if( $query->num_rows() > 0 )
+		{
+			$data = $query->row_array();
+			$this->_wid = $data['wid'];
+			$this->_hash = $data['wg_hash'];
+		}
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -375,6 +433,17 @@ class Werkgever_model extends MY_Model
 		//die();
 		
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 *  get bedrijfsnaam
+	 */
+	public function bedrijfsnaam()
+	{
+		$bedrijfsgegevens = $this->bedrijfsgegevens();
+		return $bedrijfsgegevens['bedrijfsnaam'];
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

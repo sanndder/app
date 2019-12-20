@@ -4,8 +4,8 @@ namespace models\email;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+use models\Connector;
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 /*
  * Email class
@@ -14,12 +14,23 @@ use PHPMailer\PHPMailer\Exception;
  * Wrapper voor PHPMailer
  *
  */
-class Email{
-
+class Email extends Connector {
+	
+	/*
+	 * @var int
+	 */
+	private $_email_id = NULL;
+	
 	/*
 	 * @var string
 	 */
 	private $_subject = NULL;
+	
+	/*
+	 * default from
+	 */
+	private $_from_name = 'Abering Uitzenden';
+	private $_from_email = 'info@aberinghr.nl';
 
 	/*
 	 * @var int
@@ -53,10 +64,24 @@ class Email{
 	 * @var int
 	 */
 	private $_debug_level = 0;
+	
 	/**
 	 * @var string
 	 */
 	private $_titel;
+	
+	/**
+	 * @var array
+	 */
+	private $_to = array();
+	private $_cc = array();
+	private $_bcc = array();
+	
+	/**
+	 * vertraging in minuten
+	 * @var int
+	 */
+	private $_delay = 0;
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -64,10 +89,13 @@ class Email{
 	 *
 	 *
 	 * @param email ID
-	 * @return $this
+	 * @return void
 	 */
-	public function __construct( $email_id = '' )
+	public function __construct( $email_id = NULL )
 	{
+		//call parent constructor for connecting to database
+		parent::__construct();
+		
 		//op dev server altijd debug
 		if( ENVIRONMENT == 'development' )
 			$this->_debug = true;
@@ -81,12 +109,22 @@ class Email{
 		//default niet html
 		$this->_mail->IsHTML(false);
 
-		//return object
-		return $this;
 	}
-
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set ID
+	 *
+	 * @return void
+	 */
+	private function _setID( $id )
+	{
+		$this->_email_id = intval( $id );
+	}
+	
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Titel instellen
@@ -134,6 +172,18 @@ class Email{
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * nieuwe ontvanger
+	 *
+	 * @return void
+	 */
+	public function to( $to )
+	{
+		$this->_to[] = $to;
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * Maakt een html mail van de email en gebruikt een template
 	 *
 	 * @return void
@@ -164,9 +214,147 @@ class Email{
 		}
 		
 		
-		echo $this->_body;
+		//echo $this->_body;
 	}
 
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * hoe lang wachten
+	 *
+	 * @return void
+	 */
+	public function delay( $delay )
+	{
+		$this->_delay = intval( $delay );
+	}
+
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * deze functie verzend de email nog niet, maar slaat op in de database
+	 *
+	 * @return boolean
+	 */
+	public function send()
+	{
+		$date = new \DateTime();
+		$date->add(new \DateInterval('PT' . $this->_delay . 'M'));
+		
+		$insert['subject'] = $this->_subject;
+		$insert['body'] = $this->_body;
+		$insert['from_name'] = $this->_from_name;
+		$insert['from_email'] = $this->_from_email;
+		$insert['send'] = 0;
+		$insert['send_by'] = 0;
+		$insert['send_on'] = $date->format('Y-m-d H:i:s');
+		$insert['created_by'] = $this->user->user_id;
+		
+		$this->db_user->insert( 'emails', $insert );
+		
+		if( $this->db_user->insert_id() > 0 )
+		{
+			$this->_setID($this->db_user->insert_id() );
+			
+			//ontvangers erbij
+			foreach( $this->_to as $recipient )
+			{
+				$insert_to['email_id'] = $this->_email_id;
+				$insert_to['type'] = 'to';
+				$insert_to['name'] = $recipient['name'];
+				$insert_to['email'] = $recipient['email'];
+				
+				$this->db_user->insert( 'emails_recipients', $insert_to );
+			}
+			
+			$this->_log( 'email aangemaakt' );
+		}
+		
+		//ook gelijk verzenden?
+		if($this->_delay == 0 )
+			$this->_sendEmail();
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * logfunctie voor emails
+	 *
+	 * @return boolean
+	 */
+	private function _log( $actie )
+	{
+		$insert['email_id'] = $this->_email_id;
+		$insert['action'] = $actie;
+		$insert['user_id'] = $this->user->user_id;
+		
+		$this->db_user->insert( 'emails_log', $insert );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Verzenden
+	 *
+	 * @return boolean
+	 */
+	public function _sendEmail()
+	{
+		$this->_mail->IsSMTP(); // enable SMTP
+		$this->_mail->SMTPDebug = $this->_debug_level; // debugging: 1 = errors and messages, 2 = messages only
+		$this->_mail->CharSet = 'UTF-8';
+		
+		
+		$this->_mail->Subject = $this->_subject;
+		
+		$this->_mail->Body = $this->_body;
+		
+		foreach( $this->_to as $to )
+			$this->_mail->AddAddress( $to['email'] );
+		
+		if( ENVIRONMENT == 'development' )
+		{
+			$this->_mail->SMTPAuth = true; // authentication enabled
+			$this->_mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for Gmail
+			$this->_mail->Host = "smtp.gmail.com";
+			$this->_mail->Port = 465; // or 587
+			$this->_mail->SetFrom( "sander.m.app1@gmail.com" );
+			
+			$this->_mail->Username = "sander.m.app1@gmail.com";
+			$this->_mail->Password = "Yutmoza86!";
+	
+		}
+		if( ENVIRONMENT == 'production' )
+		{
+			$this->_mail->SMTPAuth = false; // authentication enabled
+			$this->_mail->SetFrom( "info@aberinghr.nl" );
+			$this->_mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			$this->_mail->Port = 25; // or 587
+		}
+		
+		
+		if( !$this->_mail->Send() )
+		{
+			$this->_error = $this->_mail->ErrorInfo;
+		}
+		else
+		{
+			$update['send'] = 1;
+			$update['send_on'] = date('Y-m-d H:i:s');
+			$update['send_by'] = $this->user->user_id;
+			
+			$this->db_user->where( 'email_id', $this->_email_id );
+			$this->db_user->update( 'emails', $update );
+			
+			$this->_log('Email verzonden');
+		}
+	
+	}
+	
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Testfunctie
@@ -252,13 +440,6 @@ class Email{
 	 */
 	public function debug( $level = 0 )
 	{
-		//connect to admin database
-		$CI =& get_instance();
-		$db_admin = $CI->load->database('admin', TRUE);
-
-		$insert['subject'] = 'test';
-		$db_admin->insert('emails', $insert);
-
 		//set debug
 		$this->_debug = true;
 		$this->_debug_level = $level;
@@ -272,7 +453,7 @@ class Email{
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array|boolean
 	 */
 	public function errors()
 	{

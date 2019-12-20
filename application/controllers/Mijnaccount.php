@@ -1,4 +1,7 @@
 <?php
+
+use models\forms\Formbuilder;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -24,7 +27,7 @@ class Mijnaccount extends MY_Controller {
 	public function index()
 	{
 		//load form builder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		$usermanagement = new models\Usermanagement();
 		$usermanagement->setUserId( $this->user->user_id );
@@ -63,7 +66,6 @@ class Mijnaccount extends MY_Controller {
 		$formdata = $formbuidler->table( 'user' )->data( $user )->errors( $errors )->build();
 
 		$this->smarty->assign('formdata', $formdata);
-
 		$this->smarty->display('mijnaccount/overzicht.tpl');
 	}
 

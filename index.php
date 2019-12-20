@@ -54,6 +54,9 @@
  * NOTE: If you change these, also change the error_reporting() code below
  */
 
+//goede timezone
+date_default_timezone_set('Europe/Amsterdam');
+
 //alleen lokaal op development
 if( $_SERVER['HTTP_HOST'] != '192.168.1.2' && $_SERVER['HTTP_HOST'] != '127.0.0.1' && $_SERVER['HTTP_HOST'] != '82.74.122.107')
 	define('ENVIRONMENT', 'production');

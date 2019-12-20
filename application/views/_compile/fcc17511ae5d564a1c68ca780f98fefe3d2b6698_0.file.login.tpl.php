@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-05 09:03:39
+/* Smarty version 3.1.33, created on 2019-12-17 15:18:44
   from 'C:\xampp\htdocs\app\application\views\login.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de8b9dbd21959_85205088',
+  'unifunc' => 'content_5df8e3c4480ed3_48280565',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'fcc17511ae5d564a1c68ca780f98fefe3d2b6698' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\login.tpl',
-      1 => 1575411329,
+      1 => 1576592323,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de8b9dbd21959_85205088 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5df8e3c4480ed3_48280565 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,14 +93,14 @@ echo $_smarty_tpl->tpl_vars['msg']->value;
 }?>
 
 						<div class="form-group form-group-feedback form-group-feedback-left">
-							<input name="username" type="text" class="form-control" placeholder="Username">
+							<input name="username" type="text" class="form-control" placeholder="Emailadres">
 							<div class="form-control-feedback">
 								<i class="icon-user text-muted"></i>
 							</div>
 						</div>
 
 						<div class="form-group form-group-feedback form-group-feedback-left">
-							<input name="password" type="password" class="form-control" placeholder="Password">
+							<input name="password" type="password" class="form-control" placeholder="Wachtwoord">
 							<div class="form-control-feedback">
 								<i class="icon-lock2 text-muted"></i>
 							</div>

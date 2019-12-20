@@ -28,7 +28,7 @@ class Login extends EX_Controller {
 			//try login
 			if( $this->auth->login() )
 			{
-				if( $this->session->ref_url !== NULL )
+				if( $this->session->ref_url !== NULL && strpos( $this->session->ref_url, 'usermanagement' ) === false && strpos($this->session->ref_url, 'login' ) === false )
 					redirect( $this->session->ref_url, 'location' );
 				else
 					redirect( $this->config->item( 'base_url' ) . 'dashboard/werkgever', 'location' );
