@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-09 17:15:09
+/* Smarty version 3.1.33, created on 2019-12-27 12:24:48
   from 'C:\xampp\htdocs\app\application\views\_menu\uitzender.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5dee730db75cc1_36218623',
+  'unifunc' => 'content_5e05ea00946c18_38248970',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '6875c8ee2efaba09033f2950665db81464878bd2' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\_menu\\uitzender.tpl',
-      1 => 1575908085,
+      1 => 1576847531,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5dee730db75cc1_36218623 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e05ea00946c18_38248970 (Smarty_Internal_Template $_smarty_tpl) {
 ?><div class="navbar navbar-expand-lg navbar-light navbar-sticky">
 	<!-- hidden buttons for mobile view -->
 	<div class="text-left d-lg-none">
@@ -82,14 +82,6 @@ function content_5dee730db75cc1_36218623 (Smarty_Internal_Template $_smarty_tpl)
 					<i class="icon-cog mr-2"></i>
 					Instellingen
 				</a>
-			</li>
-		</ul>
-
-		<ul class="navbar-nav ml-md-auto">
-			<li class="nav-item">
-				<span class="navbar-nav-link toggle-right-sidebar">
-					<i class="icon-pencil mr-2"></i>Notitie
-				</span>
 			</li>
 		</ul>
 

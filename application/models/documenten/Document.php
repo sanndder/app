@@ -25,7 +25,10 @@ class Document extends Connector {
 	
 	protected $_html = '';
 	
+	protected $_document_id = '';
 	
+	protected $_data = NULL;
+	protected $_handtekeningen = NULL;
 	
 	protected $pdf = NULL;
 
@@ -35,13 +38,84 @@ class Document extends Connector {
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct( $document_id = NULL )
 	{
 		parent::__construct();
 		
 		//default entiteit
 		$this->setEntiteitID();
+		
+		//haal bestaand document op
+		if( $document_id !== NULL )
+			$this->setDocumentId( $document_id );
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Set document ID
+	 * @return object
+	 */
+	public function setDocumentId( $document_id )
+	{
+		$this->_document_id = intval( $document_id );
+		$this->_load();
+		$this->_loadHandtekeningen();
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Gegevens ophalen
+	 * @return void
+	 */
+	public function _load()
+	{
+		$sql = "SELECT documenten.*
+				FROM documenten
+				WHERE document_id = $this->_document_id
+				LIMIT 1";
+		
+		$query = $this->db_user->query( $sql );
+		$this->_data = DBhelper::toRow( $query );
+		
+		$this->_html = $this->_data['html'];//html los in een var
+		unset($this->_data['html']);//hier weghalen
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Handtekeningen ophalen
+	 * @return void
+	 */
+	public function _loadHandtekeningen()
+	{
+		$sql = "SELECT * FROM documenten_signed WHERE document_id = $this->_document_id";
+		$query = $this->db_user->query( $sql );
+		
+		$this->_handtekeningen = DBhelper::toArray( $query, 'id', 'NULL' );
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get Handetekeningen
+	 * @return object
+	 */
+	public function details()
+	{
+		return $this->_data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get Handetekeningen
+	 * @return object
+	 */
+	public function handtekeningen()
+	{
+		return $this->_handtekeningen;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -159,13 +233,20 @@ class Document extends Connector {
 	 */
 	public function _setUitzenderInfo()
 	{
+		//bedrijfsgegevens
 		$sql = "SELECT uitzenders_bedrijfsgegevens.*
 				FROM uitzenders_bedrijfsgegevens
-				WHERE uitzenders_bedrijfsgegevens.deleted = 0";
+				WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND uitzender_id = $this->_uitzender_id";
 		
 		$query = $this->db_user->query( $sql );
 		
 		$this->_uitzender_info = DBhelper::toRow($query);
+		
+		//contactpersonen
+		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE deleted = 0 AND uitzender_id = $this->_uitzender_id LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		$this->_uitzender_info['contactpersoon'] = DBhelper::toRow($query);
+		
 	}
 	
 	
@@ -192,6 +273,23 @@ class Document extends Connector {
 		return $this;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * te verwachten handetekening toevoegen in datadase
+	 *
+	 * @return void
+	 */
+	public function addEmptySignature( $user_type, $user_id )
+	{
+		if( $this->_document_id === NULL )
+			die('Kan geen lege handtekening toevoegen zonder document ID');
+
+		$insert['document_id'] = $this->_document_id;
+		$insert[ $user_type . '_id' ] = $user_id;
+		
+		$this->db_user->insert( 'documenten_signed', $insert );
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

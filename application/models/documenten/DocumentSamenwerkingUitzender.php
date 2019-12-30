@@ -51,7 +51,6 @@ class DocumentSamenwerkingUitzender extends Document implements DocumentInterfac
 		$stylesheet = file_get_contents('application/views/pdf/css/default.css');
 		$this->pdf->mpdf->WriteHTML($stylesheet, 1);
 		
-		
 		//juiste map en tabel
 		$this->setPDFInfo();
 		
@@ -81,10 +80,10 @@ class DocumentSamenwerkingUitzender extends Document implements DocumentInterfac
 	public function setPDFInfo()
 	{
 		$settings = $this->_template_object->settings();
-		
+
 		$this->pdf->setFileDir($settings['dir']);
 		$this->pdf->setFileName( str_replace( ' ', '_', $settings['template_name']) . '_' . uniqid() . '.pdf' );
-		$this->pdf->setFileDisplayName( str_replace( ' ', '_', $settings['template_name']) );
+		$this->pdf->setFileDisplayName( str_replace( ' ', '_', $settings['template_name']) . '.pdf' );
 		$this->pdf->setTable( 'documenten' );
 		
 	}
@@ -164,6 +163,7 @@ class DocumentSamenwerkingUitzender extends Document implements DocumentInterfac
 		$this->replaceVars();
 		
 		$this->pdf->mpdf->WriteHTML( $this->_html );
+		
 		return $this;
 	}
 	
@@ -188,15 +188,31 @@ class DocumentSamenwerkingUitzender extends Document implements DocumentInterfac
 	 */
 	public function pdf()
 	{
-		if( $this->pdf->generate() !== false )
+		$pdfObject = $this->pdf->generate();
+		
+		if( $pdfObject !== false )
 		{
-			//opslaan bij algemene voorwaarden
-			$update['file_name'] = $this->pdf->getFileName();
-			$update['file_dir'] = $this->pdf->getFileDir();
-			$update['file_name_display'] = $this->pdf->getFileDisplayName();
+			//opslaan in tabel
+			$insert['template_id'] = $this->_template_object->id();
+			$insert['uitzender_id'] = $this->_uitzender_id;
+			$insert['html'] = $this->_html;
+			$insert['file_name'] = $this->pdf->getFileName();
+			$insert['file_dir'] = $this->pdf->getFileDir();
+			$insert['file_name_display'] = $this->pdf->getFileDisplayName();
 			
-			$this->db_user->where( 'deleted', 0 );
-			$this->db_user->update( $this->pdf->getTable(), $update );
+			$this->db_user->insert( $this->pdf->getTable(), $insert );
+			
+			//TODO betere fout afhandeling
+			if( $this->db_user->insert_id() < 1 )
+				die('Document kon niet worden opgeslagen in de database');
+				
+			//set ID
+			$this->setDocumentId( $this->db_user->insert_id() );
+			
+			//handtekeningen in de wacht
+			$this->addEmptySignature( 'uitzender', $this->_uitzender_id );
+			
+			return $pdfObject;
 		}
 		else
 		{

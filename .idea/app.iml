@@ -3,6 +3,11 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/fpdf/fpdf" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/guzzle" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/promises" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/ralouphie/getallheaders" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdf" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdi-fpdf" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdi-tcpdf" />

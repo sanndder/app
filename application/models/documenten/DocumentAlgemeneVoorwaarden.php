@@ -155,7 +155,9 @@ class DocumentAlgemeneVoorwaarden extends Document implements DocumentInterface 
 	 */
 	public function pdf()
 	{
-		if( $this->pdf->generate() !== false )
+		$pdf = $this->pdf->generate();
+		
+		if( $pdf !== false )
 		{
 			//opslaan bij algemene voorwaarden
 			$update['file_name'] = $this->pdf->getFileName();
@@ -164,6 +166,8 @@ class DocumentAlgemeneVoorwaarden extends Document implements DocumentInterface 
 			
 			$this->db_user->where( 'deleted', 0 );
 			$this->db_user->update( $this->pdf->getTable(), $update );
+			
+			return $pdf;
 		}
 		else
 		{

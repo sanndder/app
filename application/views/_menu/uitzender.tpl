@@ -62,14 +62,6 @@
 			</li>
 		</ul>
 
-		<ul class="navbar-nav ml-md-auto">
-			<li class="nav-item">
-				<span class="navbar-nav-link toggle-right-sidebar">
-					<i class="icon-pencil mr-2"></i>Notitie
-				</span>
-			</li>
-		</ul>
-
 	</div>
 </div>
 

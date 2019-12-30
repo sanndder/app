@@ -35,6 +35,105 @@ class Test extends MY_Controller {
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
+	// test ondertekenen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function pdf()
+	{
+		
+		$this->smarty->display('test/pdf.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// connect to creditsafe
+	//-----------------------------------------------------------------------------------------------------------------
+	public function credit()
+	{
+		/*
+		//init curl
+		$curl = curl_init( 'https://connect.creditsafe.com/v1/companies/' );
+		
+		//juiste header
+		$headers = array(
+			'Authorization:' . $this->_api_key
+		);
+		
+		//options
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		
+		//result ophalen
+		$this->_json = curl_exec($curl);
+		
+		//afsluiten voor recources
+		curl_close($curl);
+*/
+		
+		
+		$curl = curl_init( 'https://connect.creditsafe.com/v1/authenticate' );
+		
+		//juiste header
+		$headers = array(
+			'Content-Type: application/json'
+		);
+		
+		$data = '{ "username": "sander@aberinghr.nl",  "password": “7/w0DE6xhB]]g$y$|cuz”}';
+		
+		$array['username'] = 'sander@aberinghr.nl';
+		$array['password'] = '7/w0DE6xhB]]g$y$|cuz';
+		
+		$data = json_encode($array, JSON_UNESCAPED_SLASHES);
+
+		//options
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+		
+		$json = curl_exec($curl);
+		$json = json_decode($json);
+		curl_close($curl);
+		$token = $json->token;
+		
+		// ---------------------------------------------- company zoeken -------------------------------------------------------------------------
+		$curl = curl_init( 'https://connect.creditsafe.com/v1/companies?regNo=66122422&countries=NL&page=1&pageSize=10' );
+		
+		//juiste header
+		$headers = array(
+			'Content-Type: application/json',
+			'Authorization: ' .$token
+		);
+		
+		//options
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		
+		$json = curl_exec($curl);
+		$json = json_decode($json);
+		curl_close($curl);
+		
+		show($json);
+		
+		// ---------------------------------------------- company report -------------------------------------------------------------------------
+		$curl = curl_init( 'https://connect.creditsafe.com/v1/companies/' . $json->companies[0]->id );
+		
+		//juiste header
+		$headers = array(
+			'Content-Type: application/json',
+			'Authorization: ' .$token
+		);
+		
+		//options
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		
+		$json = curl_exec($curl);
+		$json = json_decode($json);
+		curl_close($curl);
+		
+		show($json);
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
 	// test ajax method
 	//-----------------------------------------------------------------------------------------------------------------
 	public function ajax()
@@ -119,7 +218,7 @@ class Test extends MY_Controller {
 						en uw account activeren. Daarna kunt u volledig gebruik maken van alle mogelijkheden van <b>Devis Online</b>.
 						<br /><br /> <a href="https://www.devisonline.nl/aanmelden/uitzender?wid=3">https://www.devisonline.nl/aanmelden/uitzender?wid=3</a><br /><br />Wij hopen op een fijne samenwerking!<br /><br />Abering Uitzend B.V.');
 		$email->useHtmlTemplate( 'default' );
-		$email->test();
+		//$email->test();
 		
 		
 		//docent

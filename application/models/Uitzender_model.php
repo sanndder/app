@@ -1,5 +1,7 @@
 <?php
 
+use models\documenten\DocumentFactory;
+use models\documenten\Template;
 use models\forms\Validator;
 use models\utils\DBhelper;
 
@@ -20,8 +22,9 @@ class Uitzender_model extends MY_Model
 	 * uitzender id
 	 */
 	public $uitzender_id = NULL;
-	
 	public $_redirect_url = NULL;
+	
+	private $_samenwerkingsovereenkomst_template_id = 4;
 	
 	/*
 	 * @var array
@@ -54,7 +57,16 @@ class Uitzender_model extends MY_Model
 	 */
 	public function blockAccess()
 	{
+		//AV geaccepteerd?
 		if( $this->acceptedAV() === false )
+		{
+			$this->_redirect_url = 'welkom/uitzender';
+			return true;
+		}
+		
+		//alles getekend?
+	
+		if( $this->allDocumentsSigned() === false )
 		{
 			$this->_redirect_url = 'welkom/uitzender';
 			return true;
@@ -62,6 +74,31 @@ class Uitzender_model extends MY_Model
 		
 		return false;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * alle documenten getekend?
+	 *
+	 * @return bool
+	 */
+	public function allDocumentsSigned()
+	{
+		$sql = "SELECT documenten.document_id
+				FROM documenten
+				LEFT JOIN documenten_templates_settings ON documenten_templates_settings.template_id = documenten.template_id
+				WHERE uitzender_id = $this->uitzender_id AND documenten.deleted = 0 AND documenten_templates_settings.deleted = 0
+				AND documenten.signed = 0 AND documenten_templates_settings.block_access = 1
+				";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() > 0 )
+			return false;
+		
+		return true;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -73,7 +110,59 @@ class Uitzender_model extends MY_Model
 	{
 		return $this->_redirect_url;
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * TODO: betere afhandeling, geen hardcode ID;s
+	 * Samenwerkingsovereenkomst en TODO: verwerkingsovereenkomst maken
+	 * @return array
+	 */
+	public function generateDocuments()
+	{
+		//Samenwerkingsovereenkomst wanneer nodig
+		if( $this->getSamenwerkingsovereenkomstID() === NULL )
+			$this->_generateSamenwerkingsovereenkomst();
+		
+		$result['samenwerkingsovereenkomst'] = $this->getSamenwerkingsovereenkomstID();
+		
+		return $result;
+	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Samenwerkingsovereenkomst maken
+	 *@return void
+	 */
+	private function _generateSamenwerkingsovereenkomst()
+	{
+		
+		$template = new Template( $this->_samenwerkingsovereenkomst_template_id ); //4 is samenwerkingsovereenkomst
+		
+		$document = DocumentFactory::createFromTemplateObject( $template );
+		$pdf = $document->setUitzenderID( $this->uitzender_id )->build()->pdf();
+		
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Samenwerkingsovereenkomst ID ophalen
+	 *@return int?
+	 */
+	public function getSamenwerkingsovereenkomstID()
+	{
+		$sql = "SELECT document_id FROM documenten WHERE uitzender_id = $this->uitzender_id AND deleted = 0 AND template_id = $this->_samenwerkingsovereenkomst_template_id LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		
+		$row = DBhelper::toRow( $query );
+		if( $row === NULL )
+			return $row;
+		
+		return $row['document_id'];
+	}
+		
+		
+		
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Algemene voorwaarden accepteren

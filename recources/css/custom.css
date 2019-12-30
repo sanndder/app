@@ -5,6 +5,11 @@
 ul.list-hover li{padding: 3px 4px; margin-top: 1px; transition: all ease-in-out .20s}
 ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1875rem; cursor:pointer}
 
+/*cursor pencil*/
+.cursor-pencil {
+    cursor: url(../img/pencil.png) 0 28, auto;
+}
+
 /* sidebar */
 .page-wrapper{
     transition: margin-right .5s;
@@ -30,4 +35,12 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
     border-radius: 3px;
     display: block;
     clear: both;
+}
+
+/*signature pad */
+#signature-pad{
+    display: block;
+    position: relative;
+    margin-top:-50%;
+    z-index: 1000;
 }

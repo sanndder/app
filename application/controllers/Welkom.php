@@ -1,4 +1,7 @@
 <?php
+
+use models\documenten\Document;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -29,7 +32,19 @@ class Welkom extends MY_Controller {
 		//geen onterechte redirect
 		if( !$this->uitzender->blockAccess() )
 			redirect( $this->config->item( 'base_url' ) . 'dashboard/uitzender'  ,'location' );
-			
+		
+		//documenten aanmaken voor uitzender
+		$documentIDS = $this->uitzender->generateDocuments();
+		
+		//samenwerkingsovereenkomst ophalen
+		$samenwerkingsovereenkomst = new Document( $documentIDS['samenwerkingsovereenkomst'] );
+		
+		//show($samenwerkingsovereenkomst->details());
+		//show($samenwerkingsovereenkomst->handtekeningen());
+		
+		echo $test;
+		
+		$this->smarty->assign( 'samenwerkingsovereenkomst', array( 'details' => $samenwerkingsovereenkomst->details() ));
 		$this->smarty->assign( 'uitzender_id', $this->uitzender->uitzender_id );
 		$this->smarty->assign( 'accepted_av', $this->uitzender->acceptedAV() );
 		$this->smarty->display('welkom/uitzender.tpl');

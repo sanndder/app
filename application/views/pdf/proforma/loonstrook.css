@@ -1,0 +1,61 @@
+/* CSS Document */
+/*-----------------------------------------------*/
+
+html{ width: 100%}
+
+body{
+	width: 100%;
+	font-family: arial;
+	font-size: 11px;
+	color:#333;
+	background: url("recources/img/bg-pdf-loonstrook.png") 1700px 700px no-repeat;
+	background-position: left top;
+	background-attachment: fixed;
+	background-image-resize:4;
+}
+
+.div-logo{position: absolute; left: 450px}
+.logo-top{}
+
+
+.right{text-align: right}
+
+/*div{border:1px solid yellow}*/
+
+.gegevens{ float: left; width: 210px; padding-top: 40px; }
+.gegevens table{ width: 100%;}
+.gegevens table td{ padding-right: 10px; text-align: left;}
+
+.logo{ height: 200px; margin: 0px 20px 0px 0; float: right}
+
+
+.blok1{margin-top: 70px; width: 100%;}
+
+.table-container{width: 100%;}
+
+.blok2{margin-top: 80px; width: 100%;}
+.blok2 table{ width: 100%}
+
+.blok3{margin-top: 80px; width: 100%; text-align: left}
+.blok3 table{}
+/*
+.blok2 table td{border: 1px solid blue; }
+.blok2 table th{border: 1px solid blue; }*/
+
+td.bt{border-top: 2px solid #333; }
+
+.disclaimer{position: absolute; left: 30px; right: 30px; bottom: 25px; border: 1px solid red; color: red; padding: 5px;}
+
+
+.kosten{font-size:15px; width: 100%;}
+.kosten table{ font-size: 14px;}
+
+.kosten table td{padding-top: 5px;}
+.kosten table .bold{font-weight: bold}
+
+.kosten table .td-1{width: 150px;}
+.kosten table .td-2{width: 120px; text-align: right; padding-right: 18px;}
+.kosten table .td-3{width: 100px;}
+.kosten table .td-4{font-size:15px; font-style: italic}
+
+.kosten table .no-padding{padding-right: 0}

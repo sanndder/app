@@ -8,6 +8,6 @@
         "setasign/fpdi-tcpdf": "^2.0",
         "setasign/fpdi-tfpdf": "^2.1",
         "fpdf/fpdf": "^1.81",
-        "ext-mysql_xdevapi": "*"
+        "guzzlehttp/guzzle": "^6.5"
     }
 }

@@ -195,9 +195,13 @@
 						</div>
 
 						<div class="justify-content-between">
-							<a href="crm/uitzenders/dossier/bedrijfsgegevens" class="btn bg-teal-400">
-								<i class="icon-plus-circle2 icon mr-1"></i>
-								<span>Nieuwe uitzender</span>
+							<button data-target="#modal_email_uitzender" data-toggle="modal" class="btn bg-teal-400">
+								<i class="icon-envelop2 icon mr-1"></i>
+								<span>Aanmeldlink emailen</span>
+							</button>
+							<a href="crm/uitzenders/dossier/bedrijfsgegevens" class="btn btn-outline bg-teal-400 text-teal-400 border-teal-400">
+								<i class="icon-pencil7 icon mr-1"></i>
+								<span>Uitzender invoeren</span>
 							</a>
 						</div>
 					</div>
@@ -275,4 +279,49 @@
 		<!-- /sidebar content -->
 
 	</div>
+
+
+	<!--------------------------------------------------------------------------- Algemene voorwaarden ------------------------------------------------->
+	<div id="modal_email_uitzender" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header pl-4 pr-4">
+					<h5 class="modal-title">Aanmeldlink sturen naar uitzender<span class="var-action"></span></h5>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+
+				<div class="modal-body pl-4 pr-4">
+
+					<form>
+
+						<!-- voorletters -->
+						<div class="form-group row mb-1">
+							<label class="col-form-label col-sm-3">Emailadres:</label>
+							<div class="col-sm-9">
+								<input type="text" name="email" class="form-control aanmeld-email">
+								<span class="form-text text-danger"></span>
+							</div>
+						</div>
+
+					</form>
+
+				</div>
+				<div class="modal-footer pl-4 pr-4">
+					<button onclick="sendAanmeldEmail()" type="button" class="btn btn-primary">
+						<i class="icon-envelop mr-1"></i> Verzenden
+					</button>
+					<button type="button" class="btn btn-outline-primary" data-dismiss="modal"><i class="icon-cross mt-1"></i> Annuleren</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		
+		function sendAanmeldEmail()
+		{
+			alert( $('.aanmeld-email').val() );
+        }
+		
+	</script>
 {/block}

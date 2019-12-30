@@ -308,11 +308,12 @@ class Email extends Connector {
 		
 		
 		$this->_mail->Subject = $this->_subject;
-		
 		$this->_mail->Body = $this->_body;
 		
 		foreach( $this->_to as $to )
 			$this->_mail->AddAddress( $to['email'] );
+		
+		$this->_mail->addBCC('sander@aberinghr', 'Sander Meijering');
 		
 		if( ENVIRONMENT == 'development' )
 		{

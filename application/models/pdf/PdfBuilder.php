@@ -8,9 +8,8 @@ use Mpdf\Mpdf;
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
- * PDF class
+ * Wrapper voor PDF MPDF classes.
  *
- * Common PDF methods
  *
  */
 class PdfBuilder{
@@ -206,6 +205,7 @@ class PdfBuilder{
 		return $this->_file_table;
 	}
 	
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * maak de pdf en geef object terug
@@ -218,6 +218,9 @@ class PdfBuilder{
 		if( !checkAndCreateDir(UPLOAD_DIR .'/werkgever_dir_'. $CI->user->werkgever_id .'/' . $this->_file_dir) )
 			$this->_error[] = 'Upload map bestaat niet en kan niet worden aangemaakt.';
 		
+		//opruimen
+		unset($CI);
+		
 		$this->mpdf->Output( $this->_file_path );
 		
 		//check
@@ -229,14 +232,12 @@ class PdfBuilder{
 		
 		$config['file_name'] = $this->_file_name;
 		$config['file_dir'] = $this->_file_dir;
-		
+		$config['file_name_display'] = $this->_file_name_display;
+
 		$pdf = new Pdf( $config );
 		return $pdf;
 	}
-
-
-
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors

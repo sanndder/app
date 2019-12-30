@@ -26,8 +26,6 @@ class Dashboard extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function werkgever()
 	{
-		
-		
 		$this->smarty->display('dashboard/werkgever.tpl');
 	}
 	

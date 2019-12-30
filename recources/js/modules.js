@@ -40,7 +40,7 @@ var SweetAlert = function ()
     {
         if (typeof swal == 'undefined')
         {
-            //console.warn('Warning - sweet_alert.min.js is not loaded.');
+            console.warn('Warning - sweet_alert.min.js is not loaded.');
             return;
         }
 
@@ -51,6 +51,16 @@ var SweetAlert = function ()
             cancelButtonClass: 'btn btn-light'
         });
 
+
+        // Error alert
+        $('.sweet-error').on('click', function() {
+            var $btn = $(this);
+            swalInit.fire({
+                title: $btn.data('title'),
+                text: $btn.data('text'),
+                type: 'error'
+            });
+        });
 
         // Alert combination
         $('.sweet-confirm').on('click', function ()
@@ -82,10 +92,9 @@ var SweetAlert = function ()
                         .appendTo($form);
                     $form.submit();
                 }
-
             });
         });
-    }
+    };
 
     return {
         initComponents: function ()

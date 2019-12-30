@@ -37,6 +37,7 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
 /**
  * Exceptions Class
  *
@@ -103,6 +104,31 @@ class CI_Exceptions {
 	{
 		$severity = isset($this->levels[$severity]) ? $this->levels[$severity] : $severity;
 		log_message('error', 'Severity: '.$severity.' --> '.$message.' '.$filepath.' '.$line);
+		
+		
+		if( ENVIRONMENT == 'production' )
+		{
+			require_once('application/third_party/PHPMailer/PHPMailer.php');
+			require_once('application/third_party/PHPMailer/SMTP.php');
+			require_once('application/third_party/PHPMailer/Exception.php');
+			
+			$CI =& get_instance();
+			$mail = new PHPMailer\PHPMailer\PHPMailer();
+			
+			$mail->IsSMTP(); // enable SMTP
+			$mail->SMTPAuth = false; // authentication enabled
+			$mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			$mail->Port = 25; // or 587
+			$mail->CharSet = 'UTF-8';
+			
+			$mail->SetFrom( "info@aberinghr.nl" );
+			$mail->Subject = 'ERROR DEVIS ONLINE';
+			
+			$mail->Body = 'Severity: ' . $severity . ' --> ' . $message . ' ' . $filepath . ' ' . $line . ' user: ' . $CI->user->user_id;
+			$mail->AddAddress( "hsmeijering@home.nl" );
+			
+			$mail->Send();
+		}
 	}
 
 	// --------------------------------------------------------------------
