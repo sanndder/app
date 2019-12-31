@@ -22,6 +22,7 @@ class Uitzender_model extends MY_Model
 	 * uitzender id
 	 */
 	public $uitzender_id = NULL;
+	public $id = NULL;
 	public $_redirect_url = NULL;
 	
 	private $_samenwerkingsovereenkomst_template_id = 4;
@@ -44,7 +45,7 @@ class Uitzender_model extends MY_Model
 		
 		//uitzender id
 		$this->uitzender_id = $_SESSION['logindata']['main']['uitzender_id'];
-		
+		$this->id = $this->uitzender_id;
 	}
 
 

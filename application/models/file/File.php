@@ -244,7 +244,7 @@ class File extends Connector {
 	 * Force download
 	 * @return void
 	 */
-	private function inline()
+	public function inline()
 	{
 		$this->_download('inline');
 	}

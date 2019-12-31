@@ -1,7 +1,7 @@
 //==========================================================
 //	function document sign modal
 //==========================================================
-function modalSignDocument()
+function modalSignDocument( document_id )
 {
     //stop wanneer geen support -> https://pdfobject.com/#api
 
@@ -12,7 +12,7 @@ function modalSignDocument()
     $modal.modal('show');
 
     //pdf laden
-    PDFObject.embed( "userf1les_o7dm6/werkgever_dir_1/werkgever/algemenevoorwaarden/algemenevoorwaarden.pdf", "#pdfviewer" );
+    PDFObject.embed( "documenten/pdf/view/" + document_id, "#pdfviewer" );
 
     //signature pad aanmaken -> https://github.com/szimek/signature_pad
 
@@ -38,7 +38,7 @@ function modalSignDocument()
         var dataUrl = signaturePad.toDataURL("image/jpeg");
         console.log(dataUrl);
         $.ajax({
-            url: 'ajax/signdocument',
+            url: 'documenten/ajax/signdocument/'+document_id,
             type: 'POST',
             data: {
                 imageData: dataUrl
@@ -52,18 +52,11 @@ function modalSignDocument()
         });
     });
 
-}
-
-
-
-$(function() {
 
     //tekenknop wordt aangeklikt
     $('.toggle-pad').on('click', function(){
-        $('#pdfviewer').toggle();
+        $(this).toggle();
         $('#signature-pad').toggle();
+        $('#pdfviewer').css('height', '67%')
     });
-
-    modalSignDocument();
-
-});
+}

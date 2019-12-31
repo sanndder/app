@@ -39,8 +39,32 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
 
 /*signature pad */
 #signature-pad{
-    display: block;
+}
+
+#signature-pad .stripe{
+    border:1px solid darkgrey;
+    width: 400px;
+    margin: auto;
+    top: 160px;
     position: relative;
-    margin-top:-50%;
-    z-index: 1000;
+}
+
+#signature-pad .btn{
+    margin: -7px 0 0 0;
+    width: 226px;
+    border: 1px solid #000;
+}
+
+#signature-pad .btn-success{
+    margin-right: -2px;
+    border-right: 0;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+#signature-pad .btn-outline-danger{
+    margin-left: -2px;
+    border-left: 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
 }

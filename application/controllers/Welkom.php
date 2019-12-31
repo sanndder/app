@@ -39,12 +39,8 @@ class Welkom extends MY_Controller {
 		//samenwerkingsovereenkomst ophalen
 		$samenwerkingsovereenkomst = new Document( $documentIDS['samenwerkingsovereenkomst'] );
 		
-		//show($samenwerkingsovereenkomst->details());
-		//show($samenwerkingsovereenkomst->handtekeningen());
 		
-		echo $test;
-		
-		$this->smarty->assign( 'samenwerkingsovereenkomst', array( 'details' => $samenwerkingsovereenkomst->details() ));
+		$this->smarty->assign( 'samenwerkingsovereenkomst', $samenwerkingsovereenkomst->details() );
 		$this->smarty->assign( 'uitzender_id', $this->uitzender->uitzender_id );
 		$this->smarty->assign( 'accepted_av', $this->uitzender->acceptedAV() );
 		$this->smarty->display('welkom/uitzender.tpl');

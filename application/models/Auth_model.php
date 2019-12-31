@@ -344,7 +344,8 @@ class Auth_model extends CI_Model
 	public function _secretHash( $user_id, $user_type, $sid )
 	{
 		//TEMP LOCAL
-		$_SERVER['REMOTE_ADDR'] = 1;
+		if( ENVIRONMENT == 'development' )
+			$_SERVER['REMOTE_ADDR'] = 1;
 
 		$string =  $user_id . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT'] . $user_type  . $sid;
 		$secret = hash( 'sha256', $string . self::SALT_SECRET );

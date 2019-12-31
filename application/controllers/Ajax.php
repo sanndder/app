@@ -32,6 +32,7 @@ class Ajax extends MY_Controller
 			echo json_encode($data);
 	}
 	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// accept algemene voorwaarden
 	//-----------------------------------------------------------------------------------------------------------------
@@ -44,25 +45,6 @@ class Ajax extends MY_Controller
 			else
 				echo false;
 		}
-	}
-	
-	
-	//-----------------------------------------------------------------------------------------------------------------
-	// handtekening toevoegen aan doc
-	//-----------------------------------------------------------------------------------------------------------------
-	public function signdocument()
-	{
-		//show($_POST);
-		
-		$encoded_image = explode(",", $_POST['imageData'])[1];
-		$decoded_image = base64_decode($encoded_image);
-		
-		$dir = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id . '/';
-		//file_put_contents( $dir . "signature.png", $decoded_image);
-		
-		file_put_contents( $dir . "signature.jpg", $decoded_image);
-		
-		
 	}
 
 }

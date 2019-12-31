@@ -44,6 +44,7 @@ class MY_Controller extends CI_Controller
 		//deze classes niet redirecten
 		$no_redirect[] = 'welkom';
 		$no_redirect[] = 'ajax';
+		$no_redirect[] = 'documenten';
 		
 		//usertype model laden
 		if( $this->user->user_type == 'uitzender' )

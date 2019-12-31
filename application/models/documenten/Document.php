@@ -2,6 +2,7 @@
 
 namespace models\documenten;
 use models\Connector;
+use models\file\Pdf;
 use models\pdf\PdfBuilder;
 use models\utils\DBhelper;
 
@@ -70,9 +71,10 @@ class Document extends Connector {
 	 */
 	public function _load()
 	{
-		$sql = "SELECT documenten.*
+		$sql = "SELECT documenten.*, documenten_templates_settings.owner
 				FROM documenten
-				WHERE document_id = $this->_document_id
+				LEFT JOIN documenten_templates_settings ON documenten_templates_settings.template_id = documenten.template_id
+				WHERE documenten.document_id = $this->_document_id AND documenten_templates_settings.deleted = 0
 				LIMIT 1";
 		
 		$query = $this->db_user->query( $sql );
@@ -80,6 +82,7 @@ class Document extends Connector {
 		
 		$this->_html = $this->_data['html'];//html los in een var
 		unset($this->_data['html']);//hier weghalen
+		
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -97,19 +100,137 @@ class Document extends Connector {
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get Handetekeningen
-	 * @return object
+	 * get details
+	 * @return array
 	 */
 	public function details()
 	{
 		return $this->_data;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get owner
+	 * @return string
+	 */
+	public function owner()
+	{
+		return $this->_data['owner'];
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * document ondertekenen
+	 * @return bool
+	 */
+	public function sign()
+	{
+		//show($_POST);
+		$pdf = $this->pdf();
+		
+		$file_info = $pdf->addSignature();
+		
+		if( file_exists($file_info['signed_file_path']))
+		{
+			unset($file_info['signed_file_path']);
+			
+			//update file
+			$this->db_user->where( 'document_id', $this->_document_id );
+			$this->db_user->update( 'inleners', $file_info );
+			
+			//handtekening naar database
+			$insert['document_id'] = $this->_document_id;
+			$insert['user_id'] = $this->user->user_id;
+			$insert['naam'] = $this->user->user_name;
+			
+			if( $this->user->user_type == 'uitzender' )	$insert['uitzender_id'] = $this->uitzender->id;
+			if( $this->user->user_type == 'inlener' )	$insert['inlener_id'] = $this->inlener->id;
+			if( $this->user->user_type == 'werknemer' )	$insert['werknemer_id'] = $this->werknemer->id;
+			
+			return true;
+		}
+		
+		return false;
+		/*
+		$encoded_image = explode(",", $_POST['imageData'])[1];
+		$decoded_image = base64_decode($encoded_image);
+		
+		$dir = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id . '/';
+		//file_put_contents( $dir . "signature.png", $decoded_image);
+		
+		file_put_contents( $dir . "signature.jpg", $decoded_image);*/
+	}
+	
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * check if current user has access to view document
+	 * @return bool
+	 */
+	public function userHasAccess()
+	{
+		//TODO :uitbreiden
+		if( $this->owner() == 'uitzender' )
+		{
+			//uitzender documenten mag alleen door werkgever of uitzender zelf bekeken worden
+			if( $this->user->user_type == 'werkgever' )
+				return true;
+				
+			if( $this->user->user_type == 'inlener' || $this->user->user_type == 'werknemer' )
+				return  false;
+			
+			//bij uitzender ID checken
+			if( $this->user->user_type == 'uitzender' )
+			{
+				if( $this->uitzender->uitzender_id != $this->_data['uitzender_id'])
+					return false;
+				else
+					return true;
+			}
+		}
+		
+		//failsafe
+		return false;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get Pdf uit database en return object
+	 * @return object|void
+	 */
+	public function pdf( $origineel = false )
+	{
+		//is er een ondertekende versie, dan die gebruiken
+		if( !$origineel && isset($this->_data['signed_file_name']) && $this->_data['signed_file_name'] !== NULL )
+		{
+			$file['file_name'] = $this->_data['signed_file_name'];
+			$file['file_dir'] = $this->_data['signed_file_dir'];
+		}
+		else
+		{
+			//check of er een bestad is
+			if( !isset($this->_data['file_name']) || $this->_data['file_name'] === NULL )
+				return NULL;
+			else
+			{
+				$file['file_name'] = $this->_data['file_name'];
+				$file['file_dir'] = $this->_data['file_dir'];
+			}
+		}
+		
+		$pdf = new Pdf( $file );
+		return $pdf;
+	}
+	
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * get Handetekeningen
-	 * @return object
+	 * @return array
 	 */
 	public function handtekeningen()
 	{

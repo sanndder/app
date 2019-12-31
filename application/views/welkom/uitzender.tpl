@@ -6,6 +6,7 @@
 
 {block "content"}
 
+    {include file='_modals/signdocument.tpl'}
 
 	<!-- Main content -->
 	<div class="content-wrapper" style="margin-top: -40px;">
@@ -29,8 +30,8 @@
 							<br/><br/>
 
 							Voordat u aan de slag kunt hebben wij nog een paar zaken van u nodig. U dient onze
-							<strong class="font-weight-bold">algemene voorwaarden</strong> te accepteren en
-							in het kader van de AVG dient u onze <strong class="font-weight-bold">verwerkinsovereenkomst</strong> te tekenen.
+							<strong class="font-weight-bold">algemene voorwaarden</strong> te accepteren en de <strong class="font-weight-bold">samenwerkingsovereenkomst</strong> te ondertekenen. Daarnaast dient u
+							in het kader van de AVG dient ook onze <strong class="font-weight-bold">verwerkinsovereenkomst</strong> te tekenen.
 
 						</div>
 					</div>
@@ -60,24 +61,48 @@
 
 					</div>
 
-					<!--------------------------------------------------------------------------- Algemene voorwaarden ------------------------------------------------->
+					<!--------------------------------------------------------------------------- Samenwerkingsovereenkomst ------------------------------------------------->
 					<div class="card">
 
 						<div class="card-body">
 
 							<div class="media">
 								<span style="font-size: 26px" class="mr-3"> 2.</span>
-								<button type="submit" name="set" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
-									<i class="icon-pencil5 mr-2"></i>Overeenkomst tekenen
+								<i class="far fa-check-circle check-samenwerkingsovereenkomst fa-2x mr-3 mt-1" {if !$samenwerkingsovereenkomst.signed}style="display: none;"{/if}></i>
+
+								<button type="button" onclick="modalSignDocument( {$samenwerkingsovereenkomst.document_id} )" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
+									<i class="icon-pencil5 mr-2"></i>overeenkomst tekenen
 								</button>
 								<div class="media-body mt-2">
-									Omdat wij werken met persoonsgegevens dient u onze verwerkingsovereenkomst te tekenen.
+									<strong class="font-weight-bold">Samenwerkingsovereenkomst</strong> ondertekenen
 								</div>
 
 							</div>
 
 						</div>
 					</div>
+
+					<!--------------------------------------------------------------------------- Verwerkinsovereenkomst  ------------------------------------------------->
+					<div class="card">
+
+						<div class="card-body">
+
+							<div class="media">
+								<span style="font-size: 26px" class="mr-3"> 3.</span>
+								<i class="far fa-check-circle check-verwerkinsovereenkomst fa-2x mr-3 mt-1" {if !$samenwerkingsovereenkomst.signed}style="display: none;"{/if}></i>
+
+								<button type="button" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
+									<i class="icon-pencil5 mr-2"></i>overeenkomst tekenen
+								</button>
+								<div class="media-body mt-2">
+									Omdat wij werken met persoonsgegevens dient u onze <strong class="font-weight-bold">verwerkingsovereenkomst</strong> te tekenen.
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+
 
 				</div><!-- /col -->
 			</div><!-- /row -->

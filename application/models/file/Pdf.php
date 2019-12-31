@@ -3,6 +3,7 @@
 namespace models\file;
 
 use setasign\Fpdi\Fpdi;
+use setasign\Fpdi\PdfReader;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -39,7 +40,100 @@ class Pdf extends File{
 
 		$this->_setInfo();
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Plaatje van handtekening bijvoegen
+	 *
+	 * @return bool
+	 */
+	public function addSignature()
+	{
+		$pageCount = $this->_fpdi->setSourceFile( $this->_file_path );
+		
+		//handtekening naar temp jpg
+		$image_path = $this->signatureToTempJpg();
+		
+		//bestaande pagina's naar nieuwe pdf
+		for($i = 1; $i <=  $pageCount; $i++){
+			$tplidx = $this->_fpdi->importPage($i);
+			$this->_fpdi->addPage('P');
+			$this->_fpdi->useTemplate($tplidx);
+		}
+		
+		$this->_fpdi->addPage('P');
+		$this->_fpdi->SetFont('Arial','',15);
+		$this->_fpdi->SetMargins(12,12,15);
+		
+		$this->_fpdi->SetXY(15,15);
+		$this->_fpdi->SetTextColor(0,46,101);
+		$this->_fpdi->Cell(100,10,'Ondertekening:');
+		
+		$this->_fpdi->SetFont('Arial','',11);
+		$this->_fpdi->SetTextColor(0,0,0);
+		
+		$this->_fpdi->SetXY(15,28);
+		$this->_fpdi->Cell(25,10, 'User ID:');
+		$this->_fpdi->Cell(50,10, $this->user->user_id);
+		
+		$this->_fpdi->SetXY(15,35);
+		$this->_fpdi->Cell(25,10, 'Naam:');
+		$this->_fpdi->Cell(50,10, $this->user->user_name);
+		
+		$this->_fpdi->SetXY(15,42);
+		$this->_fpdi->Cell(25,10, 'IP Adres:');
+		$this->_fpdi->Cell(50,10, $_SERVER['REMOTE_ADDR']);
+		
+		$this->_fpdi->SetXY(15,49);
+		$this->_fpdi->Cell(25,10, 'Datum:');
+		$this->_fpdi->Cell(50,10, date('d-m-Y \o\m\ H:i:s') );
+		
+		$this->_fpdi->SetXY( 90,20 );
+		$this->_fpdi->Image($image_path);
+		
+		
+		//filename voor ondertekende pdf
+		$new_path = str_replace( '.pdf', '_signed.pdf', $this->_file_path );
+		
+		$file_info['signed_file_name'] = str_replace( '.pdf', '_signed.pdf', $this->_file_name );
+		$file_info['signed_file_dir'] = $this->_file_dir;
+		$file_info['signed_file_path'] = $new_path;
+		
+		$this->_fpdi->Output( $new_path, 'F' );
+		
+		return $file_info;
+	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Plaatje van handtekening maken
+	 *
+	 * @return string|bool
+	 */
+	public function signatureToTempJpg()
+	{
+		$dir = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/temp/handtekeningen';
+
+		if( !checkAndCreateDir($dir) )
+			die('Upload map bestaat niet en kan niet worden aangemaakt.');
+			
+		$encoded_image = explode(",", $_POST['imageData'])[1];
+		$decoded_image = base64_decode($encoded_image);
+		
+		$path = $dir . uniqid() . "_" . generateRandomString() . "_signature.jpg";
+		
+		file_put_contents( $path, $decoded_image );
+		
+		if( file_exists($path))
+			return $path;
+		
+		return false;
+	}
+
+
+	
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Set current width height and ratio
