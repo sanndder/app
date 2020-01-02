@@ -2,8 +2,10 @@
 
 namespace models\pdf;
 
+use models\Connector;
 use models\file\Pdf;
 use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -12,7 +14,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  *
  *
  */
-class PdfBuilder{
+class PdfBuilder extends Connector {
 
 	/*
 	 * @var mpdf object
@@ -46,8 +48,10 @@ class PdfBuilder{
 	 */
 	public function __construct( $config = NULL )
 	{
+		parent::__construct();
+		
 		//Landscape or portrait
-		if( isset($config['format']) && $config['format'] == 'L' )
+		if( isset( $config['format']) && $config['format'] == 'L' )
 			$config['format'] = 'A4-L';
 		else
 			$config['format'] = 'A4-P';
@@ -89,7 +93,7 @@ class PdfBuilder{
 	 */
 	public function preview()
 	{
-		$this->mpdf->Output( $this->_file_name_display . '.pdf', \Mpdf\Output\Destination::INLINE);
+		$this->mpdf->Output( $this->_file_name_display . '.pdf', Destination::INLINE);
 		
 		//temp
 		//if( isset($_GET['p']) )

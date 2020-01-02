@@ -48,7 +48,7 @@ class Pdf extends File{
 	 *
 	 * @return bool
 	 */
-	public function addSignature()
+	public function addSignature( $countSignatures = 0 )
 	{
 		$pageCount = $this->_fpdi->setSourceFile( $this->_file_path );
 		
@@ -62,41 +62,56 @@ class Pdf extends File{
 			$this->_fpdi->useTemplate($tplidx);
 		}
 		
-		$this->_fpdi->addPage('P');
-		$this->_fpdi->SetFont('Arial','',15);
-		$this->_fpdi->SetMargins(12,12,15);
+		// y as verschuiven
+		$move = 50 * $countSignatures;
 		
-		$this->_fpdi->SetXY(15,15);
+		//geen nieuwe pagina als die er al is
+		if( $countSignatures == 0 )
+			$this->_fpdi->addPage('P');
+		
+		$this->_fpdi->SetFont('Arial','',15);
+		$this->_fpdi->SetMargins(12,8,15);
+		
+		$this->_fpdi->SetXY(15,14 + $move);
 		$this->_fpdi->SetTextColor(0,46,101);
 		$this->_fpdi->Cell(100,10,'Ondertekening:');
 		
 		$this->_fpdi->SetFont('Arial','',11);
 		$this->_fpdi->SetTextColor(0,0,0);
 		
-		$this->_fpdi->SetXY(15,28);
+		$this->_fpdi->SetXY(15,26 + $move);
 		$this->_fpdi->Cell(25,10, 'User ID:');
 		$this->_fpdi->Cell(50,10, $this->user->user_id);
 		
-		$this->_fpdi->SetXY(15,35);
+		$this->_fpdi->SetXY(15,32 + $move);
 		$this->_fpdi->Cell(25,10, 'Naam:');
 		$this->_fpdi->Cell(50,10, $this->user->user_name);
 		
-		$this->_fpdi->SetXY(15,42);
+		$this->_fpdi->SetXY(15,38 + $move);
 		$this->_fpdi->Cell(25,10, 'IP Adres:');
 		$this->_fpdi->Cell(50,10, $_SERVER['REMOTE_ADDR']);
 		
-		$this->_fpdi->SetXY(15,49);
+		$this->_fpdi->SetXY(15,44 + $move);
 		$this->_fpdi->Cell(25,10, 'Datum:');
 		$this->_fpdi->Cell(50,10, date('d-m-Y \o\m\ H:i:s') );
 		
-		$this->_fpdi->SetXY( 90,20 );
-		$this->_fpdi->Image($image_path);
-		
-		
+		$this->_fpdi->SetXY(100, 18 + $move);
+		$this->_fpdi->Image($image_path, NULL, NULL, NULL, 35 );
+
 		//filename voor ondertekende pdf
-		$new_path = str_replace( '.pdf', '_signed.pdf', $this->_file_path );
-		
-		$file_info['signed_file_name'] = str_replace( '.pdf', '_signed.pdf', $this->_file_name );
+		if( $countSignatures == 0 )
+		{
+			$new_path = str_replace( '.pdf', '_signed.pdf', $this->_file_path );
+			$new_name = str_replace( '.pdf', '_signed.pdf', $this->_file_name );
+		}
+		else
+		{
+			$new_path = $this->_file_path;
+			$new_name = $this->_file_name;
+		}
+			
+		$file_info['signed_file_name'] = $new_name;
+		$file_info['signed_file_name_display'] = $this->_file_name_display;
 		$file_info['signed_file_dir'] = $this->_file_dir;
 		$file_info['signed_file_path'] = $new_path;
 		

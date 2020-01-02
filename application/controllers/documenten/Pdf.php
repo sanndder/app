@@ -40,4 +40,23 @@ class Pdf extends MY_Controller
 		
 	}
 	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	//  forceer download
+	//-----------------------------------------------------------------------------------------------------------------
+	public function download( $document_id )
+	{
+		$document = new Document( $document_id );
+		
+		//check rights
+		if( !$document->userHasAccess() )
+			die('Geen toegang');
+		
+		//pdf object ophalen
+		$pdf = $document->pdf();
+		
+		//pdf opbject bekijken
+		$pdf->download();
+		
+	}
 }

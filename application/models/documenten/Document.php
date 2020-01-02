@@ -92,7 +92,7 @@ class Document extends Connector {
 	 */
 	public function _loadHandtekeningen()
 	{
-		$sql = "SELECT * FROM documenten_signed WHERE document_id = $this->_document_id";
+		$sql = "SELECT * FROM documenten_handtekeningen WHERE document_id = $this->_document_id";
 		$query = $this->db_user->query( $sql );
 		
 		$this->_handtekeningen = DBhelper::toArray( $query, 'id', 'NULL' );
@@ -129,7 +129,8 @@ class Document extends Connector {
 		//show($_POST);
 		$pdf = $this->pdf();
 		
-		$file_info = $pdf->addSignature();
+		//handtekening toevoegen, aantal aanwezige meegeven
+		$file_info = $pdf->addSignature( $this->countSignatures() );
 		
 		if( file_exists($file_info['signed_file_path']))
 		{
@@ -137,16 +138,28 @@ class Document extends Connector {
 			
 			//update file
 			$this->db_user->where( 'document_id', $this->_document_id );
-			$this->db_user->update( 'inleners', $file_info );
+			$this->db_user->update( 'documenten', $file_info );
 			
 			//handtekening naar database
-			$insert['document_id'] = $this->_document_id;
-			$insert['user_id'] = $this->user->user_id;
-			$insert['naam'] = $this->user->user_name;
+			$update['user_id'] = $this->user->user_id;
+			$update['naam'] = $this->user->user_name;
+			$update['ip'] = $_SERVER['REMOTE_ADDR'];
+			$update['signed_on'] = date( 'Y-m-d H:i:s' );
 			
-			if( $this->user->user_type == 'uitzender' )	$insert['uitzender_id'] = $this->uitzender->id;
-			if( $this->user->user_type == 'inlener' )	$insert['inlener_id'] = $this->inlener->id;
-			if( $this->user->user_type == 'werknemer' )	$insert['werknemer_id'] = $this->werknemer->id;
+			if( $this->user->user_type == 'uitzender' )
+				$this->db_user->where( 'uitzender_id', $this->uitzender->id );
+			
+			if( $this->user->user_type == 'inlener' )
+				$this->db_user->where( 'inlener_id', $this->inlener->id );
+			
+			if( $this->user->user_type == 'werknemer' )
+				$this->db_user->where( 'werknemer_id',  $this->werknemer->id );
+			
+			$this->db_user->where( 'document_id', $this->_document_id );
+			$this->db_user->update( 'documenten_handtekeningen', $update );
+			
+			//kijken of alles getekend is
+			$this->checkSignatures();
 			
 			return true;
 		}
@@ -160,6 +173,36 @@ class Document extends Connector {
 		//file_put_contents( $dir . "signature.png", $decoded_image);
 		
 		file_put_contents( $dir . "signature.jpg", $decoded_image);*/
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * getekende handtekeningen entries
+	 * @return int
+	 */
+	public function countSignatures()
+	{
+		$sql = "SELECT * FROM documenten_handtekeningen WHERE document_id = $this->_document_id AND user_id IS NOT NULL";
+		$query = $this->db_user->query( $sql );
+		
+		return $query->num_rows();
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * is alles getekend, dan document signed naar 1
+	 * @return void
+	 */
+	public function checkSignatures()
+	{
+		$sql = "SELECT * FROM documenten_handtekeningen WHERE document_id = $this->_document_id AND user_id IS NULL";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+		{
+			$this->db_user->where( 'document_id', $this->_document_id );
+			$this->db_user->update( 'documenten', array('signed'=>1) );
+		}
 	}
 	
 
@@ -409,7 +452,7 @@ class Document extends Connector {
 		$insert['document_id'] = $this->_document_id;
 		$insert[ $user_type . '_id' ] = $user_id;
 		
-		$this->db_user->insert( 'documenten_signed', $insert );
+		$this->db_user->insert( 'documenten_handtekeningen', $insert );
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

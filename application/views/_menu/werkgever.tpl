@@ -43,9 +43,9 @@
 			</li>
 
 			<li class="nav-item">
-				<a href="facturenoverzicht/uitzender" class="navbar-nav-link">
+				<a href="facturatie/overzicht" class="navbar-nav-link">
 					<i class="mi-euro-symbol mr-2" style="font-weight: bold"></i>
-					Facturen & Marge
+					Facturatie
 				</a>
 			</li>
 

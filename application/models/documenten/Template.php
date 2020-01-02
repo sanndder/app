@@ -271,7 +271,7 @@ class Template extends Connector {
 		$insert['categorie_id'] = $post['categorie_id'];
 		$insert['owner'] = $post['owner'];
 		$insert['lang'] = strtoupper($post['lang']);
-		$insert['template_name'] = $post['template_name'];
+		$insert['template_name'] = trim($post['template_name']);
 		if( isset($post['template_code']) && $post['template_code'] != '' )
 			$insert['template_code'] = $post['template_code'];
 		

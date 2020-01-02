@@ -35,7 +35,10 @@ class DocumentFactory extends Connector {
 		//juiste document starten
 		switch ( $documentType ) {
 			case 'samenwerking uitzender':
-				$document = new DocumentSamenwerkingUitzender( $templateObject );
+				$document = new DocumentDefault( $templateObject );
+				break;
+			case 'AVG':
+				$document = new DocumentDefault( $templateObject );
 				break;
 			default:
 				die('Class ' . $documentType . ' niet gevonden' );

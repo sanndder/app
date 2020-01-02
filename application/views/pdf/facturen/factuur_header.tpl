@@ -1,58 +1,24 @@
-<htmlpageheader name="myHeader1" style="display:none">
-	<div id="header_1">
-		<div class="header-left">
+<table style="background-color: #002E65; width: 100%">
+	<tr>
+		<td style="width: 55px;">
+			<img src="recources/img/logo-wit.png" style="max-height: 55px; margin-top: 7px; margin-left: 15px; margin-bottom: 15px" />
+		</td>
+		<td style="font-size: 30px; color:#fff; padding-top: 2px; padding-left: 15px; vertical-align: middle">
+            {$bedrijfsgegevens.bedrijfsnaam}
+		</td>
+		<td style="text-align: right; vertical-align: text-top; padding-top: 15px;">
 
-			<img class="logo-self" src="template/global_assets/images/logo_dark.png"/>
+			<table style="color: #FFF; margin-right: 25px;">
+				<tr>
+					<td>Factuurnummer: </td>
+					<td style="font-weight: bold">1505</td>
+				</tr>
+				<tr>
+					<td>Relatienummer: </td>
+					<td style="font-weight: bold">2156</td>
+				</tr>
+			</table>
 
-		</div>
-		<div class="header-right">
-
-			<div class="div-ul">
-				<ul class="contact">
-					<li class="contact-name">Bouwbedrijf Jan Jansen En Zoon</li>
-					<li>t.a.v. Debiteurenadministratie</li>
-					<li>Meppelerstraatweg 17</li>
-					<li>4455AA Apeldoorn</li>
-				</ul>
-			</div>
-
-		</div>
-	</div>
-	<div id="header_2">
-
-		<div class="header-left">
-			<ul class="ul-factuurnr">
-				<li class="li-nr">Factuur 44596</li>
-				<li>Week 17 - 2019</li>
-			</ul>
-		</div>
-
-		<div class="header-right">
-			<ul class="ul-factuurdatum">
-				<li>Factuurdatum</li>
-				<li>01-08-2019</li>
-			</ul>
-		</div>
-
-	</div>
-</htmlpageheader>
-
-<htmlpageheader name="myHeader2" style="display:none">
-	<div id="header_2">
-
-		<div class="header-left">
-			<ul class="ul-factuurnr">
-				<li class="li-nr">Factuur 44596</li>
-				<li>Week 17 - 2019</li>
-			</ul>
-		</div>
-
-		<div class="header-right">
-			<ul class="ul-factuurdatum">
-				<li>Factuurdatum</li>
-				<li>01-08-2019</li>
-			</ul>
-		</div>
-
-	</div>
-</htmlpageheader>
+		</td>
+	</tr>
+</table>

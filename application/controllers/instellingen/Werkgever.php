@@ -26,7 +26,10 @@ class Werkgever extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
+		
+		//alleen werkgever
+		if(	$this->user->user_type != 'werkgever' )forbidden();
+		
 		//entiteiten afhandelen
 		$this->smarty->assign('entiteiten', $this->werkgever->listEntiteiten() );
 		$this->smarty->assign('replace', 'entity_id='.$this->session->entiteit_id );
@@ -380,7 +383,7 @@ class Werkgever extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// pdf preview documenten
 	//-----------------------------------------------------------------------------------------------------------------
-	public function documentenpreview( $template_id)
+	public function documentenpreview( $template_id )
 	{
 		$template = new Template( $template_id );
 		

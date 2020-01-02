@@ -10,7 +10,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  * Documenten maken
  *
  */
-class DocumentSamenwerkingUitzender extends Document implements DocumentInterface {
+class DocumentDefault extends Document implements DocumentInterface {
 
 	protected $_template_object = NULL;
 	
@@ -116,8 +116,7 @@ class DocumentSamenwerkingUitzender extends Document implements DocumentInterfac
 	 */
 	public function setFooter()
 	{
-		$CI = &get_instance();// Grab the super object
-		$bedrijfsgegevens = $CI->werkgever->bedrijfsgegevens();
+		$bedrijfsgegevens = $this->werkgever->bedrijfsgegevens();
 		
 		$this->pdf->smarty->assign('bedrijfsgegevens', $bedrijfsgegevens);
 		
@@ -186,7 +185,7 @@ class DocumentSamenwerkingUitzender extends Document implements DocumentInterfac
 	 * Geeft PDF object terug
 	 * @return object|boolean
 	 */
-	public function pdf()
+	public function pdf( $origineel = false )
 	{
 		$pdfObject = $this->pdf->generate();
 		

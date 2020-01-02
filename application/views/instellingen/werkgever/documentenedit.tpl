@@ -51,7 +51,14 @@
 						<div class="row">
 							<div class="col-lg-6">
 
-								<input type="text" name="titel" value="{$titel}" class="form-control mb-3" required placeholder="Titel van document">
+								<button type="submit" name="set" value="save_document" class="btn btn-success mt-1">
+									<i class="icon-check mr-1"></i>Document opslaan
+								</button>
+								<a target="_blank" href="instellingen/werkgever/documentenpreview/{$settings.template_id}" class="btn btn-light mt-1">
+									<i class="icon-file-pdf mr-1"></i>PDF Voorbeeld
+								</a>
+
+								<input type="text" name="titel" value="{$titel}" class="form-control mb-3 mt-3" required placeholder="Titel van document">
 
 								<textarea name="editor" id="editor">{$body}</textarea>
 
@@ -128,7 +135,7 @@
 						<button type="submit" name="set" value="save_document" class="btn btn-success mt-2">
 							<i class="icon-check mr-1"></i>Document opslaan
 						</button>
-						<a target="_blank" href="instellingen/werkgever/documentenpreview/4" class="btn btn-light mt-2">
+						<a target="_blank" href="instellingen/werkgever/documentenpreview/{$settings.template_id}" class="btn btn-light mt-2">
 							<i class="icon-file-pdf mr-1"></i>PDF Voorbeeld
 						</a>
 

@@ -999,7 +999,7 @@
     </table>
     <table id="254" parent="3" name="documenten"/>
     <table id="255" parent="3" name="documenten_categorieen"/>
-    <table id="256" parent="3" name="documenten_signed"/>
+    <table id="256" parent="3" name="documenten_handtekeningen"/>
     <table id="257" parent="3" name="documenten_templates_html"/>
     <table id="258" parent="3" name="documenten_templates_settings"/>
     <table id="259" parent="3" name="emails"/>
@@ -1429,97 +1429,95 @@
       <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="381" parent="254" name="delete_on">
+    <column id="381" parent="254" name="html">
       <Position>21</Position>
-      <DataType>datetime|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="382" parent="254" name="html">
-      <Position>22</Position>
       <DataType>text|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="383" parent="254" name="PRIMARY">
+    <key id="382" parent="254" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>document_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="384" parent="255" name="categorie_id">
+    <column id="383" parent="255" name="categorie_id">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="385" parent="255" name="categorie">
+    <column id="384" parent="255" name="categorie">
       <Position>2</Position>
       <DataType>varchar(100)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="386" parent="255" name="dir">
+    <column id="385" parent="255" name="dir">
       <Position>3</Position>
       <DataType>varchar(128)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="387" parent="255" name="deleted">
+    <column id="386" parent="255" name="deleted">
       <Position>4</Position>
       <DataType>tinyint(1)|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>0</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="388" parent="255" name="PRIMARY">
+    <key id="387" parent="255" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>categorie_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="389" parent="256" name="id">
+    <column id="388" parent="256" name="id">
       <Position>1</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="390" parent="256" name="document_id">
+    <column id="389" parent="256" name="document_id">
       <Position>2</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="391" parent="256" name="werknemer_id">
+    <column id="390" parent="256" name="user_id">
       <Position>3</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="392" parent="256" name="inlener_id">
+    <column id="391" parent="256" name="werknemer_id">
       <Position>4</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="393" parent="256" name="uitzender_id">
+    <column id="392" parent="256" name="inlener_id">
       <Position>5</Position>
       <DataType>int(11) unsigned|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="394" parent="256" name="naam">
+    <column id="393" parent="256" name="uitzender_id">
       <Position>6</Position>
+      <DataType>int(11) unsigned|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="394" parent="256" name="naam">
+      <Position>7</Position>
       <DataType>varchar(128)|0s</DataType>
-      <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="395" parent="256" name="handtekening">
-      <Position>7</Position>
+      <Position>8</Position>
       <DataType>longblob|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="396" parent="256" name="ip">
-      <Position>8</Position>
+      <Position>9</Position>
       <DataType>varchar(64)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="397" parent="256" name="signed_on">
-      <Position>9</Position>
+      <Position>10</Position>
       <DataType>datetime|0s</DataType>
-      <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
     <key id="398" parent="256" name="PRIMARY">

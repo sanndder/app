@@ -1,5 +1,6 @@
 <?php
 
+use models\documenten\DocumentGroup;
 use models\forms\Formbuilder;
 use models\inleners\InlenerGroup;
 use models\uitzenders\Uitzender;
@@ -341,7 +342,11 @@ class Dossier extends MY_Controller
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
 		$this->checkaccess($uitzender);
-
+		
+		$documentGroup = new DocumentGroup();
+		$documenten = $documentGroup->uitzender( $uitzender_id )->get();
+		
+		$this->smarty->assign('documenten', $documenten);
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/documenten.tpl');
 	}

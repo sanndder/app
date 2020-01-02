@@ -26,6 +26,7 @@ class Uitzender_model extends MY_Model
 	public $_redirect_url = NULL;
 	
 	private $_samenwerkingsovereenkomst_template_id = 4;
+	private $_verwerkingsovereenkomst_template_id = 5;
 	
 	/*
 	 * @var array
@@ -123,9 +124,14 @@ class Uitzender_model extends MY_Model
 	{
 		//Samenwerkingsovereenkomst wanneer nodig
 		if( $this->getSamenwerkingsovereenkomstID() === NULL )
-			$this->_generateSamenwerkingsovereenkomst();
+			$this->_autoGenerateOvereenkomst( $this->_samenwerkingsovereenkomst_template_id );
+		
+		//Samenwerkingsovereenkomst wanneer nodig
+		if( $this->getVerwerkingsovereenkomstID() === NULL )
+			$this->_autoGenerateOvereenkomst( $this->_verwerkingsovereenkomst_template_id );
 		
 		$result['samenwerkingsovereenkomst'] = $this->getSamenwerkingsovereenkomstID();
+		$result['verwerkingsovereenkomst'] = $this->getVerwerkingsovereenkomstID();
 		
 		return $result;
 	}
@@ -135,14 +141,12 @@ class Uitzender_model extends MY_Model
 	 * Samenwerkingsovereenkomst maken
 	 *@return void
 	 */
-	private function _generateSamenwerkingsovereenkomst()
+	private function _autoGenerateOvereenkomst( $template_id )
 	{
-		
-		$template = new Template( $this->_samenwerkingsovereenkomst_template_id ); //4 is samenwerkingsovereenkomst
+		$template = new Template( $template_id ); //4 is samenwerkingsovereenkomst
 		
 		$document = DocumentFactory::createFromTemplateObject( $template );
-		$pdf = $document->setUitzenderID( $this->uitzender_id )->build()->pdf();
-		
+		$document->setUitzenderID( $this->uitzender_id )->build()->pdf();
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -161,7 +165,26 @@ class Uitzender_model extends MY_Model
 		
 		return $row['document_id'];
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Verwerkingsovereenkomst ID ophalen
+	 *@return int?
+	 */
+	public function getVerwerkingsovereenkomstID()
+	{
+		$sql = "SELECT document_id FROM documenten WHERE uitzender_id = $this->uitzender_id AND deleted = 0 AND template_id = $this->_verwerkingsovereenkomst_template_id LIMIT 1";
+		$query = $this->db_user->query( $sql );
 		
+		$row = DBhelper::toRow( $query );
+		if( $row === NULL )
+			return $row;
+		
+		return $row['document_id'];
+	}
+
+
 		
 		
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

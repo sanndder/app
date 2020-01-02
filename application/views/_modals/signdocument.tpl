@@ -22,12 +22,12 @@
 			<div class="modal-body">
 
 				<button type="button" class="btn btn-success toggle-pad mb-3">
-					<i class="icon-pen6 mr-2"></i>Document tekenen
+					<i class="icon-pen6 mr-2"></i>Akkoord en tekenen
 				</button>
 
 				<div id="signature-pad" style="text-align: center; display: none" class="mb-2">
 					<div class="stripe"></div>
-					<canvas width="450" height="200" class="canvas cursor-pencil"></canvas><br />
+					<canvas width="450" height="180" class="canvas cursor-pencil"></canvas><br />
 					<button class="btn btn-success" data-action="sign">tekenen</button>
 					<button class="btn btn-outline-danger" data-action="clear">wissen</button>
 				</div>

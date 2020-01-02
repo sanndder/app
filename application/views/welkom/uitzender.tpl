@@ -42,7 +42,7 @@
 						<div class="card-body">
 
 							<div class="media">
-                                {if !$accepted_av}<span style="font-size: 26px" class="mr-3 number-av"> 1.</span>{/if}
+                                {if !$accepted_av}<span style="font-size: 26px" class="mr-3 number number-av"> 1.</span>{/if}
 								<i class="far fa-check-circle check-av fa-2x mr-3 mt-1" {if !$accepted_av}style="display: none;"{/if}></i>
 
                                 {if !$accepted_av}
@@ -66,13 +66,16 @@
 
 						<div class="card-body">
 
-							<div class="media">
-								<span style="font-size: 26px" class="mr-3"> 2.</span>
-								<i class="far fa-check-circle check-samenwerkingsovereenkomst fa-2x mr-3 mt-1" {if !$samenwerkingsovereenkomst.signed}style="display: none;"{/if}></i>
+							<div class="media step-2">
+                                {if !$samenwerkingsovereenkomst.signed}<span style="font-size: 26px" class="mr-3 number"> 2.</span>{/if}
+								<i class="far fa-check-circle  fa-2x mr-3 mt-1" {if !$samenwerkingsovereenkomst.signed}style="display: none;"{/if}></i>
 
-								<button type="button" onclick="modalSignDocument( {$samenwerkingsovereenkomst.document_id} )" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
+                                {if !$samenwerkingsovereenkomst.signed}
+								<button type="button" onclick="modalSignDocumentWelkom( {$samenwerkingsovereenkomst.document_id}, '2' )" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
 									<i class="icon-pencil5 mr-2"></i>overeenkomst tekenen
 								</button>
+								{/if}
+
 								<div class="media-body mt-2">
 									<strong class="font-weight-bold">Samenwerkingsovereenkomst</strong> ondertekenen
 								</div>
@@ -87,13 +90,16 @@
 
 						<div class="card-body">
 
-							<div class="media">
-								<span style="font-size: 26px" class="mr-3"> 3.</span>
-								<i class="far fa-check-circle check-verwerkinsovereenkomst fa-2x mr-3 mt-1" {if !$samenwerkingsovereenkomst.signed}style="display: none;"{/if}></i>
+							<div class="media step-3">
+                                {if !$verwerkingsovereenkomst.signed}<span style="font-size: 26px" class="mr-3 number"> 3.</span>{/if}
+								<i class="far fa-check-circle fa-2x mr-3 mt-1" {if !$verwerkingsovereenkomst.signed}style="display: none;"{/if}></i>
 
-								<button type="button" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
+                                {if !$verwerkingsovereenkomst.signed}
+								<button type="button" onclick="modalSignDocumentWelkom( {$verwerkingsovereenkomst.document_id}, '3' )" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
 									<i class="icon-pencil5 mr-2"></i>overeenkomst tekenen
 								</button>
+								{/if}
+
 								<div class="media-body mt-2">
 									Omdat wij werken met persoonsgegevens dient u onze <strong class="font-weight-bold">verwerkingsovereenkomst</strong> te tekenen.
 								</div>
@@ -103,6 +109,8 @@
 						</div>
 					</div>
 
+
+					<a href="dashboard/uitzender" class="btn btn-success btn-labeled btn-labeled-left btn-lg btn-start" style="display: none"><b><i class="icon-file-check"></i></b>We hebben alles wat we nodig hebben. Aan de slag!</a>
 
 				</div><!-- /col -->
 			</div><!-- /row -->
@@ -120,7 +128,6 @@
 					<h5 class="modal-title">Algemene voorwaarden {$werkgever.bedrijfsnaam} <span class="var-action"></span></h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
-
 
 				<div class="modal-body pl-4 pr-4">
 					{$av}

@@ -7,6 +7,8 @@ use models\email\Email;
 use models\file\File;
 use models\file\Img;
 use models\file\Pdf;
+use models\pdf\PdfFactuur;
+use models\pdf\PdfFactuurDefault;
 use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingCollection;
 
@@ -39,7 +41,10 @@ class Test extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function pdf()
 	{
+		$pdf = new PdfFactuurDefault();
+		$pdf->setHeader()->setFooter()->setBody()->preview();
 		
+		die();
 		$this->smarty->display('test/pdf.tpl');
 	}
 	
@@ -300,8 +305,7 @@ class Test extends MY_Controller {
 		//show( $cao->periodieken() );
 		
 		
-		//$pdf = new models\pdf\PdfFactuur();
-		//$pdf->setHeader()->setFooter()->view();
+	
 
 		/*
 		$row['file_name'] = 'image.jpg';

@@ -1,6 +1,6 @@
-//
+//----------------------------------------------------------------------------------------------------------------------------
 // Toggle right sidebar
-//
+//----------------------------------------------------------------------------------------------------------------------------
 $(function() {
    $('.toggle-right-sidebar').on('click', function() {
       if( $('.sidebar-right').css('width') == '0px' )
@@ -16,9 +16,9 @@ $(function() {
    });
 });
 
-//
+//----------------------------------------------------------------------------------------------------------------------------
 // AJAX verwijder ID bewijs
-//
+//----------------------------------------------------------------------------------------------------------------------------
 function deleteIDbewijs( werknemer_id, side ){
    //set data
    $.ajax({
@@ -41,9 +41,18 @@ function deleteIDbewijs( werknemer_id, side ){
    });
 }
 
-//
+//----------------------------------------------------------------------------------------------------------------------------
+// Checken of alle documenten zijn getekend, zo jan dan verder button laten zien
+//----------------------------------------------------------------------------------------------------------------------------
+function checkAllWelkomDocumentsSigned() {
+   if( $('.number').length === 0 )
+      $('.btn-start').show();
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------------
 // Accepteer Algemene Voorwaarden
-//
+//----------------------------------------------------------------------------------------------------------------------------
 function acceptAV() {
 
    //spinner
@@ -61,9 +70,11 @@ function acceptAV() {
        if( int === '1' )
        {
           //hide stuff
-          $('.number-av').hide();
+          $('.number-av').remove();
           $('.btn-av').hide();
           $('.check-av').show();
+
+          checkAllWelkomDocumentsSigned();
        }
        else
           alert('Er gaat wat mis tijdens de AJAX call, wegschrijven naar de database is mislukt');

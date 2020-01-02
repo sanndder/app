@@ -48,8 +48,8 @@ class Connector
 
 		//copy user
 		$this->user = $CI->user;
-		$this->uitzender = $CI->uitzender;
 		$this->werkgever = $CI->werkgever;
+		if( isset($CI->uitzender))	$this->uitzender = $CI->uitzender;
 
 		$config['hostname'] = 'localhost';
 		$config['username'] = $CI->config->item('db_user');
