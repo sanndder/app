@@ -35,7 +35,15 @@ class Ajax extends MY_Controller
 		if( !$document->userHasAccess() )
 			die('Geen toegang');
 		
-		$document->sign();
+		if( $document->sign() === true )
+			$result['status'] = 'success';
+		else
+		{
+			$result['status'] = 'error';
+			$result['error'] = 'Ondertekening is mislukt, neem contact met ons op';
+		}
+		
+		echo json_encode($result);
 	}
 	
 
