@@ -58,7 +58,7 @@ class EmailGroup extends Connector {
 		if( $folder == 'trash' )
 			$sql .= " WHERE deleted = 1";
 		
-		$sql .= " LIMIT 100";
+		$sql .= " ORDER BY send_on DESC LIMIT 100";
 		
 		$query = $this->db_user->query( $sql );
 		

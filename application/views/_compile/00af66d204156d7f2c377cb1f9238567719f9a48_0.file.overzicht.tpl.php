@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-05 10:27:18
+/* Smarty version 3.1.33, created on 2020-01-03 16:01:12
   from 'C:\xampp\htdocs\app\application\views\crm\inleners\overzicht.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de8cd7615df78_64665787',
+  'unifunc' => 'content_5e0f5738bc9c43_08394000',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '00af66d204156d7f2c377cb1f9238567719f9a48' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\crm\\inleners\\overzicht.tpl',
-      1 => 1571305621,
+      1 => 1578063600,
       2 => 'file',
     ),
   ),
@@ -20,36 +20,36 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de8cd7615df78_64665787 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e0f5738bc9c43_08394000 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_3770530435de8cd7610bee0_35778573', "title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_1773350775e0f5738b9ae38_51620600', "title");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_11547092005de8cd7610fd68_24105692', "header-icon");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_10224184555e0f5738b9ecb9_35600314', "header-icon");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_4054167985de8cd76113be0_16914731', "header-title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19004397805e0f5738ba2b33_47238729', "header-title");
 ?>
 
 <?php $_smarty_tpl->_assignInScope('datatable', "true");?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_893310805de8cd76117a60_37062648', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19951333025e0f5738ba69b5_78622691', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, '../../layout.tpl');
 }
 /* {block "title"} */
-class Block_3770530435de8cd7610bee0_35778573 extends Smarty_Internal_Block
+class Block_1773350775e0f5738b9ae38_51620600 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_3770530435de8cd7610bee0_35778573',
+    0 => 'Block_1773350775e0f5738b9ae38_51620600',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -59,12 +59,12 @@ Inleners<?php
 }
 /* {/block "title"} */
 /* {block "header-icon"} */
-class Block_11547092005de8cd7610fd68_24105692 extends Smarty_Internal_Block
+class Block_10224184555e0f5738b9ecb9_35600314 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-icon' => 
   array (
-    0 => 'Block_11547092005de8cd7610fd68_24105692',
+    0 => 'Block_10224184555e0f5738b9ecb9_35600314',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -74,12 +74,12 @@ icon-user-tie<?php
 }
 /* {/block "header-icon"} */
 /* {block "header-title"} */
-class Block_4054167985de8cd76113be0_16914731 extends Smarty_Internal_Block
+class Block_19004397805e0f5738ba2b33_47238729 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-title' => 
   array (
-    0 => 'Block_4054167985de8cd76113be0_16914731',
+    0 => 'Block_19004397805e0f5738ba2b33_47238729',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -89,12 +89,12 @@ Inleners<?php
 }
 /* {/block "header-title"} */
 /* {block "content"} */
-class Block_893310805de8cd76117a60_37062648 extends Smarty_Internal_Block
+class Block_19951333025e0f5738ba69b5_78622691 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_893310805de8cd76117a60_37062648',
+    0 => 'Block_19951333025e0f5738ba69b5_78622691',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -271,9 +271,13 @@ echo $_GET['q2'];
 						</div>
 
 						<div class="justify-content-between">
-							<a href="crm/inleners/dossier/bedrijfsgegevens" class="btn bg-teal-400">
+							<a href="crm/inleners/kredietlimiet" class="btn bg-teal-400">
 								<i class="icon-plus-circle2 icon mr-1"></i>
-								<span>Nieuwe inlener</span>
+								<span>Kredietlimiet aanvragen</span>
+							</a>
+							<a href="crm/uitzenders/dossier/bedrijfsgegevens" class="btn btn-outline bg-teal-400 text-teal-400 border-teal-400">
+								<i class="icon-pencil7 icon mr-1"></i>
+								<span>Inlener invoeren</span>
 							</a>
 						</div>
 					</div>

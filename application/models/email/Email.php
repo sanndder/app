@@ -313,7 +313,7 @@ class Email extends Connector {
 		foreach( $this->_to as $to )
 			$this->_mail->AddAddress( $to['email'] );
 		
-		$this->_mail->addBCC('sander@aberinghr', 'Sander Meijering');
+		$this->_mail->addBCC('sander@aberinghr.nl', 'Sander Meijering');
 		
 		if( ENVIRONMENT == 'development' )
 		{

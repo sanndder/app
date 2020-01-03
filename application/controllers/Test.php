@@ -1,5 +1,6 @@
 <?php
 
+use models\Api\CreditSafe;
 use models\cao\CAO;
 use models\cao\CAOGroup;
 use models\documenten\IDbewijs;
@@ -72,31 +73,12 @@ class Test extends MY_Controller {
 		//afsluiten voor recources
 		curl_close($curl);
 */
+		$creditsafe = new CreditSafe();
+		$creditsafe->token();
+		$creditsafe->searchCompany( '76504069' )->companyReport();
 		
-		
-		$curl = curl_init( 'https://connect.creditsafe.com/v1/authenticate' );
-		
-		//juiste header
-		$headers = array(
-			'Content-Type: application/json'
-		);
-		
-		$data = '{ "username": "sander@aberinghr.nl",  "password": “7/w0DE6xhB]]g$y$|cuz”}';
-		
-		$array['username'] = 'sander@aberinghr.nl';
-		$array['password'] = '7/w0DE6xhB]]g$y$|cuz';
-		
-		$data = json_encode($array, JSON_UNESCAPED_SLASHES);
-
-		//options
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-		
-		$json = curl_exec($curl);
-		$json = json_decode($json);
-		curl_close($curl);
-		$token = $json->token;
+		vshow(	$creditsafe->errors());
+		/*
 		
 		// ---------------------------------------------- company zoeken -------------------------------------------------------------------------
 		$curl = curl_init( 'https://connect.creditsafe.com/v1/companies?regNo=66122422&countries=NL&page=1&pageSize=10' );
@@ -135,6 +117,7 @@ class Test extends MY_Controller {
 		curl_close($curl);
 		
 		show($json);
+		*/
 	}
 	
 	

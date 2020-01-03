@@ -170,9 +170,13 @@
 						</div>
 
 						<div class="justify-content-between">
-							<a href="crm/inleners/dossier/bedrijfsgegevens" class="btn bg-teal-400">
+							<a href="crm/inleners/kredietlimiet" class="btn bg-teal-400">
 								<i class="icon-plus-circle2 icon mr-1"></i>
-								<span>Nieuwe inlener</span>
+								<span>Kredietlimiet aanvragen</span>
+							</a>
+							<a href="crm/uitzenders/dossier/bedrijfsgegevens" class="btn btn-outline bg-teal-400 text-teal-400 border-teal-400">
+								<i class="icon-pencil7 icon mr-1"></i>
+								<span>Inlener invoeren</span>
 							</a>
 						</div>
 					</div>

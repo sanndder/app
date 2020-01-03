@@ -109,6 +109,7 @@
 
 </div>
 
+{if $user_type == 'werkgever'}
 <div class="sidebar-right">
 	<div class="row ml-2">
 		<div class="col-md-12 pl-2 pt-2">
@@ -125,8 +126,24 @@
 			hsmeijering@home.nl
 		</div><!-- /col -->
 	</div><!-- /row -->
-</div>
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			76504069
+		</div><!-- /col -->
+	</div><!-- /row -->
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			Reitscheweg 37
+		</div><!-- /col -->
+	</div><!-- /row -->
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			5232BX 's-Hertogenbosch
+		</div><!-- /col -->
+	</div><!-- /row -->
 
+</div>
+{/if}
 
 </body>
 </html>

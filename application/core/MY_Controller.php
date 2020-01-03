@@ -37,9 +37,11 @@ class MY_Controller extends CI_Controller
 
 		//init user
 		$this->load->model('user_model', 'user');
-
+		$this->smarty->assign( 'user_type' , $this->user->user_type );
+		
 		//always load werkgever
 		$this->load->model('werkgever_model', 'werkgever');
+	
 		
 		//deze classes niet redirecten
 		$no_redirect[] = 'welkom';

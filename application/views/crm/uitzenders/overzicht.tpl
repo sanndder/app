@@ -279,10 +279,8 @@
 		<!-- /sidebar content -->
 
 	</div>
-
-
 	<!--------------------------------------------------------------------------- Algemene voorwaarden ------------------------------------------------->
-	<div id="modal_email_uitzender" class="modal fade" tabindex="-1">
+	<div id="modal_email_uitzender" class="modal fade" tabindex="-1" style="top: auto">
 		<div class="modal-dialog modal-md">
 			<div class="modal-content">
 				<div class="modal-header pl-4 pr-4">
@@ -293,6 +291,10 @@
 				<div class="modal-body pl-4 pr-4">
 
 					<form>
+
+						<div class="alert alert-danger border-0" style="display: none">
+							<span class="font-weight-semibold"></span>
+						</div>
 
 						<!-- voorletters -->
 						<div class="form-group row mb-1">
@@ -307,21 +309,39 @@
 
 				</div>
 				<div class="modal-footer pl-4 pr-4">
-					<button onclick="sendAanmeldEmail()" type="button" class="btn btn-primary">
+					<button onclick="sendAanmeldEmail( this )" type="button" class="btn btn-primary">
 						<i class="icon-envelop mr-1"></i> Verzenden
 					</button>
-					<button type="button" class="btn btn-outline-primary" data-dismiss="modal"><i class="icon-cross mt-1"></i> Annuleren</button>
+					<button type="button" class="btn btn-outline-primary" data-dismiss="modal">
+						<i class="icon-cross mt-1"></i> Annuleren
+					</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<script>
-		
-		function sendAanmeldEmail()
-		{
-			alert( $('.aanmeld-email').val() );
+
+        function sendAanmeldEmail( obj ) {
+
+            $btn = $(obj);
+            $modal = $btn.parents('#modal_email_uitzender');
+            $modal.find('.alert-danger').hide();
+            $i = $btn.find('i');
+            $i.removeClass('icon-envelop').addClass('icon-spinner2').addClass('spinner');
+            email = $modal.find('[name=email]').val();
+            $.post( "crm/uitzenders/ajax/emailaanmeldlink", { email: email }, function( result ) {
+	            if(result.status === 'error')
+                    $modal.find('.alert-danger').show().find('span').html(result.error);
+	            else
+                {
+                    $modal.find('[name=email]').val('');
+                    $modal.modal('hide');
+                    Swal.fire({ type: 'success', title: 'De aanmeldlink is verzonden aan ' + email, buttonsStyling: false, confirmButtonClass: 'btn btn-primary', cancelButtonClass: 'btn btn-light' });
+                }
+            })
+            .fail( function() { alert( "Er gaat wat mis, aanmeldlink kon niet worden verstuurd" ); })
+	        .always(function(){ $i.addClass('icon-envelop').removeClass('icon-spinner2').removeClass('spinner'); })
         }
-		
+
 	</script>
 {/block}
