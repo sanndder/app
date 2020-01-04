@@ -75,9 +75,12 @@ class Test extends MY_Controller {
 */
 		$creditsafe = new CreditSafe();
 		$creditsafe->token();
-		$creditsafe->searchCompany( '76504069' )->companyReport();
+		$info = $creditsafe->searchCompany( '17054234' );
 		
-		vshow(	$creditsafe->errors());
+		$report = $creditsafe->companyReport( '27165530' );
+		
+		show($report);
+		show(	$creditsafe->errors());
 		/*
 		
 		// ---------------------------------------------- company zoeken -------------------------------------------------------------------------

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-05 10:27:20
+/* Smarty version 3.1.33, created on 2020-01-04 22:06:12
   from 'C:\xampp\htdocs\app\application\views\crm\inleners\dossier\_sidebar.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de8cd7834aa15_41782778',
+  'unifunc' => 'content_5e10fe441f2042_69159627',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '47d0d09214570426c5556866035ed4778504c6c9' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\crm\\inleners\\dossier\\_sidebar.tpl',
-      1 => 1574180347,
+      1 => 1578171970,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de8cd7834aa15_41782778 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e10fe441f2042_69159627 (Smarty_Internal_Template $_smarty_tpl) {
 ?>	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start">
 
@@ -124,6 +124,14 @@ function content_5de8cd7834aa15_41782778 (Smarty_Internal_Template $_smarty_tpl)
 								<a href="crm/inleners/dossier/documenten/<?php echo $_smarty_tpl->tpl_vars['inlener']->value->inlener_id;?>
 " class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'documenten') {?>active<?php }?>">
 									<i class="icon-file-text2 mr-2"></i>Documenten
+								</a>
+							</li>
+
+							<!-- li Krediet -->
+							<li class="nav-item">
+								<a href="crm/inleners/dossier/kredietoverzicht/<?php echo $_smarty_tpl->tpl_vars['inlener']->value->inlener_id;?>
+" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'kredietoverzicht') {?>active<?php }?>">
+									<i class="icon-stats-dots mr-2"></i>Kredietoverzicht
 								</a>
 							</li>
 

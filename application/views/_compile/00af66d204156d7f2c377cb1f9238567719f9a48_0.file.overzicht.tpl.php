@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2020-01-03 16:01:12
+/* Smarty version 3.1.33, created on 2020-01-04 18:19:27
   from 'C:\xampp\htdocs\app\application\views\crm\inleners\overzicht.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5e0f5738bc9c43_08394000',
+  'unifunc' => 'content_5e10c91f1169f2_04931842',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '00af66d204156d7f2c377cb1f9238567719f9a48' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\crm\\inleners\\overzicht.tpl',
-      1 => 1578063600,
+      1 => 1578158365,
       2 => 'file',
     ),
   ),
@@ -20,36 +20,36 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5e0f5738bc9c43_08394000 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e10c91f1169f2_04931842 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_1773350775e0f5738b9ae38_51620600', "title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_7745196035e10c91f0e3d64_87554005', "title");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_10224184555e0f5738b9ecb9_35600314', "header-icon");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_18390004825e10c91f0e7be9_92555183', "header-icon");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19004397805e0f5738ba2b33_47238729', "header-title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_6192751115e10c91f0eba65_08273241', "header-title");
 ?>
 
 <?php $_smarty_tpl->_assignInScope('datatable', "true");?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_19951333025e0f5738ba69b5_78622691', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_20640866985e10c91f0ef8e2_97459400', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, '../../layout.tpl');
 }
 /* {block "title"} */
-class Block_1773350775e0f5738b9ae38_51620600 extends Smarty_Internal_Block
+class Block_7745196035e10c91f0e3d64_87554005 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_1773350775e0f5738b9ae38_51620600',
+    0 => 'Block_7745196035e10c91f0e3d64_87554005',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -59,12 +59,12 @@ Inleners<?php
 }
 /* {/block "title"} */
 /* {block "header-icon"} */
-class Block_10224184555e0f5738b9ecb9_35600314 extends Smarty_Internal_Block
+class Block_18390004825e10c91f0e7be9_92555183 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-icon' => 
   array (
-    0 => 'Block_10224184555e0f5738b9ecb9_35600314',
+    0 => 'Block_18390004825e10c91f0e7be9_92555183',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -74,12 +74,12 @@ icon-user-tie<?php
 }
 /* {/block "header-icon"} */
 /* {block "header-title"} */
-class Block_19004397805e0f5738ba2b33_47238729 extends Smarty_Internal_Block
+class Block_6192751115e10c91f0eba65_08273241 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-title' => 
   array (
-    0 => 'Block_19004397805e0f5738ba2b33_47238729',
+    0 => 'Block_6192751115e10c91f0eba65_08273241',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -89,12 +89,12 @@ Inleners<?php
 }
 /* {/block "header-title"} */
 /* {block "content"} */
-class Block_19951333025e0f5738ba69b5_78622691 extends Smarty_Internal_Block
+class Block_20640866985e10c91f0ef8e2_97459400 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_19951333025e0f5738ba69b5_78622691',
+    0 => 'Block_20640866985e10c91f0ef8e2_97459400',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -312,11 +312,21 @@ if ($_smarty_tpl->tpl_vars['i']->value['archief'] == 1) {?>color: #F44336;<?php 
 </td>
 									<td>
                                         <?php if ($_smarty_tpl->tpl_vars['i']->value['complete'] == 0) {?>
-											<span class="badge bg-success  mr-1">NIEUW</span>
+											<?php if (isset($_smarty_tpl->tpl_vars['i']->value['krediet'])) {?>
+												<span class="badge bg-primary  mr-1">KREDIET</span>
+											<?php } else { ?>
+		                                        <span class="badge bg-success  mr-1">NIEUW</span>
+                                            <?php }?>
                                         <?php }?>
-										<a style="<?php if ($_smarty_tpl->tpl_vars['i']->value['archief'] == 1) {?>color: #F44336;<?php }?>" href="crm/inleners/dossier/overzicht/<?php echo $_smarty_tpl->tpl_vars['i']->value['inlener_id'];?>
+                                        <?php if (!isset($_smarty_tpl->tpl_vars['i']->value['krediet'])) {?>
+											<a style="<?php if ($_smarty_tpl->tpl_vars['i']->value['archief'] == 1) {?>color: #F44336;<?php }?>" href="crm/inleners/dossier/overzicht/<?php echo $_smarty_tpl->tpl_vars['i']->value['inlener_id'];?>
 "><?php echo $_smarty_tpl->tpl_vars['i']->value['bedrijfsnaam'];?>
 </a>
+                                        <?php } else { ?>
+	                                        <a style="<?php if ($_smarty_tpl->tpl_vars['i']->value['archief'] == 1) {?>color: #F44336;<?php }?>" href="crm/inleners/dossier/kredietoverzicht/k<?php echo $_smarty_tpl->tpl_vars['i']->value['id'];?>
+"><?php echo $_smarty_tpl->tpl_vars['i']->value['bedrijfsnaam'];?>
+</a>
+                                        <?php }?>
 									</td>
 									<td>
 										<a href="crm/uitzenders/dossier/overzicht/<?php echo $_smarty_tpl->tpl_vars['i']->value['uitzender_id'];?>

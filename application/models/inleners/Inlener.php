@@ -74,7 +74,6 @@ class Inlener extends Connector
 	}
 
 
-
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	* Koppel inlener aan uitzender, voor nu alleen 1 op 1
@@ -221,11 +220,7 @@ class Inlener extends Connector
 	{
 		$sql = "SELECT * FROM inleners_factuurgegevens WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
+		return DBhelper::toRow( $query, 'NULL' );
 	}
 
 
@@ -237,11 +232,41 @@ class Inlener extends Connector
 	{
 		$sql = "SELECT * FROM inleners_bedrijfsgegevens WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
+		return DBhelper::toRow( $query, 'NULL' );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get kredietgegevens
+	 */
+	public function kredietgegevens()
+	{
+		$data['kredietlimiet'] = NULL;
+		$data['kredietgebruik'] = NULL;
+		
+		//huidig krediet limiet
+		$sql = "SELECT * FROM inleners_kredietgegevens WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
+		$query = $this->db_user->query($sql);
+		
+		if( $query->num_rows() > 0 )
+		{
+			$row = $query->row_array();
+			$data['kredietlimiet'] = $row['kredietlimiet'];
+		}
+		
+		//krediet gebruik
+		$sql = "SELECT * FROM inleners_kredietgebruik WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
+		$query = $this->db_user->query($sql);
+		
+		if( $query->num_rows() > 0 )
+		{
+			$row = $query->row_array();
+			$data['kredietgebruik'] = $row['kredietgebruik'];
+		}
+	
+		return $data;
+		
 	}
 
 
@@ -266,11 +291,7 @@ class Inlener extends Connector
 	{
 		$sql = "SELECT * FROM inleners_emailadressen WHERE deleted = 0 AND inlener_id = $this->inlener_id LIMIT 1";
 		$query = $this->db_user->query($sql);
-
-		if ($query->num_rows() == 0)
-			return NULL;
-
-		return $query->row_array();
+		return DBhelper::toRow( $query, 'NULL' );
 	}
 
 

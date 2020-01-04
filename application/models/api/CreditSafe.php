@@ -20,21 +20,21 @@ class CreditSafe extends Connector
 	/*
 	 * @var array
 	 */
-	protected $_api_token = NULL;
-	protected $_api_username = 'sander@aberinghr.nl';
-	protected $_api_password = '7/w0DE6xhB]]g$y$|cuz';
-	protected $_api_url_base = 'https://connect.creditsafe.com/v1';
+	private $_api_token = NULL;
+	private $_api_username = 'sander@aberinghr.nl';
+	private $_api_password = '7/w0DE6xhB]]g$y$|cuz';
+	private $_api_url_base = 'https://connect.creditsafe.com/v1';
 	
-	protected $_kvknr = NULL;
-	protected $_cs_id = NULL;
+	private $_kvknr = NULL;
+	private $_cs_id = NULL;
 
 
 	/*
 	 * @var array
 	 */
-	protected $_error = NULL;
-
-
+	private $_error = NULL;
+	private $_report_date = NULL;
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Init api call
@@ -44,33 +44,42 @@ class CreditSafe extends Connector
 	public function __construct()
 	{
 		parent::__construct();
-		
-		//eerst token ophalen
-		$this->_setApiToken();
 	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Api token instellen
-	 * @return string|null
+	 * @return array|null
 	 */
-	public function companyReport( $refresh = false )
+	public function companyReport( $kvknr, $refresh = false )
 	{
-		//check of ID al bekend is
+		//make available
+		$this->_kvknr = $kvknr;
+		
+		//wanneer Creditsafe ID nog niet bekend is, dan moeten we die ophalen
+		if( !$this->_getCreditsafeIdFromDatabase( $kvknr ) )
+		{
+			if( $this->searchCompany($kvknr) === NULL )
+				return NULL;
+		}
+		
+		//check of ID bekend is
 		if( $this->_cs_id === NULL )
 		{
 			$this->_error[] = 'Geen Creditsafe ID bekend';
 			return NULL;
 		}
-		
 		//is er een report in de database
 		if( $refresh === false )
 		{
 			$report = $this->_getReportFromDatabase();
 			if( $report !== false )
-				return $report;
+				return json_decode($report,true);
 		}
+		
+		//eerst token ophalen
+		$this->_setApiToken();
 		
 		//init
 		$curl = curl_init( $this->_api_url_base . '/companies/' . $this->_cs_id );
@@ -88,38 +97,28 @@ class CreditSafe extends Connector
 		$json = curl_exec($curl);
 		$json = json_decode($json);
 		$curl_info = curl_getinfo($curl);
+		show('curl 2');
+		curl_close($curl);
 		
-		//call gelukt?
-		if( $curl_info['http_code'] == 0 || $curl_info['http_code'] == 404 )
-		{
-			$this->_error[] = 'URL is ongeldig (2)';
-			return NULL;
-		}
+		$json = $this->_processResult( $json, $curl_info );
 		
-		//token beschikbaar?
-		if( isset($json->report) )
+		if( $json !== false )
 		{
-			$json = json_encode($json->report);
-			show($json);
-			$this->_saveReport( $json );
-		}
-		else
-		{
-			if( isset($json->message) )
+			if( isset($json->report) )
 			{
-				$this->_error[] = $json->message;
-				if( isset($json->details)) $this->_error[] = $json->details;
-			}
-			elseif( isset($json->error) )
-			{
-				$this->_refreshApiToken();
-				$this->_error[] = $json->error;
+				$json = json_encode( $json->report );
+				$this->_saveReport( $json );
+				$this->_report_date = date('Y-m-d H:i:s');
+				return json_decode($json,true);
 			}
 			else
-				$this->_error[] = 'Er is een onbekende fout opgetreden (2)';
+			{
+				$this->_error[] = 'Er is geen rapport gevonden';
+				return NULL;
+			}
 		}
 		
-		curl_close($curl);
+		return NULL;
 	}
 	
 	
@@ -132,13 +131,25 @@ class CreditSafe extends Connector
 	{
 		$sql = "SELECT * FROM creditsafe_reports WHERE kvknr = ? AND deleted = 0 LIMIT 1";
 		$query = $this->db_user->query( $sql, array($this->_kvknr) );
-		
-		$row = DBhelper::toRow($query);
-		
+
+		$row = DBhelper::toRow($query, 'NULL');
+
 		if( $row === NULL )
 			return false;
 		
+		$this->_report_date = $row['timestamp'];
+		
 		return $row['report'];
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Rapport datum
+	 * @return string
+	 */
+	public function reportDate()
+	{
+		return $this->_report_date;	
 	}
 	
 	
@@ -163,17 +174,16 @@ class CreditSafe extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Api token instellen
-	 * @return object
+	 * Korte info van company ophalen
+	 * @return array?
 	 */
 	public function searchCompany( $kvknr )
 	{
 		//safe
 		$this->_kvknr = $kvknr;
 		
-		//check of ID al bekend is
-		if( $this->_getCreditsafeIdFromDatabase( $kvknr ) )
-			return $this;
+		//eerst token ophalen
+		$this->_setApiToken();
 		
 		//init
 		$curl = curl_init(  $this->_api_url_base . '/companies?regNo='.$kvknr.'&countries=NL&page=1&pageSize=10' );
@@ -191,49 +201,68 @@ class CreditSafe extends Connector
 		$json = curl_exec($curl);
 		$json = json_decode($json);
 		$curl_info = curl_getinfo($curl);
+
+		curl_close($curl);
 		
+		$json = $this->_processResult( $json, $curl_info );
+		
+		//TODO: ondersteuning voor meerdere vestigingen
+		if( $json !== false )
+		{
+			if( isset($json->totalSize) )
+			{
+				if( $json->totalSize == 0 )
+				{
+					$this->_error[] = 'KvK nummer leverde geen resultaten op';
+					return NULL;
+				}
+				else
+				{
+					if(isset($json->companies[0]) && isset($json->companies[0]->id) )
+					{
+						$this->_cs_id = $json->companies[0]->id;
+						$this->_saveCreditSafeId( $kvknr, $json->companies[0]->id );
+						return json_decode(json_encode($json->companies[0],true));
+					}
+				}
+			}
+		}
+		
+		return NULL;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Api token ophalen
+	 * @return string|bool
+	 */
+	public function _processResult( $json, $curl_info )
+	{
 		//call gelukt?
 		if( $curl_info['http_code'] == 0 || $curl_info['http_code'] == 404 )
 		{
 			$this->_error[] = 'URL is ongeldig (2)';
-			return NULL;
+			return false;
 		}
 		
-		//token beschikbaar?
-		if( isset($json->totalSize) )
+		if( isset($json->message ) )
 		{
-			if( $json->totalSize != 1 )
-				$this->_error[] = 'KvK nummer leverde geen resultaten op';
-			else
-			{
-				if(isset($json->companies[0]) && isset($json->companies[0]->id) )
-				{
-					$this->_cs_id = $json->companies[0]->id;
-					$this->_saveCreditSafeId( $kvknr, $json->companies[0]->id);
-				}
-			}
+			$this->_error[] = $json->message;
+			//extra info ?
+			if( isset($json->details))
+				$this->_error[] = $json->details;
+			
+			return false;
 		}
-		else
+		elseif( isset($json->error) )
 		{
-			if( isset($json->message) )
-			{
-				$this->_error[] = $json->message;
-				if( isset($json->details)) $this->_error[] = $json->details;
-			}
-			elseif( isset($json->error) )
-			{
-				$this->_refreshApiToken();
-				$this->_error[] = $json->error;
-			}
-			else
-				$this->_error[] = 'Er is een onbekende fout opgetreden (2)';
+			$this->_error[] = $json->error;
+			return false;
 		}
-		
-		curl_close($curl);
-		
-		return $this;
-	}
 
+		//geen erros, dan json terug
+		return $json;
+	}
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -245,7 +274,7 @@ class CreditSafe extends Connector
 	{
 		$sql = "SELECT creditsafe_id FROM creditsafe_id WHERE kvknr = ? LIMIT 1";
 		$query = $this->db_user->query( $sql, array($kvknr) );
-		
+
 		if( $query->num_rows() > 0 )
 		{
 			$data = $query->row_array();
@@ -265,43 +294,25 @@ class CreditSafe extends Connector
 	 */
 	public function _saveCreditSafeId( $kvknr, $creditsafe_id )
 	{
-		$insert['kvknr'] = $kvknr;
-		$insert['creditsafe_id'] = $creditsafe_id;
-		$insert['user_id'] = $this->user->user_id;
+		$query = $this->db_user->query( "SELECT * FROM creditsafe_id WHERE kvknr = ? AND creditsafe_id = ? LIMIT 1", array( $kvknr, $creditsafe_id ) );
 		
-		$this->db_user->insert( 'creditsafe_id', $insert );
+		if( $query->num_rows() == 0 )
+		{
+			$insert['kvknr'] = $kvknr;
+			$insert['creditsafe_id'] = $creditsafe_id;
+			$insert['user_id'] = $this->user->user_id;
+			
+			$this->db_user->insert( 'creditsafe_id', $insert );
+		}
 	}
 	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Api token instellen
-	 * @return void
-	 */
-	public function _setApiToken()
-	{
-		//token is al ingesteld. Gelijk door
-		if( $this->_api_token !== NULL )
-			return NULL;
-		
-		//is er een key in geheugen?
-		if( isset($_SESSION['credit_safe_token']) && isset($_SESSION['credit_safe_expires']) )
-		{
-			if( time() < $_SESSION['credit_safe_expires'] )
-				$this->_api_token = $_SESSION['credit_safe_token'];
-		}
-		//nieuwe key ophalen
-		else
-		{
-			$this->_refreshApiToken();
-		}
-	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Api token ophalen
 	 * @return void
 	 */
-	public function _refreshApiToken()
+	public function _setApiToken()
 	{
 		//init
 		$curl = curl_init( $this->_api_url_base . '/authenticate' );
@@ -334,8 +345,6 @@ class CreditSafe extends Connector
 		if( isset($json->token) )
 		{
 			$this->_api_token = $json->token;
-			$_SESSION['credit_safe_expires'] = time() + 60*59;//59 minuten erbij
-			$_SESSION['credit_safe_token'] = $json->token;
 		}
 		else
 		{

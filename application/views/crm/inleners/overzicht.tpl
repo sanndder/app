@@ -204,9 +204,17 @@
 									<td>{$i.inlener_id}</td>
 									<td>
                                         {if $i.complete == 0}
-											<span class="badge bg-success  mr-1">NIEUW</span>
+											{if isset($i.krediet)}
+												<span class="badge bg-primary  mr-1">KREDIET</span>
+											{else}
+		                                        <span class="badge bg-success  mr-1">NIEUW</span>
+                                            {/if}
                                         {/if}
-										<a style="{if $i.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/overzicht/{$i.inlener_id}">{$i.bedrijfsnaam}</a>
+                                        {if !isset($i.krediet)}
+											<a style="{if $i.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/overzicht/{$i.inlener_id}">{$i.bedrijfsnaam}</a>
+                                        {else}
+	                                        <a style="{if $i.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/kredietoverzicht/k{$i.id}">{$i.bedrijfsnaam}</a>
+                                        {/if}
 									</td>
 									<td>
 										<a href="crm/uitzenders/dossier/overzicht/{$i.uitzender_id}">{$i.uitzender}</a>

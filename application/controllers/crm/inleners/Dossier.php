@@ -1,10 +1,12 @@
 <?php
 
+use models\Api\CreditSafe;
 use models\cao\CAO;
 use models\cao\CAOGroup;
 use models\facturatie\Betaaltermijnen;
 use models\forms\Formbuilder;
 use models\inleners\Inlener;
+use models\Inleners\KredietaanvraagGroup;
 use models\uitzenders\UitzenderGroup;
 use models\utils\History;
 use models\utils\VisitsLogger;
@@ -44,6 +46,7 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function overzicht( $inlener_id = NULL )
 	{
+		
 		$inlener = new Inlener( $inlener_id );
 
 		//redirect indien nodig
@@ -64,7 +67,32 @@ class Dossier extends MY_Controller
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/overzicht.tpl');
 	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Krediet pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function kredietoverzicht( $inlener_id = NULL )
+	{
+		$inlener = new Inlener( $inlener_id );
+		$bedrijfsgegevens = $inlener->bedrijfsgegevens();
 
+		//krediet rapport ophalen
+		$creditsafe = new CreditSafe();
+		$rapport = $creditsafe->companyReport( $bedrijfsgegevens['kvknr'] );
+
+		//alle aanvragen ophalen
+		$kredietgroup = new KredietaanvraagGroup();
+		
+		//TODO: grafiek maken van gebruikt krediet
+		
+		$this->smarty->assign('rapport', $rapport);
+		$this->smarty->assign('rapport_datum', $creditsafe->reportDate() );
+		$this->smarty->assign('kredietgegevens', $inlener->kredietgegevens());
+		$this->smarty->assign('kredietaanvragen', $kredietgroup->inlener( $inlener_id )->all() );
+		$this->smarty->assign('inlener', $inlener);
+		$this->smarty->display('crm/inleners/dossier/kredietoverzicht.tpl');
+	}
 
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -108,6 +136,7 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function bedrijfsgegevens( $inlener_id = NULL )
 	{
+		//historische data ophalen
 		$log = new History();
 		$data = $log->table( 'inlener_bedrijfsgegevens')->index( array('inlener_id' => 3 ) )->data();
 		//show($data);

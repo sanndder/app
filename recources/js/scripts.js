@@ -34,18 +34,44 @@ $(function(){
 		$alert.hide(300);
 		$wachten = $('.status-wachten');
 		$zoeken = $('.status-zoeken');
+		$leeg = $('.status-leeg');
+		$table = $('.table-result');
 		
 		//check for int
-		if( isNaN(kvknr) )
+		if( isNaN(kvknr) ){
 			$alert.show(500).find('span').html('Het KvK nummer mag alleen uit cijfers bestaan');
+			return false;
+		}
 		
 		//zoeken aan
+		$table.hide();
 		$wachten.hide();
 		$zoeken.show();
+		$leeg.hide();
 		
 		//ajax call
-		$.when( getCreditInfo(kvknr) ).done(function(){
-
+		$.when( getCreditInfo(kvknr) ).done(function( json ){
+			if( json.status === 'error' )
+			{
+				$zoeken.hide();
+				$leeg.show();
+				errorHtml = '';
+				$.each( json.error, function (key, error){
+					errorHtml += error + '<br />';
+				});
+				$alert.show(500).find('span').html(errorHtml);
+			}
+			else
+			{
+				//naar tabel
+				$zoeken.hide();
+				$table.show(200);
+				$table.find('.td-name input').val( json.result.name );
+				$table.find('.td-street input').val( json.result.address.street );
+				$table.find('.td-city input').val( json.result.address.city );
+				$table.find('.td-postCode input').val( json.result.address.postCode );
+				$table.find('.td-houseNo input').val( json.result.address.houseNo );
+			}
 		});
 		
 	});

@@ -1,5 +1,6 @@
 <?php
 
+use models\Api\CreditSafe;
 use models\forms\Formbuilder;
 use models\inleners\Inlener;
 use models\verloning\Urentypes;
@@ -21,8 +22,7 @@ class Ajax extends MY_Controller
 		parent::__construct();
 
 		//Deze pagina mag alleen bezocht worden door werkgever
-		if( $this->user->user_type != 'werkgever' )forbidden();
-
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )forbidden();
 
 	}
 	
@@ -30,11 +30,23 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// credit check
 	//-----------------------------------------------------------------------------------------------------------------
-	public function creditinfo($kvknr)
+	public function creditinfo( $kvknr )
 	{
 		header( 'Content-Type: application/json' );
 		
-		$response['status'] = 'error';
+		$creditsafe = new CreditSafe();
+		$info = $creditsafe->searchCompany( $kvknr );
+		
+		if( $creditsafe->errors() !== false )
+		{
+			$response['status'] = 'error';
+			$response['error'] = $creditsafe->errors();
+		}
+		else
+		{
+			$response['status'] = 'success';
+			$response['result'] = $info;
+		}
 		
 		echo json_encode( $response );
 	}

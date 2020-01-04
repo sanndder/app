@@ -97,6 +97,13 @@
 								</a>
 							</li>
 
+							<!-- li Krediet -->
+							<li class="nav-item">
+								<a href="crm/inleners/dossier/kredietoverzicht/{$inlener->inlener_id}" class="nav-link {if $active == 'kredietoverzicht'}active{/if}">
+									<i class="icon-stats-dots mr-2"></i>Kredietoverzicht
+								</a>
+							</li>
+
 							<!-- li Facturen -->
 							<li class="nav-item">
 								<a href="crm/inleners/dossier/facturen/{$inlener->inlener_id}" class="nav-link {if $active == 'facturen'}active{/if}">
