@@ -29,8 +29,8 @@ class Inlener extends Connector
 	private $_uitzender_id_new = NULL; // @var int
 	
 	public $contacten = NULL; // @var string
-
-
+	
+	private $_force_check = false; // @var int
 	/*
 	 * @var array
 	 */
@@ -72,7 +72,64 @@ class Inlener extends Connector
 	{
 		$this->inlener_id = intval($inlener_id);
 	}
-
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Als werkgever forceren dat velden alsnog gecontroleerd moeten worden
+	 */
+	public function forceCheck()
+	{
+		$this->_force_check = true;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * ALLEEN VOOR DEVOLPMENT
+	 * TODO: verwijderen
+	 */
+	public function del( $id )
+	{
+		if( ENVIRONMENT != 'development' )
+			die('Geen toegand');
+		
+		$this->db_user->query( "DELETE FROM inleners_bedrijfsgegevens WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM inleners_cao WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_contactpersonen WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_emailadressen WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_factoren WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_factuurgegevens WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_kredietaanvragen WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_kredietgebruik WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_kredietgegevens WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_last_visited WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_portal_status WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_uitzenders WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_urentypes WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_inleners WHERE inlener_id = $id" );
+		$this->db_user->query( "DELETE FROM	inleners_status WHERE inlener_id = $id" );
+		
+		
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * check object access
+	 *
+	 * @return bool
+	 */
+	static function access( $inlener_id, $user_type, $id )
+	{
+		$CI =& get_instance();
+		
+		if( $user_type == 'uitzender' )
+		{
+			$query = $CI->db_user->query( "SELECT inlener_id FROM inleners_uitzenders WHERE inlener_id = ? AND uitzender_id = ? AND deleted = 0", [$inlener_id,$id] );
+			if( $query->num_rows() === 0 ) return false;
+			return true;
+		}
+		
+		return false;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -183,14 +240,25 @@ class Inlener extends Connector
 		$this->next['bedrijfsnaam'] = $this->bedrijfsnaam;  //default self
 		$this->prev['id'] 			= $this->inlener_id;    //default self
 		$this->prev['bedrijfsnaam'] = $this->bedrijfsnaam;  //default self
+		
+		//uitzender beperken
+		$uitzender = '';
+		if( $this->user->user_type == 'uitzender' )
+			$uitzender = " AND iu.uitzender_id = ".$this->uitzender->id." AND iu.deleted = 0 ";
 
 		$sql = "SELECT inleners_status.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam FROM inleners_status 
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_status.inlener_id = inleners_bedrijfsgegevens.inlener_id
 				WHERE ( 
-						inleners_status.inlener_id = IFNULL((SELECT min(inleners_status.inlener_id) FROM inleners_status WHERE inleners_status.inlener_id > $this->inlener_id AND inleners_status.archief = 0 AND inleners_status.complete = 1),0) 
-						OR inleners_status.inlener_id = IFNULL((SELECT max(inleners_status.inlener_id) FROM inleners_status WHERE inleners_status.inlener_id < $this->inlener_id AND inleners_status.archief = 0 AND inleners_status.complete = 1),0)
+						inleners_status.inlener_id =
+							IFNULL((SELECT min(inleners_status.inlener_id) FROM inleners_status LEFT JOIN inleners_uitzenders iu on inleners_status.inlener_id = iu.inlener_id
+									WHERE inleners_status.inlener_id > $this->inlener_id AND inleners_status.archief = 0 AND inleners_status.complete = 1 ".$uitzender."),0)
+						OR inleners_status.inlener_id =
+						   IFNULL((SELECT max(inleners_status.inlener_id) FROM inleners_status LEFT JOIN inleners_uitzenders iu on inleners_status.inlener_id = iu.inlener_id
+						   			WHERE inleners_status.inlener_id < $this->inlener_id AND inleners_status.archief = 0 AND inleners_status.complete = 1 ".$uitzender."),0)
 					  )
 				";
+		
+	
 
 		$query = $this->db_user->query($sql);
 		if ($query->num_rows() > 0)
@@ -282,7 +350,16 @@ class Inlener extends Connector
 		$data = DBhelper::toArray( $query, 'contact_id', 'NULL' );
 		return $data;
 	}
-
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * contactpersoon goedkeuren en aanmeldprocess afsluiten
+	 */
+	public function approveContactpersoon( $id )
+	{
+		$this->setContactpersoon( $id );
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * get emailadressen
@@ -599,7 +676,7 @@ class Inlener extends Connector
 		if ($this->$property === NULL)
 		{
 			//werkgever hoeft niet gecontroleerd te worden
-			if ($this->user->user_type == 'werkgever')
+			if ( $this->user->user_type == 'werkgever' && $this->_force_check === false )
 				$update_status[$property] = 1;// van leeg naar complete
 			else
 				$update_status[$property] = 0;// van leeg naar controle

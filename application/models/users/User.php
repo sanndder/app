@@ -340,6 +340,30 @@ class User extends Connector
 				$return['naam'] = '';
 		}
 		
+		if($_GET['user_type'] == 'inlener' )
+		{
+			$sql = "SELECT inleners_contactpersonen.*, inleners_bedrijfsgegevens.bedrijfsnaam
+					FROM inleners_contactpersonen
+					LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_contactpersonen.inlener_id
+					WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_contactpersonen.deleted = 0 AND inleners_contactpersonen.inlener_id = ".intval(($_GET['id']));
+			
+			$query = $this->db_user->query( $sql );
+			$data = $query->row_array();
+			
+			$return['inlener_id'] = $data['inlener_id'];
+			$return['email'] = $data['email'];
+			$return['bedrijfsnaam'] = $data['bedrijfsnaam'];
+			$return['naam'] = $data['voornaam'];
+			if( $data['voornaam'] != '' )
+				$return['naam'] .= ' ' . $data['tussenvoegsel'];
+			$return['naam'] .= ' ' . $data['achternaam'];
+			
+			//bij meerdere contactpersonen geen naam bouwen
+			if( $query->num_rows() > 1 )
+				$return['naam'] = '';
+		}
+		
+		
 		return $return;
 	}
 
@@ -386,6 +410,12 @@ class User extends Connector
 			{
 				$insert['user_type'] = 'uitzender';
 				$insert['uitzender_id'] = intval($_POST['id']);
+			}
+			
+			if( $_POST['user_type'] == 'inlener' )
+			{
+				$insert['user_type'] = 'inlener';
+				$insert['inlener_id'] = intval($_POST['id']);
 			}
 			
 			$this->db_admin->insert( 'users', $insert );

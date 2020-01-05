@@ -1,5 +1,6 @@
 <?php
 
+use models\Inleners\Inlener;
 use models\inleners\InlenerGroup;
 use models\Inleners\KredietaanvraagGroup;
 use models\utils\VisitsLogger;
@@ -30,6 +31,13 @@ class Overzicht extends MY_Controller
 	public function index()
 	{
 		$log = new VisitsLogger();
+		
+		//alleen in devolpment TODO: remove
+		if( isset($_GET['del']) )
+		{
+			$inlener = new Inlener( NULL );
+			$inlener->del($_GET['del']);
+		}
 		
 		//kredietaanvragen ophalen
 		$kredietgroup = new KredietaanvraagGroup();

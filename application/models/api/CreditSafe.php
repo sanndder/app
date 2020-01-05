@@ -47,80 +47,6 @@ class CreditSafe extends Connector
 	}
 	
 	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Api token instellen
-	 * @return array|null
-	 */
-	public function companyReport( $kvknr, $refresh = false )
-	{
-		//make available
-		$this->_kvknr = $kvknr;
-		
-		//wanneer Creditsafe ID nog niet bekend is, dan moeten we die ophalen
-		if( !$this->_getCreditsafeIdFromDatabase( $kvknr ) )
-		{
-			if( $this->searchCompany($kvknr) === NULL )
-				return NULL;
-		}
-		
-		//check of ID bekend is
-		if( $this->_cs_id === NULL )
-		{
-			$this->_error[] = 'Geen Creditsafe ID bekend';
-			return NULL;
-		}
-		//is er een report in de database
-		if( $refresh === false )
-		{
-			$report = $this->_getReportFromDatabase();
-			if( $report !== false )
-				return json_decode($report,true);
-		}
-		
-		//eerst token ophalen
-		$this->_setApiToken();
-		
-		//init
-		$curl = curl_init( $this->_api_url_base . '/companies/' . $this->_cs_id );
-		
-		//juiste header
-		$headers = array(
-			'Content-Type: application/json',
-			'Authorization: ' .$this->_api_token
-		);
-		
-		//options
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		
-		$json = curl_exec($curl);
-		$json = json_decode($json);
-		$curl_info = curl_getinfo($curl);
-		show('curl 2');
-		curl_close($curl);
-		
-		$json = $this->_processResult( $json, $curl_info );
-		
-		if( $json !== false )
-		{
-			if( isset($json->report) )
-			{
-				$json = json_encode( $json->report );
-				$this->_saveReport( $json );
-				$this->_report_date = date('Y-m-d H:i:s');
-				return json_decode($json,true);
-			}
-			else
-			{
-				$this->_error[] = 'Er is geen rapport gevonden';
-				return NULL;
-			}
-		}
-		
-		return NULL;
-	}
-	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -168,7 +94,85 @@ class CreditSafe extends Connector
 		$insert['report'] = $report;
 		$insert['user_id'] = $this->user->user_id;
 		
+		$object = json_decode($report);
+		$insert['limiet'] = $object->companySummary->creditRating->creditLimit->value;
+		
 		$this->db_user->insert( 'creditsafe_reports', $insert );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Api token instellen
+	 * @return array|null
+	 */
+	public function companyReport( $kvknr, $refresh = false )
+	{
+		//make available
+		$this->_kvknr = $kvknr;
+
+		//wanneer Creditsafe ID nog niet bekend is, dan moeten we die ophalen
+		if( !$this->_getCreditsafeIdFromDatabase( $kvknr ) )
+		{
+			if( $this->searchCompany($kvknr) === NULL )
+				return NULL;
+		}
+		
+		//check of ID bekend is
+		if( $this->_cs_id === NULL )
+		{
+			$this->_error[] = 'Geen Creditsafe ID bekend';
+			return NULL;
+		}
+		//is er een report in de database
+		if( $refresh === false )
+		{
+			$report = $this->_getReportFromDatabase();
+			if( $report !== false )
+				return json_decode($report,true);
+		}
+		
+		//eerst token ophalen
+		$this->_setApiToken();
+		
+		//init
+		$curl = curl_init( $this->_api_url_base . '/companies/' . $this->_cs_id . '?language=nl' );
+		
+		//juiste header
+		$headers = array(
+			'Content-Type: application/json',
+			'Authorization: ' .$this->_api_token
+		);
+		
+		//options
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		
+		$json = curl_exec($curl);
+		$json = json_decode($json);
+		$curl_info = curl_getinfo($curl);
+		
+		curl_close($curl);
+		
+		$json = $this->_processResult( $json, $curl_info );
+		
+		if( $json !== false )
+		{
+			if( isset($json->report) )
+			{
+				$json = json_encode( $json->report );
+				$this->_saveReport( $json );
+				$this->_report_date = date('Y-m-d H:i:s');
+				return json_decode($json,true);
+			}
+			else
+			{
+				$this->_error[] = 'Er is geen rapport gevonden';
+				return NULL;
+			}
+		}
+		
+		return NULL;
 	}
 	
 	
@@ -186,7 +190,7 @@ class CreditSafe extends Connector
 		$this->_setApiToken();
 		
 		//init
-		$curl = curl_init(  $this->_api_url_base . '/companies?regNo='.$kvknr.'&countries=NL&page=1&pageSize=10' );
+		$curl = curl_init(  $this->_api_url_base . '/companies?regNo='.$kvknr.'&countries=NL&page=1&pageSize=10&' );
 		
 		//juiste header
 		$headers = array(

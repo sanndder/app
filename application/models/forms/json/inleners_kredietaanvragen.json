@@ -85,6 +85,17 @@
         "type": "email"
       }
     },
+    "btwnr": {
+      "label": "BTW nummer",
+      "rules": {
+        "required": true,
+        "minlength": 6,
+        "maxlength": 50,
+        "removespaces": true,
+        "removechars": "-,.,_,:",
+        "type": "btwnr"
+      }
+    },
     "kredietlimiet": {
       "label": "Kredietlimiet",
       "rules": {

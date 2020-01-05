@@ -74,7 +74,7 @@
 
 													<table class="table" style="width: 100%">
 														<tr>
-															<td style="width: 50px">Bedrijfsnaam</td>
+															<td style="width: 160px">Bedrijfsnaam</td>
 															<td class="td-name font-weight-bold">
 																<input type="text" class="form-control" name="bedrijfsnaam" readonly="readonly" value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.bedrijfsnaam}{/if}"/>
 															</td>
@@ -113,6 +113,12 @@
 															<td>Email</td>
 															<td class="td-email font-weight-bold">
 																<input type="text" class="form-control" name="email" required value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.email}{/if}"/>
+															</td>
+														</tr>
+														<tr>
+															<td>BTW nummer</td>
+															<td class="td-btw font-weight-bold">
+																<input type="text" class="form-control" name="btwnr" required value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.btwnr}{/if}"/>
 															</td>
 														</tr>
 														<tr>

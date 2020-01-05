@@ -12,48 +12,9 @@
 		<div class="content">
 
 
-			<!--------------------------------------------------------------------------- left ------------------------------------------------->
+
 			<div class="row">
-				<div class="col-md-9">
-
-					<!-- Basic card -->
-					<div class="card">
-						<div class="card-body">
-
-							<fieldset class="mb-0 mt-0">
-								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Omzet en marge</legend>
-							</fieldset>
-
-							<div class="row">
-								<div class="col-md-12">
-									<img src="recources/img/bar.png" style="width: 100%">
-								</div>
-							</div>
-						</div><!-- /card body -->
-					</div><!-- /basic card -->
-
-
-					<!-- Basic card -->
-					<div class="card">
-						<div class="card-body">
-
-							<fieldset class="mb-0 mt-0">
-								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Gewerkte uren</legend>
-							</fieldset>
-
-							<div class="row">
-								<div class="col-md-12">
-									<img src="recources/img/uren.png" style="width: 100%">
-								</div>
-							</div>
-						</div><!-- /card body -->
-					</div><!-- /basic card -->
-
-				</div><!-- /col -->
-			    <!--------------------------------------------------------------------------- /left ------------------------------------------------->
-
-
-			    <!--------------------------------------------------------------------------- right ------------------------------------------------->
+				<!--------------------------------------------------------------------------- left ------------------------------------------------->
 				<div class="col-md-3">
 
 					<!----------------- Documenten --------------------->
@@ -218,7 +179,48 @@
 					</div>
 
 
-				</div><!-- /col -->
+				</div>
+			    <!--------------------------------------------------------------------------- /left ------------------------------------------------->
+
+
+			    <!--------------------------------------------------------------------------- right ------------------------------------------------->
+				<div class="col-md-9">
+
+					<!-- Basic card -->
+					<div class="card">
+						<div class="card-body">
+
+							<fieldset class="mb-0 mt-0">
+								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Omzet en marge</legend>
+							</fieldset>
+
+							<div class="row">
+								<div class="col-md-12">
+									<i>Geen data beschikbaar</i>
+								</div>
+							</div>
+						</div><!-- /card body -->
+					</div><!-- /basic card -->
+
+
+					<!-- Basic card -->
+					<div class="card">
+						<div class="card-body">
+
+							<fieldset class="mb-0 mt-0">
+								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Gewerkte uren</legend>
+							</fieldset>
+
+							<div class="row">
+								<div class="col-md-12">
+									<i>Geen data beschikbaar</i>
+								</div>
+							</div>
+						</div><!-- /card body -->
+					</div><!-- /basic card -->
+
+				</div>
+				<!-- /col -->
 			</div><!-- /row -->
 			<!--------------------------------------------------------------------------- /right ------------------------------------------------->
 

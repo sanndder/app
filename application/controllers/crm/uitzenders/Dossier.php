@@ -325,7 +325,6 @@ class Dossier extends MY_Controller
 			redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/users/add?id='.$uitzender_id.'&user_type=uitzender' ,'location' );
 		}
 		
-		
 		$contactpersonen = $uitzender->contactpersonen();
 		$this->smarty->assign('contactpersonen', $contactpersonen);
 

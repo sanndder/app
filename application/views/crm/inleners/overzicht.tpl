@@ -203,23 +203,41 @@
 									<td>{$i.complete}</td>
 									<td>{$i.inlener_id}</td>
 									<td>
-                                        {if $i.complete == 0}
+                                        {* moet er een badge voor? *}
+										{if $i.complete == 0}
 											{if isset($i.krediet)}
+                                                {* krediet badge *}
 												<span class="badge bg-primary  mr-1">KREDIET</span>
 											{else}
+                                                {* nieuw badge *}
 		                                        <span class="badge bg-success  mr-1">NIEUW</span>
                                             {/if}
                                         {/if}
+
+                                        {* welke link moet er verschijnenen *}
                                         {if !isset($i.krediet)}
-											<a style="{if $i.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/overzicht/{$i.inlener_id}">{$i.bedrijfsnaam}</a>
+                                            {* standaard link *}
+	                                        <a style="{if $i.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/overzicht/{$i.inlener_id}">{$i.bedrijfsnaam}</a>
                                         {else}
-	                                        <a style="{if $i.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/kredietoverzicht/k{$i.id}">{$i.bedrijfsnaam}</a>
+                                            {* links naar kredietoverzicht *}
+                                            {if $i.inlener_id === NULL }
+                                                {* nog geen inlener *}
+	                                            <a style="{if $i.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/kredietoverzicht/k{$i.id}">{$i.bedrijfsnaam}</a>
+                                            {else}
+                                                {* al wel inlener *}
+	                                            <a style="{if $i.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/kredietoverzicht/{$i.inlener_id}">{$i.bedrijfsnaam}</a>
+                                            {/if}
                                         {/if}
+
 									</td>
 									<td>
 										<a href="crm/uitzenders/dossier/overzicht/{$i.uitzender_id}">{$i.uitzender}</a>
 									</td>
-									<td></td>
+									<td>
+										{if $ENV == 'development'}
+											<a href="{$base_url}//crm/inleners?del={$i.inlener_id}"><i class="icon-trash font-size-sm"></i></a>
+                                        {/if}
+									</td>
 								</tr>
                             {/foreach}
 						</tbody>

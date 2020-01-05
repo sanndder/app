@@ -49,8 +49,8 @@
                                 {assign "div_md" "8"}
 
 
-                                {* bij nieuwe inlener ook uitzender kiezen *}
-                                {if $inlener->complete != 1}
+                                {* bij nieuwe inlener ook uitzender kiezen, alleen als werkgever *}
+                                {if $inlener->complete != 1 && $user_type == 'werkgever'}
 									<fieldset class="mb-3">
 										<legend class="text-uppercase font-size-sm font-weight-bold">Uitzender</legend>
 

@@ -6,6 +6,7 @@ use models\cao\CAOGroup;
 use models\facturatie\Betaaltermijnen;
 use models\forms\Formbuilder;
 use models\inleners\Inlener;
+use models\Inleners\Kredietaanvraag;
 use models\Inleners\KredietaanvraagGroup;
 use models\uitzenders\UitzenderGroup;
 use models\utils\History;
@@ -31,14 +32,19 @@ class Dossier extends MY_Controller
 		parent::__construct();
 
 		//Deze pagina mag alleen bezocht worden door werkgever
-		if( $this->user->user_type != 'werkgever' )forbidden();
+		if( $this->user->user_type != 'werkgever' &&  $this->user->user_type != 'uitzender')forbidden();
 
 		//method naar smarty
 		$this->smarty->assign('method', $this->router->method);
 		
+		//check of uitzender hier mag zijn, niet checken bij kredietpagina
+		if( $this->user->user_type == 'uitzender' && strpos( $this->uri->segment( 5 ), 'k') === false )
+			if( !Inlener::access( $this->uri->segment( 5 ), 'uitzender', $this->uitzender->id ) ) forbidden();
+			
 		//log visit
 		$log = new VisitsLogger();
 		$log->logCRMVisit( 'inlener', $this->uri->segment(5));
+		
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -46,7 +52,6 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function overzicht( $inlener_id = NULL )
 	{
-		
 		$inlener = new Inlener( $inlener_id );
 
 		//redirect indien nodig
@@ -71,26 +76,78 @@ class Dossier extends MY_Controller
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// Krediet pagina
+	// TODO: inlener aanvraag afhandelen
 	//-----------------------------------------------------------------------------------------------------------------
 	public function kredietoverzicht( $inlener_id = NULL )
 	{
-		$inlener = new Inlener( $inlener_id );
-		$bedrijfsgegevens = $inlener->bedrijfsgegevens();
-
+		//is ID een krediet ID
+		$kredietaanvraag_id = NULL;
+		if( strpos($inlener_id, 'k') !== false )
+			$kredietaanvraag_id = str_replace('k','', $inlener_id);
+		
+		//alle aanvragen ophalen
+		$kredietgroup = new KredietaanvraagGroup();
+		
+		//inlener is al aangemaakt
+		if( $kredietaanvraag_id === NULL )
+		{
+			$inlener = new Inlener( $inlener_id );
+			$bedrijfsgegevens = $inlener->bedrijfsgegevens();
+		
+			$kredietgegevens = $inlener->kredietgegevens();
+			$kredietaanvragen = $kredietgroup->inlener( $inlener_id )->all();
+			
+			$this->smarty->assign('inlener', $inlener);
+		}
+		//alleen een aavraag, dan anders afhandelen
+		else
+		{
+			$kredietaanvraag = new Kredietaanvraag( $kredietaanvraag_id );
+			$bedrijfsgegevens = $kredietaanvraag->aanvraag();
+			
+			//check of uitzender hier mag zijn
+			if( $this->user->user_type == 'uitzender' && $bedrijfsgegevens['uitzender_id'] != $this->uitzender->id )	forbidden();
+			
+			//omzetten naar inlener
+			if( isset($_POST['accept']) )
+			{
+				$kredietaanvraag->accept();
+				
+				if( $kredietaanvraag->errors() !== false )
+					$this->smarty->assign('msg', msg('warning', $kredietaanvraag->errors() ));
+				else
+					$this->smarty->assign('msg', msg('success', 'Kredietaanvraag goedgekeurd. De uitzender kan nu de inlener verder invullen' ));
+			}
+			
+			if( isset($_GET['deny']) )
+			{
+				if( $kredietaanvraag->deny( $_GET['deny'] ))
+					$this->smarty->assign('msg', msg('success', 'Kredietaanvraag afgewezen' ));
+				else
+					$this->smarty->assign('msg', msg('warning', 'Er gaat wat mis met wegschrijven naar de database' ));
+			}
+			
+			//init
+			$kredietgegevens['kredietlimiet'] = NULL;
+			$kredietgegevens['kredietgebruik'] = NULL;
+			
+			$kredietaanvragen = $kredietgroup->aanvraag( $kredietaanvraag_id )->all();
+			
+			$this->smarty->assign('bedrijfsgegevens', $bedrijfsgegevens);
+		}
+		
 		//krediet rapport ophalen
 		$creditsafe = new CreditSafe();
 		$rapport = $creditsafe->companyReport( $bedrijfsgegevens['kvknr'] );
-
-		//alle aanvragen ophalen
-		$kredietgroup = new KredietaanvraagGroup();
+		
 		
 		//TODO: grafiek maken van gebruikt krediet
 		
 		$this->smarty->assign('rapport', $rapport);
 		$this->smarty->assign('rapport_datum', $creditsafe->reportDate() );
-		$this->smarty->assign('kredietgegevens', $inlener->kredietgegevens());
-		$this->smarty->assign('kredietaanvragen', $kredietgroup->inlener( $inlener_id )->all() );
-		$this->smarty->assign('inlener', $inlener);
+		$this->smarty->assign('kredietgegevens', $kredietgegevens);
+		$this->smarty->assign('kredietaanvragen', $kredietaanvragen);
+		$this->smarty->assign('kredietaanvraag_id', $kredietaanvraag_id);
 		$this->smarty->display('crm/inleners/dossier/kredietoverzicht.tpl');
 	}
 
@@ -160,7 +217,6 @@ class Dossier extends MY_Controller
 				if( $inlener->emailadressen_complete != 1 )
 					redirect( $this->config->item('base_url') . 'crm/inleners/dossier/emailadressen/' . $inlener->inlener_id ,'location');
 
-
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
 			}
@@ -172,10 +228,11 @@ class Dossier extends MY_Controller
 			$bedrijfsgevens =  $inlener->bedrijfsgegevens();
 			$errors = false; //no errors
 		}
-
+		
 		$formdata = $formbuidler->table( 'inleners_bedrijfsgegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
+		$formdata['uitzender_id']['value'] = $inlener->uitzenderID();
+		
 		$this->smarty->assign('formdata', $formdata);
-
 		//show($inlener);
 
 		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
@@ -365,6 +422,13 @@ class Dossier extends MY_Controller
 	{
 		//init inlener object
 		$inlener = new Inlener( $inlener_id );
+		
+		//contactpersoon goedkeuren
+		if( isset($_POST['set']) )
+		{
+			$inlener->approveContactpersoon( $_POST['set'] );
+			redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/users/add?id='.$inlener_id.'&user_type=inlener' ,'location' );
+		}
 
 		$contactpersonen = $inlener->contactpersonen();
 		$this->smarty->assign('contactpersonen', $contactpersonen);

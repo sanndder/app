@@ -16,15 +16,14 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class KredietaanvraagGroup extends Connector {
 
 	private $_inlener_id = NULL;
-	private $_krediet_aanvraag_id = NULL;
+	private $_aanvraag_id;
 	
 	/*
 	 * @var array
 	 */
 	private $_error = NULL;
 
-
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/* *----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * constructor
 	 */
@@ -47,6 +46,20 @@ class KredietaanvraagGroup extends Connector {
 		return $this;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Alle openstaande aanvragen
+	 *
+	 * @return object
+	 */
+	public function aanvraag( $aanvraag_id )
+	{
+		$this->_aanvraag_id = intval($aanvraag_id);
+		return $this;
+	}
+
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Alle openstaande aanvragen
@@ -58,12 +71,21 @@ class KredietaanvraagGroup extends Connector {
 		$sql = "SELECT inleners_kredietaanvragen.*, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender
 				FROM inleners_kredietaanvragen
 				LEFT JOIN uitzenders_bedrijfsgegevens ON inleners_kredietaanvragen.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
-				WHERE";
+				WHERE ";
 		
+		//beveiligen
+		if( $this->user->user_type == 'uitzender' )
+			$sql .= " inleners_kredietaanvragen.uitzender_id = ".$this->uitzender->id." AND ";
+		
+		//zoekcriteria
 		if( $this->_inlener_id !== NULL )
 			$sql .= " inleners_kredietaanvragen.inlener_id = $this->_inlener_id ORDER BY inleners_kredietaanvragen.timestamp DESC LIMIT 5";
+		elseif( $this->_aanvraag_id !== NULL )
+			$sql .= " inleners_kredietaanvragen.id = $this->_aanvraag_id ORDER BY inleners_kredietaanvragen.timestamp DESC LIMIT 5";
 		else
 			$sql .= " krediet_afgewezen IS NULL  AND inleners_kredietaanvragen.deleted = 0 ";
+		
+		
 			
 		$query = $this->db_user->query( $sql );
 		

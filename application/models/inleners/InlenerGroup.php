@@ -47,7 +47,11 @@ class InlenerGroup extends Connector {
 				LEFT JOIN inleners_uitzenders ON inleners_status.inlener_id = inleners_uitzenders.inlener_id
 				LEFT JOIN uitzenders_bedrijfsgegevens ON inleners_uitzenders.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
 				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_uitzenders.deleted = 0 AND uitzenders_bedrijfsgegevens.deleted = 0";
-
+		
+		//beveiligen
+		if( $this->user->user_type == 'uitzender' )
+			$sql .= " AND inleners_uitzenders.uitzender_id = ".$this->uitzender->id." ";
+		
 		//archief ook?
 		if( isset($param['actief']) && !isset($param['archief']) )
 			$sql .= " AND inleners_status.archief = 0";
