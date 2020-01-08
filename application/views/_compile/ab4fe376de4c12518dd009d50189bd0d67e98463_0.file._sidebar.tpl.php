@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-05 10:27:26
+/* Smarty version 3.1.33, created on 2020-01-07 23:02:47
   from 'C:\xampp\htdocs\app\application\views\crm\werknemers\dossier\_sidebar.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de8cd7e163a90_54311117',
+  'unifunc' => 'content_5e1500076613a2_63284375',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de8cd7e163a90_54311117 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e1500076613a2_63284375 (Smarty_Internal_Template $_smarty_tpl) {
 ?>	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-expand-lg align-self-start">
 

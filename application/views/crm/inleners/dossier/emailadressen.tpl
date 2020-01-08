@@ -5,7 +5,7 @@
 
 {block "content"}
 
-	{include file='crm/inleners/dossier/_sidebar.tpl' active='emailadressen'}
+    {include file='crm/inleners/dossier/_sidebar.tpl' active='emailadressen'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -17,14 +17,14 @@
 		<div class="content">
 
 			<!-- msg -->
-			{if isset($msg)}
+            {if isset($msg)}
 				<div class="row">
 					<div class="col-xl-10">
-						{$msg}
+                        {$msg}
 					</div><!-- /col -->
 				</div>
 				<!-- /row -->
-			{/if}
+            {/if}
 
 			<div class="row">
 				<div class="col-xl-10">
@@ -38,10 +38,10 @@
 							<form method="post" action="">
 
 
-								{*settings*}
-								{assign "label_lg" "3"}
-								{assign "div_xl" "4"}
-								{assign "div_md" "6"}
+                                {*settings*}
+                                {assign "label_lg" "3"}
+                                {assign "div_xl" "4"}
+                                {assign "div_md" "6"}
 
 
 								<fieldset class="mb-2">
@@ -49,17 +49,19 @@
 									<div class="mb-3">Het standaard emailadres is verplicht.</div>
 
 									<!-- standaard -->
-									{if isset($formdata.standaard)}
-										{assign "field" "standaard"}
+                                    {if isset($formdata.standaard)}
+                                        {assign "field" "standaard"}
 										<div class="form-group row">
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
-												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
-												{/foreach}</span>{/if}
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
-									{/if}
+                                    {/if}
 
 								</fieldset>
 
@@ -68,17 +70,19 @@
 									<div class="mb-3">U kunt een appart emailadres opgeven voor uw facturen. Indien u geen emailadres opgeeft wordt het standaard emailadres gebruikt.</div>
 
 									<!-- standaard -->
-									{if isset($formdata.facturatie)}
-										{assign "field" "facturatie"}
+                                    {if isset($formdata.facturatie)}
+                                        {assign "field" "facturatie"}
 										<div class="form-group row">
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
-												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
-												{/foreach}</span>{/if}
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
-									{/if}
+                                    {/if}
 
 								</fieldset>
 
@@ -87,26 +91,29 @@
 									<div class="mb-3">U kunt een appart emailadres opgeven voor uw contracten en overeenkomsten. Indien u geen emailadres opgeeft wordt het standaard emailadres gebruikt.</div>
 
 									<!-- standaard -->
-									{if isset($formdata.administratie)}
-										{assign "field" "administratie"}
+                                    {if isset($formdata.administratie)}
+                                        {assign "field" "administratie"}
 										<div class="form-group row">
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
-												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
-												{/foreach}</span>{/if}
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
-									{/if}
+                                    {/if}
 
 								</fieldset>
-
 
 
 								<!-- opslaan -->
 								<div class="row">
 									<div class="col-lg-12 mb-3">
-										<button type="submit" name="set" class="btn btn-success btn-sm"><i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan</button>
+										<button type="submit" name="set" class="btn btn-success btn-sm">
+											<i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan
+										</button>
 									</div><!-- /col -->
 								</div><!-- /row -->
 

@@ -115,7 +115,11 @@ class User extends Connector
 		if($this->user_id === NULL )
 			return NULL;
 		
-		$sql = "SELECT * FROM users WHERE user_id = $this->user_id LIMIT 1";
+		$sql = "SELECT users.*, users_accounts.* ,users.created_by
+				FROM users
+				LEFT JOIN users_accounts ON users.user_id = users_accounts.user_id
+				WHERE users.user_id = $this->user_id AND users_accounts.werkgever_id = ".$this->user->werkgever_id." LIMIT 1";
+		
 		$query = $this->db_admin->query( $sql );
 		
 		if( $query->num_rows() > 0 )
@@ -325,19 +329,40 @@ class User extends Connector
 					WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_contactpersonen.deleted = 0 AND uitzenders_contactpersonen.uitzender_id = ".intval(($_GET['id']));
 					
 			$query = $this->db_user->query( $sql );
-			$data = $query->row_array();
-			
-			$return['uitzender_id'] = $data['uitzender_id'];
-			$return['email'] = $data['email'];
-			$return['bedrijfsnaam'] = $data['bedrijfsnaam'];
-			$return['naam'] = $data['voornaam'];
-			if( $data['voornaam'] != '' )
-				$return['naam'] .= ' ' . $data['tussenvoegsel'];
-			$return['naam'] .= ' ' . $data['achternaam'];
 
-			//bij meerdere contactpersonen geen naam bouwen
+			
+			//bij meerdere contactpersonen array
 			if( $query->num_rows() > 1 )
-				$return['naam'] = '';
+			{
+				foreach( $query->result_array() as $data )
+				{
+					$return['uitzender_id'] = $data['uitzender_id'];
+					$return['email'] = $data['email'];
+					$return['bedrijfsnaam'] = $data['bedrijfsnaam'];
+					
+					$naam = $data['voornaam'];
+					if( $data['voornaam'] != '' )
+						$naam .= ' ' . $data['tussenvoegsel'];
+					$naam .= ' ' . $data['achternaam'];
+					
+					$return['naam'][] = $naam;
+				}
+				
+			}
+			else
+			{
+				$data = $query->row_array();
+				
+				$return['uitzender_id'] = $data['uitzender_id'];
+				$return['email'] = $data['email'];
+				$return['bedrijfsnaam'] = $data['bedrijfsnaam'];
+				
+				$return['naam'] = $data['voornaam'];
+				if( $data['voornaam'] != '' )
+					$return['naam'] .= ' ' . $data['tussenvoegsel'];
+				$return['naam'] .= ' ' . $data['achternaam'];
+			}
+			
 		}
 		
 		if($_GET['user_type'] == 'inlener' )
@@ -390,39 +415,45 @@ class User extends Connector
 			}
 			
 			//nieuwe user
-			$insert['werkgever_id'] = $this->user->werkgever_id;
 			
 			$insert['username'] = $input['username'];
 			$insert['email'] = $input['username'];
 			$insert['naam'] = $input['naam'];
-			$insert['admin'] = $input['admin'];
+		
 			$insert['password'] = NULL;
 			
 			$insert['created_by'] = $this->user->user_id;
 			$insert['new_key'] = md5( $input['username'] .time() );
 			$insert['new_key_expires'] = date('Y-m-d', strtotime('+5 days'));
 			
-			//per user_type verschillend
-			if( $_POST['user_type'] == 'werkgever' )
-				$insert['user_type'] = 'werkgever';
-			
-			if( $_POST['user_type'] == 'uitzender' )
-			{
-				$insert['user_type'] = 'uitzender';
-				$insert['uitzender_id'] = intval($_POST['id']);
-			}
-			
-			if( $_POST['user_type'] == 'inlener' )
-			{
-				$insert['user_type'] = 'inlener';
-				$insert['inlener_id'] = intval($_POST['id']);
-			}
-			
 			$this->db_admin->insert( 'users', $insert );
 			
 			if( $this->db_admin->insert_id() > 0 )
 			{
 				$this->setID($this->db_admin->insert_id());
+				
+				$insert_account['werkgever_id'] = $this->user->werkgever_id;
+				$insert_account['admin'] = $input['admin'];
+				$insert_account['user_id'] = $this->db_admin->insert_id();
+				
+				//per user_type verschillend
+				if( $_POST['user_type'] == 'werkgever' )
+					$insert_account['user_type'] = 'werkgever';
+				
+				if( $_POST['user_type'] == 'uitzender' )
+				{
+					$insert_account['user_type'] = 'uitzender';
+					$insert_account['uitzender_id'] = intval($_POST['id']);
+				}
+				
+				if( $_POST['user_type'] == 'inlener' )
+				{
+					$insert_account['user_type'] = 'inlener';
+					$insert_account['inlener_id'] = intval($_POST['id']);
+				}
+				
+				$this->db_admin->insert( 'users_accounts', $insert_account );
+				
 				$this->_load();
 				$this->sendWelkomsEmail();
 			}

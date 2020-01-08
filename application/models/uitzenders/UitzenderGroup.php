@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Uitzenders;
+namespace models\uitzenders;
 
 use models\Connector;
 use models\utils\DBhelper;
@@ -61,7 +61,9 @@ class UitzenderGroup extends Connector {
 		
 		return $data['bedrijfsnaam'];
 	}
-	
+
+
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * List van uitzenders
@@ -102,6 +104,17 @@ class UitzenderGroup extends Connector {
 			$this->_cols = $cols;
 		}
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Alle uitzenders tellen
+	 */
+	public function count()
+	{
+		$query = $this->db_user->query( "SELECT COUNT(uitzender_id) AS count FROM uitzenders_status WHERE complete = 1 AND archief = 0" );
+		$data = DBhelper::toRow( $query );
+		return $data['count'];
+	}
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -133,9 +146,11 @@ class UitzenderGroup extends Connector {
 		//zoeken, q1 is voor ID en bedrijfsnaam, q2 is voor overig
 		if( isset($param['q1']) && $param['q1'] != '' )
 			$sql .= " AND (uitzenders_bedrijfsgegevens.bedrijfsnaam LIKE '%". addslashes($_GET['q1'])."%' OR uitzenders_status.uitzender_id LIKE '%". addslashes($_GET['q1'])."%' ) ";
-
-
-
+		
+		//alleen nieuwe
+		if( isset($param['new']) )
+			$sql .= " AND uitzenders_status.complete = 0";
+			
 		//go
 		$query = $this->db_user->query($sql);
 
@@ -148,6 +163,15 @@ class UitzenderGroup extends Connector {
 		}
 
 		return $data;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Shortcut naar all met parameters
+	 */
+	public function new()
+	{
+		return $this->all( array('new' => true) );
 	}
 
 

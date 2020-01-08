@@ -29,6 +29,7 @@
 								<span>Gebruikers</span>
 							</a>
 						</li>
+                        {if $werkgever_type == 'uitzenden'}
 						<li class="nav-item">
 							<a href="instellingen/werkgever/minimumloon" class="nav-link {if $active == 'minimumloon'}active{/if}">
 								<span>Minimumloon</span>
@@ -39,6 +40,7 @@
 								<span>Feestdagen</span>
 							</a>
 						</li>
+						{/if}
 						<li class="nav-item">
 							<a href="instellingen/werkgever/urentypes" class="nav-link {if $active == 'urentypes'}active{/if}">
 								<span>Urentypes</span>

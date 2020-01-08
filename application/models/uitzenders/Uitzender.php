@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Uitzenders;
+namespace models\uitzenders;
 
 use models\Connector;
 use models\forms\Validator;
@@ -70,8 +70,34 @@ class Uitzender extends Connector
 	{
 		$this->uitzender_id = intval($uitzender_id);
 	}
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * ALLEEN VOOR DEVOLPMENT
+	 * TODO: verwijderen
+	 */
+	public function del( $id )
+	{
+		if( $this->user->user_id != -2 )
+			die('Geen toegand');
+		
+		$this->db_user->query( "DELETE FROM inleners_uitzenders WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM uitzenders_bedrijfsgegevens WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM uitzenders_av_accepted WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM	uitzenders_contactpersonen WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM	uitzenders_emailadressen WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM	uitzenders_factoren WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM	uitzenders_factuurgegevens WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM	uitzenders_handtekening WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM	uitzenders_last_visited WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_uitzenders WHERE uitzender_id = $id" );
+		$this->db_user->query( "DELETE FROM	uitzenders_status WHERE uitzender_id = $id" );
+		
+		
+	}
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * get data

@@ -59,6 +59,8 @@ class VisitsLogger extends Connector
 			$insert['inlener_id'] = intval( $id );
 		if( $type == 'werknemer' )
 			$insert['werknemer_id'] = intval( $id );
+		if( $type == 'zzp' )
+			$insert['zzp_id'] = intval( $id );
 		
 		$insert['user_id'] = $this->user->user_id;
 		

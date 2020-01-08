@@ -54,7 +54,10 @@ class UserGroup extends Connector {
 		$list[NULL] = 'onbekend';
 		$list[0] = 'systeem';
 		
-		if( count($ids) == 0 )
+		if( !is_array($ids) || count($ids) == 0 )
+			return $list;
+		
+		if( current($ids) === NULL )
 			return $list;
 		
 		$CI =& get_instance();
@@ -83,8 +86,10 @@ class UserGroup extends Connector {
 		$data = array();
 		
 		//start query
-		$sql = "SELECT user_id, username, user_type, admin, naam, email, email_confirmed, timestamp, password, new_key_expires
-				FROM users	WHERE users.deleted = 0	AND users.werkgever_id = ".$this->user->werkgever_id." ";
+		$sql = "SELECT users.user_id, username, users_accounts.user_type, users_accounts.admin, naam, email, email_confirmed, users.timestamp, password, new_key_expires
+				FROM users
+				LEFT JOIN users_accounts ON users.user_id = users_accounts.user_id
+				WHERE users.deleted = 0	AND users_accounts.werkgever_id = ".$this->user->werkgever_id." ";
 
 		//order
 		$sql .= " ORDER BY users.username";

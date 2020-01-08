@@ -174,10 +174,12 @@
 								<i class="icon-plus-circle2 icon mr-1"></i>
 								<span>Kredietlimiet aanvragen</span>
 							</a>
-							<a href="crm/uitzenders/dossier/bedrijfsgegevens" class="btn btn-outline bg-teal-400 text-teal-400 border-teal-400">
+							{if $user_type == 'werkgever'}
+							<a href="crm/inleners/dossier/bedrijfsgegevens" class="btn btn-outline bg-teal-400 text-teal-400 border-teal-400">
 								<i class="icon-pencil7 icon mr-1"></i>
 								<span>Inlener invoeren</span>
 							</a>
+							{/if}
 						</div>
 					</div>
 
@@ -235,7 +237,7 @@
 									</td>
 									<td>
 										{if $ENV == 'development'}
-											<a href="{$base_url}//crm/inleners?del={$i.inlener_id}"><i class="icon-trash font-size-sm"></i></a>
+											<a href="{$base_url}/crm/inleners?del={$i.inlener_id}"><i class="icon-trash font-size-sm"></i></a>
                                         {/if}
 									</td>
 								</tr>

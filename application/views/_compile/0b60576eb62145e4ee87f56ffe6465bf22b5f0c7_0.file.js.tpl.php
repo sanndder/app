@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-04 15:36:27
+/* Smarty version 3.1.33, created on 2020-01-05 21:03:14
   from 'C:\xampp\htdocs\app\application\views\_page\js.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de7c46b04a335_60046171',
+  'unifunc' => 'content_5e124102a61b00_80069925',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de7c46b04a335_60046171 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e124102a61b00_80069925 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!-- Core JS files -->
 <?php echo '<script'; ?>
  src="template/global_assets/js/main/jquery.min.js"><?php echo '</script'; ?>

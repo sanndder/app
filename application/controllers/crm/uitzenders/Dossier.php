@@ -59,7 +59,7 @@ class Dossier extends MY_Controller
 		}
 
 		//redirect naar bedankt voor aangemelding
-		if( $this->user->user_type == 'external' && $uitzender->bedrijfsgegevens_complete === 0 && $uitzender->emailadressen_complete === 0 && $uitzender->factuurgegevens_complete === 0 && $uitzender->contactpersoon_complete === 0 )
+		if( $this->user->user_type == 'external' && $uitzender->bedrijfsgegevens_complete === '0' && $uitzender->emailadressen_complete === '0' && $uitzender->factuurgegevens_complete === '0' && $uitzender->contactpersoon_complete === '0' )
 			redirect( $this->config->item( 'base_url' ) . 'crm/uitzenders/dossier/bedankt' ,'location' );
 	}
 	

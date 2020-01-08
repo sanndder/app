@@ -2,6 +2,8 @@
 
 namespace models;
 
+use models\forms\Validator;
+
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 //TODO:Samenvoegen met user class
@@ -174,7 +176,7 @@ class Usermanagement {
 	 */
 	public function setUser()
 	{
-		$validator = new Forms\Validator();
+		$validator = new Validator();
 		$validator->table( 'user' )->input( $_POST )->run();
 
 		//schone input terug

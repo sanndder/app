@@ -36,9 +36,16 @@
 					<a href="crm/inleners" class="dropdown-item">
 						<i class="icon-user-tie"></i>Inleners
 					</a>
+					{if $werkgever_type == 'uitzenden'}
 					<a href="crm/werknemers" class="dropdown-item">
 						<i class="icon-user"></i>Werknemers
 					</a>
+                    {/if}
+                    {if $werkgever_type == 'bemiddeling'}
+						<a href="crm/zzp" class="dropdown-item">
+							<i class="icon-user"></i>ZZP'ers
+						</a>
+					{/if}
 				</div>
 			</li>
 
@@ -57,12 +64,15 @@
 				</a>
 			</li>
 
-			<li class="nav-item">
-				<a href="proforma" class="navbar-nav-link">
-					<i class="icon-calculator2 mr-2"></i>
-					Proforma
-				</a>
-			</li>
+            {if $werkgever_type == 'uitzenden'}
+				<li class="nav-item">
+					<a href="proforma" class="navbar-nav-link">
+						<i class="icon-calculator2 mr-2"></i>
+						Proforma
+					</a>
+				</li>
+			{/if}
+
 
 			<li class="nav-item">
 				<a href="emailcentrum" class="navbar-nav-link">

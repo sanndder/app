@@ -1,7 +1,7 @@
 <?php
 
 use models\inleners\InlenerGroup;
-use models\Inleners\Kredietaanvraag;
+use models\inleners\Kredietaanvraag;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 

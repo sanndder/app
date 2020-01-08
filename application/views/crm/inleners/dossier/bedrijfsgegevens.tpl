@@ -60,9 +60,9 @@
 
                                                 {* vanuit uizender geen dropdownlijst *}
                                                 {if isset($smarty.get.uitzender_id) && isset($uitzenders[$smarty.get.uitzender_id])}
-													<input type="hidden" name="uitzender_id" value="{$smarty.get.uitzender_id}" />
-	                                                <div class="pt-2 font-weight-bold">
-	                                                    {$uitzenders[$smarty.get.uitzender_id]}
+													<input type="hidden" name="uitzender_id" value="{$smarty.get.uitzender_id}"/>
+													<div class="pt-2 font-weight-bold">
+                                                        {$uitzenders[$smarty.get.uitzender_id]}
 													</div>
                                                 {else}
 													<select name="uitzender_id" class="form-control select-search">
@@ -105,6 +105,31 @@
 
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Bedrijfsgegevens</legend>
+
+									<div class="row">
+										<div class="alert alert-warning alert-styled-left alert-dismissible col-md-12" style="display: none">
+											<span class="font-weight-semibold"></span>
+										</div>
+									</div>
+
+									<!-- kvknr -->
+                                    {if isset($formdata.kvknr)}
+                                        {assign "field" "kvknr"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:
+											</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="input-kvk form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
+											</div>
+										</div>
+                                    {/if}
+
 									<!-- bedrijfsnaam -->
                                     {if isset($formdata.bedrijfsnaam)}
                                         {assign "field" "bedrijfsnaam"}
@@ -115,28 +140,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
-											</div>
-										</div>
-                                    {/if}
-
-									<!-- kvknr -->
-                                    {if isset($formdata.kvknr)}
-                                        {assign "field" "kvknr"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -151,10 +158,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -169,10 +176,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -191,10 +198,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -209,12 +216,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -229,10 +234,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -247,10 +252,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -263,12 +268,12 @@
 												:
 											</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -288,10 +293,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -306,10 +311,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -324,10 +329,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-													<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}

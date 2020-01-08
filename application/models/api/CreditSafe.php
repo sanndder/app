@@ -1,7 +1,6 @@
 <?php
 
-namespace models\Api;
-
+namespace models\api;
 
 use models\Connector;
 use models\utils\DBhelper;

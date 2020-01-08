@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Facturatie;
+namespace models\facturatie;
 
 use models\Connector;
 

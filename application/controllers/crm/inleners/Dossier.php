@@ -1,13 +1,15 @@
 <?php
 
-use models\Api\CreditSafe;
+use models\api\CreditSafe;
 use models\cao\CAO;
 use models\cao\CAOGroup;
+use models\documenten\Document;
+use models\documenten\DocumentGroup;
 use models\facturatie\Betaaltermijnen;
 use models\forms\Formbuilder;
 use models\inleners\Inlener;
-use models\Inleners\Kredietaanvraag;
-use models\Inleners\KredietaanvraagGroup;
+use models\inleners\Kredietaanvraag;
+use models\inleners\KredietaanvraagGroup;
 use models\uitzenders\UitzenderGroup;
 use models\utils\History;
 use models\utils\VisitsLogger;
@@ -445,7 +447,17 @@ class Dossier extends MY_Controller
 	{
 		//init inlener object
 		$inlener = new Inlener( $inlener_id );
+		
+		if(isset( $_GET['del']))
+		{
+			$document = new Document( $_GET['del'] );
+			$document->del();
+		}
+		
+		$documentGroup = new DocumentGroup();
+		$documenten = $documentGroup->inlener( $inlener_id )->get();
 
+		$this->smarty->assign('documenten', $documenten);
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/documenten.tpl');
 	}

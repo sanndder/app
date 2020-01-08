@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-04 15:36:27
+/* Smarty version 3.1.33, created on 2020-01-07 23:00:17
   from 'C:\xampp\htdocs\app\application\views\instellingen\werkgever\_sidebar.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de7c46b0752c8_48463359',
+  'unifunc' => 'content_5e14ff718dbb84_38182247',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '99df09bcec7b96b7e15631d89ce8aad78d8f32ab' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\instellingen\\werkgever\\_sidebar.tpl',
-      1 => 1575468178,
+      1 => 1578434413,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de7c46b0752c8_48463359 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e14ff718dbb84_38182247 (Smarty_Internal_Template $_smarty_tpl) {
 ?>	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start">
 
@@ -52,6 +52,7 @@ function content_5de7c46b0752c8_48463359 (Smarty_Internal_Template $_smarty_tpl)
 								<span>Gebruikers</span>
 							</a>
 						</li>
+                        <?php if ($_smarty_tpl->tpl_vars['werkgever_type']->value == 'uitzenden') {?>
 						<li class="nav-item">
 							<a href="instellingen/werkgever/minimumloon" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'minimumloon') {?>active<?php }?>">
 								<span>Minimumloon</span>
@@ -62,6 +63,7 @@ function content_5de7c46b0752c8_48463359 (Smarty_Internal_Template $_smarty_tpl)
 								<span>Feestdagen</span>
 							</a>
 						</li>
+						<?php }?>
 						<li class="nav-item">
 							<a href="instellingen/werkgever/urentypes" class="nav-link <?php if ($_smarty_tpl->tpl_vars['active']->value == 'urentypes') {?>active<?php }?>">
 								<span>Urentypes</span>

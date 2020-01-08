@@ -51,12 +51,14 @@ class Ajax extends MY_Controller
 		$to['email'] = $emailadres;
 		$to['name'] = $emailadres;
 		
+		$bedrijfsgegevens = $this->werkgever->bedrijfsgegevens();
+		
 		$email->to( $to );
-		$email->setSubject('Aanmeldlink Abering Uitzend B.V.');
-		$email->setTitel('Welkom bij Abering Uitzend B.V.');
+		$email->setSubject('Aanmeldlink ' . $bedrijfsgegevens['bedrijfsnaam']);
+		$email->setTitel('Welkom bij ' . $bedrijfsgegevens['bedrijfsnaam']);
 		$email->setBody('In deze email vind u uw aanmeldlink voor onze online applicatie <b>Devis Online</b>. Nadat u uw gegevens heeft ingevuld zullen wij binnen één werkdag uw gegevens controleren
 						en uw account activeren. Daarna kunt u volledig gebruik maken van alle mogelijkheden van <b>Devis Online</b>.
-						<br /><br /> <a href="https://www.devisonline.nl/aanmelden/uitzender?wid='.$wid.'&wg_hash='.$hash.'">https://www.devisonline.nl/aanmelden/uitzender?wid='.$wid.'&wg_hash='.$hash.'</a><br /><br />Wij hopen op een fijne samenwerking!<br /><br />Abering Uitzend B.V.');
+						<br /><br /> <a href="https://www.devisonline.nl/aanmelden/uitzender?wid='.$wid.'&wg_hash='.$hash.'">https://www.devisonline.nl/aanmelden/uitzender?wid='.$wid.'&wg_hash='.$hash.'</a><br /><br />Wij hopen op een fijne samenwerking!<br /><br />' . $bedrijfsgegevens['bedrijfsnaam']);
 		$email->useHtmlTemplate( 'default' );
 		$email->delay( 0 );
 		$email->send();

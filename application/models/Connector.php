@@ -18,6 +18,9 @@ class Connector
 {
 	protected $db_user = NULL;
 	protected $user = NULL;
+	protected $werknemer = NULL;
+	protected $zzp = NULL;
+	protected $inlener = NULL;
 	protected $uitzender = NULL;
 	protected $werkgever = NULL;
 
@@ -50,6 +53,9 @@ class Connector
 		$this->user = $CI->user;
 		$this->werkgever = $CI->werkgever;
 		if( isset($CI->uitzender))	$this->uitzender = $CI->uitzender;
+		if( isset($CI->inlener))	$this->inlener = $CI->inlener;
+		if( isset($CI->werknemer))	$this->werknemer = $CI->werknemer;
+		if( isset($CI->zzp))	$this->zzp = $CI->zzp;
 
 		$config['hostname'] = 'localhost';
 		$config['username'] = $CI->config->item('db_user');

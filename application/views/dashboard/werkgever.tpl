@@ -14,214 +14,168 @@
 
 			<!--------------------------------------------------------------------------- left ------------------------------------------------->
 			<div class="row">
-				<div class="col-md-9">
+				<div class="col-md-6">
 
 					<!-- Basic card -->
 					<div class="card">
-						<div class="card-body">
 
-							<fieldset class="mb-0 mt-0">
-								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Omzet en marge</legend>
-							</fieldset>
+                        {* bovenste rij is aantalen crm *}
+						<div class="card-body d-sm-flex align-items-sm-center justify-content-sm-between flex-sm-wrap">
 
-							<div class="row">
-								<div class="col-md-12">
-									<img src="recources/img/bar.png" style="width: 100%">
+                            {* uitzenders *}
+							<div class="d-flex align-items-center mb-3 mb-sm-0">
+								<div class="rounded-circle bg-teal-400">
+									<i class="icon-office icon-xl text-white p-2"></i>
+								</div>
+								<div class="ml-3">
+									<h5 class="font-weight-semibold mb-0">{$count_uitzenders}</h5>
+									<span class="text-muted text-uppercase">Uitzenders</span>
 								</div>
 							</div>
-						</div><!-- /card body -->
-					</div><!-- /basic card -->
 
-
-					<!-- Basic card -->
-					<div class="card">
-						<div class="card-body">
-
-							<fieldset class="mb-0 mt-0">
-								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Gewerkte uren</legend>
-							</fieldset>
-
-							<div class="row">
-								<div class="col-md-12">
-									<img src="recources/img/uren.png" style="width: 100%">
+                            {* inleners *}
+							<div class="d-flex align-items-center mb-3 mb-sm-0">
+								<div class="rounded-circle bg-warning-400">
+									<i class="icon-user-tie icon-xl text-white p-2"></i>
+								</div>
+								<div class="ml-3">
+									<h5 class="font-weight-semibold mb-0">{$count_inleners}</h5>
+									<span class="text-muted text-uppercase">Inleners</span>
 								</div>
 							</div>
-						</div><!-- /card body -->
-					</div><!-- /basic card -->
 
-				</div><!-- /col -->
-			    <!--------------------------------------------------------------------------- /left ------------------------------------------------->
-
-
-			    <!--------------------------------------------------------------------------- right ------------------------------------------------->
-				<div class="col-md-3">
-
-					<!----------------- Documenten --------------------->
-					<div class="card">
-						<div class="card-header bg-transparent header-elements-inline">
-							<span class="card-title font-weight-semibold">Documenten Abering</span>
-							<div class="header-elements">
-								<div class="list-icons">
-									<a class="list-icons-item" data-action="collapse"></a>
+                            {* werknemers of zzp'ers *}
+							<div class="d-flex align-items-center mb-3 mb-sm-0">
+								<div class="rounded-circle bg-blue">
+									<i class="icon-user icon-xl text-white p-2"></i>
+								</div>
+								<div class="ml-3">
+									<h5 class="font-weight-semibold mb-0">{$count_werknemers}</h5>
+									<span class="text-muted text-uppercase">Werknemers</span>
 								</div>
 							</div>
+
 						</div>
 
-						<div class="card-body">
-							<ul class="media-list">
+						<div class="table-responsive">
+							<table class="table text-nowrap">
+								<tbody>
 
-								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
-									</div>
+									{* nieuwe uitzenders *}
+                                    {if count($uitzenders) > 0  }
+										<tr class="table-active">
+											<td style="max-width:200px ">Nieuwe uitzenders</td>
+											<td colspan="3" class="text-right">
+												<a href="{$base_url}/crm/uitzenders/">
+													<i class="icon-list-unordered"></i> alle uitzenders
+												</a>
+											</td>
+										</tr>
+                                        {foreach $uitzenders as $u}
+											<tr>
+												<td>
+													<div class="d-flex align-items-center">
+														<div class="mr-3">
+															<i class="icon-office icon-lg text-teal-400"></i>
+														</div>
+														<div>
+															<a href="{$base_url}/crm/uitzenders/dossier/overzicht/{$u.uitzender_id}" class="text-default font-weight-semibold">{$u.bedrijfsnaam}</a>
+															<div class="text-muted font-size-sm">
+																{$u.timestamp|date_format: '%d-%m-%Y om %R'}
+															</div>
+														</div>
+													</div>
+												</td>
+												<td></td>
+												<td></td>
+												<td class="text-center">
 
-									<div class="media-body">
-										<div class="font-weight-semibold">uittreksel_kvk_abering.pdf</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">15-10-2019</li>
-											<li class="list-inline-item">0.3Mb</a></li>
-										</ul>
-									</div>
+												</td>
+											</tr>
+                                        {/foreach}
+                                    {/if}
+                                    {* nieuwe inleners *}
+                                    {if count($inleners) > 0}
+										<tr class="table-active">
+											<td style="max-width:200px ">Nieuwe inleners</td>
+											<td colspan="3" class="text-right">
+												<a href="{$base_url}/crm/inleners/">
+													<i class="icon-list-unordered"></i> alle inleners
+												</a>
+											</td>
+										</tr>
+                                        {foreach $inleners as $i}
+											<tr>
+												<td>
+													<div class="d-flex align-items-center">
+														<div class="mr-3">
+															<i class="icon-user-tie icon-lg text-warning-400"></i>
+														</div>
+														<div>
+															<a href="{$base_url}/crm/inleners/dossier/overzicht/{$i.inlener_id}" class="text-default font-weight-semibold">{$i.bedrijfsnaam}</a>
+															<div class="text-muted font-size-sm">
+                                                                {$i.timestamp|date_format: '%d-%m-%Y om %R'}
+															</div>
+														</div>
+													</div>
+												</td>
+												<td>
+													<div class="font-weight-bolder">{$i.uitzender}</div>
+													<div class="text-muted">uitzender</div>
+												</td>
+												<td></td>
+												<td class="text-center">
 
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="javascript:void(0)" class="list-icons-item">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
+												</td>
+											</tr>
+                                        {/foreach}
+                                    {/if}
+                                    {* nieuwe kredietaanrvagen *}
+                                    {if count($kredietaanvragen) > 0}
+										<tr class="table-active">
+											<td style="max-width:200px ">Kredietaanrvagen</td>
+											<td colspan="3" class="text-right">
+												<a href="{$base_url}/crm/inleners/">
+													<i class="icon-list-unordered"></i> alle kredietaanvragen
+												</a>
+											</td>
+										</tr>
+                                        {foreach $kredietaanvragen as $k}
+											<tr>
+												<td>
+													<div class="d-flex align-items-center">
+														<div class="mr-3">
+															<i class="mi-euro-symbol text-warning-400" style="font-size: 24px;"></i>
+														</div>
+														<div>
+															<a href="{$base_url}/crm/inleners/dossier/kredietoverzicht/k{$k.id}" class="text-default font-weight-semibold">{$k.bedrijfsnaam}</a>
+															<div class="text-muted font-size-sm">
+                                                                {$k.timestamp|date_format: '%d-%m-%Y om %R'}
+															</div>
+														</div>
+													</div>
+												</td>
+												<td>
+													<div class="font-weight-bolder">{$k.uitzender}</div>
+													<div class="text-muted">uitzender</div>
+												</td>
+												<td></td>
+												<td class="text-center">
 
-								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
-									</div>
+												</td>
+											</tr>
+                                        {/foreach}
+                                    {/if}
 
-									<div class="media-body">
-										<div class="font-weight-semibold">verklaring_betaalgedrag.pdf</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">27-11-2019</li>
-											<li class="list-inline-item">0.15Mb</a></li>
-										</ul>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="javascript:void(0)" class="list-icons-item">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-
-								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">nen_certificaat.pdf</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">12-11-2019</li>
-											<li class="list-inline-item">0.27Mb</a></li>
-										</ul>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="javascript:void(0)" class="list-icons-item">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-
-								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">overeenkomst_g_rekening.pdf</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">01-12-2019</li>
-											<li class="list-inline-item">0.13Mb</a></li>
-										</ul>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="javascript:void(0)" class="list-icons-item">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-
-							</ul>
-						</div>
-					</div>
-
-					<!----------------- Log  --------------------------->
-					<div class="card">
-						<div class="card-header bg-transparent header-elements-inline">
-							<span class="card-title font-weight-semibold">Laatste gebeurtenissen</span>
-							<div class="header-elements">
-								<div class="list-icons">
-									<a class="list-icons-item" data-action="collapse"></a>
-								</div>
-							</div>
-						</div>
-						<div class="card-body border-top-teal">
-							<div class="list-feed">
-								<div class="list-feed-item">
-									<div class="text-muted">Dec 3, 17:47</div>
-									Werknemer
-									<a href="javascript:void(0)">B. Groothuis</a>
-									aangemeld
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Dec 2, 10:25</div>
-									Factuur
-									<a href="javascript:void(0)">#1256</a>
-									gegenereerd door
-									<a href="javascript:void(0)">Arnold Asbestverwijdering B.V.</a>
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Dec 2, 09:37</div>
-									Werknemer
-									<a href="javascript:void(0)">W.H. Nijenhuis</a>
-									ziekgemeld
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Nov 30, 15:28</div>
-									Factuur
-									<a href="javascript:void(0)">#1201</a>
-									gegenereerd door
-									<a href="javascript:void(0)">CleanServices B.V.</a>
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Nov 29, 11:32</div>
-									Inlener
-									<a href="javascript:void(0)">CleanServices B.V.</a>
-									goedgekeurd
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Nov 29, 08:17</div>
-									Arbeidscontract
-									<a href="javascript:void(0)">L. Boom</a>
-									ondertekend
-								</div>
-							</div>
+								</tbody>
+							</table>
 						</div>
 					</div>
 
 
 				</div><!-- /col -->
-			</div><!-- /row -->
-			<!--------------------------------------------------------------------------- /right ------------------------------------------------->
-
+				      <!--------------------------------------------------------------------------- /left ------------------------------------------------->
+			</div>
 
 		</div><!-- /content area -->
 	</div>

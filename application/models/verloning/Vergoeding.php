@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Verloning;
+namespace models\verloning;
 
 use models\Connector;
 use models\forms\Validator;

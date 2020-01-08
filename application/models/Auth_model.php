@@ -74,9 +74,14 @@ class Auth_model extends CI_Model
 		}
 
 		//bind value
-		$sql = "SELECT * FROM users WHERE username = ? LIMIT 1";
+		$sql = "SELECT users.*, users_accounts.*, werkgevers.name, werkgevers.type
+				FROM users
+				LEFT JOIN users_accounts on users.user_id = users_accounts.user_id
+				LEFT JOIN werkgevers ON users_accounts.werkgever_id = werkgevers.werkgever_id
+				WHERE username = ? LIMIT 1";
 		$query = $this->db_admin->query($sql, array($username));
-
+		
+		
 		//return false if user not found
 		if ($query->num_rows() == 0)
 		{
@@ -84,7 +89,6 @@ class Auth_model extends CI_Model
 			$this->setError('Ongeldige gebruikersnaam en/of wachtwoord (1)');
 			return false;
 		}
-
 		//get user
 		$user = $query->row_array();
 
@@ -95,7 +99,6 @@ class Auth_model extends CI_Model
 			$this->setError('Ongeldige gebruikersnaam en/of wachtwoord (2)');
 			return false;
 		}
-
 		//SUCCESS
 
 		//unique session ID
@@ -106,7 +109,10 @@ class Auth_model extends CI_Model
 
 		//sessie aanmaken
 		$session['logindata']['werkgever_id'] = $user['werkgever_id'];
+		$session['logindata']['werkgever_naam'] = $user['name'];
+		$session['logindata']['werkgever_type'] = $user['type'];
 		$session['logindata']['user_type'] = $user['user_type'];
+		$session['logindata']['account_id'] = $user['id'];
 		$session['logindata']['main']['user_id'] = $user['user_id'];
 		$session['logindata']['main']['user_name'] = $user['naam'];
 		$session['logindata']['main']['username'] = $user['username'];
@@ -114,6 +120,9 @@ class Auth_model extends CI_Model
 		$session['logindata']['main']['sid'] = $sid;
 		
 		if( $user['user_type'] == 'uitzender' ) $session['logindata']['main']['uitzender_id'] =  $user['uitzender_id'];
+		if( $user['user_type'] == 'inlener' ) $session['logindata']['main']['inlener_id'] =  $user['inlener_id'];
+		if( $user['user_type'] == 'werknemer' ) $session['logindata']['main']['werknemer_id'] =  $user['werknemer_id'];
+		if( $user['user_type'] == 'zzp' ) $session['logindata']['main']['zzp_id'] =  $user['zzp_id'];
 
 		//session to database
 		$this->_loginSessionToDatabase( $user['user_id'], $secret, $sid );
@@ -164,42 +173,85 @@ class Auth_model extends CI_Model
 		$session['logindata']['wid'] = $data['wid'];
 		$session['logindata']['wg_hash'] = $data['wg_hash'];
 		$session['logindata']['user_type'] = 'external';
-		
+
 		$this->session->set_userdata( $session );
 	}
 
+
+
+	/*************************************************************************************************
+	 * switch to other account
+	 *
+	 * @return void
+	 */
+	public function switchAccount( $account_id = NULL )
+	{
+		//alleen bij geldig ID
+		if( $account_id === NULL ) return NULL;
+		
+		$logindata = $this->session->userdata('logindata');
+
+		$sql = "SELECT * FROM users_accounts LEFT JOIN werkgevers ON users_accounts.werkgever_id = werkgevers.werkgever_id WHERE id = ? AND user_id = ? AND users_accounts.deleted = 0 LIMIT 1";
+		$query = $this->db_admin->query( $sql, array( $account_id, $logindata['main']['user_id'] ) );
+		
+		//als er een record bestaat dan switchen
+		if( $query->num_rows() > 0 )
+		{
+			$data = $query->row_array();
+			
+			//sessie veranderen
+			$session['logindata']['werkgever_id'] = $data['werkgever_id'];
+			$session['logindata']['werkgever_naam'] = $data['name'];
+			$session['logindata']['werkgever_type'] = $data['type'];
+			$session['logindata']['user_type'] = $data['user_type'];
+			$session['logindata']['account_id'] = $account_id;
+			$session['logindata']['main']['user_id'] = $data['user_id'];
+			$session['logindata']['main']['user_name'] = $logindata['main']['user_name'];
+			$session['logindata']['main']['username'] = $logindata['main']['username'];
+			$session['logindata']['main']['user_type'] = $data['user_type'];
+			$session['logindata']['main']['sid'] = $logindata['main']['sid'];
+			
+			$this->session->set_userdata( $session );
+		}
+	
+	}
+	
+	
 	/*************************************************************************************************
 	 * check login
 	 * @return void
 	 */
 	public function check( $logout = false )
 	{
-		
 		//get session
 		$logindata = $this->session->userdata('logindata');
-		
+
 		//check main user
 		$user_id = $logindata['main']['user_id'];
 		$user_type = $logindata['main']['user_type'];
 		$sid = $logindata['main']['sid'];
+		$account_id = $logindata['account_id'];
 
 		//user wants to logout
 		if ($logout)
 			$this->logout( $user_id, $sid, 'user action');
 		
 		//TODO: move to other class
-		//$sql = "UPDATE werkgevers SET db_password = AES_ENCRYPT('_d00zRj0', UNHEX(SHA2('".DB_SECRET."',512))) WHERE werkgever_id = 1"; //_d00zRj0 for simple-internet-solutions
+		//$sql = "UPDATE werkgevers SET db_password = AES_ENCRYPT('0&2Bhzy4', UNHEX(SHA2('".DB_SECRET."',512))) WHERE werkgever_id = 3"; //_d00zRj0 for simple-internet-solutions
 		//$query = $this->db_admin->query($sql);
+		//show($sql);
+		//die();
 
 		//get login session
-		$sql = "SELECT users.*, users_sessions.*, werkgevers.*, AES_DECRYPT( werkgevers.db_password, UNHEX(SHA2('".DB_SECRET."' ,512)) ) AS db_password
-				FROM users 
+		$sql = "SELECT users.*, users_sessions.*, werkgevers.*, AES_DECRYPT( werkgevers.db_password, UNHEX(SHA2('".DB_SECRET."' ,512)) ) AS db_password, users_accounts.*
+				FROM users
+				LEFT JOIN users_accounts ON  users_accounts.user_id = users.user_id
 				LEFT JOIN users_sessions ON users.user_id = users_sessions.user_id 
-				LEFT JOIN werkgevers ON users.werkgever_id = werkgevers.werkgever_id
-				WHERE users.user_id = ? AND sid = ? AND user_type = ? AND session_logout IS NULL 
+				LEFT JOIN werkgevers ON users_accounts.werkgever_id = werkgevers.werkgever_id
+				WHERE users.user_id = ? AND sid = ? AND user_type = ? AND users_accounts.id = ? AND session_logout IS NULL
 				LIMIT 1";
 
-		$query = $this->db_admin->query($sql, array($user_id, $sid, $user_type));
+		$query = $this->db_admin->query($sql, array($user_id, $sid, $user_type, $account_id));
 
 		//logout
 		if ($query->num_rows() == 0)

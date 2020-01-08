@@ -1,4 +1,10 @@
 <?php
+
+use models\inleners\InlenerGroup;
+use models\inleners\KredietaanvraagGroup;
+use models\uitzenders\UitzenderGroup;
+use models\werknemers\WerknemerGroup;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -26,6 +32,18 @@ class Dashboard extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function werkgever()
 	{
+		$uitzendergroup = new UitzenderGroup();
+		$inlenergroup = new InlenerGroup();
+		$werknemergroup = new WerknemerGroup();
+		$kredietgroup = new KredietaanvraagGroup();
+		
+		$this->smarty->assign('uitzenders', $uitzendergroup->new());
+		$this->smarty->assign('count_uitzenders', $uitzendergroup->count());
+		$this->smarty->assign('inleners', $inlenergroup->new());
+		$this->smarty->assign('kredietaanvragen', $kredietgroup->all() );
+		$this->smarty->assign('count_inleners', $inlenergroup->count());
+		$this->smarty->assign('werknemers', $werknemergroup->new());
+		$this->smarty->assign('count_werknemers', $werknemergroup->count());
 		$this->smarty->display('dashboard/werkgever.tpl');
 	}
 	
@@ -34,7 +52,16 @@ class Dashboard extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function uitzender()
 	{
+
 		$this->smarty->display('dashboard/uitzender.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// inlener
+	//-----------------------------------------------------------------------------------------------------------------
+	public function inlener()
+	{
+		$this->smarty->display('dashboard/inlener.tpl');
 	}
 
 }

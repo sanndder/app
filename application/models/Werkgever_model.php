@@ -10,12 +10,13 @@ if (!defined('BASEPATH'))
 /*
  * Werkgever class
  * Wordt altijd geladen en is overal beschikbaar
- *
+ * Haalt alles uit de user databse,  gegevens uit de admin database komen in user_model
  *
  */
 
 class Werkgever_model extends MY_Model
 {
+
 	/*
 	 * @var int
 	 * entiteit id

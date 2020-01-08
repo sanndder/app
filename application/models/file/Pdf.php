@@ -128,7 +128,7 @@ class Pdf extends File{
 	 */
 	public function signatureToTempJpg()
 	{
-		$dir = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/temp/handtekeningen';
+		$dir = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/temp/handtekeningen/';
 
 		if( !checkAndCreateDir($dir) )
 			die('Upload map bestaat niet en kan niet worden aangemaakt.');

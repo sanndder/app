@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-05 10:27:27
+/* Smarty version 3.1.33, created on 2020-01-07 23:02:56
   from 'C:\xampp\htdocs\app\application\views\crm\werknemers\dossier\dienstverband.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de8cd7f64dc40_81623224',
+  'unifunc' => 'content_5e150010ca0fc8_77288994',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -21,36 +21,36 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:crm/werknemers/dossier/_sidebar.tpl' => 1,
   ),
 ),false)) {
-function content_5de8cd7f64dc40_81623224 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e150010ca0fc8_77288994 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_4142430995de8cd7f61ee48_46801506', "title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_314378575e150010c6a4c5_43320004', "title");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_6766295645de8cd7f622cc0_58629746', "header-icon");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_266647605e150010c6e340_22241883', "header-icon");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_12041195645de8cd7f626b41_89795223', "header-title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_7002887655e150010c721c1_17602658', "header-title");
 ?>
 
 <?php $_smarty_tpl->_assignInScope('uploader', "true");?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_731011315de8cd7f62a9c6_22233790', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_21389758785e150010c79ec5_53886418', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, '../../../layout.tpl');
 }
 /* {block "title"} */
-class Block_4142430995de8cd7f61ee48_46801506 extends Smarty_Internal_Block
+class Block_314378575e150010c6a4c5_43320004 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_4142430995de8cd7f61ee48_46801506',
+    0 => 'Block_314378575e150010c6a4c5_43320004',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -60,12 +60,12 @@ Werknemer<?php
 }
 /* {/block "title"} */
 /* {block "header-icon"} */
-class Block_6766295645de8cd7f622cc0_58629746 extends Smarty_Internal_Block
+class Block_266647605e150010c6e340_22241883 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-icon' => 
   array (
-    0 => 'Block_6766295645de8cd7f622cc0_58629746',
+    0 => 'Block_266647605e150010c6e340_22241883',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -75,12 +75,12 @@ icon-office<?php
 }
 /* {/block "header-icon"} */
 /* {block "header-title"} */
-class Block_12041195645de8cd7f626b41_89795223 extends Smarty_Internal_Block
+class Block_7002887655e150010c721c1_17602658 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-title' => 
   array (
-    0 => 'Block_12041195645de8cd7f626b41_89795223',
+    0 => 'Block_7002887655e150010c721c1_17602658',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -90,12 +90,12 @@ Werknemer - <?php echo $_smarty_tpl->tpl_vars['werknemer']->value->naam;
 }
 /* {/block "header-title"} */
 /* {block "content"} */
-class Block_731011315de8cd7f62a9c6_22233790 extends Smarty_Internal_Block
+class Block_21389758785e150010c79ec5_53886418 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_731011315de8cd7f62a9c6_22233790',
+    0 => 'Block_21389758785e150010c79ec5_53886418',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {

@@ -45,6 +45,13 @@ class Ajax extends MY_Controller
 			else
 				echo false;
 		}
+		if( $this->user->user_type == 'inlener' )
+		{
+			if( $this->inlener->acceptAV() )
+				echo true;
+			else
+				echo false;
+		}
 	}
 
 }

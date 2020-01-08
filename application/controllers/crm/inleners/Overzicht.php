@@ -1,8 +1,8 @@
 <?php
 
-use models\Inleners\Inlener;
+use models\inleners\Inlener;
 use models\inleners\InlenerGroup;
-use models\Inleners\KredietaanvraagGroup;
+use models\inleners\KredietaanvraagGroup;
 use models\utils\VisitsLogger;
 
 defined('BASEPATH') OR exit('No direct script access allowed');

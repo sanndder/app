@@ -89,6 +89,7 @@ class Users extends MY_Controller {
 		}
 
 		$formdata = $formbuidler->table( 'user' )->data( $data )->errors( $errors )->build();
+		
 		$this->smarty->assign('formdata', $formdata);
 		$this->smarty->assign('user_data', $user_data);
 		$this->smarty->assign('bedrijfsnaam', $this->werkgever->bedrijfsnaam());

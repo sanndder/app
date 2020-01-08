@@ -3,7 +3,6 @@
 namespace models\documenten;
 use models\Connector;
 use models\file\Pdf;
-use models\pdf\PdfBuilder;
 use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -17,6 +16,8 @@ class Document extends Connector {
 	protected $_error = NULL;
 	protected $_werknemer_id = NULL;
 	protected $_werknemer_info = array();
+	protected $_zzp_id = NULL;
+	protected $_zzp_info = array();
 	protected $_inlener_id = NULL;
 	protected $_inlener_info = array();
 	protected $_uitzender_id = NULL;
@@ -50,7 +51,19 @@ class Document extends Connector {
 		if( $document_id !== NULL )
 			$this->setDocumentId( $document_id );
 	}
-	
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Delete document
+	 * TODO: moet naar deleted = 1
+	 * @return object
+	 */
+	public function del()
+	{
+		$this->db_user->query( "DELETE FROM documenten WHERE document_id = $this->_document_id" );
+		$this->db_user->query( "DELETE FROM documenten_handtekeningen WHERE document_id = $this->_document_id" );
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -71,7 +84,7 @@ class Document extends Connector {
 	 */
 	public function _load()
 	{
-		$sql = "SELECT documenten.*, documenten_templates_settings.owner
+		$sql = "SELECT documenten.*, documenten_templates_settings.owner, documenten_templates_settings.template_name
 				FROM documenten
 				LEFT JOIN documenten_templates_settings ON documenten_templates_settings.template_id = documenten.template_id
 				WHERE documenten.document_id = $this->_document_id AND documenten_templates_settings.deleted = 0
@@ -155,9 +168,12 @@ class Document extends Connector {
 			if( $this->user->user_type == 'werknemer' )
 				$this->db_user->where( 'werknemer_id',  $this->werknemer->id );
 			
+			if( $this->user->user_type == 'zzp' )
+				$this->db_user->where( 'zzp_id',  $this->zzp->id );
+			
 			$this->db_user->where( 'document_id', $this->_document_id );
 			$this->db_user->update( 'documenten_handtekeningen', $update );
-			
+
 			//kijken of alles getekend is
 			$this->checkSignatures();
 			
@@ -234,6 +250,25 @@ class Document extends Connector {
 			}
 		}
 		
+		if( $this->owner() == 'inlener' )
+		{
+			//uitzender documenten mag alleen door werkgever of uitzender zelf bekeken worden
+			if( $this->user->user_type == 'werkgever' )
+				return true;
+			
+			if( $this->user->user_type == 'werknemer' )
+				return  false;
+			
+			//bij uitzender ID checken
+			if( $this->user->user_type == 'inlener' )
+			{
+				if( $this->inlener->inlener_id != $this->_data['inlener_id'])
+					return false;
+				else
+					return true;
+			}
+		}
+		
 		//failsafe
 		return false;
 	}
@@ -254,7 +289,7 @@ class Document extends Connector {
 		}
 		else
 		{
-			//check of er een bestad is
+			//check of er een bestand is
 			if( !isset($this->_data['file_name']) || $this->_data['file_name'] === NULL )
 				return NULL;
 			else
@@ -369,11 +404,21 @@ class Document extends Connector {
 	{
 		$sql = "SELECT inleners_bedrijfsgegevens.*
 				FROM inleners_bedrijfsgegevens
-				WHERE inleners_bedrijfsgegevens.deleted = 0";
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inlener_id = $this->_inlener_id";
 		
 		$query = $this->db_user->query( $sql );
 		
 		$this->_inlener_info = DBhelper::toRow($query);
+		
+		//contactpersonen
+		$sql = "SELECT * FROM inleners_contactpersonen WHERE deleted = 0 AND inlener_id = $this->_inlener_id LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		$this->_inlener_info['contactpersoon'] = DBhelper::toRow($query);
+		
+		//factuurgegevens
+		$sql = "SELECT * FROM inleners_factuurgegevens WHERE deleted = 0 AND inlener_id = $this->_inlener_id LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		$this->_inlener_info['factuurgegevens'] = DBhelper::toRow($query);
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -433,7 +478,22 @@ class Document extends Connector {
 		$this->_uitzender_info['contactpersoon']['aanhef'] = 'de heer';
 		$this->_uitzender_info['contactpersoon']['naam'] = 'U.K.L. van Jongbloed';
 		
-
+		
+		$this->_inlener_info['bedrijfsnaam'] = 'Clean Supplies Schoonmaak B.V.';
+		$this->_inlener_info['straat'] = 'Inleenstraat';
+		$this->_inlener_info['huisnummer'] = '27';
+		$this->_inlener_info['postcode'] = '7545KL';
+		$this->_inlener_info['plaats'] = 'Enschede';
+		$this->_inlener_info['kvknr'] = '87654321';
+		$this->_inlener_info['btwnr'] = 'NL123456789B01';
+		
+		$this->_inlener_info['factuurgegevens']['termijn'] = '30';
+		$this->_inlener_info['factuurgegevens']['g_rekening_percentage'] = '30';
+		
+		$this->_inlener_info['contactpersoon']['aanhef'] = 'mevrouw';
+		$this->_inlener_info['contactpersoon']['naam'] = 'J.L. de Grootte';
+		
+		
 		return $this;
 	}
 	
@@ -451,7 +511,7 @@ class Document extends Connector {
 
 		$insert['document_id'] = $this->_document_id;
 		$insert[ $user_type . '_id' ] = $user_id;
-		
+
 		$this->db_user->insert( 'documenten_handtekeningen', $insert );
 	}
 	
@@ -481,6 +541,18 @@ class Document extends Connector {
 			{
 				foreach( $value as $field2 => $value2 )
 					$this->_html = str_replace( '{{uitzender.' . $field . '.' . $field2 . '}}', $value2, $this->_html );
+			}
+		}
+		
+		//inlener vars
+		foreach( $this->_inlener_info as $field => $value )
+		{
+			if( !is_array($value))
+				$this->_html = str_replace( '{{inlener.' . $field . '}}', $value, $this->_html );
+			else
+			{
+				foreach( $value as $field2 => $value2 )
+					$this->_html = str_replace( '{{inlener.' . $field . '.' . $field2 . '}}', $value2, $this->_html );
 			}
 		}
 		

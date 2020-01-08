@@ -1,6 +1,6 @@
 <?php
 
-use models\Api\CreditSafe;
+use models\api\CreditSafe;
 use models\cao\CAO;
 use models\cao\CAOGroup;
 use models\documenten\IDbewijs;
@@ -36,6 +36,15 @@ class Test extends MY_Controller {
 
 
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// test ondertekenen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function updateusers()
+	{
+		//$this->user->updateUsers();
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// test ondertekenen
@@ -79,6 +88,7 @@ class Test extends MY_Controller {
 		
 		$report = $creditsafe->companyReport( '27165530' );
 		
+		show($info);
 		show($report);
 		show(	$creditsafe->errors());
 		/*

@@ -54,12 +54,17 @@
                                         {assign "field" "username"}
 										<div class="form-group row">
 											<label class="font-weight-bold col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												*:</label>
+												*:
+											</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{if $formdata.$field.value != ''}{$formdata.$field.value}{else}{$user_data.email|default:''}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off" required>
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}
+	                                                    <br/>
+                                                    {/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -68,13 +73,27 @@
                                     {if isset($formdata.naam)}
                                         {assign "field" "naam"}
 										<div class="form-group row">
-											<label class="font-weight-bold col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}*
-												:</label>
+											<label class="font-weight-bold col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}* :</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input value="{if $formdata.$field.value != ''}{$formdata.$field.value}{else}{$user_data.naam|default:''}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {if !isset($user_data.naam) || !is_array($user_data.naam)}
+													<input value="{if $formdata.$field.value != ''}{$formdata.$field.value}{else}{$user_data.naam|default:''}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                {else}
+													<select name="{$field}" class="form-control">
+                                                        {if !isset($formdata.$field.list.empty)}
+															<option value=""></option>
+                                                        {/if}
+                                                        {foreach $user_data.naam as $naam}
+															<option {if $formdata.$field.value == $naam}selected=""{/if} value="{$naam}">{$naam}</option>
+                                                        {/foreach}
+													</select>
+                                                {/if}
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}
+	                                                    <br/>
+                                                    {/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}
@@ -98,8 +117,10 @@
                                                 {/foreach}
 
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
-                                                {/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
                                     {/if}

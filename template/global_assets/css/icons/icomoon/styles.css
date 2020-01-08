@@ -31,6 +31,14 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-lg {
+	font-size: 20px;
+}
+
+.icon-xl {
+	font-size: 26px;
+}
+
 .icon-2x {
 	font-size: 32px;
 }

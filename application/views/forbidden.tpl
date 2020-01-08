@@ -54,6 +54,7 @@
         {if $smarty.session.logindata.user_type == 'uitzender' }{include file='_menu/uitzender.tpl'}{/if}
         {if $smarty.session.logindata.user_type == 'inlener' }{include file='_menu/inlener.tpl'}{/if}
         {if $smarty.session.logindata.user_type == 'werknemer' }{include file='_menu/werknemer.tpl'}{/if}
+        {if $smarty.session.logindata.user_type == 'zzp' }{include file='_menu/zzp.tpl'}{/if}
     {/if}
 	<!-- /secondary navbar -->
 

@@ -125,6 +125,9 @@
 											<li data-var="kvknr">KvK nr</li>
 											<li data-var="btwnr">BTW nummer</li>
 											<li data-var="handtekening">Handtekening</li>
+
+											<li data-var="factuurgegevens.termijn">Betaaltermijn</li>
+											<li data-var="factuurgegevens.g_rekening_percentage">Percentage G-rekening</li>
 										</ul>
 
 									</div><!-- /col -->

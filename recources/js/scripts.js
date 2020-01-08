@@ -15,6 +15,53 @@ $(function(){
 	});
 });
 
+//----------------------------------------------------------------------------------------------------------------------------
+// aanvullen formulier
+//----------------------------------------------------------------------------------------------------------------------------
+$(function(){
+	$('.input-kvk').on('input', function(e){
+		
+		//haal nummer uit input
+		kvknr = $(this).val();
+		
+		//pas wanneer er 8 cijfers zijn gaan zoeken
+		if( kvknr.length != 8 )
+			return false;
+		
+		//cache
+		$alert = $('.alert-warning');
+		$alert.hide(300);
+		
+		//check for int
+		if( isNaN(kvknr) ){
+			$alert.show(500).find('span').html('Het KvK nummer mag alleen uit cijfers bestaan');
+			return false;
+		}
+		
+		//ajax call
+		$.when( getCreditInfo(kvknr) ).done(function( json ){
+			if( json.status === 'error' )
+			{
+				errorHtml = '';
+				$.each( json.error, function (key, error){
+					errorHtml += error + '<br />';
+				});
+				$alert.show(500).find('span').html(errorHtml);
+			}
+			else
+			{
+				//naar tabel
+				$('[name=bedrijfsnaam]').val( json.result.name );
+				$('[name=straat]').val( json.result.address.street );
+				$('[name=plaats]').val( json.result.address.city );
+				$('[name=postcode]').val( json.result.address.postCode );
+				$('[name=huisnummer]').val( json.result.address.houseNo );
+			}
+		});
+		
+	});
+});
+
 
 //----------------------------------------------------------------------------------------------------------------------------
 // creditgegevens ophalen
@@ -42,7 +89,6 @@ $(function(){
 			$alert.show(500).find('span').html('Het KvK nummer mag alleen uit cijfers bestaan');
 			return false;
 		}
-		
 		//zoeken aan
 		$table.hide();
 		$wachten.hide();

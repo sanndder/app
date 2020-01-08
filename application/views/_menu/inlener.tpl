@@ -17,32 +17,23 @@
 	<div class="navbar-collapse collapse" id="navbar-navigation">
 		<ul class="navbar-nav">
 			<li class="nav-item">
-				<a href="dashboard/uitzender" class="navbar-nav-link">
+				<a href="dashboard/inlener" class="navbar-nav-link">
 					<i class="icon-home4 mr-2"></i>
 					Dashboard
 				</a>
 			</li>
 
-			<li class="nav-item dropdown">
-				<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
-					<i class="icon-users mr-2"></i>
-					CRM
+			<li class="nav-item">
+				<a href="crm/werknemers" class="navbar-nav-link">
+					<i class="icon-user mr-2" style="font-weight: bold"></i>
+					Werknemers
 				</a>
-
-				<div class="dropdown-menu">
-					<a href="crm/inleners" class="dropdown-item">
-						<i class="icon-user-tie"></i>Inleners
-					</a>
-					<a href="crm/werknemers" class="dropdown-item">
-						<i class="icon-user"></i>Werknemers
-					</a>
-				</div>
 			</li>
 
 			<li class="nav-item">
 				<a href="facturenoverzicht/uitzender" class="navbar-nav-link">
 					<i class="mi-euro-symbol mr-2" style="font-weight: bold"></i>
-					Facturen & Marge
+					Facturen
 				</a>
 			</li>
 

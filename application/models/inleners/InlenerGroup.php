@@ -1,8 +1,9 @@
 <?php
 
-namespace models\Inleners;
+namespace models\inleners;
 
 use models\Connector;
+use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -30,7 +31,20 @@ class InlenerGroup extends Connector {
 		//call parent constructor for connecting to database
 		parent::__construct();
 	}
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Alle inleners tellen
+	 */
+	public function count()
+	{
+		$query = $this->db_user->query( "SELECT COUNT(inlener_id) AS count FROM inleners_status WHERE complete = 1 AND archief = 0" );
+		$data = DBhelper::toRow( $query );
+		return $data['count'];
+	}
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Alle inleners ophalen aan de hand van de zoekcriteria
@@ -70,6 +84,10 @@ class InlenerGroup extends Connector {
 		//specifieke uitzender?
 		if( isset($param['uitzender_id']) )
 			$sql .= " AND inleners_uitzenders.uitzender_id = ".intval($param['uitzender_id'])." ";
+		
+		//specifieke uitzender?
+		if( isset($param['new']) )
+			$sql .= " AND inleners_status.complete = 0 ";
 
 		//go
 		$query = $this->db_user->query($sql);
@@ -83,6 +101,16 @@ class InlenerGroup extends Connector {
 		}
 
 		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Shortcut naar all met parameters
+	 */
+	public function new()
+	{
+		return $this->all( array('new' => true) );
 	}
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Log;
+namespace models\log;
 
 use models\Connector;
 

@@ -25,4 +25,6 @@ function fillForm()
    $('[name=huisnummer]').val('171');
    $('[name=postcode]').val('7312GP');
    $('[name=plaats]').val('Apeldoorn');
+   $('[name=kvknr]').val('66489709');
+   $('[name=btwnr]').val('66489709');
 }

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2020-01-02 18:46:01
+/* Smarty version 3.1.33, created on 2020-01-07 22:59:31
   from 'C:\xampp\htdocs\app\application\views\_menu\werkgever.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5e0e2c5968ecc8_28578938',
+  'unifunc' => 'content_5e14ff4369ee92_47373493',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '1a788fe132520766272accef9c891213bc47da8a' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\_menu\\werkgever.tpl',
-      1 => 1577987029,
+      1 => 1578434364,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5e0e2c5968ecc8_28578938 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e14ff4369ee92_47373493 (Smarty_Internal_Template $_smarty_tpl) {
 ?><div class="navbar navbar-expand-lg navbar-light navbar-sticky">
 	<!-- hidden buttons for mobile view -->
 	<div class="text-left d-lg-none">
@@ -59,9 +59,16 @@ function content_5e0e2c5968ecc8_28578938 (Smarty_Internal_Template $_smarty_tpl)
 					<a href="crm/inleners" class="dropdown-item">
 						<i class="icon-user-tie"></i>Inleners
 					</a>
+					<?php if ($_smarty_tpl->tpl_vars['werkgever_type']->value == 'uitzenden') {?>
 					<a href="crm/werknemers" class="dropdown-item">
 						<i class="icon-user"></i>Werknemers
 					</a>
+                    <?php }?>
+                    <?php if ($_smarty_tpl->tpl_vars['werkgever_type']->value == 'bemiddeling') {?>
+						<a href="crm/zzp" class="dropdown-item">
+							<i class="icon-user"></i>ZZP'ers
+						</a>
+					<?php }?>
 				</div>
 			</li>
 
@@ -80,12 +87,15 @@ function content_5e0e2c5968ecc8_28578938 (Smarty_Internal_Template $_smarty_tpl)
 				</a>
 			</li>
 
-			<li class="nav-item">
-				<a href="proforma" class="navbar-nav-link">
-					<i class="icon-calculator2 mr-2"></i>
-					Proforma
-				</a>
-			</li>
+            <?php if ($_smarty_tpl->tpl_vars['werkgever_type']->value == 'uitzenden') {?>
+				<li class="nav-item">
+					<a href="proforma" class="navbar-nav-link">
+						<i class="icon-calculator2 mr-2"></i>
+						Proforma
+					</a>
+				</li>
+			<?php }?>
+
 
 			<li class="nav-item">
 				<a href="emailcentrum" class="navbar-nav-link">

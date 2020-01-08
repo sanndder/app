@@ -6,7 +6,7 @@
  * Time: 14:48
  */
 
-namespace models\Email;
+namespace models\email;
 
 /*
  * Emailtemplate class

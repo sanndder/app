@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Inleners;
+namespace models\inleners;
 use models\Connector;
 use models\forms\Validator;
 use models\utils\DBhelper;

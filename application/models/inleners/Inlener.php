@@ -1,6 +1,6 @@
 <?php
 
-namespace models\Inleners;
+namespace models\inleners;
 
 use models\Connector;
 use models\forms\Validator;
@@ -640,17 +640,17 @@ class Inlener extends Connector
 					$input['user_id'] = $this->user->user_id;
 					$this->db_user->insert($table, $input);
 
-					//update status wanneer nodig
-					if( $this->complete == 0 )
-						$this->_updateStatus($method . '_complete');
-
 				}
 				else
 				{
 					$this->_error[] = 'Database error: update mislukt';
 				}
-
 			}
+			
+			//update status wanneer nodig
+			if( $this->complete == 0 )
+				$this->_updateStatus($method . '_complete');
+			
 		}
 		//fouten aanwezig
 		else
@@ -681,8 +681,9 @@ class Inlener extends Connector
 			else
 				$update_status[$property] = 0;// van leeg naar controle
 		}
+		
 		//alleen werkgever mag controle uitvoeren
-		if ($this->$property === 0 && $this->user->user_type == 'werkgever')
+		if ( $this->$property === '0' && $this->user->user_type == 'werkgever')
 			$update_status[$property] = 1;//van controle naar compleet
 
 		//alleen uitvoeren wanneer nodig

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2020-01-05 12:29:19
+/* Smarty version 3.1.33, created on 2020-01-07 12:53:45
   from 'C:\xampp\htdocs\app\application\views\dashboard\uitzender.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5e11c88f824c25_83353926',
+  'unifunc' => 'content_5e147149046509_30219308',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '7a01e0ecac680d47aef418de37dccb0bb6b14661' => 
     array (
       0 => 'C:\\xampp\\htdocs\\app\\application\\views\\dashboard\\uitzender.tpl',
-      1 => 1578223759,
+      1 => 1578254329,
       2 => 'file',
     ),
   ),
@@ -20,35 +20,35 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5e11c88f824c25_83353926 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e147149046509_30219308 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_10788263425e11c88f815220_19265783', "title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_9914973045e147149036b06_46580927', "title");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_4125299355e11c88f8190a4_85638336', "header-icon");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_17052515115e14714903a989_02997602', "header-icon");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_14658375425e11c88f81cf26_10853088', "header-title");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_17107351355e14714903e802_83112896', "header-title");
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_5555413295e11c88f820da4_58985558', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_2067693345e147149042688_65260665', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, '../layout.tpl');
 }
 /* {block "title"} */
-class Block_10788263425e11c88f815220_19265783 extends Smarty_Internal_Block
+class Block_9914973045e147149036b06_46580927 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'title' => 
   array (
-    0 => 'Block_10788263425e11c88f815220_19265783',
+    0 => 'Block_9914973045e147149036b06_46580927',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -58,12 +58,12 @@ Dashboard<?php
 }
 /* {/block "title"} */
 /* {block "header-icon"} */
-class Block_4125299355e11c88f8190a4_85638336 extends Smarty_Internal_Block
+class Block_17052515115e14714903a989_02997602 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-icon' => 
   array (
-    0 => 'Block_4125299355e11c88f8190a4_85638336',
+    0 => 'Block_17052515115e14714903a989_02997602',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -73,12 +73,12 @@ icon-home2<?php
 }
 /* {/block "header-icon"} */
 /* {block "header-title"} */
-class Block_14658375425e11c88f81cf26_10853088 extends Smarty_Internal_Block
+class Block_17107351355e14714903e802_83112896 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'header-title' => 
   array (
-    0 => 'Block_14658375425e11c88f81cf26_10853088',
+    0 => 'Block_17107351355e14714903e802_83112896',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -88,12 +88,12 @@ Dashboard<?php
 }
 /* {/block "header-title"} */
 /* {block "content"} */
-class Block_5555413295e11c88f820da4_58985558 extends Smarty_Internal_Block
+class Block_2067693345e147149042688_65260665 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_5555413295e11c88f820da4_58985558',
+    0 => 'Block_2067693345e147149042688_65260665',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -124,93 +124,7 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 						</div>
 
 						<div class="card-body">
-							<ul class="media-list">
 
-								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">uittreksel_kvk_abering.pdf</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">15-10-2019</li>
-											<li class="list-inline-item">0.3Mb</a></li>
-										</ul>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="javascript:void(0)" class="list-icons-item">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-
-								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">verklaring_betaalgedrag.pdf</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">27-11-2019</li>
-											<li class="list-inline-item">0.15Mb</a></li>
-										</ul>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="javascript:void(0)" class="list-icons-item">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-
-								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">nen_certificaat.pdf</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">12-11-2019</li>
-											<li class="list-inline-item">0.27Mb</a></li>
-										</ul>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="javascript:void(0)" class="list-icons-item">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-
-								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">overeenkomst_g_rekening.pdf</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">01-12-2019</li>
-											<li class="list-inline-item">0.13Mb</a></li>
-										</ul>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="javascript:void(0)" class="list-icons-item">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-
-							</ul>
 						</div>
 					</div>
 
@@ -224,52 +138,8 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 								</div>
 							</div>
 						</div>
-						<div class="card-body border-top-teal">
-							<div class="list-feed">
-								<div class="list-feed-item">
-									<div class="text-muted">Dec 3, 17:47</div>
-									Werknemer
-									<a href="javascript:void(0)">B. Groothuis</a>
-									aangemeld
-								</div>
+						<div class="card-body">
 
-								<div class="list-feed-item">
-									<div class="text-muted">Dec 2, 10:25</div>
-									Factuur
-									<a href="javascript:void(0)">#1256</a>
-									gegenereerd door
-									<a href="javascript:void(0)">Arnold Asbestverwijdering B.V.</a>
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Dec 2, 09:37</div>
-									Werknemer
-									<a href="javascript:void(0)">W.H. Nijenhuis</a>
-									ziekgemeld
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Nov 30, 15:28</div>
-									Factuur
-									<a href="javascript:void(0)">#1201</a>
-									gegenereerd door
-									<a href="javascript:void(0)">CleanServices B.V.</a>
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Nov 29, 11:32</div>
-									Inlener
-									<a href="javascript:void(0)">CleanServices B.V.</a>
-									goedgekeurd
-								</div>
-
-								<div class="list-feed-item">
-									<div class="text-muted">Nov 29, 08:17</div>
-									Arbeidscontract
-									<a href="javascript:void(0)">L. Boom</a>
-									ondertekend
-								</div>
-							</div>
 						</div>
 					</div>
 

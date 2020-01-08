@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.33, created on 2019-12-04 15:49:01
+/* Smarty version 3.1.33, created on 2020-01-06 07:59:52
   from 'C:\xampp\htdocs\app\application\views\instellingen\werkgever\_topbar.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_5de7c75d4d2ea8_34258899',
+  'unifunc' => 'content_5e12dae8a6e046_21444316',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5de7c75d4d2ea8_34258899 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5e12dae8a6e046_21444316 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_checkPlugins(array(0=>array('file'=>'C:\\xampp\\htdocs\\app\\application\\third_party\\smarty\\plugins\\modifier.replace.php','function'=>'smarty_modifier_replace',),));
 ?>
 	<!-- Top bar -->

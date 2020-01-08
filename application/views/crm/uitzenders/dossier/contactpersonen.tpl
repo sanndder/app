@@ -119,7 +119,7 @@
                 {/foreach}
             {/if}
 
-            {if $contactpersonen !== NULL}
+            {if $contactpersonen !== NULL && $user_type == 'werkgever'}
                 {if $uitzender->complete == 0}
 					<div class="row">
 						<div class="col-md-12">

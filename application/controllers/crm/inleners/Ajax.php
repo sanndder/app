@@ -1,7 +1,6 @@
 <?php
 
-use models\Api\CreditSafe;
-use models\forms\Formbuilder;
+use models\api\CreditSafe;
 use models\inleners\Inlener;
 use models\verloning\Urentypes;
 

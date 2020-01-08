@@ -3,6 +3,7 @@
 namespace models\werknemers;
 
 use models\Connector;
+use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -59,6 +60,18 @@ class WerknemerGroup extends Connector {
 		return $data;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Alle werknemers tellen
+	 */
+	public function count()
+	{
+		$query = $this->db_user->query( "SELECT COUNT(werknemer_id) AS count FROM werknemers_status WHERE complete = 1 AND archief = 0" );
+		$data = DBhelper::toRow( $query );
+		return $data['count'];
+	}
+	
+	
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -106,6 +119,10 @@ class WerknemerGroup extends Connector {
 		if( isset($param['inlener_id']) )
 			$sql .= " AND werknemers_inleners.inlener_id = ".intval($param['inlener_id'])." ";
 		
+		//nieuw?
+		if( isset($param['new']) )
+			$sql .= " AND werknemers_status.complete = 0 ";
+		
 		//group
 			$sql .= " GROUP BY werknemers_status.werknemer_id";
 
@@ -122,6 +139,16 @@ class WerknemerGroup extends Connector {
 		}
 
 		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Shortcut naar all met parameters
+	 */
+	public function new()
+	{
+		return $this->all( array('new' => true) );
 	}
 
 

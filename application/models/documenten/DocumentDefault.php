@@ -2,7 +2,6 @@
 
 namespace models\documenten;
 use models\pdf\PdfBuilder;
-use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -194,6 +193,9 @@ class DocumentDefault extends Document implements DocumentInterface {
 			//opslaan in tabel
 			$insert['template_id'] = $this->_template_object->id();
 			$insert['uitzender_id'] = $this->_uitzender_id;
+			$insert['inlener_id'] = $this->_inlener_id;
+			$insert['werknemer_id'] = $this->_werknemer_id;
+			$insert['zzp_id'] = $this->_zzp_id;
 			$insert['html'] = $this->_html;
 			$insert['file_name'] = $this->pdf->getFileName();
 			$insert['file_dir'] = $this->pdf->getFileDir();
@@ -209,7 +211,10 @@ class DocumentDefault extends Document implements DocumentInterface {
 			$this->setDocumentId( $this->db_user->insert_id() );
 			
 			//handtekeningen in de wacht
-			$this->addEmptySignature( 'uitzender', $this->_uitzender_id );
+			if ($this->user->user_type == 'uitzender' )$this->addEmptySignature( 'uitzender', $this->_uitzender_id );
+			if ($this->user->user_type == 'inlener' )$this->addEmptySignature( 'inlener', $this->_inlener_id );
+			if ($this->user->user_type == 'werknemer' )$this->addEmptySignature( 'werknemer', $this->_werknemer_id );
+			if ($this->user->user_type == 'zzp' )$this->addEmptySignature( 'zzp', $this->_zzp_id );
 			
 			return $pdfObject;
 		}

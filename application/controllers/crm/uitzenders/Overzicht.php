@@ -1,5 +1,6 @@
 <?php
 
+use models\uitzenders\Uitzender;
 use models\uitzenders\UitzenderGroup;
 use models\utils\VisitsLogger;
 
@@ -30,6 +31,15 @@ class Overzicht extends MY_Controller
 	public function index()
 	{
 		$log = new VisitsLogger();
+		
+		//alleen in devolpment TODO: remove
+		if( isset($_GET['del']) )
+		{
+			$uitzender = new Uitzender( NULL );
+			$uitzender->del($_GET['del']);
+		}
+		
+		$bedrijfsgegevens = $this->werkgever->bedrijfsgegevens();
 		
 		$uitzendergroup = new UitzenderGroup();
 		$uitzenders = $uitzendergroup->all( $_GET );

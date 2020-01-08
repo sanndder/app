@@ -107,11 +107,10 @@
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
 												{if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-													<br/>
-												{/foreach}</span>{/if}
+													<span class="form-text text-danger">
+                                                    {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
+													</span>
+                                                {/if}
 											</div>
 										</div>
 									{/if}
