@@ -52,7 +52,7 @@
       "rules": {
         "required": true,
         "minlength": 1,
-        "maxlength": 5
+        "maxlength": 10
       }
     },
     "postcode": {

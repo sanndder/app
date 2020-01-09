@@ -24,7 +24,7 @@ class Werknemer extends Connector
 
 	public $werknemer_id = NULL; // @var int
 	public $naam = NULL; // @var string
-
+	
 	/*
 	 * @var array
 	 */
@@ -146,6 +146,22 @@ class Werknemer extends Connector
 				}
 			}
 		}
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * haal ET  regeling object
+	 *
+	 * @return object
+	 */
+	public function etregeling()
+	{
+		$query = $this->db_user->query( "SELECT et_regeling FROM werknemers_verloning_instellingen WHERE werknemer_id = $this->werknemer_id AND et_regeling = 1 AND deleted = 0 LIMIT 1" );
+		if( $query->num_rows() > 0 )
+			return new Et( $this->werknemer_id );
+		
+		return NULL;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

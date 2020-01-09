@@ -151,10 +151,12 @@ class DocumentAlgemeneVoorwaarden extends Document implements DocumentInterface 
 	 * pdf maken
 	 *
 	 * Geeft PDF object terug
+	 *
 	 * @return object|boolean
 	 */
 	public function pdf( $origineel = false )
 	{
+		
 		$pdf = $this->pdf->generate();
 		
 		if( $pdf !== false )

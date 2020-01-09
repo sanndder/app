@@ -132,6 +132,30 @@
 
 									</div><!-- /col -->
 								</div><!-- /row -->
+								<div class="row">
+									<div class="col-lg-3">
+
+										<span class="text-muted ml-1">Werkgever</span>
+
+										<ul data-var-categorie="werknemer" class="list list-unstyled mb-0 list-hover ckeditor-vars mt-1 ml-2">
+											<li data-var="naam">Volledige naam</li>
+											<li data-var="gb_datum">Geboorte datum</li>
+											<li data-var="voorletters">Voorletters</li>
+											<li data-var="tussenvoegsel">Tussenvoegsel</li>
+											<li data-var="voornaam">Voornaam</li>
+											<li data-var="achternaam">Achternaam</li>
+											<li data-var="geslacht">Geslacht</li>
+											<li data-var="straat">Straatnaam</li>
+											<li data-var="huisnummer">Huisnummer</li>
+											<li data-var="huisnummer_toevoeging">huisnummer toevoeging</li>
+											<li data-var="postcode">Postcode</li>
+											<li data-var="plaats">Plaats</li>
+											<li data-var="iban">IBAN</li>
+										</ul>
+
+									</div>
+								</div>
+
 							</div><!-- /col -->
 						</div><!-- /row -->
 

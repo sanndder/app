@@ -159,7 +159,7 @@
 				<div class="card-body">
 					<div class="media flex-column flex-md-row">
 						<a href="#" class="d-none d-md-block mr-md-3 mb-3 mb-md-0">
-						<span class="btn bg-teal-400 btn-icon btn-lg rounded-round">
+						<span class="btn bg-warning-400 btn-icon btn-lg rounded-round">
 							<span class="letter-icon">I</span>
 						</span>
 						</a>
@@ -170,12 +170,12 @@
 						</div>
 
 						<div class="justify-content-between">
-							<a href="crm/inleners/kredietlimiet" class="btn bg-teal-400">
+							<a href="crm/inleners/kredietlimiet" class="btn bg-warning-400">
 								<i class="icon-plus-circle2 icon mr-1"></i>
 								<span>Kredietlimiet aanvragen</span>
 							</a>
 							{if $user_type == 'werkgever'}
-							<a href="crm/inleners/dossier/bedrijfsgegevens" class="btn btn-outline bg-teal-400 text-teal-400 border-teal-400">
+							<a href="crm/inleners/dossier/bedrijfsgegevens" class="btn btn-outline bg-warning-400 text-warning-400 border-warning-400">
 								<i class="icon-pencil7 icon mr-1"></i>
 								<span>Inlener invoeren</span>
 							</a>

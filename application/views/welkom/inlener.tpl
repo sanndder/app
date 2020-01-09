@@ -60,29 +60,35 @@
 
 					</div>
 
-					<!--------------------------------------------------------------------------- Samenwerkingsovereenkomst ------------------------------------------------->
-					<div class="card">
+					<!--------------------------------------------------------------------------- Te tekenen overeenkomsten ------------------------------------------------->
+                    {if isset($document_details)}
+                        {foreach $document_details as $d}
+							<div class="card">
 
-						<div class="card-body">
+								<div class="card-body">
 
-							<div class="media step-2">
-                                {if !$overeenkomstvanopdracht.signed}<span style="font-size: 26px" class="mr-3 number"> 2.</span>{/if}
-								<i class="far fa-check-circle  fa-2x mr-3 mt-1" {if !$overeenkomstvanopdracht.signed}style="display: none;"{/if}></i>
+									<div class="media step-{$d@iteration +1}">
+                                        {if !$d.signed}
+											<span style="font-size: 26px" class="mr-3 number"> {$d@iteration +1}.</span>
+                                        {/if}
+										<i class="far fa-check-circle  fa-2x mr-3 mt-1" {if !$d.signed}style="display: none;"{/if}></i>
 
-                                {if !$overeenkomstvanopdracht.signed}
-								<button type="button" onclick="modalSignDocumentWelkom( {$overeenkomstvanopdracht.document_id}, '2' )" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
-									<i class="icon-pencil5 mr-2"></i>overeenkomst tekenen
-								</button>
-								{/if}
+                                        {if !$d.signed}
+											<button type="button" onclick="modalSignDocumentWelkom( {$d.document_id}, '{$d@iteration +1}' )" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
+												<i class="icon-pencil5 mr-2"></i>overeenkomst tekenen
+											</button>
+                                        {/if}
 
-								<div class="media-body mt-2">
-									<strong class="font-weight-bold">Overeenkomstvanopdracht</strong> ondertekenen
+										<div class="media-body mt-2">
+											<strong class="font-weight-bold">{$d.template_name|ucfirst}</strong> ondertekenen
+										</div>
+
+									</div>
+
 								</div>
-
 							</div>
-
-						</div>
-					</div>
+                        {/foreach}
+                    {/if}
 
 					<a href="dashboard/inlener" class="btn btn-success btn-labeled btn-labeled-left btn-lg btn-start" style="display: none"><b><i class="icon-file-check"></i></b>We hebben alles wat we nodig hebben. Aan de slag!</a>
 

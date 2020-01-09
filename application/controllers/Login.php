@@ -38,8 +38,14 @@ class Login extends EX_Controller {
 			if( $this->auth->errors() != false )
 				$this->smarty->assign('msg', msg('danger', $this->auth->errors() ));
 		}
-
+		
 		$this->smarty->display('login.tpl');
+		
+		/*
+		if( $_SERVER['REMOTE_ADDR'] != '82.74.122.107' )
+			$this->smarty->display('onderhoud.tpl');
+		else
+			$this->smarty->display('login.tpl');*/
 	}
 
 

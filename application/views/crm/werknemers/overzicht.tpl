@@ -155,30 +155,12 @@
 			<!-- Basic card -->
 			<div class="card">
 
-				<div class="bg-light rounded-top">
-					<div class="navbar navbar-light bg-light navbar-expand-lg py-lg-2 rounded-top">
-						<div class="navbar-collapse text-center text-lg-left flex-wrap" id="inbox-toolbar-toggle-read">
-							<div class="mt-3 mt-lg-0 mr-lg-3">
-								<div class="btn-group">
-									<a type="button" class="btn btn-light" href="crm/werknemers/dossier/gegevens">
-										<i class="icon-plus-circle2"></i>
-										<span class="ml-2">Nieuwe werknemer</span>
-									</a>
-								</div>
-							</div>
-
-							<div class="navbar-text ml-lg-auto"></div>
-
-						</div>
-					</div>
-				</div>
-
 				<!-- header -->
 				<!-- card  body-->
 				<div class="card-body">
 					<div class="media flex-column flex-md-row">
 						<a href="#" class="d-none d-md-block mr-md-3 mb-3 mb-md-0">
-						<span class="btn bg-teal-400 btn-icon btn-lg rounded-round">
+						<span class="btn bg-blue btn-icon btn-lg rounded-round">
 							<span class="letter-icon">U</span>
 						</span>
 						</a>
@@ -188,6 +170,13 @@
 							<div class="letter-icon-title font-weight-semibold">{count($werknemers)} werknemers in
 								tabel
 							</div>
+						</div>
+
+						<div class="justify-content-between">
+							<a href="crm/werknemers/dossier/gegevens" class="btn bg-blue text-blue border-blue">
+								<i class="icon-pencil7 icon mr-1"></i>
+								<span>Werknemer invoeren</span>
+							</a>
 						</div>
 					</div>
 

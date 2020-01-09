@@ -273,6 +273,25 @@ class Werkgever_model extends MY_Model
 		return $data['id'];
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * AV pdf
+	 *
+	 */
+	public function AVpdf( $method = 'inline' )
+	{
+		$sql = "SELECT * FROM werkgever_av WHERE deleted = 0 AND entiteit_id = $this->_entiteit_id";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			die('Geen voorwaarden gevonden');
+		
+		$data = $query->row_array();
+		
+		$pdf = new \models\file\Pdf($data);
+		$pdf->$method();
+	
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

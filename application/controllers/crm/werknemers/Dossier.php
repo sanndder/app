@@ -27,7 +27,7 @@ class Dossier extends MY_Controller
 		parent::__construct();
 
 		//Deze pagina mag alleen bezocht worden door werkgever
-		if( $this->user->user_type != 'werkgever' )forbidden();
+		if( $this->user->user_type != 'werkgever' &&  $this->user->user_type != 'uitzender' )forbidden();
 
 		//method naar smarty
 		$this->smarty->assign('method', $this->router->method);
@@ -143,7 +143,7 @@ class Dossier extends MY_Controller
 
 		$formdata = $formbuidler->table( 'werknemers_gegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
 		$this->smarty->assign('formdata', $formdata);
-
+		
 		//show(Codering::listNationaliteiten());
 		$this->smarty->assign('list', array( 'nationaliteiten' => Codering::listNationaliteiten(), 'landen' => Codering::listLanden() ));
 		$this->smarty->assign('werknemer', $werknemer);
@@ -334,6 +334,29 @@ class Dossier extends MY_Controller
 		
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/verloning.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// instellingen dienstverband
+	//-----------------------------------------------------------------------------------------------------------------
+	public function etregeling( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		$et = $werknemer->etregeling();
+		
+		//del bsn
+		if( isset($_GET['delbsn']) )
+		{
+			$et->delbsn();
+			redirect($this->config->item('base_url') . '/crm/werknemers/dossier/etregeling/' . $werknemer_id ,'location');
+		}
+		
+		
+		$this->smarty->assign('bsn',  $et->fileBsn() );
+		$this->smarty->assign('landen',  Codering::listLanden() );
+		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->display('crm/werknemers/dossier/etregeling.tpl');
 	}
 
 }

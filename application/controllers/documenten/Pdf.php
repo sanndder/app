@@ -1,6 +1,7 @@
 <?php
 
 use models\documenten\Document;
+use models\documenten\DocumentAlgemeneVoorwaarden;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -20,6 +21,16 @@ class Pdf extends MY_Controller
 		
 	}
 	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	//  haal pdf algemene voorwaarden op
+	//-----------------------------------------------------------------------------------------------------------------
+	public function av( $method = 'inline')
+	{
+		$this->werkgever->AVpdf( $method );
+	}
+	
+
 
 	//-----------------------------------------------------------------------------------------------------------------
 	//  haal de pdf op
@@ -37,7 +48,6 @@ class Pdf extends MY_Controller
 		
 		//pdf opbject bekijken
 		$pdf->inline();
-		
 	}
 	
 	

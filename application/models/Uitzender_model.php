@@ -153,8 +153,6 @@ class Uitzender_model extends MY_Model
 		}
 		
 		return true;
-		
-		show($this->_blocked_template_ids);
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -184,7 +182,8 @@ class Uitzender_model extends MY_Model
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Samenwerkingsovereenkomst ID ophalen
+	 * document ID ophalen
+	 *
 	 *@return int?
 	 */
 	public function getDocumentID( $template_id )
