@@ -22,6 +22,8 @@ class UserGroup extends Connector {
 	 */
 	private $db_admin = NULL;
 	
+	private $_uitzender_id = NULL;
+	
 	/**
 	 * @var array
 	 */
@@ -75,7 +77,16 @@ class UserGroup extends Connector {
 		return $list;
 	}
 	
-
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Alle users ophalen aan de hand van de zoekcriteria
+	 */
+	public function uitzender( $uitzender_id ) :UserGroup
+	{
+		$this->_uitzender_id = intval($uitzender_id);
+		return $this;
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Alle users ophalen aan de hand van de zoekcriteria
@@ -91,6 +102,10 @@ class UserGroup extends Connector {
 				LEFT JOIN users_accounts ON users.user_id = users_accounts.user_id
 				WHERE users.deleted = 0	AND users_accounts.werkgever_id = ".$this->user->werkgever_id." ";
 
+		//alleen voor uitzender
+		if( $this->_uitzender_id !== NULL )
+			$sql .= " AND uitzender_id = $this->_uitzender_id ";
+		
 		//order
 		$sql .= " ORDER BY users.username";
 		

@@ -82,7 +82,10 @@ switch (ENVIRONMENT)
 
 	case 'testing':
 	case 'production':
-		ini_set('display_errors', 0);
+		if( $_SERVER['REMOTE_ADDR'] == '82.74.122.107' )
+			ini_set( 'display_errors', 1 );
+		else
+			ini_set('display_errors', 0);
 		error_reporting(-1);
 		/*if (version_compare(PHP_VERSION, '5.3', '>='))
 		{

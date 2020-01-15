@@ -54,9 +54,9 @@ class IDbewijs extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * check if ID bewijs is complete
-	 * @return object
+	 * @return bool
 	 */
-	public function complete()
+	public function complete() :bool
 	{
 		//reload data
 		$this->_getIDbewijsFromDatabase();
@@ -77,7 +77,7 @@ class IDbewijs extends Connector {
 	 * entity is werknemer
 	 * @return object
 	 */
-	public function werknemer( $werknemer_id )
+	public function werknemer( $werknemer_id ) :IDbewijs
 	{
 		$this->_setTable('werknemers_idbewijs', 'werknemer_id');
 		$this->_setEntityID( $werknemer_id );
@@ -91,9 +91,9 @@ class IDbewijs extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * validate vervaldatum
-	 * @return object
+	 * @return bool
 	 */
-	public function _validateVervalDatum( $datum )
+	public function _validateVervalDatum( $datum ) :bool
 	{
 		//to internatiol format
 		$datum = reverseDate($datum);
@@ -112,6 +112,7 @@ class IDbewijs extends Connector {
 			return false;
 		}
 		
+		return true;
 	}
 	
 	
@@ -120,13 +121,15 @@ class IDbewijs extends Connector {
 	 * set vervaldatum
 	 * @return object
 	 */
-	public function setVervalDatum( $datum )
+	public function setVervalDatum( $datum ) :?IDbewijs
 	{
 		if( $this->_validateVervalDatum($datum) === false )
-			return false;
+			return NULL;
 		
 		$this->db_user->where( 'werknemer_id', $this->_entity_id );
 		$this->db_user->update( $this->_table, array( 'vervaldatum' => reverseDate($datum) ) );
+		
+		return $this;
 	}
 
 
@@ -135,7 +138,7 @@ class IDbewijs extends Connector {
 	 * delete ID
 	 * @return object
 	 */
-	public function deleteID( $side = '' )
+	public function deleteID( $side = '' ) :IDbewijs
 	{
 		if( $side == 'voorkant' )
 			$side = 1;
@@ -166,6 +169,7 @@ class IDbewijs extends Connector {
 			$this->db_user->update( $this->_table, array( 'vervaldatum' => NULL ) );
 		}
 		
+		return $this;
 	}
 
 	
@@ -174,7 +178,7 @@ class IDbewijs extends Connector {
 	 * save img object to database
 	 * @return object
 	 */
-	public function imgObjectToDatabase( string $side, object $img )
+	public function imgObjectToDatabase( string $side, object $img ) :IDbewijs
 	{
 		if( $side == 'voorkant' )
 			$side = 1;
@@ -227,12 +231,23 @@ class IDbewijs extends Connector {
 			if( $file_id != $this->_file_id )
 				die('Geen toegang');
 		}
+		
 		if( $side == 'voorkant' )
 			return $this->_file_voorkant;
 		
 		if( $side == 'achterkant' )
 			return $this->_file_achterkant;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * @return int
+	 */
+	public function fileID()
+	{
+		return $this->_file_id;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *

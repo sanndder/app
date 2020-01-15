@@ -9,6 +9,7 @@
         "setasign/fpdi-tfpdf": "^2.1",
         "fpdf/fpdf": "^1.81",
         "guzzlehttp/guzzle": "^6.5",
-         "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-gd": "*"
     }
 }

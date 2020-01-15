@@ -1,0 +1,34 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "werknemer_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "indienst": {
+      "label": "In dienst vanaf",
+      "rules": {
+        "required": true,
+        "type": "date"
+      }
+    },
+    "default_cao": {
+      "label": "Cao uitzendkracht",
+      "rules": {
+        "required": true
+      },
+      "list": {
+        "options": {
+          "NBBU": "NBBU",
+          "BOUW": "Bouw"
+          "BOUW-UTA": "Bouw Uta"
+        }
+      }
+    }
+  }
+}

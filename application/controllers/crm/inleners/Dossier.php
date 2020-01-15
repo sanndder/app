@@ -101,7 +101,7 @@ class Dossier extends MY_Controller
 			
 			$this->smarty->assign('inlener', $inlener);
 		}
-		//alleen een aavraag, dan anders afhandelen
+		//alleen een aanvraag, dan anders afhandelen
 		else
 		{
 			$kredietaanvraag = new Kredietaanvraag( $kredietaanvraag_id );

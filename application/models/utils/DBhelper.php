@@ -90,7 +90,7 @@ class DBhelper{
 	 * @param query is het codeignitor query object
 	 * @return mixed
 	 */
-	public static function toRow( $query, $return = 'false' )
+	public static function toRow( $query, $return = 'false', $field = NULL  )
 	{
 		//init
 		$do_name_check = NULL;
@@ -120,6 +120,10 @@ class DBhelper{
 		//naam aanwezig, maak extra field
 		if( $do_name_check )
 			$data['naam'] = make_name($data);
+		
+		//1 veld
+		if( $field !== NULL && isset($data[$field]) )
+			return $data[$field];
 		
 		return $data;
 	}

@@ -3,6 +3,7 @@
 namespace models\file;
 
 use setasign\Fpdi\Fpdi;
+use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
 use setasign\Fpdi\PdfReader;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -37,8 +38,8 @@ class Pdf extends File{
 		
 		//load fpdi
 		$this->_fpdi = new Fpdi();
-
 		$this->_setInfo();
+		
 	}
 
 
@@ -109,7 +110,7 @@ class Pdf extends File{
 			$new_path = $this->_file_path;
 			$new_name = $this->_file_name;
 		}
-			
+		
 		$file_info['signed_file_name'] = $new_name;
 		$file_info['signed_file_name_display'] = $this->_file_name_display;
 		$file_info['signed_file_dir'] = $this->_file_dir;
@@ -160,11 +161,20 @@ class Pdf extends File{
 		$this->_file_ext = 'pdf';
 		
 		//size
-		$this->_file_size = filesize($this->_file_path);
+		$this->_file_size = filesize( $this->_file_path );
 		
 		//page count
-		$this->_page_count = $this->_fpdi->setSourceFile($this->_file_path);
-		
+		try
+		{
+			$this->_page_count = $this->_fpdi->setSourceFile( $this->_file_path );
+		}
+		catch ( CrossReferenceException $e )
+		{
+			if( $e->getCode() == 267 )
+				$this->_error[] = 'Uw pdf is gecomprimeerd en deze kunnen wij niet verwerken. Neem contact met ons op.';
+			else
+				$this->_error[] = 'Uw pdf is kan niet worden verwerkt (code '. $e->getCode() .' . Neem contact met ons op.';
+		}
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -183,9 +193,9 @@ class Pdf extends File{
 	/*
 	 * Get one page from the origional and make an object
 	 *
-	 * @return object|void
+	 * @return object Pdf
 	 */
-	public function splitPage( $page = 1, $new_name = NULL )
+	public function splitPage( $page = 1, $new_name = NULL ) : Pdf
 	{
 		//Pagina moet wel bestaan
 		if( $this->pageCount() < $page )
@@ -208,11 +218,6 @@ class Pdf extends File{
 		}
 		
 		$new_path = str_replace( $this->_file_name, $new_name, $this->_file_path);
-		
-		
-		show($this->_file_path);
-		show($new_path);
-		
 		$new_pdf->Output($new_path, "F");
 		
 		//load object
@@ -228,7 +233,7 @@ class Pdf extends File{
 	 * https://stackoverflow.com/questions/8624886/pdf-to-jpg-conversion-using-php
 	 * @return object
 	 */
-	public function toJpg( $save_path = NULL )
+	public function toJpg( $save_path = NULL ) : Img
 	{
 		/*
 		$imagick = new \Imagick();
@@ -246,9 +251,31 @@ class Pdf extends File{
 		//new file
 		if( $save_path === NULL )
 			$save_path = str_replace( '.pdf', '.jpg', $open_path );
-	
+		
 		//windows versie
-		exec("magick convert " . $open_path . " " . $save_path);
+		if( ENVIRONMENT == 'development' )
+			exec("magick convert " . $open_path . " " . $save_path);
+		//server
+		else
+		{
+			exec("/usr/bin/convert " . $open_path . " " . $save_path);
+			/*
+			//https://stackoverflow.com/questions/9227014/convert-pdf-to-jpeg-with-php-and-imagemagick
+			$imagick = new \Imagick();
+			$imagick->setResolution(300,300);
+			$imagick->setCompressionQuality(80);
+			$imagick->readImage($open_path);
+			$imagick->setImageFormat('jpeg');
+			$imagick->writeImage($save_path);
+			$imagick->clear();
+			$imagick->destroy();
+			
+			echo($open_path);
+			echo "\r\n";
+			echo($save_path);
+			die();
+			*/
+		}
 		
 		//JPG is created, return new object
 		$jpg['file_dir'] = $this->_file_dir;

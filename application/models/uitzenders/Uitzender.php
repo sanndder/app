@@ -380,11 +380,11 @@ class Uitzender extends Connector
 		$input = $validator->data();
 
 		//juitse paramter meegeven
-		if ( $where !== NULL)
+		if ( $where !== NULL )
 			$id = current($where);
 		else
 			$id = NULL;
-
+		
 		//geen fouten, nieuwe insert doen wanneer er wijzigingen zijn
 		if ($validator->success())
 		{
@@ -567,13 +567,24 @@ class Uitzender extends Connector
 			}
 
 		}
+		
+		//aanhef en tekenbevoegd toevoegen als die leeg zijn, alleen voor ajax call nodig
+		if( !isset($_POST['aanhef']) )$_POST['aanhef'] = -1;
+		if( !isset($_POST['tekenbevoegd']) )$_POST['tekenbevoegd'] = -1;
 
 		$input = $this->_set('uitzenders_contactpersonen', 'contactpersoon', array('contact_id' => $contact_id));
 
-		//zijn er erros, dan weer uit de database
+		//extra controle eerste contactpersoon
+		if( count($this->contactpersonen()) == 1 )
+		{
+			if( isset($_POST['tekenbevoegd']) && $_POST['tekenbevoegd'] != 1 )
+				$this->_error['tekenbevoegd'][] = 'Uw eerste contactpersoon moet bevoegd zijn namens de onderneming overeenkomsten aan te gaan';
+		}
+
+		//zijn er errors, dan weer uit de database
 		if ($new == true && $this->errors() !== false)
 		{
-			$sql = "DELETE FROM uitzenders_contactpersonen WHERE contact_id = $contact_id LIMIT 1";
+			$sql = "DELETE FROM uitzenders_contactpersonen WHERE contact_id = $contact_id";
 			$this->db_user->query($sql);
 		}
 

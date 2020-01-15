@@ -326,7 +326,7 @@ class User extends Connector
 			$sql = "SELECT uitzenders_contactpersonen.*, uitzenders_bedrijfsgegevens.bedrijfsnaam
 					FROM uitzenders_contactpersonen
 					LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_bedrijfsgegevens.uitzender_id = uitzenders_contactpersonen.uitzender_id
-					WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_contactpersonen.deleted = 0 AND uitzenders_contactpersonen.uitzender_id = ".intval(($_GET['id']));
+					WHERE uitzenders_contactpersonen.tekenbevoegd = 1 AND uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_contactpersonen.deleted = 0 AND uitzenders_contactpersonen.uitzender_id = ".intval(($_GET['id']));
 					
 			$query = $this->db_user->query( $sql );
 
@@ -370,7 +370,7 @@ class User extends Connector
 			$sql = "SELECT inleners_contactpersonen.*, inleners_bedrijfsgegevens.bedrijfsnaam
 					FROM inleners_contactpersonen
 					LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_contactpersonen.inlener_id
-					WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_contactpersonen.deleted = 0 AND inleners_contactpersonen.inlener_id = ".intval(($_GET['id']));
+					WHERE inleners_contactpersonen.tekenbevoegd = 1 AND inleners_bedrijfsgegevens.deleted = 0 AND inleners_contactpersonen.deleted = 0 AND inleners_contactpersonen.inlener_id = ".intval(($_GET['id']));
 			
 			$query = $this->db_user->query( $sql );
 			$data = $query->row_array();

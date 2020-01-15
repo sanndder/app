@@ -83,7 +83,7 @@ class Ajax extends MY_Controller
 		$contactpersoon = $uitzender->contactpersoon($contact_id);
 
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//contactpersoon is bekend
 		if(isset($contactpersoon))

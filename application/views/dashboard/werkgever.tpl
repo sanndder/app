@@ -388,6 +388,42 @@
 											</tr>
                                         {/foreach}
                                     {/if}
+                                    {* nieuwe werknemers *}
+                                    {if count($werknemers) > 0}
+										<tr class="table-active">
+											<td style="max-width:200px ">Nieuwe werknemers</td>
+											<td colspan="3" class="text-right">
+												<a href="{$base_url}/crm/werknemers/">
+													<i class="icon-list-unordered"></i> alle werknemers
+												</a>
+											</td>
+										</tr>
+                                        {foreach $werknemers as $w}
+											<tr>
+												<td>
+													<div class="d-flex align-items-center">
+														<div class="mr-3">
+															<i class="icon-user icon-lg text-blue"></i>
+														</div>
+														<div>
+															<a href="{$base_url}/crm/werknemers/dossier/overzicht/{$w.werknemer_id}" class="text-default font-weight-semibold">{$w.naam}</a>
+															<div class="text-muted font-size-sm">
+                                                                {$w.timestamp|date_format: '%d-%m-%Y om %R'}
+															</div>
+														</div>
+													</div>
+												</td>
+												<td>
+													<div class="font-weight-bolder">{$w.uitzender}</div>
+													<div class="text-muted">uitzender</div>
+												</td>
+												<td></td>
+												<td class="text-center">
+
+												</td>
+											</tr>
+                                        {/foreach}
+                                    {/if}
 
 								</tbody>
 							</table>

@@ -57,7 +57,9 @@
             {if $contactpersonen == NULL}
 				<div class="">
 					<img style="width: 75px; margin-left: 50px; margin-top: -30px;" src="recources/img/arrow.png"/>
-					<span style="display:inline-block; font-size: 16px; margin-left: 15px; margin-top: 30px;">Voeg een contactpersoon toe om uw inschrijving af te ronden</span>
+					<span style="display:inline-block; font-size: 16px; margin-left: 15px; margin-top: 30px;">Voeg een contactpersoon toe om uw inschrijving af te ronden. <br />
+					                                                                                         <span class="font-weight-bold">Uw eerste contactpersoon moet bevoegd zijn namens uw bedrijf overeenkomsten aan te gaan.</span></span>
+
 				</div>
             {/if}
 

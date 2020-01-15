@@ -2,7 +2,9 @@
 
 namespace models\inleners;
 use models\Connector;
+use models\email\Email;
 use models\forms\Validator;
+use models\uitzenders\Uitzender;
 use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -129,6 +131,11 @@ class Kredietaanvraag extends Connector {
 		$this->db_user->where( 'id', $aanvraag_id );
 		$this->db_user->update( 'inleners_kredietaanvragen', $update );
 		
+		//bijbehorende aanvraag ophalen
+		$aanvraag = $this->aanvraag();
+		
+		$this->_emailAfkeuring( $aanvraag['uitzender_id'], $aanvraag['bedrijfsnaam'] );
+		
 		if( $this->db_user->affected_rows() > 0 )
 			return true;
 		
@@ -181,6 +188,10 @@ class Kredietaanvraag extends Connector {
 			$this->setKredietlimiet( $limiet_toegekend );
 			$this->setKredietGebruik( 0 );
 			
+			//email goedkeuring
+			if( isset($aanvraag['uitzender_id']) && $aanvraag['uitzender_id'] !== NULL )
+				$this->_emailGoedkeuring( $aanvraag['uitzender_id'], $aanvraag['bedrijfsnaam'] );
+			
 			$update['inlener_id'] = $inlener->inlener_id;
 		}
 		
@@ -192,6 +203,62 @@ class Kredietaanvraag extends Connector {
 		
 		$this->db_user->where( 'id', $aanvraag['id'] );
 		$this->db_user->update( 'inleners_kredietaanvragen', $update );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Email goedkeuring naar uitzender
+	 *
+	 * @return void
+	 */
+	public function _emailGoedkeuring( $uitzender_id, $inlener )
+	{
+		$uitzender = new Uitzender( $uitzender_id );
+		$emailadressen = $uitzender->emailadressen();
+		
+		$email = new Email();
+		
+		$to['email'] = $emailadressen['standaard'];
+		$to['name'] = $uitzender->bedrijfsnaam;
+		
+		$bedrijfsgegevens = $this->werkgever->bedrijfsgegevens();
+		
+		$email->to( $to );
+		$email->setSubject('Goedkeuring kredietlimiet ' . $inlener);
+		$email->setTitel('Uw kredietaanvraag voor ' . $inlener . ' is goedgekeurd');
+		$email->setBody('U kunt nu in uw portal de aanmelding van uw inlener afronden. Wanneer u de benodigde gegevens invult, dan controleren wij zo spoedig mogelijk uw aanmelding.<br /><br />Vriendelijke groet,<br />' . $bedrijfsgegevens['bedrijfsnaam']);
+		$email->useHtmlTemplate( 'default' );
+		$email->delay( 0 );
+		$email->send();
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Email goedkeuring naar uitzender
+	 *
+	 * @return void
+	 */
+	public function _emailAfkeuring( $uitzender_id, $inlener )
+	{
+		$uitzender = new Uitzender( $uitzender_id );
+		$emailadressen = $uitzender->emailadressen();
+		
+		$email = new Email();
+		
+		$to['email'] = $emailadressen['standaard'];
+		$to['name'] = $uitzender->bedrijfsnaam;
+		
+		$bedrijfsgegevens = $this->werkgever->bedrijfsgegevens();
+		
+		$email->to( $to );
+		$email->setSubject('Kredietaanvraag ' . $inlener . ' afgekeurd');
+		$email->setTitel('Uw kredietaanvraag voor ' . $inlener . ' is AFGEKEURD');
+		$email->setBody('Onze kredietverzekering heeft uw aanvraag voor '. $inlener.' helaas afgekeurd.<br /><br />Vriendelijke groet,<br />' . $bedrijfsgegevens['bedrijfsnaam']);
+		$email->useHtmlTemplate( 'default' );
+		$email->delay( 0 );
+		$email->send();
 	}
 	
 	

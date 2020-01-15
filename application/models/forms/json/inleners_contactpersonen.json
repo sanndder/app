@@ -107,6 +107,19 @@
         "minlength": 1,
         "maxlength": 512
       }
+    },
+    "tekenbevoegd": {
+      "label": "Tekenbevoegd",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "<b>Ja</b>, contactpersoon mag tekenen namens de onderneming",
+          "0": "<b>Nee</b>, contactpersoon mag <u>NIET</u> tekenen namens de onderneming"
+        }
+      }
     }
   }
 }

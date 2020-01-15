@@ -38,6 +38,12 @@ class Overzicht extends MY_Controller
 		$this->smarty->assign('last_visits', $log->getLastCRMVisits('werknemer') );
 		$this->smarty->display('crm/werknemers/overzicht.tpl');
 	}
-
-
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Succelvol toegevoegd
+	//-----------------------------------------------------------------------------------------------------------------
+	public function success()
+	{
+		$this->smarty->display('crm/werknemers/success.tpl');
+	}
 }

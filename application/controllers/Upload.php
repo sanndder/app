@@ -100,17 +100,27 @@ class Upload extends MY_Controller {
 		if( $this->uploadfiles->errors() === false)
 		{
 			$file_array = $this->uploadfiles->getFileArray();
-			
+	
 			//wanneer pdf, dan omzetten naar jpg
 			if( $file_array['file_ext'] == 'pdf' )
 			{
 				//load pdf
 				$pdf = new Pdf( $file_array );
+				if( $pdf->errors() !== false )
+				{
+					$errors = $pdf->errors();
+					$result['error'] = $errors[0];
+					
+					//ALWAYS delete files for AVG
+					$pdf->deleteFromDisk();
+					echo json_encode($result);
+					die();
+				}
 				
 				//bij meer dan 2 pagina's stoppen
 				if( $pdf->pageCount() > 2 )
 				{
-					$result['error'] = "Het PDF bestand bevat meer dan 1 pagina's. Dit kunnen wij niet automatisch verwerken";
+					$result['error'] = "Het PDF bestand bevat meer dan 2 pagina's. Dit kunnen wij niet automatisch verwerken";
 					
 					//ALWAYS delete files for AVG
 					$pdf->deleteFromDisk();
@@ -125,6 +135,7 @@ class Upload extends MY_Controller {
 					$img[1] = $pdf_1->toJpg();
 					$img[2] = $pdf_2->toJpg();
 					
+			
 					//pdf's weggooien
 					$pdf_1->deleteFromDisk();
 					$pdf_2->deleteFromDisk();
@@ -139,11 +150,12 @@ class Upload extends MY_Controller {
 				$pdf->deleteFromDisk();
 			}
 
-			
+			//png en gif ook naar jpg, altijd alleen [1] want vanaf pdf wordt het al jpg
 			if( $file_array['file_ext'] == 'jpg' || $file_array['file_ext'] == 'png' || $file_array['file_ext'] == 'gif' )
 			{
 				$img[1] = new Img( $file_array );
-				$img[1]->toJpg();
+				if(  $file_array['file_ext'] != 'jpg' )
+					$img[1]->toJpg();
 			}
 			
 			//alles resizen
@@ -152,7 +164,21 @@ class Upload extends MY_Controller {
 			
 			//nieuwe ID starten
 			$idbewijs = new IDbewijs();
-			$idbewijs->werknemer( $werknemer_id )->imgObjectToDatabase( 'voorkant', $img[1] );
+			
+			//slechts 1 file
+			if( count($img) == 1)
+			{
+				if( $file_id == 1 )
+					$idbewijs->werknemer( $werknemer_id )->imgObjectToDatabase( 'voorkant', $img[1] );
+				else
+					$idbewijs->werknemer( $werknemer_id )->imgObjectToDatabase( 'achterkant', $img[1] );
+			}
+			
+			//2 bestanden
+			if( count($img) == 2 )
+			{
+				$idbewijs->werknemer( $werknemer_id )->imgObjectToDatabase( 'voorkant', $img[1] )->imgObjectToDatabase( 'achterkant', $img[2] );
+			}
 
 			$result['url'] = $idbewijs->url('voorkant');
 		}

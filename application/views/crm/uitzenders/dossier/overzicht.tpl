@@ -218,30 +218,27 @@
 						<div class="card-body">
 
 							<ul class="media-list">
-								<li class="media mt-0">
-									<div class="media-body">
-										<a href="#" class="media-title font-weight-semibold">peterdegrootte</a>
-										<div class="font-size-sm text-muted">Peter de Grootte</div>
-									</div>
-									<div class="ml-3 align-self-center">
-										<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Login als">
-											<i class="icon-enter"></i>
-										</a>
-									</div>
-								</li>
 
-								<li class="media mt-2">
-									<div class="media-body">
-										<a href="#" class="media-title font-weight-semibold">sandra_m</a>
-										<div class="font-size-sm text-muted">Sandra Mettens</div>
-									</div>
-									<div class="ml-3 align-self-center">
-										<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Login als">
-											<i class="icon-enter"></i>
-										</a>
-									</div>
-								</li>
+								{if $users == NULL }
+									<a href="{$base_url}/instellingen/werkgever/users/add?id={$uitzender->uitzender_id}&user_type=uitzender">User aanmaken</a>
+								{else}
+									{foreach $users as $u}
+									<li class="media mt-0">
 
+										<div class="media-body">
+											<a href="#" class="media-title font-weight-semibold">{$u.username}</a>
+											<div class="font-size-sm text-muted">{$u.naam}</div>
+										</div>
+										[*
+										<div class="ml-3 align-self-center">
+											<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Login als">
+												<i class="icon-enter"></i>
+											</a>
+										</div>
+										*}
+									</li>
+                                    {/foreach}
+								{/if}
 							</ul>
 
 						</div>

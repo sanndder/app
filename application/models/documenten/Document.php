@@ -269,6 +269,16 @@ class Document extends Connector {
 			}
 		}
 		
+		if( $this->owner() == 'werknemer' )
+		{
+			//uitzender documenten mag alleen door werkgever of uitzender zelf bekeken worden
+			if( $this->user->user_type == 'werkgever' )
+				return true;
+			
+			if( $this->user->user_type == 'inlener' )
+				return  false;
+		}
+		
 		//failsafe
 		return false;
 	}
@@ -346,6 +356,7 @@ class Document extends Connector {
 				WHERE werkgever_bedrijfsgegevens.deleted = 0 AND entiteit_id = $this->_entiteit_id";
 		
 		$query = $this->db_user->query( $sql );
+		$this->_werkgever_info = DBhelper::toRow($query);
 	}
 	
 	
@@ -376,9 +387,7 @@ class Document extends Connector {
 		$query = $this->db_user->query( $sql );
 		
 		$this->_werknemer_info = DBhelper::toRow($query);
-		
-		$this->_werkgever_info = DBhelper::toRow($query);
-		$this->_werkgever_info['gb_datum'] = reverseDate($this->_werkgever_info['gb_datum']);
+		$this->_werknemer_info['gb_datum'] = reverseDate($this->_werknemer_info['gb_datum']);
 		
 	}
 	
@@ -495,18 +504,18 @@ class Document extends Connector {
 		$this->_inlener_info['contactpersoon']['aanhef'] = 'mevrouw';
 		$this->_inlener_info['contactpersoon']['naam'] = 'J.L. de Grootte';
 		
-		$this->_werkgever_info['gb_datum'] = '17-11-1985';
-		$this->_werkgever_info['voorletters'] = 'J.';
-		$this->_werkgever_info['tussenvoegsel'] = 'de';
-		$this->_werkgever_info['achternaam'] = 'Jong';
-		$this->_werkgever_info['voornaam'] = 'Jennie';
-		$this->_werkgever_info['straat'] = 'Werknemerstraat';
-		$this->_werkgever_info['geslacht'] = 'm';
-		$this->_werkgever_info['huisnummer'] = '3';
-		$this->_werkgever_info['huisnummer_toevoeging'] = '';
-		$this->_werkgever_info['postcode'] = '5589OP';
-		$this->_werkgever_info['plaats'] = 'Apeldoorn';
-		$this->_werkgever_info['iban'] = 'NL87RABO13245678';
+		$this->_werknemer_info['gb_datum'] = '17-11-1985';
+		$this->_werknemer_info['voorletters'] = 'J.';
+		$this->_werknemer_info['tussenvoegsel'] = 'de';
+		$this->_werknemer_info['achternaam'] = 'Jong';
+		$this->_werknemer_info['voornaam'] = 'Jennie';
+		$this->_werknemer_info['straat'] = 'Werknemerstraat';
+		$this->_werknemer_info['geslacht'] = 'm';
+		$this->_werknemer_info['huisnummer'] = '3';
+		$this->_werknemer_info['huisnummer_toevoeging'] = '';
+		$this->_werknemer_info['postcode'] = '5589OP';
+		$this->_werknemer_info['plaats'] = 'Apeldoorn';
+		$this->_werknemer_info['iban'] = 'NL87RABO13245678';
 		
 		return $this;
 	}
@@ -570,8 +579,8 @@ class Document extends Connector {
 			}
 		}
 		
-		//inlener vars
-		foreach( $this->_werkgever_info as $field => $value )
+		//werknemer vars
+		foreach( $this->_werknemer_info as $field => $value )
 		{
 			if( !is_array($value))
 				$this->_html = str_replace( '{{werknemer.' . $field . '}}', $value, $this->_html );

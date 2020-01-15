@@ -59,6 +59,8 @@
                                                     $( '#form1' ).hide();
                                                     $( '.img-voorkant' ).show().find( 'img' ).attr( 'src', data.response.url );
                                                     $( '.div-achterkant' ).show();
+													$( '#form2' ).show();
+													location.reload();
                                                 } );
                                             } );
                                             {/literal}
@@ -71,7 +73,9 @@
 
 										<!-- plaatje -->
 										<div class="img-voorkant" style="{if $id_voorkant === NULL }display:none;{/if}">
-											<img class="img-idbewijs mb-2" style="max-width: 400px; max-height: 300px;" src="{$id_voorkant}"/>
+											<a href="{$id_voorkant}" target="_blank">
+												<img class="img-idbewijs mb-2" style="max-width: 400px; max-height: 300px;" src="{$id_voorkant}" />
+											</a>
 											<a href="javascript:void(0)" onclick="deleteIDbewijs( {$werknemer->werknemer_id}, 'voorkant')" class="text-danger">
 												<i class="icon-trash mr-1"></i>
 												ID bewijs verwijderen
@@ -102,13 +106,15 @@
 										</script>
 
 										<!-- script uploader 2 -->
-										<form id="form2" action="#">
-											<input name="file" type="file" id="fileupload2" class="file-input">
+										<form id="form2" action="#" style="{if $id_achterkant !== NULL }display:none;{/if}">
+											<input name="file" type="file" id="fileupload2" class="file-input" >
 										</form>
 
 										<!-- plaatje -->
 										<div class="img-achterkant" style="{if $id_achterkant === NULL }display:none;{/if}">
-											<img class="img-idbewijs mb-2" style="max-width: 400px; max-height: 300px;" src="{$id_achterkant}"/>
+											<a href="{$id_achterkant}" target="_blank">
+												<img class="img-idbewijs mb-2" style="max-width: 400px; max-height: 300px;" src="{$id_achterkant}" />
+											</a>
 											<a href="javascript:void(0)" onclick="deleteIDbewijs( {$werknemer->werknemer_id}, 'achterkant')" class="text-danger">
 												<i class="icon-trash mr-1"></i>
 												ID bewijs verwijderen

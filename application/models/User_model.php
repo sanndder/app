@@ -51,6 +51,15 @@ class User_model extends MY_Model
 			$this->werkgever_naam = $logindata['werkgever_naam'];
 			$this->werkgever_type = $logindata['werkgever_type'];
 			$this->account_id = $logindata['account_id'];
+			
+			if( $this->user_type == 'uitzender' )
+				$this->uitzender_id = $logindata['main']['uitzender_id'];
+			if( $this->user_type == 'inlener' )
+				$this->inlener_id = $logindata['main']['inlener_id'];
+			if( $this->user_type == 'werknemer' )
+				$this->werknemer_id = $logindata['main']['werknemer_id'];
+			if( $this->user_type == 'zzp' )
+				$this->zzp_id = $logindata['main']['zzp_id'];
 
 			$this->smarty->assign( 'user_name' , $this->user_name );
 		}

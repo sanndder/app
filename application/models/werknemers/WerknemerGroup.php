@@ -86,15 +86,24 @@ class WerknemerGroup extends Connector {
 		//start query
 		$sql = "SELECT werknemers_status.*, werknemers_gegevens.*,
        					werknemers_uitzenders.uitzender_id,
-       					werknemers_inleners.inlener_id
+       					werknemers_inleners.inlener_id, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender
 				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_gegevens.werknemer_id = werknemers_status.werknemer_id
 				LEFT JOIN werknemers_uitzenders ON werknemers_status.werknemer_id = werknemers_uitzenders.werknemer_id
+				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_bedrijfsgegevens.uitzender_id = werknemers_uitzenders.uitzender_id
 				LEFT JOIN werknemers_inleners ON werknemers_status.werknemer_id = werknemers_inleners.werknemer_id
-				WHERE werknemers_gegevens.deleted = 0
+				WHERE werknemers_gegevens.deleted = 0 AND (uitzenders_bedrijfsgegevens.deleted = 0 OR uitzenders_bedrijfsgegevens.deleted IS NULL)
 				  AND (werknemers_uitzenders.deleted = 0 OR werknemers_uitzenders.deleted IS NULL )
 				  AND (werknemers_inleners.deleted = 0 OR werknemers_inleners.deleted IS NULL  )
 				";
+		
+		//beveiligen
+		if( $this->user->user_type == 'uitzender' )
+			$sql .= " AND werknemers_uitzenders.uitzender_id = ".$this->uitzender->id." ";
+		
+		//beveiligen
+		if( $this->user->user_type == 'inlener' )
+			$sql .= " AND werknemers_inleners.inlener_id = ".$this->inlener->id." ";
 
 		//archief ook?
 		if( isset($param['actief']) && !isset($param['archief']) )

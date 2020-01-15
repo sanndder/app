@@ -1,6 +1,8 @@
 <?php
 
+use models\documenten\DocumentFactory;
 use models\documenten\IDbewijs;
+use models\documenten\Template;
 use models\forms\Formbuilder;
 use models\uitzenders\UitzenderGroup;
 use models\utils\Carbagecollector;
@@ -141,10 +143,14 @@ class Dossier extends MY_Controller
 			$errors = false; //no errors
 		}
 
+		//form opbouwen
 		$formdata = $formbuidler->table( 'werknemers_gegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
+		$formdata['uitzender_id']['value'] = $werknemer->uitzenderID();
+
 		$this->smarty->assign('formdata', $formdata);
 		
 		//show(Codering::listNationaliteiten());
+		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign('list', array( 'nationaliteiten' => Codering::listNationaliteiten(), 'landen' => Codering::listLanden() ));
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/gegevens.tpl');
@@ -164,6 +170,16 @@ class Dossier extends MY_Controller
 		$idbewijs = new IDbewijs();
 		$idbewijs->werknemer( $werknemer_id );
 		
+		//TODO weghalen
+		if( isset($_GET['contract']) )
+		{
+			$template = new Template( 7 ); //4 is samenwerkingsovereenkomst
+			$document = DocumentFactory::createFromTemplateObject( $template );
+			$document->setWerknemerID( $werknemer_id )->build()->pdf();
+			
+			redirect( $this->config->item( 'base_url' ) . '/crm/werknemers/dossier/documenten/' . $werknemer_id ,'location' );
+		}
+		
 		//ID opslaan vanuit wizard
 		if( isset($_POST['set_wizard']) )
 		{
@@ -176,12 +192,14 @@ class Dossier extends MY_Controller
 				//check of alles compleet is
 				if( $idbewijs->complete() )
 				{
+					//cache value, wordt te vroeg bijgewerkt
+					$documenten_complete_cache = $werknemer->documenten_complete;
 					//set documenten als complete
 					$werknemer->documenten_complete();
 					
 					//nieuwe aanmelding doorzetten naar volgende pagina
-					if( $werknemer->documenten_complete != 1 )
-						redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer->werknemer_id, 'location' );
+					if( $documenten_complete_cache != 1 )
+						redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/dienstverband/' . $werknemer->werknemer_id, 'location' );
 				}
 				else
 				{
@@ -193,10 +211,12 @@ class Dossier extends MY_Controller
 		}
 		
 		$this->smarty->assign('werknemer', $werknemer);
+
+		$this->smarty->assign('contract', $werknemer->contract());
 		$this->smarty->assign('id_voorkant', $idbewijs->url( 'voorkant' ));
 		$this->smarty->assign('id_achterkant', $idbewijs->url( 'achterkant' ));
 		$this->smarty->assign('vervaldatum', $idbewijs->vervaldatum() );
-		
+
 		//afwijkende template voor
 		if( $werknemer->complete != 1 )
 			$this->smarty->display('crm/werknemers/dossier/documenten_wizard.tpl');
@@ -319,9 +339,41 @@ class Dossier extends MY_Controller
 	{
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
-
+		
+		//set wizard
+		if( isset($_POST['set_wizard'] ))
+		{
+			$werknemer->setDefaultCao( $_POST['default_cao'] );
+			$werknemer->setStartDienstverband( $_POST['indienst'] );
+			
+			if( $werknemer->errors() !== false )
+				$this->smarty->assign('errors', $werknemer->errors() );
+			else
+			{
+				$werknemer->dienstverbandIsSet();
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/overzicht/success' ,'location' );
+			}
+				
+		}
+		
+		//CAO anapassen
+		if( isset($_POST['set_cao'] ))
+		{
+			$werknemer->setDefaultCao( $_POST['default_cao'] );
+			if( $werknemer->errors() !== false )
+				$this->smarty->assign('errors', $werknemer->errors() );
+		}
+		
+		
+		
+		$this->smarty->assign('default_cao', $werknemer->defaultCao() );
+		$this->smarty->assign('indienst', $werknemer->startDienstverband() );
 		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/dienstverband.tpl');
+		
+		if( $this->user->user_type == 'uitzender' )
+			$this->smarty->display('crm/werknemers/dossier/dienstverband_uitzender.tpl');
+		else
+			$this->smarty->display('crm/werknemers/dossier/dienstverband.tpl');
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -331,6 +383,12 @@ class Dossier extends MY_Controller
 	{
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
+		
+		//TODO: aanpaasen
+		if( isset($_POST['set'] ))
+		{
+			$werknemer->setVerloning();
+		}
 		
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/verloning.tpl');
@@ -352,8 +410,12 @@ class Dossier extends MY_Controller
 			redirect($this->config->item('base_url') . '/crm/werknemers/dossier/etregeling/' . $werknemer_id ,'location');
 		}
 		
+		if( $et !== NULL )
+		{
+			$this->smarty->assign('bsn',  $et->fileBsn() );
+		}
 		
-		$this->smarty->assign('bsn',  $et->fileBsn() );
+		
 		$this->smarty->assign('landen',  Codering::listLanden() );
 		$this->smarty->assign('werknemer', $werknemer);
 		$this->smarty->display('crm/werknemers/dossier/etregeling.tpl');

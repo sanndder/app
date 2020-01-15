@@ -296,6 +296,23 @@ var Datepickers = function() {
             selectYears: 15,
             min: [year,1,1]
         });
+    
+        
+        var curDate = new Date();
+        curDate.setDate(curDate.getDate() - 14);
+        var futDate = new Date();
+        futDate.setDate(futDate.getDate() + 28);
+ 
+        $( '.pickadate-start-dienstverband' ).pickadate({
+            selectYears: true,
+            selectMonths: true,
+            close: '',
+            selectYears: 1,
+            min: curDate,
+            max: futDate
+        });
+    
+      
 
 
     };

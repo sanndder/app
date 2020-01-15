@@ -165,7 +165,7 @@ class Upload_model extends MY_Model
 	/*
 	 * de te uploaden files afhandelen, we gebruiken codeignitors ingebouwde upload functies
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	function uploadfiles()
 	{

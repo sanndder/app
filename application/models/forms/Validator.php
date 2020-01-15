@@ -279,14 +279,12 @@ class Validator extends Json
 					}
 				}
 
-
-
 				//check radio values
 				if( isset($this->json->field->$field->radio) )
 				{
 					$radio = $this->json->field->$field->radio;
 					if( !property_exists($radio->options, $val))
-						$this->_errors[$field][] = sprintf('<strong>%s</strong> bevat ongeldige waardes', $this->json->field->$field->label);
+						$this->_errors[$field][] = sprintf('Selecteer een optie', $this->json->field->$field->label);
 
 				}
 			}

@@ -4,6 +4,7 @@ use models\documenten\DocumentGroup;
 use models\forms\Formbuilder;
 use models\inleners\InlenerGroup;
 use models\uitzenders\Uitzender;
+use models\users\UserGroup;
 use models\utils\VisitsLogger;
 use models\werknemers\WerknemerGroup;
 
@@ -86,9 +87,12 @@ class Dossier extends MY_Controller
 			if( $uitzender->factuurgegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/factuurgegevens/' . $uitzender_id ,'location');
 			if( $uitzender->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/contactpersonen/' . $uitzender_id ,'location');
 		}
+		
+		$usersgroup = new UserGroup();
 
 		//show($uitzenders);
 
+		$this->smarty->assign('users',  $usersgroup->uitzender( $uitzender_id )->all() );
 		$this->smarty->assign('bedrijfsgegevens', $uitzender->bedrijfsgegevens());
 		$this->smarty->assign('emailadressen', $uitzender->emailadressen());
 
@@ -257,7 +261,7 @@ class Dossier extends MY_Controller
 	public function emailadressen( $uitzender_id = NULL )
 	{
 		//load the formbuilder
-		$formbuidler = new models\forms\Formbuilder();
+		$formbuidler = new Formbuilder();
 
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
@@ -275,7 +279,6 @@ class Dossier extends MY_Controller
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $uitzender->factuurgegevens_complete != 1 )
 					redirect( $this->config->item('base_url') . 'crm/uitzenders/dossier/factuurgegevens/' . $uitzender->uitzender_id ,'location');
-
 
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));

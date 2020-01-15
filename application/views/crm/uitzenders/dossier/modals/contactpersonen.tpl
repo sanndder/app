@@ -7,7 +7,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Contactpersoon <span class="var-action"></span></h5>
-                {if $ENV == 'development'}
+                {if $ENV == 'development' || $user_id == 2}
 					<span data-title="Formulier invullen" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="fillForm()">
 						<i class="icon-pencil3 mr-2" style="font-size: 22px"></i>
 					</span>
@@ -122,6 +122,23 @@
 						<label class="col-form-label col-sm-3"></label>
 						<div class="col-sm-9">
 							<input type="text" name="" class="form-control">
+							<span class="form-text text-danger"></span>
+						</div>
+					</div>
+
+					<!-- tekenbevoegd -->
+					<div class="form-group row input-tekenbevoegd mb-3">
+						<label class="col-form-label col-sm-3"></label>
+						<div class="col-sm-9 col-opions">
+
+							<div class="form-check radio-template" style="display: none">
+								<label class="form-check-label">
+									<span class="">
+										<input type="radio" class="" name="">
+									</span>
+								</label>
+							</div>
+
 							<span class="form-text text-danger"></span>
 						</div>
 					</div>

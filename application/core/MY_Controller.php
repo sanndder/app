@@ -70,6 +70,7 @@ class MY_Controller extends CI_Controller
 		if( $this->user->user_type == 'uitzender' )
 		{
 			$this->load->model('uitzender_model', 'uitzender');
+			$this->smarty->assign( 'uitzender_id', $this->user->uitzender_id );
 			if( $this->uitzender->blockAccess() && !in_array( $this->uri->segment(1), $no_redirect) )
 				redirect( $this->config->item( 'base_url' ) . $this->uitzender->redirectUrl() ,'location' );
 		}
@@ -78,6 +79,7 @@ class MY_Controller extends CI_Controller
 		if( $this->user->user_type == 'inlener' )
 		{
 			$this->load->model('inlener_model', 'inlener');
+			$this->smarty->assign( 'inlener_id', $this->user->inlener_id );
 			if( $this->inlener->blockAccess() && !in_array( $this->uri->segment(1), $no_redirect) )
 				redirect( $this->config->item( 'base_url' ) . $this->inlener->redirectUrl() ,'location' );
 		}

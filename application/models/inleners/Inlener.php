@@ -650,7 +650,6 @@ class Inlener extends Connector
 			//update status wanneer nodig
 			if( $this->complete == 0 )
 				$this->_updateStatus($method . '_complete');
-			
 		}
 		//fouten aanwezig
 		else
@@ -825,13 +824,24 @@ class Inlener extends Connector
 			}
 
 		}
+		
+		//aanhef en tekenbevoegd toevoegen als die leeg zijn, alleen voor ajax call nodig
+		if( !isset($_POST['aanhef']) )$_POST['aanhef'] = -1;
+		if( !isset($_POST['tekenbevoegd']) )$_POST['tekenbevoegd'] = -1;
 
 		$input = $this->_set('inleners_contactpersonen', 'contactpersoon', array('contact_id' => $contact_id));
+		
+		//extra controle eerste contactpersoon
+		if( count($this->contactpersonen()) == 1 )
+		{
+			if( isset($_POST['tekenbevoegd']) && $_POST['tekenbevoegd'] != 1 )
+				$this->_error['tekenbevoegd'][] = 'Uw eerste contactpersoon moet bevoegd zijn namens de onderneming overeenkomsten aan te gaan';
+		}
 
 		//zijn er erros, dan weer uit de database
 		if ($new == true && $this->errors() !== false)
 		{
-			$sql = "DELETE FROM inleners_contactpersonen WHERE contact_id = $contact_id LIMIT 1";
+			$sql = "DELETE FROM inleners_contactpersonen WHERE contact_id = $contact_id";
 			$this->db_user->query($sql);
 		}
 

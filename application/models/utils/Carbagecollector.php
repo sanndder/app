@@ -28,7 +28,7 @@ class Carbagecollector
 		{
 			if( is_file($file) )
 			{
-				if( (time() - filemtime($file)) >= (60 * $minutes) )
+				if( (time() - filemtime($file)) >= (30 * $minutes) )
 					unlink( $file );
 			}
 		}

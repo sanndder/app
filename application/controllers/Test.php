@@ -28,14 +28,33 @@ class Test extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-
+		
 		//$this->load->model('test2_model', 'test2');
 		//$this->load->model('emailcentrum_model', 'emailcentrum');
-
+		
 		//show( $this->user->user_type );
-
-
+		
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// test ondertekenen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function cmd()
+	{
+		$open_path = '/var/www/vhosts/devisonline.nl/userf1les_o7dm6/werkgever_dir_3/werknemer/idbewijs/pdf_0928652001579011928_sRrtH9cm.pdf';
+		$save_path = '/var/www/vhosts/devisonline.nl/userf1les_o7dm6/werkgever_dir_3/werknemer/idbewijs/pdf_0551312001579011495_qM7KSWgn.jpg';
+		
+		if(!file_exists($open_path))
+			echo 'nee';
+		
+		//phpinfo();
+		//exec("/usr/bin/convert -info", $o);
+		exec("/usr/bin/convert " . $open_path . " " . $save_path, $o);
+		//exec("magick convert " . $open_path . " " . $save_path, $o);
+		show($o);
+		//echo exec("magick convert " . $open_path . " " . $save_path);
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// test ondertekenen

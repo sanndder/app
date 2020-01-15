@@ -70,8 +70,8 @@
 								<i class="icon-checkbox-unchecked2 mr-2"></i>
                             {else}
                                 {if $werknemer->complete == 0}
-                                    {if $werknemer->gegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
-                                    {if $werknemer->gegevens_complete == 1}
+                                    {if $werknemer->documenten_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+                                    {if $werknemer->documenten_complete == 1}
 										<i class="icon-checkbox-checked mr-2"></i>
                                     {/if}
                                 {else}
@@ -182,7 +182,8 @@
 					</li>
 
 					<!-- li Verloning, andere volgorde wanneer nieuwe aanmelding -->
-					<li class="nav-item {if $werknemer->complete != 1}order-4{/if}">
+                    {if $user_type == 'werkgever' }
+					<li class="nav-item {if $werknemer->complete != 1 && $user_type == 'werkgever' }order-4{/if}">
 						<a href="crm/werknemers/dossier/verloning/{$werknemer->werknemer_id}" class="nav-link {if $werknemer->dienstverband_complete == NULL}nav-link-disabled{/if}{if $active == 'verloning'}active{/if}">
                             {* afwijkende icons voor nieuwe aanmelding *}
                             {if $werknemer->verloning_complete == NULL}
@@ -201,6 +202,7 @@
 							Verloning
 						</a>
 					</li>
+					{/if}
 
                     {if $werknemer->complete == 1 }
 						<!-- li Algemene instellingen -->

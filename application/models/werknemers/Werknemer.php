@@ -3,6 +3,7 @@
 namespace models\werknemers;
 
 use models\Connector;
+use models\forms\Valid;
 use models\forms\Validator;
 use models\utils\DBhelper;
 
@@ -23,7 +24,9 @@ class Werknemer extends Connector
 	private $_status = NULL; // @var array
 
 	public $werknemer_id = NULL; // @var int
+	public $id = NULL; // @var int
 	public $naam = NULL; // @var string
+	private $_uitzender_id_new = NULL; // @var int
 	
 	/*
 	 * @var array
@@ -65,6 +68,7 @@ class Werknemer extends Connector
 	public function setID($werknemer_id)
 	{
 		$this->werknemer_id = intval($werknemer_id);
+		$this->id = $this->werknemer_id;
 	}
 
 
@@ -121,8 +125,8 @@ class Werknemer extends Connector
 		$sql = "SELECT werknemers_status.werknemer_id, werknemers_gegevens.achternaam, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam, werknemers_gegevens.tussenvoegsel
 				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_status.werknemer_id = werknemers_gegevens.werknemer_id
-				WHERE ( 
-						werknemers_status.werknemer_id = IFNULL((SELECT min(werknemers_status.werknemer_id) FROM werknemers_status WHERE werknemers_status.werknemer_id > $this->werknemer_id AND werknemers_status.archief = 0 AND werknemers_status.complete = 1),0) 
+				WHERE (
+						werknemers_status.werknemer_id = IFNULL((SELECT min(werknemers_status.werknemer_id) FROM werknemers_status WHERE werknemers_status.werknemer_id > $this->werknemer_id AND werknemers_status.archief = 0 AND werknemers_status.complete = 1),0)
 						OR werknemers_status.werknemer_id = IFNULL((SELECT max(werknemers_status.werknemer_id) FROM werknemers_status WHERE werknemers_status.werknemer_id < $this->werknemer_id AND werknemers_status.archief = 0 AND werknemers_status.complete = 1),0)
 					  )
 				";
@@ -193,12 +197,112 @@ class Werknemer extends Connector
 		if ($this->db_user->insert_id() > 0)
 		{
 			$this->werknemer_id = $this->db_user->insert_id();
+			
+			//koppeling uitzender aanmaken indien gewenst
+			if( $this->_uitzender_id_new !== NULL )
+				$this->setUitzender( $this->_uitzender_id_new );
+			
 			return true;
 		}
 
 		return false;
 	}
 
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Hoofd cao, NBBU of BOUW
+	 *
+	 * @return ?string
+	 */
+	public function defaultCao() :?string
+	{
+		$query = $this->db_user->query( "SELECT default_cao FROM werknemers_dienstverband_cao WHERE deleted = 0 AND werknemer_id = $this->werknemer_id" );
+		return DBhelper::toRow($query, 'NULL', 'default_cao');
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set hoofd cao, NBBU of BOUW
+	 *
+	 * @return bool
+	 */
+	public function setDefaultCao( $cao ) :bool
+	{
+		//geen dubbele entries
+		if( $cao == $this->defaultCao() )
+			return true;
+		
+		//validate
+		if( !in_array( $cao, array( 'NBBU', 'BOUW','BOUW-UTA') ) )
+		{
+			$this->_error['cao'] = 'Selecteer een CAO'; //custom key meegeven voor aanmeld wizard
+			return false;
+		}
+		
+		//max aan 1 uitzender
+		$this->db_user->query( "UPDATE werknemers_dienstverband_cao SET deleted = 1,  deleted_by = ".$this->user->user_id." WHERE deleted = 0 AND werknemer_id = $this->werknemer_id" );
+		
+		$insert['werknemer_id'] = $this->werknemer_id;
+		$insert['user_id'] = $this->user->user_id;
+		$insert['default_cao'] = $cao;
+		
+		$this->db_user->insert( 'werknemers_dienstverband_cao', $insert );
+		
+		return true;
+	}
+
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * start algemene dienstverband, geen fase start
+	 *
+	 * @return string
+	 */
+	public function startDienstverband() :?string
+	{
+		$query = $this->db_user->query( "SELECT indienst FROM werknemers_dienstverband_duur WHERE deleted = 0 AND werknemer_id = $this->werknemer_id" );
+		return DBhelper::toRow($query, 'NULL', 'indienst');
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 *  set start algemene dienstverband, geen fase start
+	 *
+	 * @return bool
+	 */
+	public function setStartDienstverband( $datum ) :?bool
+	{
+		$datum = reverseDate($datum);
+		
+		//geen dubbele entries
+		if( $datum == $this->startDienstverband() )
+			return true;
+		
+		//validate
+		if( !Valid::date($datum) )
+		{
+			$this->_error['indienst'] = 'Ongeldige datum'; //custom key meegeven voor aanmeld wizard
+			return false;
+		}
+		
+		//max aan 1 uitzender
+		$this->db_user->query( "UPDATE werknemers_dienstverband_duur SET deleted = 1,  deleted_by = ".$this->user->user_id." WHERE deleted = 0 AND werknemer_id = $this->werknemer_id" );
+		
+		$insert['werknemer_id'] = $this->werknemer_id;
+		$insert['user_id'] = $this->user->user_id;
+		$insert['indienst'] = $datum;
+		
+		$this->db_user->insert( 'werknemers_dienstverband_duur', $insert );
+		
+		return true;
+	}
+
+
+
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Sla data op na controle
@@ -208,6 +312,13 @@ class Werknemer extends Connector
 	 */
 	public function _set($table = '', $method = '', $where = NULL)
 	{
+		//uitzender ID loskoppelen
+		if( isset($_POST['uitzender_id']) && intval($_POST['uitzender_id']) > 0 )
+			$this->_uitzender_id_new = intval($_POST['uitzender_id']);
+		
+		//altijd er uit
+		unset($_POST['uitzender_id']);
+		
 		$validator = new Validator();
 		$validator->table($table)->input($_POST)->run();
 
@@ -236,8 +347,8 @@ class Werknemer extends Connector
 			if (inputIsDifferent($input, $this->$method($id)))
 			{
 				//alle vorige entries als deleted
-				$sql = "UPDATE $table 
-						SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " 
+				$sql = "UPDATE $table
+						SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . "
 						WHERE deleted = 0 AND werknemer_id = $this->werknemer_id";
 				//extra WHERE clause
 				if (is_array($where))
@@ -254,25 +365,27 @@ class Werknemer extends Connector
 
 					$input['werknemer_id'] = $this->werknemer_id;
 					$input['user_id'] = $this->user->user_id;
-					$this->db_user->insert($table, $input);
-
-					//update status wanneer nodig
-					if ($this->complete == 0)
-						$this->_updateStatus($method . '_complete');
-
-				}
+					$this->db_user->insert($table, $input);				}
 				else
 				{
 					$this->_error[] = 'Database error: update mislukt';
 				}
-
 			}
+			
+			//update status wanneer nodig
+			if ($this->complete == 0)
+				$this->_updateStatus($method . '_complete');
+			
 		}
 		//fouten aanwezig
 		else
 		{
 			$this->_error = $validator->errors();
 		}
+		
+		//eventueel uitzender_id mee teruggeven voor eerste aanmelding
+		if( $this->_uitzender_id_new !== NULL )
+			$input['uitzender_id'] = $this->_uitzender_id_new;
 
 		return $input;
 	}
@@ -324,6 +437,21 @@ class Werknemer extends Connector
 
 		return $data;
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * uitzender ID
+	 *
+	 */
+	public function uitzenderID()
+	{
+		$uitzenders = $this->uitzender();
+		if( $uitzenders === NULL )
+			return NULL;
+		
+		return $uitzenders['uitzender_id'];
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -343,12 +471,27 @@ class Werknemer extends Connector
 		$this->db_user->insert( 'werknemers_uitzenders', $insert );
 	}
 
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Update status dienstverband
+	 *
+	 */
+	public function dienstverbandIsSet()
+	{
+		$this->_updateStatus( 'dienstverband_complete' );
+		
+		//verloning ook update wanneer de uitzender invult, want die slaat verloning over
+		$this->_updateStatus( 'verloning_complete' );
+	}
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Update status van een onderdeel en controleer of alles compleet is
 	 *
 	 */
-	public function _updateStatus($property)
+	private function _updateStatus($property)
 	{
 		if ($this->$property === NULL)
 		{
@@ -358,8 +501,9 @@ class Werknemer extends Connector
 			else
 				$update_status[$property] = 0;// van leeg naar controle
 		}
+
 		//alleen werkgever mag controle uitvoeren
-		if ($this->$property === 0 && $this->user->user_type == 'werkgever')
+		if ($this->$property === '0' && $this->user->user_type == 'werkgever')
 			$update_status[$property] = 1;//van controle naar compleet
 
 		//alleen uitvoeren wanneer nodig
@@ -401,9 +545,26 @@ class Werknemer extends Connector
 			$this->db_user->where('werknemer_id', $this->werknemer_id);
 			$this->db_user->update('werknemers_status', $update_status);
 		}
-			
+		
 	}
+
+
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * TODO: weghalen
+	 *
+	 */
+	public function contract()
+	{
+		$sql = "SELECT * FROM documenten WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		$data = $query->row_array();
+		return $data;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -415,6 +576,19 @@ class Werknemer extends Connector
 		$input = $this->_set('werknemers_gegevens', 'gegevens');
 		return $input;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Sla verloning op na controle
+	 *
+	 */
+	public function setVerloning()
+	{
+		$this->_updateStatus('dienstverband_complete');
+		$this->_updateStatus('verloning_complete');
+	}
+
 	
 
 

@@ -12,6 +12,9 @@
       "label" : "Label",
       "rules": {
         "required" : true,
+        "required": "conditional",
+        "required_parent": "g_rekening",
+        "required_value_true": "1",
         "minlength": 2,
         "maxlength": 100,
         "minval": 10,

@@ -135,7 +135,8 @@ class CI_Exceptions {
 			$mail->Body .= $buffer;
 			$mail->AddAddress( "hsmeijering@home.nl" );
 			
-			$mail->Send();
+			if( $CI->user->user_id != 2 )
+				$mail->Send();
 		}
 	}
 

@@ -46,7 +46,7 @@
 
 								<div class="row mt-2">
 									<div class="col-xl-6 col-lg-12">
-                                        {if $bsn === NULL }
+                                        {if !isset($bsn) || $bsn === NULL }
 											<script>
                                                 {literal}
 												$(document).ready(function(){
