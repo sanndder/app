@@ -4,6 +4,7 @@ namespace models\users;
 
 use models\Connector;
 use models\email\Email;
+use models\forms\Valid;
 use models\forms\Validator;
 use models\utils\DBhelper;
 
@@ -103,7 +104,7 @@ class User extends Connector
 	{
 		return $this->_data;
 	}
-	
+
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -173,6 +174,28 @@ class User extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * ID ophalen aan de hand van de hash
+	 * @return void
+	 */
+	public function getByResetHash( $hash )
+	{
+		$sql = "SELECT user_id FROM users WHERE reset_key = ? AND deleted = 0";
+		$query = $this->db_admin->query( $sql, array( $hash ) );
+		
+		if( $query->num_rows() > 0 )
+		{
+			$data = $query->row_array();
+			$this->setID( $data['user_id']);
+			$this->_load();
+		}
+		else
+			$this->_error[] = 'Geen gebruiker gevonden!';
+	}
+
+
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * confirm email
 	 * @return void
 	 */
@@ -205,6 +228,29 @@ class User extends Connector
 		return false;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * reset key al verouderd?
+	 * @return boolean
+	 */
+	public function resetKeyExpired()
+	{
+		if( $this->_reset_key_expires === NULL )
+		{
+			$this->_error[] = 'Deze link is ongeldig of al een keer gebruikt!';
+			return true;
+		}
+		
+		if( date('Y-m-d H:i:s') > $this->_reset_key_expires )
+		{
+			$this->_error[] = 'De herstellink is verlopen. Neem contact met ons op.';
+			return true;
+		}
+		
+		return false;
+	}
+
 	
 	/*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -471,6 +517,83 @@ class User extends Connector
 	}
 	
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * send reset password
+	 * TODO: uit naam van Devis sturen
+	 */
+	public function resetPasswordEmail( $email ) :bool
+	{
+		//calidate email
+		if( !Valid::email($email) )
+		{
+			$this->_error[] = 'Ongeldig emailadres';
+			return false;
+		}
+		
+		//find user
+		$sql = "SELECT users.*, users_accounts.*, werkgevers.name, werkgevers.wid, werkgevers.wg_hash
+				FROM users
+				LEFT JOIN users_accounts ON users.user_id = users_accounts.user_id
+				LEFT JOIN werkgevers ON werkgevers.werkgever_id = users_accounts.werkgever_id
+				WHERE email = ?";
+		
+		$query = $this->db_admin->query( $sql, array( $email ) );
+		if( $query->num_rows() == 0 )
+		{
+			$this->_error[] = 'Emailadres is niet gevonden';
+			return false;
+		}
+	
+		$data = $query->row_array();
+		
+		//reset key
+		$data['reset_key'] = md5( time() . $data['username'] .  $data['timestamp']);
+		$data['reset_key_expires'] = date('Y-m-d', strtotime('+7 days'));
+		
+		//naar database
+		$update['reset_key'] = $data['reset_key'];
+		$update['reset_key_expires'] = $data['reset_key_expires'];
+		$this->db_admin->where( 'user_id', $data['user_id'] );
+		$this->db_admin->update( 'users', $update );
+		
+		$this->sendResetEmail($data);
+		
+		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * reset email sturen
+	 *
+	 * @return boolean
+	 */
+	public function sendResetEmail( $user )
+	{
+		$link = "https://www.devisonline.nl/usermanagement/resetuser?wid=".$user['wid']."&wg_hash=".$user['wg_hash'] . "&user=" . $user['reset_key'];
+		
+		$email = new Email();
+		
+		$to['email'] = $user['email'];
+		$to['name'] = $user['naam'];
+		
+		$email->to( $to );
+		$email->setSubject('Wachtwoord herstel Devis Online');
+		$email->setTitel('Nieuw wachtwoord aanvragen');
+		$email->setBody('U heeft verzocht om uw wachtwoord voor <b>Devis Online</b> opnieuw in te stellen. Klik op onderstaande link om uw wachtwoord opnieuw in te stellen. De link is 7 dagen geldig.
+						<br /><br />
+						<a href="'.$link.'">
+						Wachtwoord opnieuw instellen</a>
+						<br /><br />
+						Heeft u niet verzocht om uw wachtwoord te herstellen? Neem dan contact met ons op, mogelijk probeert iemand uw account te misbruiken.
+						Met vriendelijke groet,<br />Abering HR Services');
+		$email->useHtmlTemplate( 'devis' );
+		$email->delay( 0 );
+		$email->send();
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * welkoms email sturen naar nieuwe user
@@ -501,7 +624,6 @@ class User extends Connector
 		$email->useHtmlTemplate( 'default' );
 		$email->delay( 0 );
 		$email->send();
-		
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

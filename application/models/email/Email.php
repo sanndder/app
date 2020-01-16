@@ -251,13 +251,27 @@ class Email extends Connector {
 		$insert['send'] = 0;
 		$insert['send_by'] = 0;
 		$insert['send_on'] = $date->format('Y-m-d H:i:s');
-		$insert['created_by'] = $this->user->user_id;
 		
-		$this->db_user->insert( 'emails', $insert );
+		//alleen vanuit de applicatie
+		if( isset($this->user->user_id) )
+			$insert['created_by'] = $this->user->user_id;
 		
-		if( $this->db_user->insert_id() > 0 )
+		if( isset($this->db_user) )
 		{
-			$this->_setID($this->db_user->insert_id() );
+			$this->db_user->insert( 'emails', $insert );
+			$dabase = $this->db_user;
+		}
+		else
+		{
+			$CI =& get_instance();
+			$dabase = $CI->load->database('admin', TRUE);
+			$dabase->insert( 'emails', $insert );
+		}
+		
+		
+		if( $dabase->insert_id() > 0 )
+		{
+			$this->_setID( $dabase->insert_id() );
 			
 			//ontvangers erbij
 			foreach( $this->_to as $recipient )
@@ -267,10 +281,11 @@ class Email extends Connector {
 				$insert_to['name'] = $recipient['name'];
 				$insert_to['email'] = $recipient['email'];
 				
-				$this->db_user->insert( 'emails_recipients', $insert_to );
+				$dabase->insert( 'emails_recipients', $insert_to );
 			}
 			
-			$this->_log( 'email aangemaakt' );
+			if( isset($this->db_user) )
+				$this->_log( 'email aangemaakt' );
 		}
 		
 		//ook gelijk verzenden?
@@ -342,14 +357,25 @@ class Email extends Connector {
 		}
 		else
 		{
+			if( isset($this->db_user) )
+				$dabase = $this->db_user;
+			else
+			{
+				$CI =& get_instance();
+				$dabase = $CI->load->database( 'admin', TRUE );
+			}
+			
 			$update['send'] = 1;
 			$update['send_on'] = date('Y-m-d H:i:s');
-			$update['send_by'] = $this->user->user_id;
 			
-			$this->db_user->where( 'email_id', $this->_email_id );
-			$this->db_user->update( 'emails', $update );
+			if( isset($this->user->user_id) )
+				$update['send_by'] = $this->user->user_id;
 			
-			$this->_log('Email verzonden');
+			$dabase->where( 'email_id', $this->_email_id );
+			$dabase->update( 'emails', $update );
+			
+			if( isset($this->db_user) )
+				$this->_log('Email verzonden');
 		}
 	
 	}

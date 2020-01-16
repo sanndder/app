@@ -64,7 +64,7 @@
 						{/if}
 
 						<!-- li Contactpersonen, verplaatsen naar einde lijst wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
+						<li class="nav-item {if $inlener->complete != 1}order-6{/if}">
 							<a {if $inlener->factuurgegevens_complete != NULL}href="crm/inleners/dossier/contactpersonen/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->factuurgegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'contactpersonen'}active{/if}">
 									{* afwijkende icons voor nieuwe aanmelding *}
 									{if $inlener->contactpersoon_complete == NULL}
@@ -190,6 +190,27 @@
 							</a>
 						</li>
 
+                        {if $inlener->complete != 1 }
+						{* li CAO alleen bij aanmelden *}
+						<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
+							<a {if $inlener->emailadressen_complete != NULL}href="crm/inleners/dossier/cao/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->emailadressen_complete == NULL}nav-link-disabled{/if} {if $active == 'cao'}active{/if}">
+                                {* afwijkende icons voor nieuwe aanmelding *}
+                                {if $inlener->cao_complete == NULL}
+									<i class="icon-checkbox-unchecked2 mr-2"></i>
+                                {else}
+                                    {if $inlener->complete == 0}
+                                        {if $inlener->cao_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+                                        {if $inlener->cao_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
+                                    {else}
+                                        {* standaard icon *}
+										<i class="icon-cog mr-2"></i>
+                                    {/if}
+                                {/if}
+								Cao
+							</a>
+						</li>
+                        {/if}
+
                         {if $inlener->complete == 1 }
 						<!-- li Verloningsgegevens, andere volgorde wanneer nieuwe aanmelding -->
 						<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
@@ -199,7 +220,7 @@
 								CAO & Verloning
 							</a>
 						</li>
-						{/if}
+                        {/if}
 
 					</ul>
 				</div>

@@ -1,4 +1,7 @@
 <?php
+
+use models\users\User;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -47,7 +50,27 @@ class Login extends EX_Controller {
 		else
 			$this->smarty->display('login.tpl');*/
 	}
-
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// recover
+	//-----------------------------------------------------------------------------------------------------------------
+	public function wachtwoordvergeten()
+	{
+		//stuur reset email
+		if( isset($_POST['email']) )
+		{
+			$user = new User();
+			if( !$user->resetPasswordEmail( $_POST['email'] ) )
+				$this->smarty->assign('msg', msg('danger', $user->errors() ));
+			else
+				$this->smarty->assign('success', true);
+		}
+	
+		
+		$this->smarty->display('wachtwoordvergeten.tpl');
+	}
+	
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// Hash pass, alleen lokaal beschikbaar

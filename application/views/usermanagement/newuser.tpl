@@ -21,8 +21,12 @@
                         {if !isset($expired)}
                             {if !isset($success)}
 								<div class="text-center mb-3">
-									<i class="icon-plus3 icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
-									<h5 class="mb-0">Activeer uw account</h5>
+                                    {if isset($reset)}
+										<i class="icon-lock icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
+                                    {else}
+										<i class="icon-plus3 icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
+                                    {/if}
+									<h5 class="mb-0">{if isset($reset)}Herstel{else}Activeer{/if} uw account</h5>
 								</div>
 								<div class="form-group text-center text-muted content-divider">
 									<span class="px-2">Uw wachtwoord</span>
@@ -46,20 +50,25 @@
 										<i class="icon-lock5 text-muted"></i>
 									</div>
 								</div>
-								<button type="submit" name="setpassword" class="btn bg-teal-400 btn-block">Registratie compleet maken
+								<button type="submit" name="setpassword" class="btn bg-teal-400 btn-block">
+                                {if isset($reset)}
+	                                Wachwtoord opnieuw instellen
+                                {else}
+	                                Registratie compleet maken
+                                {/if}
 									<i class="icon-circle-right2 ml-2"></i></button>
                             {else}
 								<!-------------------------------------------------- gelukt ------------------------------------------------------------------>
-	                            <div class="text-center mb-3">
-		                            <i class="icon-check icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
-		                            <h5 class="mb-0">Uw account is klaar voor gebruik!</h5>
-		                            <span class="d-block mt-2">U kunt nu inloggen met uw nieuwe wachtwoord.</span>
+								<div class="text-center mb-3">
+									<i class="icon-check icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
+									<h5 class="mb-0">Uw account is klaar voor gebruik!</h5>
+									<span class="d-block mt-2">U kunt nu inloggen met uw nieuwe wachtwoord.</span>
 
-		                            <a href="login" class="btn bg-teal-400 px-4 mt-4">Naar het inlogscherm
-			                            <i class="icon-circle-right2 ml-2"></i>
-		                            </a>
+									<a href="login" class="btn bg-teal-400 px-4 mt-4">Naar het inlogscherm
+										<i class="icon-circle-right2 ml-2"></i>
+									</a>
 
-	                            </div>
+								</div>
                             {/if}
                         {/if}
 
@@ -72,9 +81,9 @@
 
 								<span class="d-block mt-2 text-danger">
 									{foreach $msg as $m}
-		                                {$m}
+                                        {$m}
 										<br/>
-		                            {/foreach}
+                                    {/foreach}
 								</span>
 
 								<a href="login" class="btn bg-teal-400 px-4 mt-4">Naar het inlogscherm

@@ -1,6 +1,7 @@
 <?php
 
 use models\api\CreditSafe;
+use models\api\Kvk;
 use models\cao\CAO;
 use models\cao\CAOGroup;
 use models\documenten\IDbewijs;
@@ -35,6 +36,21 @@ class Test extends MY_Controller {
 		//show( $this->user->user_type );
 		
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// kvk api
+	//-----------------------------------------------------------------------------------------------------------------
+	public function kvk()
+	{
+		$kvk = new Kvk( 76504069 );
+		
+		$kvk->fetchCompanyData();
+		$sbi = $kvk->getSbiCodes();
+		
+		show($sbi);
+	
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// test ondertekenen

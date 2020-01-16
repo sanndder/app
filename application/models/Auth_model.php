@@ -140,6 +140,7 @@ class Auth_model extends CI_Model
 	 */
 	public function validate_nologin()
 	{
+		
 		if( isset($_SESSION['logindata']['wid']) && isset($_SESSION['logindata']['wg_hash']) )
 		{
 			$_GET['wid'] = $_SESSION['logindata']['wid'];

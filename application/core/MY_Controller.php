@@ -26,14 +26,12 @@ class MY_Controller extends CI_Controller
 			$this->smarty->assign( 'app_name' , '*Dev* ' . APP_NAME);
 		else
 			$this->smarty->assign( 'app_name' , APP_NAME);
-		
-		
+
 		//logout wanneer user klikt
 		$logout = false; if( isset($_GET['logout']) )$logout = true;
 		
 		//controllers die benaderd mogen worden zonder login
 		$no_login = array('aanmelden', 'crm', 'usermanagement');
-		
 		
 		//validate user, wanneer ingelogd daan nooit no access
 		if( !in_array($this->uri->segment(1),$no_login) || isset($_SESSION['logindata']['main']) )
@@ -47,8 +45,7 @@ class MY_Controller extends CI_Controller
 		}
 		else
 			$this->auth->validate_nologin();
-	
-
+		
 		//init user
 		$this->load->model('user_model', 'user');
 		$this->smarty->assign( 'account_id' , $this->user->account_id );
@@ -83,7 +80,7 @@ class MY_Controller extends CI_Controller
 			if( $this->inlener->blockAccess() && !in_array( $this->uri->segment(1), $no_redirect) )
 				redirect( $this->config->item( 'base_url' ) . $this->inlener->redirectUrl() ,'location' );
 		}
-
+		
 	}
 
 }

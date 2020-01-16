@@ -47,5 +47,36 @@ class Usermanagement extends MY_Controller {
 		
 		$this->smarty->display('usermanagement/newuser.tpl');
 	}
-
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Reset user
+	//-----------------------------------------------------------------------------------------------------------------
+	public function resetuser()
+	{
+		if( !isset($_GET['user']) )forbidden();
+		
+		$user = new User();
+		$user->getByResetHash( $_GET['user'] );
+		
+		if( $user->resetKeyExpired() )
+		{
+			$this->smarty->assign( 'expired', true );
+			$this->smarty->assign( 'msg', $user->errors() );
+		}
+		
+		//wijzig wachtwoord
+		if( isset($_POST['setpassword'] ))
+		{
+			if( $user->updatePassword( true ) === true )
+				$this->smarty->assign( 'success', true );
+			else
+				$this->smarty->assign('msg', msg('warning', $user->errors() ));
+		}
+		
+		
+		$this->smarty->assign( 'reset', true );
+		$this->smarty->display('usermanagement/newuser.tpl');
+	}
+	
+	
 }

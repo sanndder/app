@@ -48,37 +48,38 @@
 			<form method="post" class="login-form" action="">
 				<div class="card mb-0">
 					<div class="card-body">
-						<div class="text-center mb-3">
-
-							<img src="{$base_url}/template/global_assets/images/abering_blauw_sm.png" style="width: 70px">
-
-							<h5 class="mb-0">Login bij Abering Online</h5>
-							<span class="d-block text-muted">Vul je gegevens in</span>
-						</div>
-
-						{if isset($msg)}{$msg}{/if}
-
-						<div class="form-group form-group-feedback form-group-feedback-left">
-							<input name="username" type="text" class="form-control" placeholder="Emailadres">
-							<div class="form-control-feedback">
-								<i class="icon-user text-muted"></i>
+                        {if !isset($success)}
+							<div class="text-center mb-3">
+								<i class="icon-spinner11 icon-2x text-warning border-warning border-3 rounded-round p-3 mb-3 mt-1"></i>
+								<h5 class="mb-0">Wachtwoord herstel</h5>
+								<span class="d-block text-muted">Wij sturen u instructies via email</span>
 							</div>
-						</div>
+                            {if isset($msg)}{$msg}{/if}
+							<form method="post" action="">
+								<div class="form-group form-group-feedback form-group-feedback-right">
+									<input type="text" name="email" class="form-control" placeholder="Emailadres" value="{if isset($smarty.post.email)}{$smarty.post.email}{/if}">
+									<div class="form-control-feedback">
+										<i class="icon-mail5 text-muted"></i>
+									</div>
+								</div>
 
-						<div class="form-group form-group-feedback form-group-feedback-left">
-							<input name="password" type="password" class="form-control" placeholder="Wachtwoord">
-							<div class="form-control-feedback">
-								<i class="icon-lock2 text-muted"></i>
+								<button type="submit" class="btn bg-blue btn-block" style="background-color: #002E65">
+									<i class="icon-spinner11 mr-2"></i> Nieuw wachtwoord
+								</button>
+							</form>
+                        {else}
+							<div class="text-center mb-3">
+								<i class="icon-check icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
+								<h5 class="mb-0">Er is een email onderweg met instructies!</h5>
+								<span class="d-block mt-2">Na het instellen kunt u inloggen met uw nieuwe wachtwoord.</span>
+
+								<a href="{$base_url}/login" class="btn bg-teal-400 px-4 mt-4">Naar het inlogscherm
+									<i class="icon-circle-right2 ml-2"></i>
+								</a>
+
 							</div>
-						</div>
+                        {/if}
 
-						<div class="form-group">
-							<button name="login" type="submit" style="background-color: #002E65" class="btn btn-primary btn-block">Inloggen <i class="icon-circle-right2 ml-2"></i></button>
-						</div>
-
-						<div class="text-center">
-							<a href="login/wachtwoordvergeten">Wachtwoord vergeten?</a>
-						</div>
 					</div>
 				</div>
 			</form>
