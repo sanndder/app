@@ -4,12 +4,13 @@ use models\documenten\DocumentFactory;
 use models\documenten\IDbewijs;
 use models\documenten\Template;
 use models\forms\Formbuilder;
+use models\inleners\InlenerGroup;
 use models\uitzenders\UitzenderGroup;
 use models\utils\Carbagecollector;
 use models\utils\Codering;
 use models\utils\VisitsLogger;
 use models\werknemers\Plaatsing;
-use models\werknemers\PlaatsingCollection;
+use models\werknemers\PlaatsingGroup;
 use models\werknemers\Werknemer;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -232,8 +233,10 @@ class Dossier extends MY_Controller
 	{
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
+		$inlenerGroup = new InlenerGroup();
+		$plaatsingGroup = new PlaatsingGroup();
 		
-		//ID opslaan vanuit wizard
+		//Uitzender wijzigen
 		if( isset($_POST['set']) )
 		{
 			//switch for verschillende forms
@@ -244,15 +247,25 @@ class Dossier extends MY_Controller
 					if( $werknemer->errors() === false )
 						$this->smarty->assign( 'msg', msg( 'success', 'Uitzender voor werknemer gewijzigd' ) );
 					else
-						$this->smarty->assign( 'msg', msg( 'warning', 'U moet een kopie van het ID bewijs uploaden voordat u verder kunt' ) );
+						$this->smarty->assign( 'msg', msg( 'warning', $werknemer->errors() ) );
 					break;
 			}
 		}
-
 		
+		//plaatsing verwijderen
+		if( isset($_GET['delplaatsing']) )
+		{
+			$plaatsing = new Plaatsing( $_GET['delplaatsing'] );
+			$plaatsing->delete();
+		}
+		
+		$inleners = $inlenerGroup->uitzender( $werknemer->uitzenderID() )->all();
+
 		//$this->smarty->assign('plaatsingen', $plaatsingen );
 		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
+		$this->smarty->assign('inleners', $inleners );
 		$this->smarty->assign('werknemer', $werknemer);
+		$this->smarty->assign('plaatsingen', $plaatsingGroup->werknemer($werknemer_id)->all() );
 		$this->smarty->assign('werknemer_uitzender', $werknemer->uitzender());
 		$this->smarty->display('crm/werknemers/dossier/plaatsingen.tpl');
 	}

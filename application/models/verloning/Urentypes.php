@@ -166,9 +166,10 @@ class Urentypes extends Connector
 		//toevoegen aan werknemers
 		$this->addUrentypeToWerknemers( $inlener_id, $inlener_urentype_id, $insert );
 		
-		
 		//show($result);
 	}
+	
+	
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -187,7 +188,7 @@ class Urentypes extends Connector
 		
 		//TODO: list van maken
 		//voor elk van deze werknemers de uurlonen ophalen
-		$sql = "SELECT * FROM werknemers_uurloon WHERE deleted = 0 AND werknemer_id IN (".array_keys_to_string($werknemers).")";
+		$sql = "SELECT * FROM werknemers_inleners WHERE deleted = 0 AND inlener_id = $inlener_id AND werknemer_id IN (".array_keys_to_string($werknemers).")";
 		$query = $this->db_user->query( $sql );
 		
 		foreach( $query->result_array() as $row )
@@ -195,7 +196,7 @@ class Urentypes extends Connector
 			$insert['inlener_urentype_id'] = $inlener_urentype_id;
 			$insert['inlener_id'] = $inlener_id;
 			$insert['werknemer_id'] = $row['werknemer_id'];
-			$insert['uurloon_id'] = $row['uurloon_id'];
+			$insert['plaatsing_id'] = $row['plaatsing_id'];
 			$insert['urentype_active'] = 1;
 			$insert['urentype_id'] = $urentype['urentype_id'];
 			$insert['user_id'] = $this->user->user_id;
@@ -206,7 +207,51 @@ class Urentypes extends Connector
 		}
 		
 		$this->db_user->insert_batch( 'werknemers_urentypes', $insert_batch );
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * urentypes weghalen bij inlener voor bepaalde werknemer
+	 *
+	 */
+	public function deleteUrentypesWerknemerForInlener( $werknemer_id, $inlener_id )
+	{
+		$sql = "UPDATE werknemers_urentypes SET deleted = 1, deleted_on = NOW(), deleted_by = ?	WHERE werknemer_id = ? AND inlener_id = ? AND deleted = 0";
+		$this->db_user->query( $sql, array($this->user->user_id, $werknemer_id, $inlener_id) );
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Add urentypes bij nieuwe koppeling
+	 *
+	 */
+	public function addUrentypesWerknemerForInlener( $plaatsing_id, $werknemer_id, $inlener_id )
+	{
+		$urentypesgroup = new UrentypesGroup();
+		$urentypes = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
+	
+		foreach( $urentypes as $urentype )
+		{
+			unset($insert);
+			$insert['urentype_active'] = 1;
+			$insert['inlener_id'] = $inlener_id;
+			$insert['werknemer_id'] = $werknemer_id;
+			$insert['inlener_urentype_id'] = $urentype['inlener_urentype_id'];
+			$insert['urentype_id'] = $urentype['urentype_id'];
+			$insert['plaatsing_id'] = $plaatsing_id;
+			$insert['verkooptarief'] = $urentype['standaard_verkooptarief'];
+			
+			$insert_batch[] = $insert;
+		}
 		
+		if( isset($insert_batch) )
+		{
+			$this->db_user->insert_batch( 'werknemers_urentypes', $insert_batch );
+		}
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -248,6 +293,7 @@ class Urentypes extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Get All
+	 * TODO: verplaatsen naar group
 	 */
 	public function getAll()
 	{

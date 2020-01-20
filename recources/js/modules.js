@@ -297,6 +297,16 @@ var Datepickers = function() {
             min: [year,1,1]
         });
     
+        var startPlaatsingDate = new Date();
+        startPlaatsingDate.setDate(startPlaatsingDate.getDate() - 30);
+    
+        $( '.pickadate-start-plaatsing' ).pickadate({
+            selectYears: true,
+            selectMonths: true,
+            close: '',
+            selectYears: 1,
+            min: startPlaatsingDate
+        });
         
         var curDate = new Date();
         curDate.setDate(curDate.getDate() - 14);
@@ -334,7 +344,10 @@ var Select2Selects = function() {
 
         // Select with search
         $('.select-search').select2();
-
+    
+        // Select without search
+        $('.select-no-search').select2({ minimumResultsForSearch: Infinity });
+    
         // Select with search error
         $('.select-search-error').select2(
             {containerCssClass: 'border-danger'}

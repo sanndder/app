@@ -78,7 +78,7 @@
 						<li class="nav-item-header font-weight-bolder">
 							<div class="text-uppercase font-size-xs line-height-xs">Inleners</div>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item ">
 							<a href="javascript:void(0)" class="nav-link vi-list-item vi-list-item-active">
 								<span>1001Tafelkleden.com</span>
 							</a>

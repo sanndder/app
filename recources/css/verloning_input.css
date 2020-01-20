@@ -5,6 +5,18 @@
  *
  * ---------------------------------------------------------------------------- */
 
+/* select2 aanpassen */
+.select2-selection--single {
+    border:0 !important;
+}
+
+.select2-dropdown--below{
+    border-top: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+/* nav link pointer */
+.nav-link{cursor: pointer !important}
+
 /* tab kleur aanpassen */
 .nav-tabs-primary .nav-link.active:before {
     background-color: #2196f3;

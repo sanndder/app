@@ -1,135 +1,0 @@
-
--- 2019-11-27 20:50:35 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Module: 
-
-Url: http://192.168.1.2/app/cao/ajax/loontabellen
-
-Error: Not Found
-
-Data: {"werknemer_id":"1400","cao_id":"75"}
-
-Response: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>404 Page Not Found<\/title>\n<style type=\"text\/css\">\n\n::selection { background-color: #E13300; color: white; }\n::-moz-selection { background-color: #E13300; color: white; }\n\nbody {\n\tbackground-color: #fff;\n\tmargin: 40px;\n\tfont: 13px\/20px normal Helvetica, Arial, sans-serif;\n\tcolor: #4F5155;\n}\n\na {\n\tcolor: #003399;\n\tbackground-color: transparent;\n\tfont-weight: normal;\n}\n\nh1 {\n\tcolor: #444;\n\tbackground-color: transparent;\n\tborder-bottom: 1px solid #D0D0D0;\n\tfont-size: 19px;\n\tfont-weight: normal;\n\tmargin: 0 0 14px 0;\n\tpadding: 14px 15px 10px 15px;\n}\n\ncode {\n\tfont-family: Consolas, Monaco, Courier New, Courier, monospace;\n\tfont-size: 12px;\n\tbackground-color: #f9f9f9;\n\tborder: 1px solid #D0D0D0;\n\tcolor: #002166;\n\tdisplay: block;\n\tmargin: 14px 0 14px 0;\n\tpadding: 12px 10px 12px 10px;\n}\n\n#container {\n\tmargin: 10px;\n\tborder: 1px solid #D0D0D0;\n\tbox-shadow: 0 0 8px #D0D0D0;\n}\n\np {\n\tmargin: 12px 15px 12px 15px;\n}\n<\/style>\n<\/head>\n<body>\n\t<div id=\"container\">\n\t\t<h1>404 Page Not Found<\/h1>\n\t\t<p>The page you requested was not found.<\/p>\t<\/div>\n<\/body>\n<\/html>"
-
-
--- 2019-11-27 20:51:02 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Module: 
-
-Url: http://192.168.1.2/app/cao/ajax/caodata/loontabellen
-
-Error: OK
-
-Data: {"werknemer_id":"1400","cao_id":"75"}
-
-Response: "<div style='position:relative; background-color:#fff; z-index:25000; max-width:1250px;'><pre>loontabellen<\/pre><\/div><div style='position:relative; background-color:#fff; z-index:25000; max-width:1250px;'><pre>Array\n(\n    [werknemer_id] => 1400\n    [cao_id] => 75\n)\n<\/pre><\/div>"
-
-
--- 2019-11-27 20:53:31 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Url: http://192.168.1.2/app/cao/ajax/caodata/loontabellen
-
-Error: OK
-
-Data: {"werknemer_id":"1400","cao_id":"75"}
-
-Response: "<div style='position:relative; background-color:#fff; z-index:25000; max-width:1250px;'><pre>loontabellen<\/pre><\/div><div style='position:relative; background-color:#fff; z-index:25000; max-width:1250px;'><pre>Array\n(\n    [werknemer_id] => 1400\n    [cao_id] => 75\n)\n<\/pre><\/div>"
-
-
--- 2019-11-27 20:53:57 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Url: http://192.168.1.2/app/cao/ajax/caodata/loontabellen
-
-Error: OK
-
-Data: {"werknemer_id":"1400","cao_id":"75"}
-
-Response: "<div style='position:relative; background-color:#fff; z-index:25000; max-width:1250px;'><pre>Array\n(\n    [werknemer_id] => 1400\n    [cao_id] => 75\n)\n<\/pre><\/div>"
-
-
--- 2019-11-27 20:55:26 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Url: http://192.168.1.2/app/cao/ajax/caodata/loontabellen
-
-Error: OK
-
-Data: {"werknemer_id":"1400","cao_id":"75","leeftijd":"25"}
-
-Response: "<div style='position:relative; background-color:#fff; z-index:25000; max-width:1250px;'><pre>Array\n(\n    [werknemer_id] => 1400\n    [cao_id] => 75\n    [leeftijd] => 25\n)\n<\/pre><\/div>"
-
-
--- 2019-11-27 20:55:56 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Url: http://192.168.1.2/app/cao/ajax/caodata/loontabellen
-
-Error: OK
-
-Data: {"werknemer_id":"1400","cao_id":"75","leeftijd":"25"}
-
-Response: "<div style='position:relative; background-color:#fff; z-index:25000; max-width:1250px;'><pre>Array\n(\n    [werknemer_id] => 1400\n    [cao_id] => 75\n    [leeftijd] => 25\n)\n<\/pre><\/div>{\"loontabellen\":{\"BBL_AFBOUW\":{\"salary_table_id\":\"4\",\"short_name\":\"BBL_AFBOUW\",\"description\":\"Voor leerlingen afbouw\"},\"STANDAARD_NATUUR\":{\"salary_table_id\":\"11\",\"short_name\":\"STANDAARD_NATUUR\",\"description\":\"Voor medewerkers natuursteen\"},\"AFBOUW STANDAARD\":{\"salary_table_id\":\"9\",\"short_name\":\"AFBOUW STANDAARD\",\"description\":\"Standaard loontabel voor afbouw medewerkers vanaf 22 jaar\"},\"UTA AFBOUW\":{\"salary_table_id\":\"3\",\"short_name\":\"UTA AFBOUW\",\"description\":\"UTA medewerkers afbouw\"},\"GROEP_0_1_NAT\":{\"salary_table_id\":\"10\",\"short_name\":\"GROEP_0_1_NAT\",\"description\":\"Voor medewerkers in loongroep 0 of 1 vervalt per 31-12-2019\"},\"AANLP AFBOUW\":{\"salary_table_id\":\"7\",\"short_name\":\"AANLP AFBOUW\",\"description\":\"Voor medewerkers zonder ervaring en bbl die een opleiding volgen\"}}}"
-
-
--- 2019-11-27 20:57:21 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Url: http://192.168.1.2/app/cao/ajax/caodata
-
-Error: OK
-
-Data: {"werknemer_id":"1400","cao_id":"75","leeftijd":"25"}
-
-Response: "\n<div style=\"border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;\">\n\n<h4>A PHP Error was encountered<\/h4>\n\n<p>Severity: Notice<\/p>\n<p>Message:  Undefined variable: action<\/p>\n<p>Filename: cao\/Ajax.php<\/p>\n<p>Line Number: 37<\/p>\n\n\n\t<p>Backtrace:<\/p>\n\t\n\t\t\n\t\n\t\t\n\t\n\t\t\n\t\t\t<p style=\"margin-left:10px\">\n\t\t\tFile: C:\\xampp\\htdocs\\app\\application\\controllers\\cao\\Ajax.php<br \/>\n\t\t\tLine: 37<br \/>\n\t\t\tFunction: _error_handler\t\t\t<\/p>\n\n\t\t\n\t\n\t\t\n\t\n\t\t\n\t\t\t<p style=\"margin-left:10px\">\n\t\t\tFile: C:\\xampp\\htdocs\\app\\index.php<br \/>\n\t\t\tLine: 322<br \/>\n\t\t\tFunction: require_once\t\t\t<\/p>\n\n\t\t\n\t\n\n<\/div>\n<div style=\"border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;\">\n\n<h4>A PHP Error was encountered<\/h4>\n\n<p>Severity: Notice<\/p>\n<p>Message:  Undefined variable: return<\/p>\n<p>Filename: cao\/Ajax.php<\/p>\n<p>Line Number: 40<\/p>\n\n\n\t<p>Backtrace:<\/p>\n\t\n\t\t\n\t\n\t\t\n\t\n\t\t\n\t\t\t<p style=\"margin-left:10px\">\n\t\t\tFile: C:\\xampp\\htdocs\\app\\application\\controllers\\cao\\Ajax.php<br \/>\n\t\t\tLine: 40<br \/>\n\t\t\tFunction: _error_handler\t\t\t<\/p>\n\n\t\t\n\t\n\t\t\n\t\n\t\t\n\t\t\t<p style=\"margin-left:10px\">\n\t\t\tFile: C:\\xampp\\htdocs\\app\\index.php<br \/>\n\t\t\tLine: 322<br \/>\n\t\t\tFunction: require_once\t\t\t<\/p>\n\n\t\t\n\t\n\n<\/div>null"
-
-
--- 2019-11-27 21:18:11 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Url: http://192.168.1.2/app/cao/ajax/caodata
-
-Error: Internal Server Error
-
-Data: {"werknemer_id":"1400","cao_id":"75","leeftijd":"25","loontabel_id":"80"}
-
-Response: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Database Error<\/title>\n<style type=\"text\/css\">\n\n::selection { background-color: #E13300; color: white; }\n::-moz-selection { background-color: #E13300; color: white; }\n\nbody {\n\tbackground-color: #fff;\n\tmargin: 40px;\n\tfont: 13px\/20px normal Helvetica, Arial, sans-serif;\n\tcolor: #4F5155;\n}\n\na {\n\tcolor: #003399;\n\tbackground-color: transparent;\n\tfont-weight: normal;\n}\n\nh1 {\n\tcolor: #444;\n\tbackground-color: transparent;\n\tborder-bottom: 1px solid #D0D0D0;\n\tfont-size: 19px;\n\tfont-weight: normal;\n\tmargin: 0 0 14px 0;\n\tpadding: 14px 15px 10px 15px;\n}\n\ncode {\n\tfont-family: Consolas, Monaco, Courier New, Courier, monospace;\n\tfont-size: 12px;\n\tbackground-color: #f9f9f9;\n\tborder: 1px solid #D0D0D0;\n\tcolor: #002166;\n\tdisplay: block;\n\tmargin: 14px 0 14px 0;\n\tpadding: 12px 10px 12px 10px;\n}\n\n#container {\n\tmargin: 10px;\n\tborder: 1px solid #D0D0D0;\n\tbox-shadow: 0 0 8px #D0D0D0;\n}\n\np {\n\tmargin: 12px 15px 12px 15px;\n}\n<\/style>\n<\/head>\n<body>\n\t<div id=\"container\">\n\t\t<h1>A Database Error Occurred<\/h1>\n\t\t<p>Error Number: 1064<\/p><p>You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ') ORDER BY name ASC' at line 1<\/p><p>SELECT * FROM cao_jobs WHERE cao_id_intern = 75 AND job_id IN () ORDER BY name ASC<\/p><p>Filename: C:\/xampp\/htdocs\/app\/system\/database\/DB_driver.php<\/p><p>Line Number: 694<\/p>\t<\/div>\n<\/body>\n<\/html>"
-
-
--- 2019-11-27 21:19:02 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Url: http://192.168.1.2/app/cao/ajax/caodata
-
-Error: Internal Server Error
-
-Data: {"werknemer_id":"1400","cao_id":"75","leeftijd":"25","loontabel_id":"80"}
-
-Response: "<div style='position:relative; background-color:#fff; z-index:25000; max-width:1250px;'><pre>string(0) \"\"\n<\/pre><\/div><!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Database Error<\/title>\n<style type=\"text\/css\">\n\n::selection { background-color: #E13300; color: white; }\n::-moz-selection { background-color: #E13300; color: white; }\n\nbody {\n\tbackground-color: #fff;\n\tmargin: 40px;\n\tfont: 13px\/20px normal Helvetica, Arial, sans-serif;\n\tcolor: #4F5155;\n}\n\na {\n\tcolor: #003399;\n\tbackground-color: transparent;\n\tfont-weight: normal;\n}\n\nh1 {\n\tcolor: #444;\n\tbackground-color: transparent;\n\tborder-bottom: 1px solid #D0D0D0;\n\tfont-size: 19px;\n\tfont-weight: normal;\n\tmargin: 0 0 14px 0;\n\tpadding: 14px 15px 10px 15px;\n}\n\ncode {\n\tfont-family: Consolas, Monaco, Courier New, Courier, monospace;\n\tfont-size: 12px;\n\tbackground-color: #f9f9f9;\n\tborder: 1px solid #D0D0D0;\n\tcolor: #002166;\n\tdisplay: block;\n\tmargin: 14px 0 14px 0;\n\tpadding: 12px 10px 12px 10px;\n}\n\n#container {\n\tmargin: 10px;\n\tborder: 1px solid #D0D0D0;\n\tbox-shadow: 0 0 8px #D0D0D0;\n}\n\np {\n\tmargin: 12px 15px 12px 15px;\n}\n<\/style>\n<\/head>\n<body>\n\t<div id=\"container\">\n\t\t<h1>A Database Error Occurred<\/h1>\n\t\t<p>Error Number: 1064<\/p><p>You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ') ORDER BY name ASC' at line 1<\/p><p>SELECT * FROM cao_jobs WHERE cao_id_intern = 75 AND job_id IN () ORDER BY name ASC<\/p><p>Filename: C:\/xampp\/htdocs\/app\/system\/database\/DB_driver.php<\/p><p>Line Number: 694<\/p>\t<\/div>\n<\/body>\n<\/html>"
-
-
--- 2019-11-27 21:25:28 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-User: 2
-
-Url: http://192.168.1.2/app/cao/ajax/caodata
-
-Error: OK
-
-Data: {"werknemer_id":"1400","cao_id":"75","leeftijd":"25","loontabel_id":"8","job_id":"12794","schaal_id":"1b"}
-
-Response: "\n<div style=\"border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;\">\n\n<h4>A PHP Error was encountered<\/h4>\n\n<p>Severity: Notice<\/p>\n<p>Message:  Undefined index: schaal_id<\/p>\n<p>Filename: cao\/Ajax.php<\/p>\n<p>Line Number: 56<\/p>\n\n\n\t<p>Backtrace:<\/p>\n\t\n\t\t\n\t\n\t\t\n\t\n\t\t\n\t\t\t<p style=\"margin-left:10px\">\n\t\t\tFile: C:\\xampp\\htdocs\\app\\application\\controllers\\cao\\Ajax.php<br \/>\n\t\t\tLine: 56<br \/>\n\t\t\tFunction: _error_handler\t\t\t<\/p>\n\n\t\t\n\t\n\t\t\n\t\n\t\t\n\t\t\t<p style=\"margin-left:10px\">\n\t\t\tFile: C:\\xampp\\htdocs\\app\\index.php<br \/>\n\t\t\tLine: 322<br \/>\n\t\t\tFunction: require_once\t\t\t<\/p>\n\n\t\t\n\t\n\n<\/div>{\"loontabellen\":{\"BBL_AFBOUW\":{\"salary_table_id\":\"4\",\"short_name\":\"BBL_AFBOUW\",\"description\":\"Voor leerlingen afbouw\"},\"STANDAARD_NATUUR\":{\"salary_table_id\":\"11\",\"short_name\":\"STANDAARD_NATUUR\",\"description\":\"Voor medewerkers natuursteen\"},\"AFBOUW STANDAARD\":{\"salary_table_id\":\"9\",\"short_name\":\"AFBOUW STANDAARD\",\"description\":\"Standaard loontabel voor afbouw medewerkers vanaf 22 jaar\"},\"UTA AFBOUW\":{\"salary_table_id\":\"3\",\"short_name\":\"UTA AFBOUW\",\"description\":\"UTA medewerkers afbouw\"},\"GROEP_0_1_NAT\":{\"salary_table_id\":\"10\",\"short_name\":\"GROEP_0_1_NAT\",\"description\":\"Voor medewerkers in loongroep 0 of 1 vervalt per 31-12-2019\"},\"AANLP AFBOUW\":{\"salary_table_id\":\"7\",\"short_name\":\"AANLP AFBOUW\",\"description\":\"Voor medewerkers zonder ervaring en bbl die een opleiding volgen\"}},\"jobs\":{\"12794\":{\"id\":\"12794\",\"job_id\":\"254-800021\",\"cao_id_intern\":\"75\",\"name\":\"Algemeen medewerker\",\"minimal_payscale\":\"1b\",\"payscales\":\"[\\\"1b\\\"]\"},\"12795\":{\"id\":\"12795\",\"job_id\":\"254-800022\",\"cao_id_intern\":\"75\",\"name\":\"Blokkensteller\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12796\":{\"id\":\"12796\",\"job_id\":\"254-800023\",\"cao_id_intern\":\"75\",\"name\":\"Blokkensteller maatvoering\",\"minimal_payscale\":\"4b\",\"payscales\":\"[\\\"4b\\\"]\"},\"12797\":{\"id\":\"12797\",\"job_id\":\"254-800024\",\"cao_id_intern\":\"75\",\"name\":\"Buitengevelisolatieapplicateur\",\"minimal_payscale\":\"4b\",\"payscales\":\"[\\\"4b\\\"]\"},\"12798\":{\"id\":\"12798\",\"job_id\":\"254-800025\",\"cao_id_intern\":\"75\",\"name\":\"Hulp vloerenlegger\",\"minimal_payscale\":\"2b\",\"payscales\":\"[\\\"2b\\\"]\"},\"12851\":{\"id\":\"12851\",\"job_id\":\"254-800026\",\"cao_id_intern\":\"75\",\"name\":\"Meewerkend voorman blokkenstellen\",\"minimal_payscale\":\"06\",\"payscales\":\"[\\\"06\\\"]\"},\"12799\":{\"id\":\"12799\",\"job_id\":\"254-800027\",\"cao_id_intern\":\"75\",\"name\":\"Meewerkend voorman plafond en wand\",\"minimal_payscale\":\"06\",\"payscales\":\"[\\\"06\\\"]\"},\"12800\":{\"id\":\"12800\",\"job_id\":\"254-800028\",\"cao_id_intern\":\"75\",\"name\":\"Meewerkend voorman stukadoren en afbouw\",\"minimal_payscale\":\"06\",\"payscales\":\"[\\\"06\\\"]\"},\"12801\":{\"id\":\"12801\",\"job_id\":\"254-800029\",\"cao_id_intern\":\"75\",\"name\":\"Meewerkend voorman vloeren en terrazzo\",\"minimal_payscale\":\"06\",\"payscales\":\"[\\\"06\\\"]\"},\"12802\":{\"id\":\"12802\",\"job_id\":\"254-800030\",\"cao_id_intern\":\"75\",\"name\":\"Monteur metalstud A\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12803\":{\"id\":\"12803\",\"job_id\":\"254-800031\",\"cao_id_intern\":\"75\",\"name\":\"Monteur metalstud B\",\"minimal_payscale\":\"4b\",\"payscales\":\"[\\\"4b\\\"]\"},\"12804\":{\"id\":\"12804\",\"job_id\":\"254-800032\",\"cao_id_intern\":\"75\",\"name\":\"Opperman blokkenstellen\",\"minimal_payscale\":\"2b\",\"payscales\":\"[\\\"2b\\\"]\"},\"12805\":{\"id\":\"12805\",\"job_id\":\"254-800033\",\"cao_id_intern\":\"75\",\"name\":\"Opperman plafond en wand\",\"minimal_payscale\":\"2b\",\"payscales\":\"[\\\"2b\\\"]\"},\"12806\":{\"id\":\"12806\",\"job_id\":\"254-800034\",\"cao_id_intern\":\"75\",\"name\":\"Opperman stukadoren\\\/afbouw\",\"minimal_payscale\":\"2b\",\"payscales\":\"[\\\"2b\\\"]\"},\"12807\":{\"id\":\"12807\",\"job_id\":\"254-800035\",\"cao_id_intern\":\"75\",\"name\":\"Opperman vloeren terrazzo\",\"minimal_payscale\":\"2b\",\"payscales\":\"[\\\"2b\\\"]\"},\"12808\":{\"id\":\"12808\",\"job_id\":\"254-800036\",\"cao_id_intern\":\"75\",\"name\":\"Platenplakker\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12809\":{\"id\":\"12809\",\"job_id\":\"254-800037\",\"cao_id_intern\":\"75\",\"name\":\"Restauratiestukadoor\",\"minimal_payscale\":\"5b\",\"payscales\":\"[\\\"5b\\\"]\"},\"12810\":{\"id\":\"12810\",\"job_id\":\"254-800038\",\"cao_id_intern\":\"75\",\"name\":\"Schuurder\\\/polijster terrazzo\",\"minimal_payscale\":\"2b\",\"payscales\":\"[\\\"2b\\\"]\"},\"12811\":{\"id\":\"12811\",\"job_id\":\"254-800039\",\"cao_id_intern\":\"75\",\"name\":\"Spachtelaar\\\/nadenvoeger\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12812\":{\"id\":\"12812\",\"job_id\":\"254-800040\",\"cao_id_intern\":\"75\",\"name\":\"Steengaasstucanetsteller\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12813\":{\"id\":\"12813\",\"job_id\":\"254-800041\",\"cao_id_intern\":\"75\",\"name\":\"Stukadoor\",\"minimal_payscale\":\"4b\",\"payscales\":\"[\\\"4b\\\"]\"},\"12814\":{\"id\":\"12814\",\"job_id\":\"254-800042\",\"cao_id_intern\":\"75\",\"name\":\"Systeemplafond- en\\\/of systeemwandmonteur A\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12815\":{\"id\":\"12815\",\"job_id\":\"254-800043\",\"cao_id_intern\":\"75\",\"name\":\"Systeemplafond- en\\\/of systeemwandmonteur B\",\"minimal_payscale\":\"4b\",\"payscales\":\"[\\\"4b\\\"]\"},\"12816\":{\"id\":\"12816\",\"job_id\":\"254-800044\",\"cao_id_intern\":\"75\",\"name\":\"Terrazzowerker\",\"minimal_payscale\":\"4b\",\"payscales\":\"[\\\"4b\\\"]\"},\"12817\":{\"id\":\"12817\",\"job_id\":\"254-800045\",\"cao_id_intern\":\"75\",\"name\":\"Vloerenlegger gieten\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12818\":{\"id\":\"12818\",\"job_id\":\"254-800046\",\"cao_id_intern\":\"75\",\"name\":\"Vloerenlegger kunststof\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12819\":{\"id\":\"12819\",\"job_id\":\"254-800047\",\"cao_id_intern\":\"75\",\"name\":\"Vloerenlegger monoliet\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12852\":{\"id\":\"12852\",\"job_id\":\"254-800048\",\"cao_id_intern\":\"75\",\"name\":\"Vloerenlegger zand\\\/cement\",\"minimal_payscale\":\"3b\",\"payscales\":\"[\\\"3b\\\"]\"},\"12820\":{\"id\":\"12820\",\"job_id\":\"254-800049\",\"cao_id_intern\":\"75\",\"name\":\"Wand- en plafondspuiter\",\"minimal_payscale\":\"4b\",\"payscales\":\"[\\\"4b\\\"]\"}},\"schalen\":{\"1b\":\"1b\"},\"uurloon\":null,\"error\":[\"Ongeldige schaal\",\"Uurloon niet gevonden\"]}"
-
-

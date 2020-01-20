@@ -12,7 +12,7 @@ use models\file\Pdf;
 use models\pdf\PdfFactuur;
 use models\pdf\PdfFactuurDefault;
 use models\werknemers\Plaatsing;
-use models\werknemers\PlaatsingCollection;
+use models\werknemers\PlaatsingGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -226,6 +226,17 @@ class Test extends MY_Controller {
 		//$image = new Img( $file_array );
 		//$image->setMaxWidthHeight( 700, 400 )->setQuality(80)->resize();
 	
+	}
+	//-----------------------------------------------------------------------------------------------------------------
+	// test method
+	//-----------------------------------------------------------------------------------------------------------------
+	public function coal()
+	{
+	
+		$input['test'] = $a ?? null;
+		
+		show($input);
+		vshow($input);
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------

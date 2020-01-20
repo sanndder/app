@@ -2,17 +2,15 @@
 {block "title"}Ureninvoer{/block}
 {block "header-icon"}mi-timer{/block}
 {block "header-title"}Ureninvoer{/block}
+{assign "select2" "true"}
 
 {block "content"}
 	<script src="recources/js/textFit.js"></script>
+	<script src="recources/js/config.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/templates.js?{$time}"></script>
-	<script>
-        {literal}
-
-        {/literal}
-	</script>
+	<script src="recources/js/verloning_invoer/main.js?{$time}"></script>
 	<!-- Main sidebar -->
-	<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start">
+	<div class="sidebar sidebar-light sidebar-main sidebar-wide sidebar-expand-md align-self-start">
 
 		<!-- Sidebar mobile toggler -->
 		<div class="sidebar-mobile-toggler text-center">
@@ -31,59 +29,88 @@
 		<div class="sidebar-content">
 			<div class="card card-sidebar-mobile">
 
-				<!-- Main navigation -->
+				<!------------------------------------------------------------------- linker menu --------------------------------------------------------------------------------------------->
 				<div class="card-body p-0">
+
+                    {*************** tijdvak keuze ****************************}
 					<div class="card-header bg-transparent p-2">
 
-						<ul class="nav nav-sidebar p-0" data-nav-type="accordion">
-							<li class="nav-item-header font-weight-bolder pl-2 pr-2 pb-1 pt-0">
-								<div class="text-uppercase font-size-xs line-height-xs">Tijdvak</div>
-							</li>
-						</ul>
+						<table>
+							<tr>
+								<td>
+									<ul class="nav nav-sidebar p-0" data-nav-type="accordion">
+										<li class="nav-item-header font-weight-bolder pl-2 pr-2 pb-1 pt-0">
+											<div class="text-uppercase font-size-xs line-height-xs">Jaar</div>
+										</li>
+									</ul>
+								</td>
+								<td>
+									<ul class="nav nav-sidebar p-0" data-nav-type="accordion">
+										<li class="nav-item-header font-weight-bolder pl-2 pr-2 pb-1 pt-0">
+											<div class="text-uppercase font-size-xs line-height-xs vi-tijdvak-titel">Week</div>
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<td class="pr-3">
+									<ul class="list-inline list-inline-condensed mb-0">
+										<li class="list-inline-item dropdown" data-ajax-list="true" data-value="30">
+											<a href="javascript:void(0)" class="btn btn-link text-default dropdown-toggle"
+											   data-toggle="dropdown">
+												2020
+											</a>
+											<div class="dropdown-menu">
+												<a href="javascript:void(0)" class="dropdown-item" data-id="2020">2020</a>
+											</div>
+										</li>
+									</ul>
+								</td>
+								<td>
+									<ul class="list-inline list-inline-condensed vi-list-periodes mb-0">
+										<li class="list-inline-item dropdown pl-0" data-ajax-list="true" data-value="w">
+											<a href="javascript:void(0)" class="btn btn-link text-left text-default dropdown-toggle pl-2" data-toggle="dropdown" style="width: 100px;">
+												02
+											</a>
+											<div class="dropdown-menu">
+												<a href="javascript:void(0)" class="dropdown-item" data-value="3" data-vi-action="setPeriode">
+													03
+												</a>
+												<a href="javascript:void(0)" class="dropdown-item" data-value="4" data-vi-action="setPeriode">
+													04
+												</a>
+											</div>
+										</li>
+									</ul>
+								</td>
+							</tr>
+						</table>
 
-						<ul class="list-inline list-inline-condensed mb-0">
-							<li class="list-inline-item dropdown pl-0" data-ajax-list="true" data-value="w">
-								<a href="javascript:void(0)" class="btn btn-link text-left text-default dropdown-toggle pl-2" data-toggle="dropdown" style="width: 100px;">
-									Week
-								</a>
-								<div class="dropdown-menu">
-									<a href="javascript:void(0)" class="dropdown-item" data-value="w" data-vi-action="setTijdvak">
-										Week
-									</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-value="4w" data-vi-action="setTijdvak">
-										4 Weken
-									</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-value="m" data-vi-action="setTijdvak">
-										Maand
-									</a>
-								</div>
-							</li>
-							<li class="list-inline-item dropdown" data-ajax-list="true" data-value="30">
-								<a href="javascript:void(0)" class="btn btn-link text-default dropdown-toggle"
-								   data-toggle="dropdown">
-									01
-								</a>
-								<div class="dropdown-menu">
-									<a href="javascript:void(0)" class="dropdown-item" data-id="52">52</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-id="51">51</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-id="50">50</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-id="49">49</a>
-									<a href="javascript:void(0)" class="dropdown-item" data-id="48">48</a>
-								</div>
-							</li>
-						</ul>
 					</div>
 
-					<ul class="nav nav-sidebar" data-nav-type="accordion">
-						<li class="nav-item-header font-weight-bolder">
-							<div class="text-uppercase font-size-xs line-height-xs">Inleners</div>
-						</li>
-						<li class="nav-item">
-							<a href="javascript:void(0)" class="nav-link vi-list-item">
-								<span class="font-italic">Geen inleners gevonden</span>
-							</a>
-						</li>
-						<!-- /main -->
+
+                    {*************** Uitzender keuze ****************************}
+                    {if $user_type == 'werkgever'}
+						<div class="card-header bg-transparent p-2">
+							<ul class="nav nav-sidebar p-0" data-nav-type="accordion">
+								<li class="nav-item-header font-weight-bolder pl-2 pr-2 pb-1 pt-0">
+									<div class="text-uppercase font-size-xs line-height-xs">Uitzender</div>
+								</li>
+							</ul>
+
+							<select class="form-control select-search uitzender-id" data-vi-action="setUitzender">
+								<option>Selecteer een uitzender</option>
+                                {foreach $uitzenders as $u}
+									<option value="{$u@key}">{$u@key} - {$u}</option>
+                                {/foreach}
+							</select>
+
+						</div>
+                    {/if}
+
+                    {*************** inlener keuze ****************************}
+					<ul class="nav nav-sidebar vi-list-inleners" data-nav-type="accordion">
+
 					</ul>
 				</div>
 				<!-- /main navigation -->

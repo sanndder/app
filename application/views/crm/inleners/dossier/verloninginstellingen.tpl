@@ -203,7 +203,7 @@
 	                                <fieldset class="mb-0 mt-0">
 										<legend class="text-uppercase font-size-sm pl-2 mb-1 font-weight-bold" style="background-color: #EEE">
                                             {$cao.cao_name}
-											<a href="{$base_url}/crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-cao&delcao={$cao@key}" class="float-right pr-3" style="color: red" data-popup="tooltip" data-placement="top" data-title="COA verwijderen">
+											<a href="{$base_url}/crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-cao&delcao={$cao.cao_id_intern}" class="float-right pr-3" style="color: red" data-popup="tooltip" data-placement="top" data-title="COA verwijderen">
 												<i class="icon-trash"></i>
 											</a>
 										</legend>
@@ -316,7 +316,11 @@
 														{/if}
 													</td>
 													<td>
-
+														{if $urentype.default_urentype != 1}
+														<a class="text-danger" href="{$base_url}/crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-urentypes?delurentype={$urentype.inlener_urentype_id}">
+															<i class="icon-trash mr-1"></i>verwijderen
+														</a>
+                                                        {/if}
 													</td>
 												</tr>
                                             {/foreach}
@@ -343,7 +347,6 @@
 												<th style="width: 35px">Actief</th>
 												<th style="width: 135px">Werknemer ID</th>
 												<th style="width: 325px">Werknemer</th>
-												<th style="width: 115px">Uurloon type</th>
 												<th style="width: 115px">Uurloon</th>
 												<th style="width: 75px">Verkooptarief</th>
 												<th></th>
@@ -366,11 +369,7 @@
 														<td>{$w.werknemer_id}</td>
 														<td>{$w.werknemer_naam}</td>
 														<td>
-															{if $w.uurloon_id == 1}Standaard{/if}
-															{if $w.uurloon_id > 1}Uurloon {$w.uurloon_id}{/if}
-														</td>
-														<td>
-                                                            € {$w.uurloon|number_format:2:',':'.'}
+                                                            € {$w.bruto_loon|number_format:2:',':'.'}
 														</td>
 														<td>€ {$w.verkooptarief|number_format:2:',':'.'}
 														</td>

@@ -42,7 +42,8 @@ class Kvk extends Connector
 	public function getSbiCodes()
 	{
 		$data = $this->fetchCompanyData();
-		
+		$result = array();
+
 		//sbi
 		if(isset($data['businessActivities']))
 		{
@@ -55,7 +56,6 @@ class Kvk extends Connector
 			}
 		
 		}
-		
 		return $result;
 	}
 	
@@ -104,10 +104,7 @@ class Kvk extends Connector
 			$profile = json_decode($response, true);
 			
 		}
-		
-		show($profile);
 		return $profile['data']['items'][0];
-	
 	}
 	
 

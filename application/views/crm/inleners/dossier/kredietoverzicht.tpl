@@ -41,7 +41,7 @@
 							<div class="row">
 
 								<!-------------------------------------------- Kredietinstellingen------------------------------------------------------->
-								<div class="col-xl-4 bg-info-600 pb-4 mb-0 pl-3">
+								<div class="col-xl-3 bg-info-600 pb-4 mb-0 pl-3">
 									<h5 class="mt-0 pt-3">Kredietinstellingen</h5>
 
 									<table>
@@ -113,7 +113,7 @@
 								</div><!-- /col -->
 
 								<!--------------------------------------------  kredietaanvragen ------------------------------------------------------->
-								<div class="col-xl-8 col-md-12 pl-4">
+								<div class="col-xl-9 col-md-12 pl-4">
 									<h5 class="mt-0 pt-3">Kredietaanvragen</h5>
 
 									<form method="post" action="">
@@ -121,6 +121,8 @@
 											<thead>
 												<tr>
 													<th>KvK nr</th>
+													<th>Telefoon</th>
+													<th>Email</th>
 													<th>Limiet aangevraagd</th>
                                                     {if $user_type == 'werkgever'}
 													<th>Limiet toekennen</th>
@@ -133,6 +135,8 @@
                                                     {foreach $kredietaanvragen as $k}
 														<tr {if $k.krediet_afgewezen == 1}class="text-muted" {/if}>
 															<td>{$k.kvknr}</td>
+															<td>{$k.telefoon}</td>
+															<td>{$k.email}</td>
 															<td>€ {$k.kredietlimiet_gewenst|number_format:0:',':'.'}</td>
                                                             {* alleen voor werkgever *}
                                                             {if $user_type == 'werkgever'}

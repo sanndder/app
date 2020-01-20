@@ -26,6 +26,8 @@ class Werknemer extends Connector
 	public $werknemer_id = NULL; // @var int
 	public $id = NULL; // @var int
 	public $naam = NULL; // @var string
+	public $gb_datum = NULL; // @var string
+	public $leeftijd = NULL; // @var string
 	private $_uitzender_id_new = NULL; // @var int
 	
 	/*
@@ -115,6 +117,7 @@ class Werknemer extends Connector
 
 		//set public vars
 		$this->naam = $this->_status['naam'];
+		$this->gb_datum = $this->_status['gb_datum'];
 
 		//volgende vorige init
 		$this->next['id'] = $this->werknemer_id;    //default self
@@ -153,6 +156,24 @@ class Werknemer extends Connector
 	}
 
 
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * leeftijd van de medewerker
+	 *
+	 * @return string
+	 */
+	public function leeftijd()
+	{
+		$date = new \DateTime( $this->gb_datum );
+		$now = new \DateTime();
+		$interval = $now->diff($date);
+		$this->leeftijd = $interval->y;
+		
+		return $this->leeftijd;
+	}
+
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * haal ET  regeling object

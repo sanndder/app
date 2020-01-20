@@ -24,6 +24,7 @@ class Inlener extends Connector
 	private $_status = NULL; // @var array
 
 	public $inlener_id = NULL; // @var int
+	public $kvknr = NULL; // @var int
 	public $bedrijfsnaam = NULL; // @var string
 	public $uitzender_id = NULL; // @var int
 	private $_uitzender_id_new = NULL; // @var int
@@ -42,6 +43,7 @@ class Inlener extends Connector
 	public $contactpersoon_complete = NULL;
 	public $factuurgegevens_complete = NULL;
 	public $bedrijfsgegevens_complete = NULL;
+	public $cao_complete = NULL;
 
 	public $next = array();
 	public $prev = array();
@@ -231,9 +233,11 @@ class Inlener extends Connector
 		$this->factuurgegevens_complete = $this->_status['factuurgegevens_complete'];
 		$this->contactpersoon_complete = $this->_status['contactpersoon_complete'];
 		$this->emailadressen_complete = $this->_status['emailadressen_complete'];
+		$this->cao_complete = $this->_status['cao_complete'];
 
 		//set public vars
 		$this->bedrijfsnaam = $this->_status['bedrijfsnaam'];
+		$this->kvknr = $this->_status['kvknr'];
 
 		//volgende vorige init
 		$this->next['id'] 			= $this->inlener_id;    //default self
@@ -358,6 +362,7 @@ class Inlener extends Connector
 	public function approveContactpersoon( $id )
 	{
 		$this->setContactpersoon( $id );
+		$this->_updateStatus( 'contactpersoon_complete' );
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -555,11 +560,15 @@ class Inlener extends Connector
 	 * Nieuwe inlener aanmaken
 	 * Kan alleen als basis bedrijfsgegevens ingevuld zijn
 	 * Entry in status tabel maken, dit levert inlener_id op
+	 * Voor bemiddeling cao op complete
 	 * @return boolean
 	 */
 	private function _new()
 	{
 		$insert['complete'] = 0;
+		if( $this->user->werkgever_type == 'bemiddeling' )
+			$insert['cao_complete'] = 1;
+		
 		$this->db_user->insert('inleners_status', $insert);
 
 		if ($this->db_user->insert_id() > 0)
@@ -667,6 +676,23 @@ class Inlener extends Connector
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * inlener heeft geen cao
+	 *
+	 */
+	public function noCao()
+	{
+		$this->db_user->query("UPDATE inleners_cao SET deleted = 1, deleted_on = NOW(), deleted_by = ".$this->user->user_id." WHERE deleted = 0 AND inlener_id = $this->inlener_id");
+		
+		
+		$insert['inlener_id'] = $this->inlener_id;
+		$insert['user_id'] = $this->user->user_id;
+		$insert['no_cao'] = 1;
+		
+		$this->db_user->insert( 'inleners_cao', $insert );
+	}
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * Update status van een onderdeel en controleer of alles compleet is
 	 *
 	 */
@@ -695,7 +721,8 @@ class Inlener extends Connector
 				$this->bedrijfsgegevens_complete == 1 &&
 				$this->emailadressen_complete == 1 &&
 				$this->factuurgegevens_complete == 1 &&
-				$this->contactpersoon_complete == 1
+				$this->contactpersoon_complete == 1 &&
+				$this->cao_complete == 1
 				)
 			{
 				$update_status['complete'] = 1;

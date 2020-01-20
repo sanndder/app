@@ -12,7 +12,7 @@ use models\file\Pdf;
 use models\pdf\PdfFactuur;
 use models\pdf\PdfFactuurDefault;
 use models\werknemers\Plaatsing;
-use models\werknemers\PlaatsingCollection;
+use models\werknemers\PlaatsingGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 

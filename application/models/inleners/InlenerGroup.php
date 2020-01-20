@@ -9,13 +9,16 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
 /*
- * Uitzender Lists
+ * Inlener Lists
  *
  * Alle lijsten van inleners moeten via deze class
  *
  */
 class InlenerGroup extends Connector {
-
+	
+	private $_uitzender_id = NULL;
+	private $_exclude_ids = NULL;
+	
 	/*
 	 * @var array
 	 */
@@ -42,6 +45,52 @@ class InlenerGroup extends Connector {
 		$query = $this->db_user->query( "SELECT COUNT(inlener_id) AS count FROM inleners_status WHERE complete = 1 AND archief = 0" );
 		$data = DBhelper::toRow( $query );
 		return $data['count'];
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * lijst voor ureninvoer, minder data via ajax sturen
+	 */
+	public function listForUreninvoer()
+	{
+		//init
+		$data = array();
+		
+		//start query
+		$sql = "SELECT inleners_bedrijfsgegevens.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_factuurgegevens.frequentie
+				FROM inleners_status
+				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
+				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = inleners_status.inlener_id
+				LEFT JOIN inleners_uitzenders ON inleners_status.inlener_id = inleners_uitzenders.inlener_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.archief = 0 AND inleners_status.complete = 1 AND inleners_factuurgegevens.deleted = 0";
+		
+		//beveiligen
+		if( $this->user->user_type == 'uitzender' )
+			$sql .= " AND inleners_uitzenders.uitzender_id = ".$this->uitzender->id." ";
+		
+		//specifieke uitzender?
+		if( $this->_uitzender_id !== NULL )
+			$sql .= " AND inleners_uitzenders.uitzender_id = $this->_uitzender_id ";
+		
+		//sort
+		$sql .= " ORDER BY inleners_factuurgegevens.frequentie DESC, inleners_bedrijfsgegevens.bedrijfsnaam ";
+		
+		//go
+		$query = $this->db_user->query($sql);
+		
+		if ($query->num_rows() == 0)
+			return $data;
+		
+		foreach ($query->result_array() as $row)
+		{
+			if( $row['frequentie'] == 'w') $f = 'week';
+			if( $row['frequentie'] == 'm') $f = 'maand';
+			if( $row['frequentie'] == '4w') $f = '4 weken';
+			
+			$data[$f][$row['inlener_id']] = $row;
+		}
+		
+		return $data;
 	}
 	
 	
@@ -86,8 +135,19 @@ class InlenerGroup extends Connector {
 			$sql .= " AND inleners_uitzenders.uitzender_id = ".intval($param['uitzender_id'])." ";
 		
 		//specifieke uitzender?
+		if( $this->_uitzender_id !== NULL )
+			$sql .= " AND inleners_uitzenders.uitzender_id = $this->_uitzender_id ";
+		
+		//ID's uitsluiten
+		if( $this->_exclude_ids !== NULL )
+			$sql .= " AND inleners_status.inlener_id NOT IN (". implode(',',$this->_exclude_ids).") ";
+		
+		//specifieke uitzender?
 		if( isset($param['new']) )
 			$sql .= " AND inleners_status.complete = 0 ";
+		
+		//sort
+		$sql .= " ORDER BY inleners_bedrijfsgegevens.bedrijfsnaam ";
 
 		//go
 		$query = $this->db_user->query($sql);
@@ -101,6 +161,28 @@ class InlenerGroup extends Connector {
 		}
 
 		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * uitzender ID toevoegen
+	 */
+	public function uitzender( $uitzender_id ) :InlenerGroup
+	{
+		$this->_uitzender_id = intval($uitzender_id);
+		return $this;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * uitzender ID toevoegen
+	 */
+	public function exclude(  array $inlener_ids) :InlenerGroup
+	{
+		$this->_exclude_ids = $inlener_ids;
+		return $this;
 	}
 	
 	

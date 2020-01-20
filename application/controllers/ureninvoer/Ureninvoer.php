@@ -1,4 +1,7 @@
 <?php
+
+use models\uitzenders\UitzenderGroup;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -23,8 +26,13 @@ class Ureninvoer extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-
-		$this->smarty->display('ureninvoer/main.tpl');
+		$this->smarty->assign('uitzenders', UitzenderGroup::list()); //uitzenders voor werkgever ophalen
+		
+		if( isset($_GET['dummy']))
+			$this->smarty->display('ureninvoer/main_dummy.tpl');
+		else
+			$this->smarty->display('ureninvoer/main.tpl');
+		
 	}
 
 

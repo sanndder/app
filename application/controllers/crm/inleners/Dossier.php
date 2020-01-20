@@ -63,6 +63,7 @@ class Dossier extends MY_Controller
 			if( $inlener->emailadressen_complete != 1 ) redirect($this->config->item('base_url') . 'crm/inleners/dossier/emailadressen/' . $inlener_id ,'location');
 			if( $inlener->factuurgegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/inleners/dossier/factuurgegevens/' . $inlener_id ,'location');
 			if( $inlener->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/inleners/dossier/contactpersonen/' . $inlener_id ,'location');
+			if( $inlener->cao_complete != 1 ) redirect($this->config->item('base_url') . 'crm/inleners/dossier/cao/' . $inlener_id ,'location');
 		}
 
 		//show($inleners);
@@ -265,8 +266,13 @@ class Dossier extends MY_Controller
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $inlener->contactpersoon_complete != 1 )
-					redirect( $this->config->item('base_url') . 'crm/inleners/dossier/contactpersonen/' . $inlener->inlener_id ,'location');
-
+				{
+					if( $this->user->werkgever_type == 'uitzenden' )
+						redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/cao/' . $inlener->inlener_id, 'location' );
+					else
+						redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/contactpersonen/' . $inlener->inlener_id, 'location' );
+				}
+				
 				//bestaande uiztender melding tonen
 				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
 			}
@@ -334,6 +340,58 @@ class Dossier extends MY_Controller
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/emailadressen.tpl');
+	}
+
+
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Cao instellen, alleenvoro de wizard
+	//-----------------------------------------------------------------------------------------------------------------
+	public function cao( $inlener_id = NULL )
+	{
+		//init objects
+		$inlener = new Inlener( $inlener_id );
+		$CAOgroup = new CAOGroup();
+		
+		//set cao
+		if( isset($_POST['set'] ))
+		{
+			//inlener valt niet onder CAO
+			if( isset($_POST['no_cao']) )
+			{
+				$inlener->noCao();
+				$inlener->_updateStatus('cao_complete');
+			}
+			//wel een CAO
+			else
+			{
+				$cao = new CAO( $_POST['cao_id'] );
+				$cao->addCAOToInlener( $inlener_id );
+				if( $cao->errors() === false )
+				{
+					$inlener->_updateStatus( 'cao_complete' );
+					redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/contactpersonen/' . $inlener_id . '?tab=tab-cao', 'location' );
+				} else
+					$this->smarty->assign( 'msg', msg( 'danger', $cao->errors() ) );
+			}
+		}
+		
+		//del cao
+		if( isset($_GET['delcao']) )
+		{
+			$cao = new CAO( $_GET['delcao'] );
+			$cao->delCAOFromInlener( $inlener_id );
+			if( $cao->errors() === false )
+				redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/cao/'.$inlener_id.'?tab=tab-cao' ,'location' );
+			
+			//msg wanneer geen redirect
+			$this->smarty->assign('msg', msg('warning', $cao->errors() ));
+		}
+		
+		$this->smarty->assign( 'caos', $CAOgroup->all() );
+		$this->smarty->assign('inlener', $inlener);
+		$this->smarty->assign( 'caos_inlener', $CAOgroup->inlener( $inlener_id ) );
+		$this->smarty->display('crm/inleners/dossier/cao_wizard.tpl');
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------

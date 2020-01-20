@@ -1,6 +1,7 @@
 <?php
 
 use models\cao\CAO;
+use models\werknemers\Werknemer;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -29,9 +30,10 @@ class Ajax extends MY_Controller
 	public function caodata()
 	{
 		//show($_POST);
+		$werknemer = new Werknemer( $_POST['werknemer_id'] );
 		
 		$cao = new CAO( $_POST['cao_id'] );
-		$cao->setLeeftijd( $_POST['cao_id'] );
+		$cao->setLeeftijd( $werknemer->leeftijd() );
 		
 		//loontabellen altijd ophalen als de cao bekend is
 		$return['loontabellen'] = $cao->loontabellen();

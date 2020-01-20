@@ -92,7 +92,8 @@ class CAO extends Connector {
 			return NULL;
 		}
 		
-		$sql = "SELECT salary_table_id, short_name, description FROM cao_salary_table WHERE cao_id_intern = $this->_cao_id AND max_age >= $this->_leeftijd AND min_age <= $this->_leeftijd ORDER BY active_per";
+		$sql = "SELECT salary_table_id, REPLACE(LCASE(cao_salary_table.short_name), '_', ' ') AS short_name, description
+				FROM cao_salary_table WHERE cao_id_intern = $this->_cao_id AND max_age >= $this->_leeftijd AND min_age <= $this->_leeftijd ORDER BY active_per";
 		$query = $this->db_user->query($sql);
 		
 		return DBhelper::toArray( $query, 'short_name' );
@@ -209,7 +210,7 @@ class CAO extends Connector {
 		
 		$sql = "SELECT * FROM cao_salary_table_salaries
 				WHERE cao_id_intern = $this->_cao_id
-				AND salary_table_id_intern = $this->_salary_table_id AND payscale IN ($beschikbare_schalen_string)
+				AND salary_table_id = $this->_salary_table_id AND payscale IN ($beschikbare_schalen_string)
 				ORDER BY payscale, age, periodical";
 		
 		$query = $this->db_user->query( $sql );
@@ -331,6 +332,9 @@ class CAO extends Connector {
 		}
 		
 		$inlener_id = intval($inlener_id);
+		
+		//alle no_cao weghalen
+		$this->db_user->query( "UPDATE inleners_cao SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " WHERE deleted = 0 AND inlener_id = $inlener_id AND no_cao = 1" );
 		
 		//bestaat koppeling al?
 		$sql = "SELECT id FROM inleners_cao WHERE inlener_id = $inlener_id AND cao_id_intern = $this->_cao_id AND deleted = 0";

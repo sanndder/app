@@ -2,6 +2,7 @@
 
 use models\documenten\IDbewijs;
 use models\verloning\Urentypes;
+use models\werknemers\Plaatsing;
 use models\werknemers\Werknemer;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -24,7 +25,26 @@ class Ajax extends MY_Controller
 		if( $this->user->user_type != 'werkgever' )forbidden();
 
 	}
-
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// plaatsing voor werknemer toevoegen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function addplaatsing()
+	{
+		$response = array( 'status' => 'error' );
+		
+		$plaatsing = new Plaatsing();
+		$plaatsing->add( $_POST );
+		
+		if( $plaatsing->errors() === false )
+			$response = array( 'status' => 'success' );
+		else
+			$response['error'] = $plaatsing->errors();
+		
+		echo json_encode( $response );
+	}
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// get contactpersoon JSON
 	//-----------------------------------------------------------------------------------------------------------------
@@ -53,7 +73,6 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function deleteidbewijs( $werknemer_id, $side )
 	{
-		
 		
 		//init werknemer object
 		$idbewijs = new IDbewijs();

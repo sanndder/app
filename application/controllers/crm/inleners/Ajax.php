@@ -1,6 +1,8 @@
 <?php
 
 use models\api\CreditSafe;
+use models\api\Kvk;
+use models\cao\CAOGroup;
 use models\inleners\Inlener;
 use models\verloning\Urentypes;
 
@@ -50,6 +52,40 @@ class Ajax extends MY_Controller
 		echo json_encode( $response );
 	}
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// CAO's voor inlener ophalen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function caos()
+	{
+		$CAOgroup = new CAOGroup();
+		$caos = $CAOgroup->inlener( $_POST['inlener_id'] );
+		
+		$response['status'] = 'success';
+		$response['caos'] = $caos;
+		
+		echo json_encode( $response );
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// sbi codes ophalen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function sbi( $kvknr )
+	{
+		$kvk = new Kvk( $kvknr );
+		$sbi = $kvk->getSbiCodes();
+		
+		//msg
+		if( $kvk->errors() === false )
+		{
+			$response['status'] = 'success';
+			$response['sbi'] = $sbi;
+		}
+		else
+			$response['error'] = $kvk->errors();
+		
+		echo json_encode( $response );
+	}
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------

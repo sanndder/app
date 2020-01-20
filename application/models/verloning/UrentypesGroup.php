@@ -100,15 +100,15 @@ class UrentypesGroup extends Connector
 		$urentypes = $this->urentypes();
 
 		//alle werknemers ophalen
-		$sql = "SELECT werknemers_urentypes.id, werknemers_urentypes.urentype_active, werknemers_urentypes.werknemer_id, werknemers_urentypes.verkooptarief, werknemers_urentypes.urentype_id, werknemers_urentypes.uurloon_id,
-       				   werknemers_urentypes.inlener_urentype_id, werknemers_gegevens.achternaam, werknemers_gegevens.voornaam, werknemers_gegevens.voorletters, werknemers_gegevens.tussenvoegsel, werknemers_uurloon.uurloon
+		$sql = "SELECT werknemers_urentypes.id, werknemers_urentypes.urentype_active, werknemers_urentypes.werknemer_id, werknemers_urentypes.verkooptarief, werknemers_urentypes.urentype_id, werknemers_urentypes.plaatsing_id,
+       				   werknemers_urentypes.inlener_urentype_id, werknemers_gegevens.achternaam, werknemers_gegevens.voornaam, werknemers_gegevens.voorletters, werknemers_gegevens.tussenvoegsel, werknemers_inleners.bruto_loon
 				FROM werknemers_urentypes
 				LEFT JOIN werknemers_gegevens ON werknemers_urentypes.werknemer_id = werknemers_gegevens.werknemer_id
 				LEFT JOIN werknemers_status ON werknemers_urentypes.werknemer_id = werknemers_status.werknemer_id
-				LEFT JOIN werknemers_uurloon ON (werknemers_urentypes.werknemer_id = werknemers_uurloon.werknemer_id AND werknemers_urentypes.uurloon_id = werknemers_uurloon.uurloon_id )
-				WHERE inlener_id = $this->_inlener_id AND werknemers_gegevens.deleted = 0 AND werknemers_urentypes.deleted = 0 AND werknemers_uurloon.deleted = 0
+				LEFT JOIN werknemers_inleners ON (werknemers_urentypes.plaatsing_id = werknemers_inleners.plaatsing_id  )
+				WHERE werknemers_urentypes.inlener_id = $this->_inlener_id AND werknemers_gegevens.deleted = 0 AND werknemers_urentypes.deleted = 0 AND werknemers_inleners.deleted = 0
 				AND werknemers_status.archief = 0
-				ORDER BY achternaam, uurloon_id
+				ORDER BY achternaam, plaatsing_id
 				";
 		
 		$query = $this->db_user->query( $sql );

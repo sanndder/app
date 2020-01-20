@@ -45,22 +45,37 @@ class CAOGroup extends Connector {
 	{
 		$sql = "SELECT id, cao_id, name, short_name, duration_start, duration_end, code, sbi, avv
 				FROM cao
-				WHERE duration_end > NOW()
-				ORDER BY name, duration_start ASC";
+				ORDER BY name, duration_end";
 		
 		$query = $this->db_user->query( $sql );
 		
-		return DBhelper::toArray( $query, 'id', 'NULL' );
+		foreach( $query->result_array() as $row )
+		{
+			$code = $row['code'];
+			
+			//alleen nieuwste weergeven
+			if( isset($data[$code]) )
+			{
+				if( $row['duration_start'] > $data[$code]['duration_start'] )
+					$data[$code] = $row;
+			}
+			else
+				$data[$code] = $row;
+		}
+		
+		return $data;
+		
+		
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Alle COA's voor een inlener, plus beloningen
-	 * @return array or boolean
+	 * @return array|bool
 	 */
 	public function inlener( $inlener_id )
 	{
-		$sql = "SELECT inleners_cao.cao_id_intern, cao.name AS cao_name, cao.avv, cao.duration_start, cao.duration_end,
+		$sql = "SELECT inleners_cao.cao_id_intern, cao.name AS cao_name, cao.avv, cao.duration_start, cao.duration_end, cao.code, inleners_cao.no_cao,
 						cao_werksoort.*
 				FROM inleners_cao
 				LEFT JOIN cao ON inleners_cao.cao_id_intern = cao.id
@@ -74,13 +89,17 @@ class CAOGroup extends Connector {
 		
 		foreach( $query->result_array() as $row )
 		{
-			$id = $row['cao_id_intern'];
+			//gelijk afbreken als inlener niet onder CAO valt
+			if( $row['no_cao'] == 1 )
+				return false;
+			
+			$id = $row['code'];
 			
 			$data[$id]['cao_name'] = $row['cao_name'];
+			$data[$id]['cao_id_intern'] = $row['cao_id_intern'];
 			$data[$id]['duration_start'] = $row['duration_start'];
 			$data[$id]['duration_end'] = $row['duration_end'];
 			$data[$id]['avv'] = $row['avv'];
-			
 			
 			
 			unset($name);
