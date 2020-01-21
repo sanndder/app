@@ -73,7 +73,39 @@ class UrentypesGroup extends Connector
 	 * set werknemer id
 	 *
 	 */
-	public function urentypes()
+	public function urentypesWerknemer( $werknemer_id ) :array
+	{
+		$sql = "SELECT werknemers_urentypes.id, inleners_urentypes.doorbelasten_uitzender, inleners_urentypes.label, urentypes.naam, urentypes.percentage, urentypes_categorien.naam AS categorie
+				FROM werknemers_urentypes
+				LEFT JOIN inleners_urentypes ON inleners_urentypes.inlener_urentype_id = werknemers_urentypes.inlener_urentype_id
+				LEFT JOIN urentypes ON inleners_urentypes.urentype_id = urentypes.urentype_id
+				LEFT JOIN urentypes_categorien on urentypes.urentype_categorie_id = urentypes_categorien.urentype_categorie_id
+				WHERE werknemers_urentypes.deleted = 0 AND werknemers_urentypes.werknemer_id = $werknemer_id AND werknemers_urentypes.urentype_active= 1
+				ORDER BY urentypes.urentype_categorie_id, inleners_urentypes.inlener_urentype_id, urentypes.percentage";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return array();
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $row['label'] == '' )
+				$row['label'] = $row['naam'];
+			
+			$data[$row['id']] = $row;
+		}
+		
+		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * uretypes voor inlener ophalen
+	 *
+	 */
+	public function urentypesInlener()
 	{
 		$sql = "SELECT inleners_urentypes.*, urentypes.naam, urentypes.percentage, urentypes_categorien.naam AS categorie
 				FROM inleners_urentypes
@@ -97,7 +129,7 @@ class UrentypesGroup extends Connector
 	public function getUrentypeWerknemerMatrix()
 	{
 		//alle urentypes voor inlener ophalen
-		$urentypes = $this->urentypes();
+		$urentypes = $this->urentypesInlener();
 
 		//alle werknemers ophalen
 		$sql = "SELECT werknemers_urentypes.id, werknemers_urentypes.urentype_active, werknemers_urentypes.werknemer_id, werknemers_urentypes.verkooptarief, werknemers_urentypes.urentype_id, werknemers_urentypes.plaatsing_id,
@@ -130,7 +162,7 @@ class UrentypesGroup extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array|boolean
 	 */
 	public function errors()
 	{

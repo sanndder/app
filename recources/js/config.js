@@ -15,7 +15,7 @@ var data = {};
 
 //ajax events
 $( document ).ajaxStart(function() {
-    log( '--AJAX REQUEST START--' );
+    //log( '--AJAX REQUEST START--' );
     ajaxRequestPending = true;
 });
 $( document ).ajaxStop(function() {
@@ -28,6 +28,17 @@ function log(message) {
         console.log(message);
         ajaxRequestPending = false;
     }
+}
+
+//vars function
+function replaceVars( string, data ) {
+
+    for( let key of Object.keys(data) )
+    {
+        string = string.replace( '{' + key + '}', data[key] );
+    }
+    
+    return string;
 }
 
 
@@ -60,12 +71,13 @@ let xhr = {
                 errorData.responseText = request.responseText;
 
                 //save data to log file
+                /*
                 $.ajax( {
                     url: base_url + 'log/ajaxerror',
                     data: errorData,
                     dataType: 'json',
                     method: 'POST'
-                });
+                });*/
 
             }).done( function( json ) {
                 log( '--AJAX REQUEST DONE--' );

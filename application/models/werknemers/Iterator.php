@@ -16,7 +16,7 @@ if (!defined('BASEPATH'))
  *
  */
 
-class PlaatsingGroup implements \IteratorAggregate
+class PlaatsingGroupDummy implements \IteratorAggregate
 {
 	/**
 	 * @var int

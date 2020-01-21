@@ -30,7 +30,6 @@
         "minlength": 1,
         "maxlength": 10,
         "removespaces": true,
-        "removechars": ".,_"
       }
     },
     "voornaam": {

@@ -84,13 +84,23 @@
     padding: 1px 3px;
 }
 
+.table-vi-uren td:first-child{
+    padding-left: 8px;
+}
+.table-vi-uren td:last-of-type{
+    padding-right: 6px;
+}
+
 .table-vi-uren td{
   padding: 3px;
 }
 
+.icon-add-row{font-size: 11px; cursor: pointer}
 
 .table-vi-uren select{ padding: 0.2rem; height: 1.8rem; font-weight: 300  }
 .table-vi-uren input{ padding: 0.2rem; height: 1.8rem; font-weight: 300 }
 
 .table-vi-uren tr.tr-weekend{ background-color: #f1f1f1;}
 .table-vi-uren tr.focus td{ background-color: #64B5F6 !important;}
+.table-vi-uren tr.focus td:first-child{ border-bottom-left-radius: 5px; border-top-left-radius: 5px;}
+.table-vi-uren tr.focus td:last-of-type{ border-bottom-right-radius: 5px; border-top-right-radius: 5px;}

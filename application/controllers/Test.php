@@ -11,6 +11,7 @@ use models\file\Img;
 use models\file\Pdf;
 use models\pdf\PdfFactuur;
 use models\pdf\PdfFactuurDefault;
+use models\utils\Tijdvak;
 use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingGroup;
 
@@ -35,6 +36,20 @@ class Test extends MY_Controller {
 		
 		//show( $this->user->user_type );
 		
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// kvk api
+	//-----------------------------------------------------------------------------------------------------------------
+	public function dates()
+	{
+		vshow(Tijdvak::weeknr('2020-01-27'));
+		
+		$tijdvak = new Tijdvak( '4w', 2020, 13 );
+		
+		show( $tijdvak->startDatum() );
+		show( $tijdvak->eindDatum() );
+		show( $tijdvak->dagen() );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------

@@ -8,4 +8,3 @@
 <link href="template/assets/css/colors.min.css" rel="stylesheet" type="text/css">
 <link href="recources/css/font-awesome-4.7.0/css/all.min.css" rel="stylesheet" type="text/css">
 <link href="recources/css/custom.css?{$time}" rel="stylesheet" type="text/css">
-<link href="recources/css/verloning_input.css?{$time}" rel="stylesheet" type="text/css">

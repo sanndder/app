@@ -6,11 +6,8 @@
 {block "content"}
 	<script src="recources/js/textFit.js"></script>
 	<script src="recources/js/verloning_invoer/templates.js?{$time}"></script>
-	<script>
-        {literal}
+	<link href="recources/css/verloning_input.css?{$time}" rel="stylesheet" type="text/css">
 
-        {/literal}
-	</script>
 	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start">
 
@@ -347,6 +344,7 @@
 											<table class="table-vi-uren">
 												<thead>
 													<tr>
+														<th></th>
 														<th>Week</th>
 														<th>Dag</th>
 														<th>Datum</th>
@@ -358,6 +356,9 @@
 												</thead>
 												<tbody>
 													<tr>
+														<td>
+															<i class="icon-plus-circle2 icon-add-row" data-title="Regel invoegen" data-popup="tooltip" data-placement="left"></i>
+														</td>
 														<td>33</td>
 														<td>ma</td>
 														<td>12-08-2019</td>

@@ -19,6 +19,7 @@ if (!defined('BASEPATH'))
 class PlaatsingGroup extends Connector
 {
 	private $_werknemer_id = NULL;
+	private $_inlener_id = NULL;
 	
 	private $_error;
 	
@@ -40,6 +41,16 @@ class PlaatsingGroup extends Connector
 	public function werknemer( $werknemer_id ) :PlaatsingGroup
 	{
 		$this->_werknemer_id = intval($werknemer_id);
+		return $this;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set werknemer ID
+	 */
+	public function inlener( $inlener_id ) :PlaatsingGroup
+	{
+		$this->_inlener_id = intval($inlener_id);
 		return $this;
 	}
 	
@@ -65,6 +76,13 @@ class PlaatsingGroup extends Connector
 		//voor werknemer
 		if( $this->_werknemer_id !== NULL )
 			$sql .= " AND werknemers_inleners.werknemer_id = $this->_werknemer_id ";
+		
+		//voor inlener
+		if( $this->_inlener_id !== NULL )
+			$sql .= " AND werknemers_inleners.inlener_id = $this->_inlener_id ";
+		
+		//sort
+		$sql .= " ORDER BY werknemers_gegevens.achternaam ASC";
 		
 		$query = $this->db_user->query( $sql );
 		

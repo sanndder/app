@@ -13,6 +13,8 @@
 
 {block "content"}
 
+	<script src="template/global_assets/js/plugins/extensions/jquery_ui/widgets.min.js"></script>
+
     {include file='crm/werknemers/dossier/_sidebar.tpl' active='gegevens'}
 
 
@@ -229,12 +231,13 @@
 											</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<div class="input-group" style="width: 250px;">
-													<input value="{if isset($carddata.achternaam)}{$carddata.achternaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="date" class="form-control input-picker{if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+													<input id="datepicker" value="{if isset($carddata.achternaam)}{$carddata.achternaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="date" class="form-control input-picker {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+													{*
 													<span class="input-group-prepend show-datepicker">
 														<span class="input-group-text {if isset($formdata.$field.error)}border-danger{/if}" style="cursor: pointer">
 															<i class="icon-calendar3"></i>
 														</span>
-													</span>
+													</span>*}
 												</div>
                                                 {if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
