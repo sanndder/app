@@ -4,6 +4,8 @@ use models\inleners\InlenerGroup;
 use models\inleners\KredietaanvraagGroup;
 use models\uitzenders\UitzenderGroup;
 use models\werknemers\WerknemerGroup;
+use models\zzp\ZzpGroup;
+
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -33,8 +35,8 @@ class Dashboard extends MY_Controller {
 	public function werkgever()
 	{
 		$uitzendergroup = new UitzenderGroup();
-		$inlenergroup = new InlenerGroup();
-		$werknemergroup = new WerknemerGroup();
+		$inlenergroup = new ZzpGroup();
+		$werknemergroup = new ZzpGroup();
 		$kredietgroup = new KredietaanvraagGroup();
 		
 		$this->smarty->assign('uitzenders', $uitzendergroup->new());

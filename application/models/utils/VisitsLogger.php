@@ -43,6 +43,7 @@ class VisitsLogger extends Connector
 		$this->_table['uitzender'] = 'uitzenders_last_visited';
 		$this->_table['inlener'] = 'inleners_last_visited';
 		$this->_table['werknemer'] = 'werknemers_last_visited';
+		$this->_table['zzp'] = 'zzp_last_visited';
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -89,6 +90,9 @@ class VisitsLogger extends Connector
 		if($type == 'werknemer' )
 			$sql = "SELECT werknemers_last_visited.*, wg.achternaam, wg.voorletters, wg.voornaam, wg.tussenvoegsel FROM werknemers_last_visited LEFT JOIN werknemers_gegevens wg ON werknemers_last_visited.werknemer_id = wg.werknemer_id
 					WHERE wg.deleted = 0 AND werknemers_last_visited.user_id = ".$this->user->user_id." ORDER BY timestamp DESC LIMIT 50";
+		if($type == 'zzp' )
+			$sql = "SELECT zzp_last_visited.*, zzp_bedrijfsgegevens.bedrijfsnaam FROM zzp_last_visited LEFT JOIN zzp_bedrijfsgegevens ON zzp_last_visited.zzp_id = zzp_bedrijfsgegevens.zzp_id
+					WHERE zzp_bedrijfsgegevens.deleted = 0 AND zzp_last_visited.user_id = ".$this->user->user_id." ORDER BY timestamp DESC LIMIT 50";
 		
 		$query = $this->db_user->query( $sql );
 		

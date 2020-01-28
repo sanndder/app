@@ -321,10 +321,6 @@ var Datepickers = function() {
             min: curDate,
             max: futDate
         });
-    
-      
-
-
     };
     return {
         init: function() {

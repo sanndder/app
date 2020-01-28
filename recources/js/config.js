@@ -19,14 +19,13 @@ $( document ).ajaxStart(function() {
     ajaxRequestPending = true;
 });
 $( document ).ajaxStop(function() {
-    log( '--AJAX REQUEST END--' );
+    //log( '--AJAX REQUEST END--' );
 });
 
 //log function
 function log(message) {
     if ( ENV === 'development' ) {
         console.log(message);
-        ajaxRequestPending = false;
     }
 }
 
@@ -46,9 +45,9 @@ function replaceVars( string, data ) {
 let xhr = {
     url: null,
     data: data,
-    call() {
+    call( async = false) {
         //one call at a time
-        if( ajaxRequestPending === false ){
+        if( ajaxRequestPending === false || async === false ){
             return $.ajax( {
                 url: this.url,
                 data: this.data,
@@ -80,11 +79,13 @@ let xhr = {
                 });*/
 
             }).done( function( json ) {
-                log( '--AJAX REQUEST DONE--' );
+                //log( '--AJAX REQUEST DONE--' );
+            }).always(function(){
+                ajaxRequestPending = false;
             });
         }else
         {
-            alert('Even geduld a.u.b.');
+            alert('Even geduld a.u.b., uw vorige actie wordt door de server verwerkt');
             return false;
         }
     }

@@ -95,6 +95,20 @@ class Test extends MY_Controller {
 		//$this->user->updateUsers();
 	}
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// test ondertekenen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function bing()
+	{
+		$bing = new \models\api\Bing();
+		
+		$dis = $bing->distance('Zwolle', 'Amsterdam');
+		show($dis);
+		$return['locations'] = $bing->suggestLocations( 'Zwolle, sterre' );
+		
+		
+		$this->smarty->display('test.tpl');
+	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// test ondertekenen

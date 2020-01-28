@@ -188,7 +188,7 @@ class Uitzender extends Connector
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get bedrijsfgegevens
+	 * get bedrijfsgegevens
 	 */
 	public function bedrijfsgegevens()
 	{
@@ -614,6 +614,7 @@ class Uitzender extends Connector
 	public function approveContactpersoon( $id )
 	{
 		$this->setContactpersoon( $id );
+		$this->_updateStatus( 'contactpersoon_complete' );
 	}
 
 

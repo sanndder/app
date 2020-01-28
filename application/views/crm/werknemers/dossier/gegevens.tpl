@@ -2,6 +2,7 @@
 {block "title"}Werknemer{/block}
 {block "header-icon"}icon-office{/block}
 {assign "select2" "true"}
+{assign "datamask" "true"}
 {block "header-title"}
     {if $werknemer->werknemer_id == 0}
 		Nieuwe werknemer aanmelden
@@ -142,7 +143,7 @@
 												:
 											</label>
 											<div class="col-xl-2 col-md-4">
-												<input value="{if isset($carddata.voorletters)}{$carddata.voorletters}{else}{$formdata.$field.value}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
 
@@ -160,7 +161,7 @@
 												:
 											</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input value="{if isset($carddata.voornaam)}{$carddata.voornaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
 													<br/>
@@ -195,7 +196,7 @@
 												:
 											</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input value="{if isset($carddata.achternaam)}{$carddata.achternaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
 													<br/>
@@ -212,7 +213,7 @@
 												:
 											</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input value="{if isset($carddata.achternaam)}{$carddata.achternaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
                                                 {if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
 													<br/>
@@ -231,13 +232,7 @@
 											</label>
 											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 												<div class="input-group" style="width: 250px;">
-													<input id="datepicker" value="{if isset($carddata.achternaam)}{$carddata.achternaam}{else}{$formdata.$field.value}{/if}" name="{$field}" type="date" class="form-control input-picker {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
-													{*
-													<span class="input-group-prepend show-datepicker">
-														<span class="input-group-text {if isset($formdata.$field.error)}border-danger{/if}" style="cursor: pointer">
-															<i class="icon-calendar3"></i>
-														</span>
-													</span>*}
+													<input value="{$formdata.$field.value|date_format: '%d-%m-%Y'}" name="{$field}" type="text" placeholder="dd-mm-jjjj" data-mask="99-99-9999" class="form-control{if isset($formdata.$field.error)}border-danger{/if}" autocomplete="off">
 												</div>
                                                 {if isset($formdata.$field.error)}
 													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}

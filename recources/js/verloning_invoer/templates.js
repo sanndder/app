@@ -73,3 +73,29 @@ let tplUrenInvoerTr = `<tr class="{class}" data-id="{invoer_id}">
 								<input value="{locatie_tekst}" name="locatie_tekst" type="text" class="form-control" data-vi-action="saveUrenRow">
 							</td>
 						</tr>`;
+
+//kilometer invoer tabel row
+let tplKmInvoerTr = `<tr>
+						<td>
+						<input type="text" class="form-control pickadate-vi-km" name="datum" />
+							</td>
+							<td>
+								<input type="text" class="form-control" name="van" />
+							</td>
+							<td>
+								<input type="text" class="form-control" name="naar" />
+							</td>
+							<td>
+								<input type="text" class="form-control" name="aantal" />
+							</td>
+							<td>
+								<input type="text" class="form-control" name="opmerking_tekst" />
+							</td>
+							<td>
+								<select class="form-control">
+									<option></option>
+									<option value="inlener">Inlener</option>
+									<option value="uitzender">Uitzender</option>
+								</select>
+							</td>
+						</tr>`;

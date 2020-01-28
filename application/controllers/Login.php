@@ -45,7 +45,7 @@ class Login extends EX_Controller {
 		$this->smarty->display('login.tpl');
 		
 		/*
-		if( $_SERVER['REMOTE_ADDR'] != '82.74.122.107' )
+		if( $_SERVER['REMOTE_ADDR'] != '82.74.254.28' )
 			$this->smarty->display('onderhoud.tpl');
 		else
 			$this->smarty->display('login.tpl');*/

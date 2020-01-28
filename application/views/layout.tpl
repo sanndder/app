@@ -46,6 +46,13 @@
 		<script src="template/global_assets/js/plugins/forms/selects/select2.min.js" type="text/javascript"></script>
     {/if}
 
+	<!-- datamask -->
+    {if isset($datamask)}
+		<script src="template/global_assets/js/plugins/forms/inputs/inputmask.js" type="text/javascript"></script>
+    {/if}
+
+
+
 	<!-- /JS plugins -->
 
 </head>

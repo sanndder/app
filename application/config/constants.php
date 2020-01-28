@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //defined('BASE_URL') OR define('BASE_URL', 'http://simple-internet-solutions.nl/app');
 defined('BASE_URL') OR define('BASE_URL', 'https://www.devisonline.nl');
-//defined('BASE_URL') OR define('BASE_URL', 'http://82.74.122.107/app/');
+//defined('BASE_URL') OR define('BASE_URL', 'http://82.74.254.28/app/');
 defined('APP_NAME') OR define('APP_NAME', 'Devis Online');
 defined('DB_SECRET') OR define('DB_SECRET', 'ZKPZeS5FqrmPbzyyMZ7FVZiRlYQ5dm');
 defined('UPLOAD_SECRET') OR define('UPLOAD_SECRET', 'ZKloqrmPbzyyMZ7FdsfVZiRlYQ5d3m');

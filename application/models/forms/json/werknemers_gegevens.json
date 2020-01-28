@@ -29,7 +29,7 @@
         "required": true,
         "minlength": 1,
         "maxlength": 10,
-        "removespaces": true,
+        "removespaces": true
       }
     },
     "voornaam": {

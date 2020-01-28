@@ -17,6 +17,13 @@ class Usermanagement extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		
+		//uitloggen om fouten te voorkomen
+		if( isset($_SESSION['logindata']['main']['user_id']) )
+		{
+			$this->auth->logout( $_SESSION['logindata']['main']['user_id'], $_SESSION['logindata']['main']['sid'], 'usermanagement', false);
+			redirect(  current_url() .'?'. $_SERVER['QUERY_STRING']  ,'location' );
+		}
 	}
 	
 	

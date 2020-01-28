@@ -1,0 +1,133 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "inlener_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "uitzender_id": {
+      "label": "Uitzender ID eerste aanmelding",
+      "rules": {
+        "required": false,
+        "type": "int"
+      }
+    },
+    "bedrijfsnaam": {
+      "label": "Bedrijfsnaam",
+      "rules": {
+        "required": true,
+        "minlength": 3,
+        "maxlength": 128
+      }
+    },
+    "kvknr": {
+      "label": "KvK nummer",
+      "rules": {
+        "required": true,
+        "minlength": 8,
+        "maxlength": 8,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "int"
+      }
+    },
+    "btwnr": {
+      "label": "BTW nummer",
+      "rules": {
+        "required": true,
+        "minlength": 14,
+        "maxlength": 14,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "btwnr"
+      }
+    },
+    "telefoon": {
+      "label": "Telefoonnummer",
+      "rules": {
+        "required": true,
+        "minlength": 10,
+        "maxlength": 20,
+        "removespaces": false,
+        "removechars": ".,_"
+      }
+    },
+    "straat": {
+      "label": "Straat",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 40
+      }
+    },
+    "huisnummer": {
+      "label": "Huisnummer",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 5
+      }
+    },
+    "huisnummer_toevoeging": {
+      "label": "Huisnummer toevoeging",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 4
+      }
+    },
+    "postcode": {
+      "label": "Postcode",
+      "rules": {
+        "required": true,
+        "minlength": 6,
+        "maxlength": 8,
+        "toupper": true,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "postcode"
+      }
+    },
+    "plaats": {
+      "label": "Plaats",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 100
+      }
+    },
+    "postbus_nummer": {
+      "label": "Postbusnummer",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 5
+      }
+    },
+    "postbus_postcode": {
+      "label": "Postbus postcode",
+      "rules": {
+        "required": false,
+        "minlength": 6,
+        "maxlength": 8,
+        "toupper": true,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "postcode"
+      }
+    },
+    "postbus_plaats": {
+      "label": "Postbus plaats",
+      "rules": {
+        "required": false,
+        "minlength": 2,
+        "maxlength": 40
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 <?php
 
-use models\Inleners\Inlener;
+use models\inleners\Inlener;
 use models\inleners\InlenerGroup;
 use models\verloning\Invoer;
 use models\verloning\InvoerUren;
@@ -57,6 +57,9 @@ class Ajax extends MY_Controller
 		//urentypes erbij
 		$urentypesGroup = new UrentypesGroup();
 		$array['info']['urentypes'] = $urentypesGroup->urentypesWerknemer( $_POST['werknemer_id'] );
+		
+		$array['info']['periode_start'] = $invoerUren->getPeriodeStart();
+		$array['info']['periode_einde'] = $invoerUren->getPeriodeEinde();
 		
 		echo json_encode( $array );
 	}

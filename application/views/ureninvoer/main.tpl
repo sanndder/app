@@ -8,7 +8,9 @@
 	<script src="recources/js/textFit.js"></script>
 	<script src="recources/js/config.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/templates.js?{$time}"></script>
-	<script src="recources/js/verloning_invoer/main.js?{$time}"></script>
+	<script src="recources/js/verloning_invoer/invoer.js?{$time}"></script>
+	<script src="recources/js/verloning_invoer/invoeruren.js?{$time}"></script>
+	<script src="recources/js/verloning_invoer/invoerkm.js?{$time}"></script>
 	<link href="recources/css/verloning_input.css?{$time}" rel="stylesheet" type="text/css">
 
 	<!-- Main sidebar -->
@@ -142,17 +144,17 @@
 				<div class="nav-tabs-responsive bg-light border-top">
 					<ul class="nav nav-tabs nav-tabs-bottom flex-nowrap mb-0 vi-tabs">
 						<li class="nav-item">
-							<a href="#tab-overzicht" class="nav-link active" data-toggle="tab">
+							<a href="#tab-overzicht" class="tab-main nav-link active" data-toggle="tab">
 								<i class="icon-menu7 mr-1"></i> Overzicht
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="#tab-ureninvoer" class="nav-link" data-toggle="tab">
+							<a href="#tab-ureninvoer" class="tab-main nav-link" data-toggle="tab">
 								<i class="far fa-clock mr-1"></i> Ureninvoer
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="#tab-bijlages" class="nav-link" data-toggle="tab">
+							<a href="#tab-bijlages" class="tab-main nav-link" data-toggle="tab">
 								<i class="icon-attachment mr-1"></i> Bijlages
 							</a>
 						</li>
@@ -184,27 +186,27 @@
 								<div class="header-elements">
 									<ul class="nav nav-tabs nav-tabs-bottom nav-tabs-primary mt-2" style="margin-bottom: -1px">
 										<li class="nav-item">
-											<a href="#sub-uren" class="nav-link active show" data-toggle="tab">
+											<a href="#sub-uren" class="tab-sub nav-link active show" data-toggle="tab">
 												Uren
 											</a>
 										</li>
 										<li class="nav-item">
-											<a href="#sub-kilometers" class="nav-link" data-toggle="tab">
+											<a href="#sub-kilometers" class="tab-sub nav-link" data-toggle="tab">
 												Kilometers
 											</a>
 										</li>
 										<li class="nav-item">
-											<a href="#sub-vergoedingen" class="nav-link" data-toggle="tab">
+											<a href="#sub-vergoedingen" class="tab-sub nav-link" data-toggle="tab">
 												Vergoedingen
 											</a>
 										</li>
 										<li class="nav-item">
-											<a href="#sub-reserveringen" class="nav-link" data-toggle="tab">
+											<a href="#sub-reserveringen" class="tab-sub nav-link" data-toggle="tab">
 												Reserveringen
 											</a>
 										</li>
 										<li class="nav-item">
-											<a href="#sub-inhoudingen" class="nav-link" data-toggle="tab">
+											<a href="#sub-inhoudingen" class="tab-sub nav-link" data-toggle="tab">
 												Inhoudingen
 											</a>
 										</li>
@@ -226,7 +228,7 @@
                                         {****** Invoer: Uren *****************************************************}
 										<div class="tab-pane tab-pane-sub fade active show" id="sub-uren">
 
-											<table class="table-vi-uren" style="display: none">
+											<table class="table-vi-uren vi-input mt-3" style="display: none">
 												<thead>
 													<tr>
 														<th></th>
@@ -247,7 +249,26 @@
 
                                         {****** Invoer: kilometers *****************************************************}
 										<div class="tab-pane tab-pane-sub fade" id="sub-kilometers">
-											kilometers
+
+											<table class="table-vi-km vi-input mt-3" style="display: none">
+
+												<thead>
+													<tr>
+														<th style="width: 85px" class="pl-2">Datum</th>
+														<th>Van</th>
+														<th>Naar</th>
+														<th style="width: 35px">Kilometers</th>
+														<th>Opmerking</th>
+														<th>Doorbelasten</th>
+													</tr>
+												</thead>
+
+												<tbody>
+
+												</tbody>
+
+											</table>
+
 										</div>
 
                                         {****** Invoer: vergoedingen *****************************************************}

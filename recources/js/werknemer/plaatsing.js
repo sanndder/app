@@ -234,7 +234,7 @@ let plaatsing = {
 					}
 					else
 					{
-						// location.reload();
+						location.reload();
 					}
 				}).always(function(){
 					$btn.removeAttr('disabled').find('.spinner').addClass('icon-plus-circle2').removeClass('icon-spinner2').removeClass('spinner');

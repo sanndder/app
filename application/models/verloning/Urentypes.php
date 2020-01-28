@@ -180,7 +180,7 @@ class Urentypes extends Connector
 	public function addUrentypeToWerknemers( $inlener_id, $inlener_urentype_id, $urentype )
 	{
 		//welke werknemers werken voor deze inlener
-		$werknemers = WerknemerGroup::inlener( $inlener_id );
+		$werknemers = ZzpGroup::inlener( $inlener_id );
 		
 		//afbreken als er nog geen werknemers zijn
 		if( $werknemers === NULL )

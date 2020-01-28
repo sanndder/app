@@ -122,7 +122,7 @@ class User extends Connector
 				WHERE users.user_id = $this->user_id AND users_accounts.werkgever_id = ".$this->user->werkgever_id." LIMIT 1";
 		
 		$query = $this->db_admin->query( $sql );
-		
+
 		if( $query->num_rows() > 0 )
 		{
 			$data = $query->row_array();
@@ -156,6 +156,7 @@ class User extends Connector
 	 */
 	public function getByNewHash( $hash )
 	{
+	
 		$sql = "SELECT user_id FROM users WHERE new_key = ? AND deleted = 0";
 		$query = $this->db_admin->query( $sql, array( $hash ) );
 		
@@ -617,7 +618,7 @@ class User extends Connector
 						<b>Gebruikersnaam: </b>'.$this->_email.'
 						<br /><br />
 						<a href="'.$link.'">
-						Wachtwoord aanmaken</a>
+						'.$link.'</a>
 						<br /><br />
 						Gebruikt de bovenstaande link om uw wachtwoord aan te maken en uw account te activeren. Deze link verloopt over 5 dagen.
 						<br /><br />Wanneer u vragen heeft kunt u contact met ons opnemen.<br /><br />Met vriendelijke groet,<br />Abering Uitzend B.V.');

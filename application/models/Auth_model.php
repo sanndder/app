@@ -226,7 +226,11 @@ class Auth_model extends CI_Model
 	{
 		//get session
 		$logindata = $this->session->userdata('logindata');
-
+		
+		//extra check
+		if( !isset($logindata['main']['user_id']))
+			$this->logout( '', '', 'user not found');
+		
 		//check main user
 		$user_id = $logindata['main']['user_id'];
 		$user_type = $logindata['main']['user_type'];
@@ -289,7 +293,7 @@ class Auth_model extends CI_Model
 	 * store login session in database
 	 * @return void
 	 */
-	public function logout( $user_id, $sid, $reason = '' )
+	public function logout( $user_id, $sid, $reason = '', $redirect = true )
 	{
 		//end database session
 		$update['session_logout'] = date('Y-m-d H:i:s');
@@ -309,11 +313,12 @@ class Auth_model extends CI_Model
 		//redirect to
 		$url = $this->config->item('base_url') . 'login';
 
-		redirect( $url ,'location');
-		die();
+		if( $redirect )
+		{
+			redirect( $url, 'location' );
+			die();
+		}
 	}
-
-
 
 	/*************************************************************************************************
 	 * is IP blocked

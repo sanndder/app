@@ -1,0 +1,166 @@
+{
+  "remove": [
+    "set",
+    "gb_datum_submit",
+    "id",
+    "user_id",
+    "werknemer_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "geslacht": {
+      "label": "Geslacht",
+      "rules": {
+        "required": true
+      },
+      "list": {
+        "options": {
+          "m": "Mannelijk",
+          "v": "Vrouwelijk"
+        }
+      }
+    },
+    "voorletters": {
+      "label": "Voorletters",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 10,
+        "removespaces": true
+      }
+    },
+    "voornaam": {
+      "label": "Voornaam",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 30,
+        "removespaces": false,
+        "removechars": "_"
+      }
+    },
+    "tussenvoegsel": {
+      "label": "Tussenvoegsel",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 10,
+        "removespaces": false,
+        "removechars": "_"
+      }
+    },
+    "achternaam": {
+      "label": "Achternaam",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 30,
+        "removespaces": false,
+        "removechars": "_"
+      }
+    },
+    "gb_datum": {
+      "label": "Geboortedatum",
+      "rules": {
+        "required": true,
+        "type": "date"
+      }
+    },
+    "nationaltieit_id": {
+      "label": "Nationaliteit",
+      "rules": {
+        "required": true
+      },
+      "list": {
+        "options": "nationaliteiten"
+      }
+    },
+    "email": {
+      "label": "Emailadres",
+      "rules": {
+        "required": true,
+        "minlength": 6,
+        "maxlength": 50,
+        "removespaces": true,
+        "type": "email"
+      }
+    },
+    "telefoon": {
+      "label": "Telefoonnummer",
+      "rules": {
+        "required": true,
+        "minlength": 10,
+        "maxlength": 20,
+        "removespaces": false,
+        "removechars": ".,_"
+      }
+    },
+    "mobiel": {
+      "label": "Mobiel",
+      "rules": {
+        "required": false,
+        "minlength": 10,
+        "maxlength": 20,
+        "removespaces": false,
+        "removechars": ".,_"
+      }
+    },
+    "woonland_id": {
+      "label": "Woonland",
+      "rules": {
+        "required": true
+      },
+      "list": {
+        "empty": false,
+        "options": "landen"
+      }
+    },
+    "straat": {
+      "label": "Straat",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 40
+      }
+    },
+    "huisnummer": {
+      "label": "Huisnummer",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 5
+      }
+    },
+    "huisnummer_toevoeging": {
+      "label": "Huisnummer toevoeging",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 4
+      }
+    },
+    "postcode": {
+      "label": "Postcode",
+      "rules": {
+        "required": true,
+        "minlength": 6,
+        "maxlength": 8,
+        "toupper": true,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "postcode"
+      }
+    },
+    "plaats": {
+      "label": "Plaats",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 100
+      }
+    }
+  }
+}
