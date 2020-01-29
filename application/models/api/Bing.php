@@ -61,22 +61,28 @@ class Bing extends Connector
 		$findURL = $baseURL."/?wp.0=".$location1."&wp.1=".$location2."&output=json&key=".$this->_api_token . '&culture=nl-NL&optimize='.$mode .'&routeAttributes=routeSummariesOnly';
 		
 		// get the response from the Locations API and store it in a string
-		$output = file_get_contents($findURL);
+		@$output = file_get_contents($findURL);
 		
-		$array = json_decode( $output, true );
-		show($array);
-		if( !isset($array['resourceSets']) )
-			return [];
-		
-		foreach( $array['resourceSets'] as $rs )
+		if( !isset($output) )
 		{
-			foreach( $rs['resources'][0]['value'] as $r )
-			{
-				$locations[] = str_ireplace(', nederland', '', $r['address']['formattedAddress']);
-			}
+			$this->_error['Ongeldige invoer'] = 'Ongeldige invoer';//als key om dubbel te voorkomen
+			return false;
 		}
 		
-		return $locations;
+		//deocde
+		$array = json_decode( $output, true );
+
+		//niks gevonden
+		if( !isset($array['resourceSets'][0]['resources'][0]['travelDistance']) )
+		{
+			$this->_error['Geen route gevonden'] = 'Geen route gevonden';//als key om dubbel te voorkomen
+			return false;
+		}
+		
+		$return['distance'] = ceil($array['resourceSets'][0]['resources'][0]['travelDistance']);
+		$return['link'] = "https://bing.com/maps/default.aspx?rtp=adr.$location1~adr.$location2&mode=d";
+		
+		return $return;
 	}
 	
 	

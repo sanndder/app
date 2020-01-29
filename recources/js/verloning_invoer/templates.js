@@ -53,7 +53,7 @@ let tplUrenTypesSelect = '<option value="{id}">{label}</option>';
 //ureninvoer tabel row
 let tplUrenInvoerTr = `<tr class="{class}" data-id="{invoer_id}">
 							<td>
-								<i class="icon-add icon-add-row mr-2" data-vi-action="addUrenInvoerRow" data-title="Regel invoegen" data-popup="tooltip" data-placement="left"></i>
+								<i class="icon-add icon-add-row mr-2" data-vi-action="addUrenInvoerRow" data-title="Regel invoegen" title="Regel invoegen" data-popup="tooltip" data-placement="left"></i>
 							</td>
 							<td>{week}</td>
 							<td>{dag}</td>
@@ -74,28 +74,43 @@ let tplUrenInvoerTr = `<tr class="{class}" data-id="{invoer_id}">
 							</td>
 						</tr>`;
 
+//km status
+let tplKmInvoerStatusSave = '<i class="icon-spinner2 spinner mr-1"></i>opslaan....';
+let tplKmInvoerStatusRoute = '<i class="icon-spinner2 spinner mr-1"></i>afstand laden....';
+let tplKmInvoerStatusSuccess = '<span class="text-success"><i class="icon-checkmark-circle mr-1"></i>opgeslagen</span>';
+let tplKmInvoerStatusError = '<span class="text-danger"><i class="icon-warning22 mr-1"></i>niet opgeslagen!</span>';
+
+
 //kilometer invoer tabel row
-let tplKmInvoerTr = `<tr>
+let tplKmInvoerTr = `<tr data-id="">
 						<td>
-						<input type="text" class="form-control pickadate-vi-km" name="datum" />
-							</td>
-							<td>
-								<input type="text" class="form-control" name="van" />
-							</td>
-							<td>
-								<input type="text" class="form-control" name="naar" />
-							</td>
-							<td>
-								<input type="text" class="form-control" name="aantal" />
-							</td>
-							<td>
-								<input type="text" class="form-control" name="opmerking_tekst" />
-							</td>
-							<td>
-								<select class="form-control">
-									<option></option>
-									<option value="inlener">Inlener</option>
-									<option value="uitzender">Uitzender</option>
-								</select>
-							</td>
-						</tr>`;
+							<div class="input-group">
+								<input value="{datum}" type="text" class="form-control pickadate-vi-km" name="datum" data-vi-action="saveKmRow" />
+							</div>
+						</td>
+						<td>
+							<input value="{locatie_van}" type="text" class="form-control" name="locatie_van" data-bing="location" placeholder="Plaats, Straatnaam" autocomplete="off" data-vi-action="saveKmRow" />
+						</td>
+						<td>
+							<input value="{locatie_naar}" type="text" class="form-control" name="locatie_naar" data-bing="location" placeholder="Plaats, Straatnaam" autocomplete="off" data-vi-action="saveKmRow" />
+						</td>
+						<td>
+							<input value="{aantal}" type="text" class="form-control text-right" name="aantal" readonly data-vi-action="saveKmRow" />
+						</td>
+						<td>
+							<input value="{opmerking_tekst}" type="text" class="form-control" name="opmerking_tekst" data-vi-action="saveKmRow" />
+						</td>
+						<td>
+							<select name="doorbelasten" class="form-control" data-vi-action="saveKmRow">
+								<option></option>
+								<option value="inlener">Inlener</option>
+								<option value="uitzender">Uitzender</option>
+							</select>
+						</td>
+						<td class="td-actions pt-1">
+							<a class="text-grey-200" data-vi-action="showRoute" href="" target="_blank" data-title="Route bekijken op kaart" data-popup="tooltip" title="Route bekijken op kaart" data-placement="left">
+								<i class="fas fa-directions fa-2x"></i>
+							</a>
+						</td>
+						<td class="td-status pt-1"></td>
+					</tr>`;

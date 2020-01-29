@@ -101,10 +101,26 @@
 
 .vi-input select{ padding: 0.2rem; height: 1.8rem; font-weight: 300  }
 .vi-input input{ padding: 0.2rem; height: 1.8rem; font-weight: 300 }
-
+/*
 .vi-input tr.focus>td{ background-color: #64B5F6 !important;}
 .vi-input tr.focus>td:first-child{ border-bottom-left-radius: 5px; border-top-left-radius: 5px;}
-.vi-input tr.focus>td:last-of-type{ border-bottom-right-radius: 5px; border-top-right-radius: 5px;}
+.vi-input tr.focus>td:last-of-type{ border-bottom-right-radius: 5px; border-top-right-radius: 5px;}*/
+/*
+.table-vi-uren tr.focus>td{ background-color: #64B5F6 !important;}
+.table-vi-uren tr.focus>td:first-child{ border-bottom-left-radius: 5px; border-top-left-radius: 5px;}
+.table-vi-uren tr.focus>td:last-of-type{ border-bottom-right-radius: 5px; border-top-right-radius: 5px;}*/
+
+.vi-input tr.focus>td{ border-top:1px solid #64B5F6 !important; border-bottom:1px solid #64B5F6 !important;}
+.vi-input tr.focus>td:first-child{ border-left:1px solid #64B5F6 !important;}
+.vi-input tr.focus>td:last-of-type{border-right:1px solid #64B5F6 !important;}
+
+/* km tabel kleiner lettretype */
+.table-vi-km input, .table-vi-km select{ font-size: 11px; }
+
+.table-vi-km .input-error {border-color: red; border-width: 2px }
+
+.table-vi-km .text-success i {font-size: 20px !important; }
+.table-vi-km .text-danger i {font-size: 20px !important; }
 
 /* picker duidelijker maken */
 .picker__day{ font-weight: bold }

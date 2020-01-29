@@ -3,6 +3,7 @@
 use models\inleners\Inlener;
 use models\inleners\InlenerGroup;
 use models\verloning\Invoer;
+use models\verloning\InvoerKm;
 use models\verloning\InvoerUren;
 use models\verloning\UrentypesGroup;
 
@@ -37,6 +38,7 @@ class Ajax extends MY_Controller
 		$this->invoer = new Invoer();
 		$this->invoer->setTijdvak( $_POST );
 		$this->invoer->setInlener( $_POST['inlener_id'] );
+		$this->invoer->setUitzender( $this->_uitzender_id );
 		//set header voor hele controller
 		//header( 'Content-Type: application/json' );
 	}
@@ -46,13 +48,17 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function werknemerInvoer()
 	{
-		$invoerUren = new InvoerUren();
-		$invoerUren->setTijdvak( $_POST );
+		$invoerUren = new InvoerUren( $this->invoer );
 		$invoerUren->setWerknemer( $_POST['werknemer_id'] );
-		$invoerUren->setInlener( $_POST['inlener_id'] );
+		
+		$invoerKm = new InvoerKm( $this->invoer );
+		$invoerKm->setWerknemer( $_POST['werknemer_id'] );
 
 		//urenmatrix
 		$array['invoer']['uren'] = $invoerUren->urenMatrix();
+		
+		//kilometers
+		$array['invoer']['km'] = $invoerKm->getWerknemerKilometers();
 		
 		//urentypes erbij
 		$urentypesGroup = new UrentypesGroup();
@@ -65,16 +71,12 @@ class Ajax extends MY_Controller
 	}
 
 
-
 	//-----------------------------------------------------------------------------------------------------------------
 	// uren opslaan
 	//-----------------------------------------------------------------------------------------------------------------
 	public function saveUren()
 	{
-		$invoerUren = new InvoerUren();
-		$invoerUren->setTijdvak( $_POST );
-		$invoerUren->setUitzender( $_POST['uitzender_id'] );
-		$invoerUren->setInlener( $_POST['inlener_id'] );
+		$invoerUren = new InvoerUren( $this->invoer );
 		$invoerUren->setWerknemer( $_POST['werknemer_id'] );
 		
 		//welke actie
@@ -94,7 +96,45 @@ class Ajax extends MY_Controller
 		
 		echo json_encode( $array );
 	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// km opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveKm()
+	{
+		$invoerKm = new InvoerKm( $this->invoer );
+		$invoerKm->setWerknemer( $_POST['werknemer_id'] );
+		
+		//save
+		$result = $invoerKm->setRow( $_POST['kmrow'] );
+		$array['status'] = 'set';
+		$array['row'] = $result;
+		
+		echo json_encode( $array );
+	}
 
+
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// Alle kilometers periode verwijderen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function clearKm()
+	{
+		$invoerKm = new InvoerKm( $this->invoer );
+		$invoerKm->setWerknemer( $_POST['werknemer_id'] );
+		
+		if( $invoerKm->clearAll() )
+			$array['status'] = 'success';
+		else
+		{
+			$array['status'] = 'error';
+			$array['error'] = $invoerKm->errors();
+		}
+		
+		echo json_encode( $array );
+	}
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// Haal voor de uitzender de juiste tijdvakken op
 	//-----------------------------------------------------------------------------------------------------------------

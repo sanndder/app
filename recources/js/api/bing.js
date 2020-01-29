@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 //bing api calls
 // ---------------------------------------------------------------------------------------------------------------------
-let bingdata = {};
 let bing = {
 	bind(){
 		/*$('[data-bing="location"]').autocomplete({
@@ -25,9 +24,10 @@ let bing = {
 		$('[data-bing="location"]').autocomplete({
 			source: base_url + 'api/bing/suggestlocations'
 		});
-	}
-};
+	},
+	
 
+};
 
 document.addEventListener('DOMContentLoaded', function(){
 	bing.bind();

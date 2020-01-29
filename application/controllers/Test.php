@@ -102,7 +102,7 @@ class Test extends MY_Controller {
 	{
 		$bing = new \models\api\Bing();
 		
-		$dis = $bing->distance('Zwolle', 'Amsterdam');
+		$dis = $bing->distance('Sterrenbos, 3511  Utrecht', 'Amsterdamsestraatweg Utrecht');
 		show($dis);
 		$return['locations'] = $bing->suggestLocations( 'Zwolle, sterre' );
 		

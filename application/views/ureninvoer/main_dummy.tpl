@@ -2,6 +2,7 @@
 {block "title"}Ureninvoer{/block}
 {block "header-icon"}mi-timer{/block}
 {block "header-title"}Ureninvoer{/block}
+{assign "uploader" "true"}
 
 {block "content"}
 	<script src="recources/js/textFit.js"></script>
@@ -130,7 +131,7 @@
 				<div class="nav-tabs-responsive bg-light border-top">
 					<ul class="nav nav-tabs nav-tabs-bottom flex-nowrap mb-0">
 						<li class="nav-item">
-							<a href="#tab1" class="nav-link active" data-toggle="tab">
+							<a href="#tab1" class="nav-link " data-toggle="tab">
 								<i class="icon-menu7 mr-1"></i> Overzicht
 							</a>
 						</li>
@@ -140,7 +141,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="#tab3" class="nav-link" data-toggle="tab">
+							<a href="#tab3" class="nav-link active" data-toggle="tab">
 								<i class="icon-attachment mr-1"></i> Bijlages
 							</a>
 						</li>
@@ -151,7 +152,7 @@
 				<div class="card-body p-0">
 
 					<div class="tab-content">
-						<div class="tab-pane fade active show" id="tab1">
+						<div class="tab-pane fade" id="tab1">
 
 							<table class="vi-table-werknemer-overzicht">
 								<tr>
@@ -514,7 +515,17 @@
 
 
 						</div>
-						<div class="tab-pane fade" id="tab3">
+						<div class="tab-pane fade active show" id="tab3">
+
+							<div class="row">
+								<div class="col-md-12">
+
+									<form action="#">
+										<input name="file" type="file" id="upload-bijlages" class="file-input">
+									</form>
+
+								</div><!-- /col -->
+							</div><!-- /row -->
 
 
 						</div>

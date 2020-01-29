@@ -14,6 +14,7 @@ let invoer = {
 		//defautl tab
 		this.tab = 'overzicht';
 		this.invoertab = 'uren';
+		this.data = {};
 		
 		//events binden
 		this.events();
@@ -243,6 +244,9 @@ let invoer = {
 				//spinners weer weg
 				$('.wait-div').remove();
 				
+				//opslaan
+				invoer.data = json;
+				
 				//ureninvoer laden
 				log(json);
 				if( invoer.invoertab == 'uren' )
@@ -360,6 +364,19 @@ document.addEventListener('DOMContentLoaded', function(){
 	invoeruren.init();
 	invoerkm.init();
 	
+	$('#upload-bijlages').fileinput({
+		uploadUrl: 'ureninvoer/ajax/uploadWerkbonnen',
+		theme: "fa",
+		language: 'nl',
+		overwriteInitial: false,
+		showPreview: false,
+		dropZoneEnabled: false,
+		uploadAsync: true,
+		elErrorContainer: "#upload-error",
+		allowedFileExtensions: ["jpg", "jpeg", "png", "pdf"],
+		msgUploadError: ''
+	});
+	
 	//wanneer user uitzender, gelijk inleners laden
 	if( document.getElementsByClassName('uitzender-id').length == 0 )
 		invoer.getInleners();
@@ -371,6 +388,19 @@ document.addEventListener('DOMContentLoaded', function(){
 		$('[data-vi-action="setInlener"][data-id="24"]').trigger('click');
 		
 		setTimeout(function(){
+			$('[href="#tab-bijlages"]').trigger('click');
+
+			
+		}, 300);
+		
+	}, 300);
+	
+	
+	/*
+	setTimeout(function(){
+		$('[data-vi-action="setInlener"][data-id="24"]').trigger('click');
+		
+		setTimeout(function(){
 			$('[href="#tab-ureninvoer"]').trigger('click');
 			
 			setTimeout(function(){
@@ -378,12 +408,20 @@ document.addEventListener('DOMContentLoaded', function(){
 				
 				setTimeout(function(){
 					$('[href="#sub-kilometers"]').trigger('click');
-				}, 250);
+					
+					setTimeout(function(){
+						$('[name="locatie_van"]').val('Sterrenmos 52, Zwolle');
+						$('[name="locatie_naar"]').val("Reitscheweg, 5232 's-Hertogenbosch");
+						$('[name="datum"]').val('07-01-2020');
+						$('[name="aantal"]').val(134);
+					}, 300);
+					
+				}, 300);
 				
-			}, 250);
+			}, 300);
 			
-		}, 250);
+		}, 300);
 		
-	}, 250);
+	}, 300); */
 	
 });

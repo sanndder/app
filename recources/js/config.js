@@ -47,7 +47,7 @@ let xhr = {
     data: data,
     call( async = false) {
         //one call at a time
-        if( ajaxRequestPending === false || async === false ){
+        if( ajaxRequestPending === false || async === true ){
             return $.ajax( {
                 url: this.url,
                 data: this.data,

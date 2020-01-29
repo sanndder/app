@@ -2,11 +2,14 @@
 {block "title"}Ureninvoer{/block}
 {block "header-icon"}mi-timer{/block}
 {block "header-title"}Ureninvoer{/block}
+{assign "uploader" "true"}
 {assign "select2" "true"}
 
 {block "content"}
 	<script src="recources/js/textFit.js"></script>
 	<script src="recources/js/config.js?{$time}"></script>
+	<script src="template/global_assets/js/plugins/extensions/jquery_ui/full.min.js"></script>
+	<script src="recources/js/api/bing.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/templates.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoer.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoeruren.js?{$time}"></script>
@@ -171,7 +174,7 @@
 
 							<div class="p-4 font-italic vi-overzicht-placeholder">Selecteer een inlener</div>
 
-							<table class="vi-table-werknemer-overzicht">
+							<table class="vi-table-werknemer-overzicht mt-2">
 
 							</table>
 						</div>
@@ -250,20 +253,33 @@
                                         {****** Invoer: kilometers *****************************************************}
 										<div class="tab-pane tab-pane-sub fade" id="sub-kilometers">
 
+											<div class="vi-km-buttons mt-2 mb-2">
+												<button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 btn-sm" data-vi-action="copyGewerkteDagen">
+													<i class="icon-calendar2 mr-1"></i>
+													Gewerkte dagen kopiëren
+												</button>
+												<button type="button" class="btn alpha-warning text-warning-800 btn-icon ml-2 btn-sm" data-vi-action="clear">
+													<i class="icon-trash mr-1"></i>
+													Invoer wissen
+												</button>
+											</div>
+
 											<table class="table-vi-km vi-input mt-3" style="display: none">
 
 												<thead>
 													<tr>
 														<th style="width: 85px" class="pl-2">Datum</th>
-														<th>Van</th>
-														<th>Naar</th>
+														<th style="width: 25%">Van</th>
+														<th style="width: 25%">Naar</th>
 														<th style="width: 35px">Kilometers</th>
 														<th>Opmerking</th>
 														<th>Doorbelasten</th>
+														<th></th>
+														<th style="width: 150px;"></th>
 													</tr>
 												</thead>
 
-												<tbody>
+												<tbody class="table-vi-km-body">
 
 												</tbody>
 
@@ -293,9 +309,21 @@
 						</div>
 
                         {****** bijlages *******************************************************}
-						<div class="tab-pane tab-pane-main  fade" id="tab-bijlages">
+						<div class="tab-pane tab-pane-main fade p-3" id="tab-bijlages">
 
-							<div class="p-4 font-italic">Bijlages</div>
+							<div class="row">
+								<div class="col-md-6">
+
+									<h6 class="media-title font-weight-semibold text-primary mb-3">Upload Bijlages en Werkbonnen</h6>
+
+									<div id="upload-error" class="m-0 mb-2"></div>
+
+									<form action="#">
+										<input name="file" type="file" id="upload-bijlages" class="file-input" multiple>
+									</form>
+
+								</div><!-- /col -->
+							</div><!-- /row -->
 
 						</div>
 					</div>

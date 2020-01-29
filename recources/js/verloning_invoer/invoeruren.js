@@ -27,7 +27,7 @@ let invoeruren = {
 		});
 		
 		//change bij ureninvoer
-		$(document).on('change', '[data-vi-action="saveUrenRow"]', function(){
+		$(document).on('change', '[data-vi-action="saveUrenRow"]', function(e){
 			invoeruren.saveUrenRow(this);
 		});
 		
@@ -82,7 +82,7 @@ let invoeruren = {
 		if( ((data.urenrow.aantal == '' || data.urenrow.aantal == 0) && data.urenrow.invoer_id != '') || data.urenrow.aantal != '' ){
 			xhr.url = base_url + 'ureninvoer/ajax/saveUren';
 			xhr.data = data;
-			
+
 			var response = xhr.call( true );
 			if( response !== false ){
 				response.done(function(json){
@@ -101,6 +101,7 @@ let invoeruren = {
 							$tr.data('id', json.row.invoer_id);
 					}
 				});
+				
 			}
 		}
 		

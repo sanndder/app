@@ -22,50 +22,204 @@ let invoerkm = {
 		});
 		
 		//extra regel
+		/*
 		$(document).on('click', '[data-vi-action="addUrenInvoerRow"]', function(){
 			invoerkm.addUrenInvoerRow(this);
+		});*/
+		
+		//gewerkte dagen van uren kopieren
+		$(document).on('click', '[data-vi-action="copyGewerkteDagen"]', function(){
+			invoerkm.copyGewerkteDagen();
 		});
 		
-		//change bij ureninvoer
-		$(document).on('change', '[data-vi-action="saveUrenRow"]', function(){
-			invoerkm.saveUrenRow(this);
+		//gewerkte dagen van uren kopieren
+		$(document).on('click', '[data-vi-action="clear"]', function(){
+			invoerkm.clearAll();
+		});
+		
+		//change bij invoer
+		$(document).on('change', '[data-vi-action="saveKmRow"]', function(){
+			invoerkm.saveKmRow(this);
+			
+			//error weghalen
+			$(this).removeClass('input-error');
+		});
+		
+		//bij selecteren van item
+		$(document).on("autocompleteselect", '[data-bing="location"]', function(e, item){
+			//kleine vertraging om select de kans te geven te vullen
+			obj = this;
+			log('ja');
+			setTimeout(function(){invoerkm.getDistance(obj);}, 150);
+		});
+		
+		//afstand legen
+		$(document).on('keyup', '[data-bing="location"]', function(){
+			invoerkm.clearDistance(this);
+		});
+		
+		//route tonen
+		$(document).on('click', '[data-vi-action="showRoute"]', function(e){
+			if( $(this).attr('href') == '')
+				e.preventDefault();
 		});
 		
 	},
 	
 	// focus row ----------------------------------------------------------------------------------------------------------------------------
 	focusKmRow(obj){
+		//welke element had de focus
+		$tr = $('.table-vi-km tbody .focus');
+		
+		//focus wisselen
 		$('.table-vi-km tbody tr').removeClass('focus');
 		$(obj).closest('tr').addClass('focus');
+		
+		//check niet ingevulde elementen
+		if( $tr.length == 1 && !$tr.hasClass('focus') )
+			invoerkm.checkEmptyInput($tr);
+
 	},
 	
 	//--extra regel invoegen ----------------------------------------------------------------------------------------------------------------------------
-	addUrenInvoerRow(obj){
+	addkmInvoerRow(obj){
 		$tr = $(obj).closest('tr').clone();
-		$( $tr ).insertAfter( $(obj).closest('tr') );
-		invoerkm.resetUrenTr( $tr );
+		$($tr).insertAfter($(obj).closest('tr'));
+		invoerkm.resetKmTr($tr);
 	},
 	
-	//--uren naar database ----------------------------------------------------------------------------------------------------------------------------
-	saveUrenRow(obj){
+	// kilometers ophalen ----------------------------------------------------------------------------------------------------------------------------
+	clearDistance(obj){
+		$(obj).closest('tr').find('[name="aantal"]').val('');
+		$(obj).closest('tr').find('[data-vi-action="showRoute"]').attr('href', '' ).addClass('text-grey-200');
+	},
+	
+	// kilometers ophalen ----------------------------------------------------------------------------------------------------------------------------
+	getDistance(obj){
+		$tr = $(obj).closest('tr');
+		
+		//alleen wanneer beide locaties zijn ingevuld
+		$van = $tr.find('[name="locatie_van"]');
+		$naar = $tr.find('[name="locatie_naar"]');
+		
+		if( typeof $van.val() != 'undefined' && typeof $naar.val() != 'undefined' && $van.val().length > 3 && $naar.val().length > 3 ){
+			xhr.url = base_url + 'api/bing/distance';
+			xhr.data.location1 = $van.val();
+			xhr.data.location2 = $naar.val();
+			
+			//status update
+			invoerkm.setStatus($tr, 'route');
+			
+			var response = xhr.call(true);
+			if( response !== false ){
+				response.done(function(json){
+					if( json.status === 'success' ){
+						
+						//status weer legen
+						invoerkm.setStatus($tr, 'clear');
+						
+						if( typeof json.time.distance != 'undefined' ){
+							//naar input
+							$tr.find('[name="aantal"]').val(json.time.distance).removeClass('input-error');
+							
+							//routelink toevoegen
+							$tr.find('[data-vi-action="showRoute"]').attr('href', json.time.link ).removeClass('text-grey-200');
+							
+							//opslaan indien nodig
+							invoerkm.saveKmRow(obj);
+						}
+					}
+					else{
+						//er gaat wat mis
+						invoerkm.setStatus($tr, 'error');
+					}
+					
+				}).fail(function(){
+					invoerkm.setStatus($tr, 'error');
+				});
+			}
+		}
+	},
+	
+	//-- status aanpassen ----------------------------------------------------------------------------------------------------------------------------
+	setStatus($tr, status){
+		if( status == 'clear' ) $tr.find('.td-status').html('');
+		if( status == 'save' ) $tr.find('.td-status').html(tplKmInvoerStatusSave);
+		if( status == 'route' ) $tr.find('.td-status').html(tplKmInvoerStatusRoute);
+		if( status == 'success' ) $tr.find('.td-status').html(tplKmInvoerStatusSuccess);
+		if( status == 'error' ) $tr.find('.td-status').html(tplKmInvoerStatusError);
+	},
+	
+	
+	//-- kijken welke dagen gewerkt zijn en daar data voor aanmaken ----------------------------------------------------------------------------------------------------------------------------
+	copyGewerkteDagen(){
+		
+		$tabel = $('.table-vi-km');
+		
+		if( typeof invoer.data.invoer.uren != 'undefined' )
+		{
+			for(let row of Object.values(invoer.data.invoer.uren) ){
+				if(typeof row.rows != 'undefined' ){
+					//regel weergeven
+					$tr = $( tplKmInvoerTr.replace(/\{(.+?)\}/g, '') ).appendTo( $tabel.find('.table-vi-km-body') );
+					$tr.find('[name="datum"]').val( row.datum );
+				}
+			}
+		}
+		
+		//bind elements
+		invoerkm.bind();
+	},
+	
+	//-- lege elementen eventueel als error aanmerken ----------------------------------------------------------------------------------------------------------------------------
+	checkEmptyInput( $tr ){
+		elements = ['datum','aantal','locatie_van','locatie_naar'];
+		
+		let allesLeeg = true;
+		
+		for(let e of elements )
+		{
+			if( $tr.find('[name="'+e+'"]').val() == '' )
+				$tr.find('[name="'+e+'"]').addClass('input-error');
+			else
+				allesLeeg = false;
+		}
+		
+		//check input appart
+		if( $tr.find('[name="doorbelasten"] option:selected').val() == '' )
+			$tr.find('[name="doorbelasten"]').addClass('input-error');
+		else
+			allesLeeg = false;
+		
+		if( allesLeeg )
+			$tr.find('.input-error').removeClass('input-error');
+		else
+			if( !$tr.find('.td-status span').hasClass('text-success') )
+				invoerkm.setStatus($tr, 'error');
+			
+	},
+	
+	//--km naar database ----------------------------------------------------------------------------------------------------------------------------
+	saveKmRow(obj){
 		//get element
 		let $tr = $(obj).closest('tr');
 		
-		data.urenrow = {};
+		data.kmrow = {};
 		
-		data.urenrow.invoer_id = $tr.data('id');
-		data.urenrow.datum = $tr.find('.td-datum').html();
-		data.urenrow.aantal = $tr.find('[name="aantal"]').val();
-		data.urenrow.urentype_id = $tr.find('[name="urentype_id"] option:selected').val();
-		data.urenrow.project_tekst = $tr.find('[name="project_tekst"]').val();
-		data.urenrow.locatie_tekst = $tr.find('[name="locatie_tekst"]').val();
+		data.kmrow.invoer_id = $tr.data('id');
+		data.kmrow.datum = $tr.find('[name="datum"]').val();
+		data.kmrow.aantal = $tr.find('[name="aantal"]').val();
+		data.kmrow.locatie_van = $tr.find('[name="locatie_van"]').val();
+		data.kmrow.locatie_naar = $tr.find('[name="locatie_naar"]').val();
+		data.kmrow.doorbelasten = $tr.find('[name="doorbelasten"] option:selected').val();
+		data.kmrow.opmerking_tekst = $tr.find('[name="opmerking_tekst"]').val();
 		
 		//confirm delete
 		/*
-		if( ((data.urenrow.aantal == '' || data.urenrow.aantal == 0) && data.urenrow.invoer_id != '') ){
+		if( ((data.kmrow.aantal == '' || data.kmrow.aantal == 0) && data.kmrow.invoer_id != '') ){
 			Swal.fire({
 				type:'warning',
-				title:'Uren verwijderen?',
+				title:'km verwijderen?',
 				text:'',
 				showCancelButton: true,
 				confirmButtonClass:'btn btn-success',
@@ -78,38 +232,75 @@ let invoerkm = {
 			})
 		}*/
 		
-		//wanneer uren 0 of leeg is, dan bestaande rij verwijderen
-		if( ((data.urenrow.aantal == '' || data.urenrow.aantal == 0) && data.urenrow.invoer_id != '') || data.urenrow.aantal != '' ){
-			xhr.url = base_url + 'ureninvoer/ajax/saveUren';
-			xhr.data = data;
-			
-			var response = xhr.call( true );
-			if( response !== false ){
-				response.done(function(json){
-					//er gata iets mis
-					if( json.status == 'error' ){
+		//is data compleet
+		if( data.kmrow.datum == '' || data.kmrow.aantal == '' || data.kmrow.locatie_van == '' || data.kmrow.locatie_naar == '' || data.kmrow.doorbelasten == '' )
+			return;
+		
+		//naar database
+		xhr.url = base_url + 'ureninvoer/ajax/saveKm';
+		xhr.data = data;
+		
+		//status aanpassen
+		invoerkm.setStatus( $tr, 'save' );
+		
+		var response = xhr.call( true );
+		if( response !== false ){
+			response.done(function(json){
+				//er gata iets mis
+				if( json.status == 'error' ){
+				
+				}
+				//success
+				else{
+					//set row id
+					if( json.status == 'set' ){
+						$tr.data('id', json.row.invoer_id);
+						//lege regel invoegen
+						$(	tplKmInvoerTr.replace(/\{(.+?)\}/g, '') ).prependTo( $tabel.find('.table-vi-km-body') ).hide().show(500);
+					}
 					
-					}
-					//success
-					else{
-						//rij is verwijderd
-						if( json.status == 'deleted' ){
-							invoerkm.resetUrenTr( $tr )
-						}
-						//set row id
-						if( json.status == 'set' )
-							$tr.data('id', json.row.invoer_id);
-					}
-				});
-			}
+					invoerkm.setStatus( $tr, 'success' );
+				}
+			});
 		}
 		
 	},
 	
-	//-- reset uren tr ----------------------------------------------------------------------------------------------------------------------------
-	resetUrenTr( $tr ){
+	//-- delete all input ----------------------------------------------------------------------------------------------------------------------------
+	clearAll(){
+		
+		Swal.fire({
+			type:'warning',
+			title:'Alle ingevoerde kilometers verwijderen?',
+			text:'',
+			showCancelButton: true,
+			confirmButtonClass:'btn btn-success',
+			cancelButtonClass:'btn btn-warning',
+			confirmButtonText: '<i class="icon-check mr-1"></i>Verwijderen',
+			cancelButtonText: '<i class="icon-cross2 mr-1"></i>Annuleren'
+		}).
+		then((result) => {
+			
+			//naar database
+			xhr.url = base_url + 'ureninvoer/ajax/clearKm';
+			xhr.data = data;
+			
+			var response = xhr.call();
+			if( response !== false ){
+				response.done(function(json){
+					if( json.status == 'success' ){
+						$('[href="#sub-kilometers"]').trigger('click');
+					}
+				});
+			}
+		})
+		
+	},
+	
+	//-- reset km tr ----------------------------------------------------------------------------------------------------------------------------
+	resetKmTr($tr){
 		$tr.data('id', '');
-		$tr.find('select').val( $tr.find('select option:first').val() );
+		$tr.find('select').val($tr.find('select option:first').val());
 		$tr.find('[name="aantal"]').val('');
 		$tr.find('[name="project_tekst"]').val('');
 		$tr.find('[name="locatie_tekst"]').val('');
@@ -117,62 +308,55 @@ let invoerkm = {
 	},
 	
 	
-	// urentabel opbouwen, week maand en 4 weken ------------------------------------------------------------------------------------------------------------------------------
+	// km tabel opbouwen, week maand en 4 weken ------------------------------------------------------------------------------------------------------------------------------
 	buildKmInvoer(json){
 		//tabel eerst tonen
 		$tabel = $('.table-vi-km').show();
 		$tabel.find('tbody').html('');
 		
-		/*
-		//selectbox opbouwen
-		let htmlSelect = '';
-		for( let type of Object.values(json.info.urentypes) ){
-			let option = tplUrenTypesSelect.replace('{id}', type.id).replace('{label}', type.label);
-			htmlSelect += option;
-		}
-		//nu de tabel zelf
-		let htmTabel = '';
-		for( let dag of Object.values(json.invoer.uren) ){
-			//lege rij aanmaken
-			let trEmpty = replaceVars(tplUrenInvoerTr, dag);
-			//dropdown erin
-			trEmpty = trEmpty.replace('{select_uren}', htmlSelect);
-			
-			//zijn er uren uit de datasbase
-			if( typeof dag.rows != 'undefined' ){
-				//extra rijen aanmaken
-				for( let row of Object.values(dag.rows) ){
-					let tr = replaceVars(trEmpty, row);
-					tr = tr.replace('{select_uren}', htmlSelect);
-					//gelijk toevoegen, dan kan de select goed gezet worden
-					$row = $(tr).appendTo($tabel.find('tbody'));
-					$row.find('select').val(row.urentype_id);
-				}
-			}
-			else{
-				//niet gevulde vars eruit halen
-				trEmpty = trEmpty.replace(/\{(.+?)\}/g, '');
-				$tabel.find('tbody').append(trEmpty);
-			}
-			
-		}*/
-		
 		//altijd extra lege regel weergeven
-		$tabel.find('tbody').append(tplKmInvoerTr);
+		$tabel.find('tbody').append(tplKmInvoerTr.replace(/\{(.+?)\}/g, ''));
 		
+		//is er data?
+		if( typeof json.invoer.km != 'undefined' && json.invoer.km != null){
+			
+			for( let row of Object.values(json.invoer.km) ){
+				//lege rij aanmaken
+				let htmlTr = replaceVars(tplKmInvoerTr, row);
+				
+				//goed zetten van select
+				$row = $(htmlTr).appendTo($tabel.find('.table-vi-km-body'));
+				$row.find('select').val(row.doorbelasten);
+				
+				invoerkm.setStatus($row, 'success');
+			}
+			
+		}
+		
+		//bind elements
+		invoerkm.bind();
+		
+	},
+	
+	// dynamische elementen binden ------------------------------------------------------------------------------------------------------------------------------
+	bind()
+	{
 		//datumpicker
-		var startDate = new Date( json.info.periode_start );
-		var endDate = new Date(json.info.periode_einde );
+		var startDate = new Date(invoer.data.info.periode_start);
+		var endDate = new Date(invoer.data.info.periode_einde);
 		
-		$( '.pickadate-vi-km' ).pickadate({
-			selectYears: true,
-			selectMonths: true,
-			close: '',
-			selectYears: 1,
-			today: false,
-			min: startDate,
-			max: endDate
+		$('.pickadate-vi-km').pickadate({
+			selectYears:true,
+			selectMonths:true,
+			close:'',
+			selectYears:1,
+			today:false,
+			min:startDate,
+			max:endDate
 		});
+		
+		//autocomplete
+		bing.bind();
 		
 		//tooltips
 		$('[data-popup="tooltip"]').tooltip();

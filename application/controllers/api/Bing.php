@@ -18,9 +18,32 @@ class Bing extends MY_Controller
 		
 		header( 'Content-Type: application/json' );
 	}
-
+	
 	//-----------------------------------------------------------------------------------------------------------------
-	// get cao data
+	// distance api
+	//-----------------------------------------------------------------------------------------------------------------
+	public function distance()
+	{
+		
+		$bing = new \models\api\Bing();
+		
+		//time call
+		$return['time'] = $bing->distance( $_POST['location1'], $_POST['location2'], 'time');
+		//$return['distance'] = $bing->distance( $_POST['location1'], $_POST['location2'], 'distance');
+		
+		if( $return['time']  === false )
+		{
+			$return['status'] = 'error';
+			$return['error'] = $bing->errors();
+		}
+		
+		$return['status'] = 'success';
+		
+		echo  json_encode( $return );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// autocomplete
 	//-----------------------------------------------------------------------------------------------------------------
 	public function suggestlocations()
 	{
