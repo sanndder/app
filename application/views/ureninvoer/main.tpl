@@ -14,8 +14,8 @@
 	<script src="recources/js/verloning_invoer/invoer.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoeruren.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoerkm.js?{$time}"></script>
+	<script src="recources/js/verloning_invoer/invoerbijlages.js?{$time}"></script>
 	<link href="recources/css/verloning_input.css?{$time}" rel="stylesheet" type="text/css">
-
 	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-wide sidebar-expand-md align-self-start">
 
@@ -169,7 +169,7 @@
 
 					<div class="tab-content vi-tab-content">
 
-						{****** overzicht ******************************************************}
+                        {****** overzicht ******************************************************}
 						<div class="tab-pane tab-pane-main fade active show" id="tab-overzicht">
 
 							<div class="p-4 font-italic vi-overzicht-placeholder">Selecteer een inlener</div>
@@ -314,13 +314,50 @@
 							<div class="row">
 								<div class="col-md-6">
 
-									<h6 class="media-title font-weight-semibold text-primary mb-3">Upload Bijlages en Werkbonnen</h6>
+									<fieldset class="mt-4">
+										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Bestand(en) uploaden</legend>
+									</fieldset>
 
 									<div id="upload-error" class="m-0 mb-2"></div>
 
 									<form action="#">
 										<input name="file" type="file" id="upload-bijlages" class="file-input" multiple>
 									</form>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12">
+
+									<fieldset class="mt-4">
+										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Bijlages en Werkbonnen</legend>
+									</fieldset>
+
+									<table class="table-vi-bijlages">
+										<thead>
+											<tr>
+												<th style="width: 35px">
+													<i class="icon-radio-unchecked text-grey-200" style="visibility: visible; padding-left: 14px" data-vi-action="checkAllBijlages"></i>
+												</th>
+												<th style="width: 35px"></th>
+												<th>Bestand</th>
+												<th>Project</th>
+												<th>Grootte</th>
+												<th>Geupload op</th>
+												<th>Geupload door</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody></tbody>
+									</table>
+
+
+									<div class="mb-2 mt-3">
+										<i class="icon-arrow-up32 mr-2" style="margin-left: 16px"></i> Met geselecteerde:
+										<button class="btn btn-light btn-sm ml-2">
+											<i class="icon-trash mr-2"></i>Bestanden verwijderen
+										</button>
+									</div>
 
 								</div><!-- /col -->
 							</div><!-- /row -->

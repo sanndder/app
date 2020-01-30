@@ -199,4 +199,49 @@ class Ajax extends MY_Controller
 		
 		echo json_encode( $array );
 	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// upload bijlages
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uploadBijlages()
+	{
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'invoer/bijlages' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|png|pdf' );
+		$this->uploadfiles->setDatabaseTable( 'invoer_bijlages' );
+		$this->uploadfiles->setPrefix( 'bijlage_' );
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			$file_array = $this->uploadfiles->getFileArray();
+			if( $this->invoer->saveBijlageToDatabase( $file_array) )
+				$result['status'] = 'success';
+			else
+			{
+				$result['status'] = 'error';
+				$result['error'] = $this->invoer->errors();
+			}
+		}
+		else
+		{
+			$result['status'] = 'error';
+			$result['error'] = $this->uploadfiles->errors();
+		}
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// laod bijlages
+	//-----------------------------------------------------------------------------------------------------------------
+	public function getBijlages()
+	{
+		$result['files'] = $this->invoer->getBijlages();
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+	}
+
 }

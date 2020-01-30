@@ -30,8 +30,8 @@
 						<ul class="media-list">
 
 							{foreach $user_accounts as $a}
-							<li class="media font-size-lg dropdown-item p-3">
-								<a href="{$current_url}?switchto={$a@key}" class="w-100 h-100">
+							<li class="media font-size-lg dropdown-item">
+								<a href="{$current_url}?switchto={$a@key}" class="w-100 h-100 p-3">
 									<div class="d-flex justify-content-between w-100">
 										<div><i class="icon-circle-right2 mr-2"></i>{$a.name}</div>
 										{if $account_id == $a@key}<div><span class="badge bg-success ml-md-3">Actief</span></div>{/if}

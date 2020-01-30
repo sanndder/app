@@ -201,6 +201,7 @@ class Auth_model extends CI_Model
 			$data = $query->row_array();
 			
 			//sessie veranderen
+			$session['logindata']['prev_werkgever_id'] = $_SESSION['logindata']['werkgever_id'];;
 			$session['logindata']['werkgever_id'] = $data['werkgever_id'];
 			$session['logindata']['werkgever_naam'] = $data['name'];
 			$session['logindata']['werkgever_type'] = $data['type'];
@@ -211,6 +212,12 @@ class Auth_model extends CI_Model
 			$session['logindata']['main']['username'] = $logindata['main']['username'];
 			$session['logindata']['main']['user_type'] = $data['user_type'];
 			$session['logindata']['main']['sid'] = $logindata['main']['sid'];
+			
+			if( $data['user_type'] == 'uitzender' ) $session['logindata']['main']['uitzender_id'] =  $data['uitzender_id'];
+			if( $data['user_type'] == 'inlener' ) $session['logindata']['main']['inlener_id'] =  $data['inlener_id'];
+			if( $data['user_type'] == 'werknemer' ) $session['logindata']['main']['werknemer_id'] =  $data['werknemer_id'];
+			if( $data['user_type'] == 'zzp' ) $session['logindata']['main']['zzp_id'] =  $data['zzp_id'];
+			
 			
 			$this->session->set_userdata( $session );
 		}

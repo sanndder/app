@@ -78,6 +78,21 @@ class Dossier extends MY_Controller
 	public function overzicht( $uitzender_id = NULL )
 	{
 		$uitzender = new Uitzender( $uitzender_id );
+		
+		//kopieren naar andere onderneming
+		if( isset($_POST['werkgever_id']) )
+		{
+			if( $uitzender->copyToOndernemingen( $_POST['werkgever_id'] ) )
+			{
+				$this->smarty->assign('msg', msg('success', 'Uitzender is gekopieerd'));
+				
+			}
+			else
+			{
+				$this->smarty->assign('msg', msg('warning', $uitzender->errors()) );
+			}
+		}
+		
 
 		//redirect indien nodig
 		if( $uitzender->complete == 0 )
@@ -88,13 +103,18 @@ class Dossier extends MY_Controller
 			if( $uitzender->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/contactpersonen/' . $uitzender_id ,'location');
 		}
 		
+		//uitzender users ophalen
 		$usersgroup = new UserGroup();
 
+		//gekoppelde ondernmeningen
+		$ondernemingen = $uitzender->ondernemingen();
+		
 		//show($uitzenders);
 
 		$this->smarty->assign('users',  $usersgroup->uitzender( $uitzender_id )->all() );
 		$this->smarty->assign('bedrijfsgegevens', $uitzender->bedrijfsgegevens());
 		$this->smarty->assign('emailadressen', $uitzender->emailadressen());
+		$this->smarty->assign('ondernemingen', $ondernemingen);
 
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/overzicht.tpl');

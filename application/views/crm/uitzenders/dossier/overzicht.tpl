@@ -5,7 +5,8 @@
 
 {block "content"}
 
-	{include file='crm/uitzenders/dossier/_sidebar.tpl' active='overzicht'}
+    {include file='crm/uitzenders/dossier/modals/kopieer.tpl'}
+    {include file='crm/uitzenders/dossier/_sidebar.tpl' active='overzicht'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -16,6 +17,7 @@
 		<!-- Content area -->
 		<div class="content">
 
+            {if isset($msg)}{$msg}{/if}
 
 			<div class="row">
 				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -55,10 +57,10 @@
 												<li>KvK: {$bedrijfsgegevens.kvknr}</li>
 												<li>BTW: {$bedrijfsgegevens.btwnr}</li>
 												<li class="mt-2"></li>
-												{if $bedrijfsgegevens.postbus_nummer != NULL}
+                                                {if $bedrijfsgegevens.postbus_nummer != NULL}
 													<li>Postbus {$bedrijfsgegevens.postbus_nummer}</li>
 													<li>{$bedrijfsgegevens.postbus_postcode} {$bedrijfsgegevens.postbus_plaats}</li>
-												{/if}
+                                                {/if}
 											</ul>
 										</div>
 									</div><!-- /row -->
@@ -79,6 +81,7 @@
 						</div>
 
 						<div class="table-responsive">
+                            {*
 							<table class="table table-striped table-bordered table-hover">
 								<thead>
 								<tr>
@@ -173,6 +176,7 @@
 								</tr>
 								</tbody>
 							</table>
+							*}
 						</div>
 
 
@@ -183,6 +187,35 @@
 				|| Right side
 				--------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 				<div class="col-md-3">
+
+					<!------------------------------------------------------- card: acties ------------------------------------------------------>
+					<div class="card">
+						<div class="card-header bg-transparent header-elements-inline">
+							<span class="text-uppercase font-size-sm font-weight-semibold">Gekoppelde Ondernemingen</span>
+							<div class="header-elements">
+								<div class="list-icons">
+								</div>
+							</div>
+						</div>
+
+						<ul class="list-group list-group-flush m-0 p-0">
+							{foreach $ondernemingen as $o}
+								{if isset($o.bedrijfsnaam)}
+									<li class="list-group-item p-0 pt-1">
+										<div class="pl-3 py-2">
+											<i style="font-size: 21px" class="icon-checkmark-circle text-success mr-2"></i>
+		                                    {$o.name}
+										</div>
+									</li>
+								{/if}
+							{/foreach}
+							<li class="list-group-item p-0">
+								<a href="javascript:void(0)"  class="dropdown-item py-3 pl-3" data-toggle="modal" data-target="#modal_copy">
+									<i class="icon-copy4 mr-2"></i> Kopiëren naar andere onderneming
+								</a>
+							</li>
+						</ul>
+					</div><!-- /card: acties  -->
 
 					<!------------------------------------------------------- card: Accountmanager ------------------------------------------------------>
 					<div class="card">
@@ -219,26 +252,26 @@
 
 							<ul class="media-list">
 
-								{if $users == NULL }
+                                {if $users == NULL }
 									<a href="{$base_url}/instellingen/werkgever/users/add?id={$uitzender->uitzender_id}&user_type=uitzender">User aanmaken</a>
-								{else}
-									{foreach $users as $u}
-									<li class="media mt-0">
+                                {else}
+                                    {foreach $users as $u}
+										<li class="media mt-0">
 
-										<div class="media-body">
-											<a href="#" class="media-title font-weight-semibold">{$u.username}</a>
-											<div class="font-size-sm text-muted">{$u.naam}</div>
-										</div>
-										[*
-										<div class="ml-3 align-self-center">
-											<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Login als">
-												<i class="icon-enter"></i>
-											</a>
-										</div>
-										*}
-									</li>
+											<div class="media-body">
+												<a href="#" class="media-title font-weight-semibold">{$u.username}</a>
+												<div class="font-size-sm text-muted">{$u.naam}</div>
+											</div>
+                                            {*
+											<div class="ml-3 align-self-center">
+												<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Login als">
+													<i class="icon-enter"></i>
+												</a>
+											</div>
+											*}
+										</li>
                                     {/foreach}
-								{/if}
+                                {/if}
 							</ul>
 
 						</div>

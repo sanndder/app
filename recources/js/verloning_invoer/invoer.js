@@ -270,10 +270,15 @@ let invoer = {
 		if( invoer.tab == 'overzicht' )
 			invoer.buildOverzichtTab();
 
-		//overzicht laden
+		//ureninvoer laden
 		if( invoer.tab == 'ureninvoer' )
 			invoer.buildInvoerTab();
+		
+		//bijlages laden
+		if( invoer.tab == 'bijlages' )
+			invoerbijlages.buildBijlagesTab();
 	},
+	
 	
 	//Uren invoer scherm -> lijst met werknemers laden ------------------------------------------------------------------------------------------------------------------------------
 	buildInvoerTab( werknemer_id = 0 ){
@@ -363,9 +368,10 @@ document.addEventListener('DOMContentLoaded', function(){
 	invoer.init();
 	invoeruren.init();
 	invoerkm.init();
+	invoerbijlages.init();
 	
 	$('#upload-bijlages').fileinput({
-		uploadUrl: 'ureninvoer/ajax/uploadWerkbonnen',
+		uploadUrl: 'ureninvoer/ajax/uploadBijlages',
 		theme: "fa",
 		language: 'nl',
 		overwriteInitial: false,
@@ -374,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		uploadAsync: true,
 		elErrorContainer: "#upload-error",
 		allowedFileExtensions: ["jpg", "jpeg", "png", "pdf"],
-		msgUploadError: ''
+		msgUploadError: '',
 	});
 	
 	//wanneer user uitzender, gelijk inleners laden

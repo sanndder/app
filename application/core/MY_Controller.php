@@ -1,4 +1,7 @@
 <?php
+
+use models\utils\Ondernemingen;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -38,7 +41,14 @@ class MY_Controller extends CI_Controller
 		{
 			//eventueel switchen VOOR de check ivm connect database
 			if( isset($_GET['switchto']) )
+			{
 				$this->auth->switchAccount( $_GET['switchto'] );
+				$redirect_url = Ondernemingen::switchUrl();
+				
+				//link wijzigen
+				if( $redirect_url !== false )
+					redirect( $redirect_url  ,'location' );
+			}
 			
 			//nu check
 			$this->auth->check( $logout );

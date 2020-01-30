@@ -14,6 +14,7 @@ class User_model extends MY_Model
 	public $user_name = NULL;
 	public $username = NULL;
 	public $user_id = NULL;
+	public $id = NULL; // alias
 	public $user_type = NULL;
 	public $account_id = NULL;
 	public $werkgever_id = NULL;
@@ -74,6 +75,8 @@ class User_model extends MY_Model
 		//niet voor external
 		if( $this->user_type !== 'external' )
 			$this->_getLinkedAccounts();
+		
+		$this->id = $this->user_id;
 	}
 	
 	/*************************************************************************************************

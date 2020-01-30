@@ -229,6 +229,8 @@ class Upload extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function uploadlogowerkgever( $entiteit_id = NULL )
 	{
+		show($_POST);
+		
 		$this->load->model('upload_model', 'uploadfiles');
 		$this->uploadfiles->setUploadDir( 'werkgever/logo' );
 		$this->uploadfiles->setAllowedFileTypes( 'jpg|png' );

@@ -7,15 +7,17 @@
 
 /* select2 aanpassen */
 .select2-selection--single {
-    border:0 !important;
+    border: 0 !important;
 }
 
-.select2-dropdown--below{
+.select2-dropdown--below {
     border-top: 1px solid rgba(0, 0, 0, 0.15) !important;
 }
 
 /* nav link pointer */
-.nav-link{cursor: pointer !important}
+.nav-link {
+    cursor: pointer !important
+}
 
 /* tab kleur aanpassen */
 .nav-tabs-primary .nav-link.active:before {
@@ -23,55 +25,66 @@
 }
 
 /* werknemer naam */
-.vi-title-name{width: 250px; height: 22px}
+.vi-title-name {
+    width: 250px;
+    height: 22px
+}
 
 /* lijst met werkenmers */
-.vi-list-werknemers{
+.vi-list-werknemers {
     list-style: none;
     padding: 0;
     margin: 0;
 }
-.vi-list-werknemers li{
+
+.vi-list-werknemers li {
     padding: 4px 0;
 }
 
-.vi-list-werknemers li:hover{
+.vi-list-werknemers li:hover {
     cursor: pointer;
     font-weight: 500;
 }
 
 .vi-list-item-active {
-    border-left:3px solid #2196f3;
+    border-left: 3px solid #2196f3;
     background-color: #f5f5f5;
 }
 
-.vi-table-werknemer-overzicht{
+.vi-table-werknemer-overzicht {
     width: 100%;
 }
 
-.vi-table-werknemer-overzicht td{
+.vi-table-werknemer-overzicht td {
     vertical-align: text-top;
     padding: 10px 5px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 
-.vi-table-werknemer-overzicht td:first-of-type{ padding-left: 15px; }
+.vi-table-werknemer-overzicht td:first-of-type {
+    padding-left: 15px;
+}
 
-.vi-table-werknemer-overzicht tr:last-child td{ border:0 !important; }
-.vi-table-werknemer-overzicht td td{ border:0 }
+.vi-table-werknemer-overzicht tr:last-child td {
+    border: 0 !important;
+}
 
-.vi-table-werknemer-detail{
+.vi-table-werknemer-overzicht td td {
+    border: 0
+}
+
+.vi-table-werknemer-detail {
     margin-right: 25px;
 }
 
-.vi-table-werknemer-detail th{
+.vi-table-werknemer-detail th {
     font-size: 11px;
     text-transform: uppercase;
 }
 
-.vi-table-werknemer-detail td{
+.vi-table-werknemer-detail td {
     font-size: 12px;
-    padding:0 10px 0 0 !important;
+    padding: 0 10px 0 0 !important;
 }
 
 /* tabel voor ureninvoer */
@@ -79,28 +92,44 @@
     font-size: 11px;
 }
 
-.vi-input th{
+.vi-input th {
     text-transform: uppercase;
     padding: 1px 3px;
 }
 
-.vi-input td:first-child{
+.vi-input td:first-child {
     padding-left: 8px;
 }
-.vi-input td:last-of-type{
+
+.vi-input td:last-of-type {
     padding-right: 6px;
 }
 
-.vi-input td{
-  padding: 3px;
+.vi-input td {
+    padding: 3px;
 }
 
-.icon-add-row{font-size: 11px; cursor: pointer}
+.icon-add-row {
+    font-size: 11px;
+    cursor: pointer
+}
 
-.table-vi-uren tr.tr-weekend{ background-color: #f1f1f1;}
+.table-vi-uren tr.tr-weekend {
+    background-color: #f1f1f1;
+}
 
-.vi-input select{ padding: 0.2rem; height: 1.8rem; font-weight: 300  }
-.vi-input input{ padding: 0.2rem; height: 1.8rem; font-weight: 300 }
+.vi-input select {
+    padding: 0.2rem;
+    height: 1.8rem;
+    font-weight: 300
+}
+
+.vi-input input {
+    padding: 0.2rem;
+    height: 1.8rem;
+    font-weight: 300
+}
+
 /*
 .vi-input tr.focus>td{ background-color: #64B5F6 !important;}
 .vi-input tr.focus>td:first-child{ border-bottom-left-radius: 5px; border-top-left-radius: 5px;}
@@ -110,18 +139,74 @@
 .table-vi-uren tr.focus>td:first-child{ border-bottom-left-radius: 5px; border-top-left-radius: 5px;}
 .table-vi-uren tr.focus>td:last-of-type{ border-bottom-right-radius: 5px; border-top-right-radius: 5px;}*/
 
-.vi-input tr.focus>td{ border-top:1px solid #64B5F6 !important; border-bottom:1px solid #64B5F6 !important;}
-.vi-input tr.focus>td:first-child{ border-left:1px solid #64B5F6 !important;}
-.vi-input tr.focus>td:last-of-type{border-right:1px solid #64B5F6 !important;}
+.vi-input tr.focus > td {
+    border-top: 1px solid #64B5F6 !important;
+    border-bottom: 1px solid #64B5F6 !important;
+}
+
+.vi-input tr.focus > td:first-child {
+    border-left: 1px solid #64B5F6 !important;
+}
+
+.vi-input tr.focus > td:last-of-type {
+    border-right: 1px solid #64B5F6 !important;
+}
 
 /* km tabel kleiner lettretype */
-.table-vi-km input, .table-vi-km select{ font-size: 11px; }
+.table-vi-km input, .table-vi-km select {
+    font-size: 11px;
+}
 
-.table-vi-km .input-error {border-color: red; border-width: 2px }
+.table-vi-km .input-error {
+    border-color: red;
+    border-width: 2px
+}
 
-.table-vi-km .text-success i {font-size: 20px !important; }
-.table-vi-km .text-danger i {font-size: 20px !important; }
+.table-vi-km .text-success i {
+    font-size: 20px !important;
+}
+
+.table-vi-km .text-danger i {
+    font-size: 20px !important;
+}
 
 /* picker duidelijker maken */
-.picker__day{ font-weight: bold }
-.picker__day--disabled{ color: #DDD}
+.picker__day {
+    font-weight: bold
+}
+
+.picker__day--disabled {
+    color: #DDD
+}
+
+/* bijlages */
+.table-vi-bijlages {
+    empty-cells: show;
+    width: 1px;
+    table-layout: auto;
+}
+
+.table-vi-bijlages th{white-space: nowrap; padding-bottom: 7px}
+
+.table-vi-bijlages th { border-bottom: 1px solid #f5f5f5 ; font-size: 12px;}
+.table-vi-bijlages td {
+    white-space: nowrap;
+    width: 1% !important;
+    padding: 6px 35px 6px 3px ;
+    border-bottom: 1px solid #f5f5f5 ;
+    font-size: 12px;
+}
+
+.table-vi-bijlages td:nth-child(2){ padding-right: 10px !important; }
+.table-vi-bijlages td:first-child{ padding-left: 15px; }
+
+.table-vi-bijlages tr:hover td{
+    background-color: #f5f5f5;
+}
+
+.table-vi-bijlages .icon-radio-unchecked{visibility: hidden;}
+.table-vi-bijlages tr:hover .icon-radio-unchecked{visibility: visible}
+
+.file-icon {
+    width: 25px;
+}

@@ -210,13 +210,74 @@ class Invoer extends Connector
 	 */
 	public function getWerknemerOverzicht()
 	{
-		//eerst werknemerlijst ophalen, KEY IS NIET WERKNEMER ID omdat json adners verkeerd sorteerd
+		//eerst werknemerlijst ophalen, KEY IS NIET WERKNEMER ID omdat json anders verkeerd sorteerd
 		$werknemers = $this->listWerknemers();
 		
 		return $werknemers;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * geuploade bijalge naar de database
+	 * 
+	 */
+	public function saveBijlageToDatabase( array $file_info ) :bool
+	{
+		$insert = $file_info;
+		
+		$insert['tijdvak'] = $this->_tijdvak;
+		$insert['jaar'] = $this->_jaar;
+		$insert['periode'] = $this->_periode;
+		$insert['uitzender_id'] = $this->_uitzender_id;
+		$insert['inlener_id'] = $this->_inlener_id;
+		$insert['user_id'] = $this->user->id;
 
+		$this->db_user->insert( 'invoer_bijlages', $insert );
+		
+		if( $this->db_user->insert_id() > 0 )
+		{
+			$this->_error[] = 'Wegschrijven naar database is mislukt';
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get bijlages
+	 * TODO: Icons verplaatsen naar helper
+	 */
+	public function getBijlages() :array
+	{
+		$sql = "SELECT * FROM invoer_bijlages WHERE uitzender_id = ? AND inlener_id = ? AND tijdvak = ? AND jaar = ? AND periode = ? AND deleted = 0 ORDER BY file_name_display";
+		$query = $this->db_user->query( $sql, array( $this->_uitzender_id, $this->_inlener_id, $this->_tijdvak, $this->_jaar, $this->_periode ) );
+		
+		if( $query->num_rows() == 0 )
+			return [];
+		
+		foreach( $query->result_array() as $row )
+		{
+			$row['icon'] = '';
+			if( $row['file_ext'] == 'jpg' ) $row['icon'] = 'image.jpg';
+			if( $row['file_ext'] == 'gif' ) $row['icon'] = 'image.jpg';
+			if( $row['file_ext'] == 'png' ) $row['icon'] = 'image.jpg';
+			if( $row['file_ext'] == 'pdf' ) $row['icon'] = 'pdf.svg';
+			if( $row['file_ext'] == 'xls' ) $row['icon'] = 'excel.svg';
+			if( $row['file_ext'] == 'xlsx' ) $row['icon'] = 'excel.svg';
+			
+			if( $row['project_id'] == NULL ) $row['project_naam'] = '';
+			$row['file_size'] = size($row['file_size']);
+			
+			$data[] = $row;
+		}
+		
+		return $data;
+	}
+
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors

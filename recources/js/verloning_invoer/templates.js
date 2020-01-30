@@ -114,3 +114,15 @@ let tplKmInvoerTr = `<tr data-id="">
 						</td>
 						<td class="td-status pt-1"></td>
 					</tr>`;
+
+//bijlages tabel
+let tplBijlageTr = `<tr>
+						<td class="pr-3"> <i class="icon-radio-unchecked text-grey-200"></i></td>
+						<td> <img class="file-icon" src="recources/img/icons/{icon}"/></td>
+						<td> <a href="" target="_blank">{file_name_display}</a></td>
+						<td>{project_naam}</td>
+						<td class="text-right">{file_size}</td>
+						<td>{timestamp}</td>
+						<td>{user}</td>
+						<td></td>
+						</tr>`;

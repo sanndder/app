@@ -5,6 +5,7 @@ namespace models\uitzenders;
 use models\Connector;
 use models\forms\Validator;
 use models\utils\DBhelper;
+use models\utils\Ondernemingen;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -60,7 +61,78 @@ class Uitzender extends Connector
 		$this->getStatus();
 
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Haal gekoppelde ondernemingen op
+	 * TODO: verplaatsen naar ondernemingen
+	 */
+	public function ondernemingen()
+	{
+		$bedrijfsgegevens = $this->bedrijfsgegevens();
+		
+		$ondernemingen = Ondernemingen::all();
+		
+		$CI =& get_instance();
+		$db = $CI->load->database('admin', TRUE);
+		
+		//kijken waar kvk bestaat
+		foreach( $ondernemingen as $o )
+		{
+			$db->database = $o['db_name'];
+			$db->close();
+			$db->initialize();
+			
+			$sql = "SELECT uitzenders_status.archief, uitzenders_bedrijfsgegevens.bedrijfsnaam, uitzenders_bedrijfsgegevens.kvknr
+					FROM uitzenders_status
+					LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_status.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
+					WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_bedrijfsgegevens.kvknr = '".$bedrijfsgegevens['kvknr']."' LIMIT 1";
+			$query = $db->query( $sql );
+			
+			$uitzender = $query->row_array();
+			
+			if( is_array($uitzender))
+				$ondernemingen[$o['werkgever_id']] = $ondernemingen[$o['werkgever_id']] + $uitzender;
+		}
+		
+		return $ondernemingen;
+	}
 
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Kopieer uitzender
+	 *
+	 */
+	public function copyToOndernemingen( int $werkgever_id ) :bool
+	{
+		//chekc for dubbel en rechten
+		$ondernemingen = $this->ondernemingen();
+		
+		if( !isset($ondernemingen[$werkgever_id]) )
+		{
+			$this->_error[] = '<b>KOPPELING MISLUKT:</b> Onderneming niet gevonden';
+			return false;
+		}
+		
+		if( isset($ondernemingen[$werkgever_id]['bedrijfsnaam']) )
+		{
+			$this->_error[] = '<b>KOPPELING MISLUKT:</b> Onderneming is al gekoppeld';
+			return false;
+		}
+		
+		$ondernemingenHelper = new Ondernemingen();
+		
+		if( !$ondernemingenHelper->uitzender( $this->uitzender_id )->copy( $ondernemingen[$werkgever_id] ) )
+		{
+			$this->_error[] = $ondernemingenHelper->errors();
+			return false;
+		}
+		
+		return true;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -79,9 +151,10 @@ class Uitzender extends Connector
 	 */
 	public function del( $id )
 	{
-		if( $this->user->user_id != -2 )
+		if( $this->user->user_id != 2 )
 			die('Geen toegand');
 		
+
 		$this->db_user->query( "DELETE FROM inleners_uitzenders WHERE uitzender_id = $id" );
 		$this->db_user->query( "DELETE FROM uitzenders_bedrijfsgegevens WHERE uitzender_id = $id" );
 		$this->db_user->query( "DELETE FROM uitzenders_av_accepted WHERE uitzender_id = $id" );
@@ -621,7 +694,7 @@ class Uitzender extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array|boolean
 	 */
 	public function errors()
 	{

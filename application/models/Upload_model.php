@@ -18,6 +18,7 @@ class Upload_model extends MY_Model
 	private $_random_name_prefix = ''; //random naam prefix
 
 	private $_file_name = NULL; //name after upload
+	private $_file_name_display = NULL; //name before upload
 	private $_file_path = NULL; //path after upload
 	private $_file_ext = NULL; //extentions after upload
 
@@ -56,13 +57,15 @@ class Upload_model extends MY_Model
 	/*
 	 * Array met info terug
 	 *
-	 * @return void
+	 * @return array
 	 */
-	public function getFileArray()
+	public function getFileArray() :array
 	{
 		$array['file_name'] = $this->_file_name;
+		$array['file_name_display'] = $this->_file_name_display;
 		$array['file_dir'] = $this->_dir;
 		$array['file_ext'] = $this->_file_ext = getFileExtension($this->_file_name);
+		$array['file_size'] = filesize( $this->_file_path );
 
 		return $array;
 	}
@@ -196,6 +199,7 @@ class Upload_model extends MY_Model
 
 		//check
 		$this->_file_name = $uploaddata['orig_name'];
+		$this->_file_name_display = $uploaddata['client_name'];
 		$this->_file_path = $this->_path . '/' . $this->_file_name;
 
 		if( !file_exists($this->_file_path) || is_dir($this->_file_path))
