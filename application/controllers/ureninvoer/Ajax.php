@@ -229,7 +229,7 @@ class Ajax extends MY_Controller
 			$result['status'] = 'error';
 			$result['error'] = $this->uploadfiles->errors();
 		}
-		header('Content-Type: application/json'); // set json response headers
+		
 		echo json_encode($result);
 	}
 	
@@ -240,8 +240,22 @@ class Ajax extends MY_Controller
 	{
 		$result['files'] = $this->invoer->getBijlages();
 		
-		header('Content-Type: application/json'); // set json response headers
 		echo json_encode($result);
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// verwijder 1 bijlage
+	//-----------------------------------------------------------------------------------------------------------------
+	public function delBijlage()
+	{
+		if( $this->invoer->delBijlage() )
+			$result['status'] = 'success';
+		else
+			$result['status'] = 'error';
+		
+		echo json_encode($result);
+	}
+
+
 
 }

@@ -13,7 +13,7 @@
     "uitzender_id": {
       "label": "Uitzender ID eerste aanmelding",
       "rules": {
-        "required": false,
+        "required": true,
         "type": "int"
       }
     },

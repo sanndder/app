@@ -206,7 +206,7 @@ class Ondernemingen extends Connector
 		//uitzender
 		if(strpos($url,'uitzenders/dossier/') !== false )
 		{
-			$new_url = BASE_URL . '/crm/uitzenders';
+			$new_url = BASE_URL . 'crm/uitzenders';
 			
 			$parts = explode('/',$url );
 			$uitzender_id = end($parts);

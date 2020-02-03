@@ -66,6 +66,7 @@ $route['crm/zzp(:any)'] 						= 'crm/zzp/overzicht/$1';
 $route['crm/zzp'] 								= 'crm/zzp/overzicht';
 
 $route['ureninvoer'] 							= 'ureninvoer/ureninvoer/index';
+$route['ureninvoer/bijlage/(:any)'] 			= 'ureninvoer/ureninvoer/bijlage/$1';
 
 $route['instellingen/werkgever/users/view/(:any)'] 				= 'instellingen/users/view/$1';
 $route['instellingen/werkgever/users/view'] 					= 'instellingen/users/view';

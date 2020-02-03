@@ -8,6 +8,7 @@
 
     {include file='crm/inleners/dossier/_sidebar.tpl' active='verloninginstellingen'}
     {include file='crm/inleners/dossier/modals/urentype_toevoegen.tpl'}
+    {include file='crm/inleners/dossier/modals/vergoeding_toevoegen.tpl'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -76,6 +77,20 @@
 							|| Factoren
 							-------------------------------------------------------------------------------------------------------------------------------------------------->
 							<div class="tab-pane fade {if !isset($smarty.get.tab) || $smarty.get.tab == 'tab-factoren'}show active{/if}" id="tab-factoren">
+
+								<fieldset class="mb-4">
+									<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Factoren uitzender</legend>
+
+									<table>
+										<tr>
+											<td style="width: 300px;">{$uitzender.bedrijfsnaam}</td>
+											<td style="width: 110px;">{$factoren_uitzender.factor_hoog|number_format:3:',':'.'}</td>
+											<td style="width: 110px;">{$factoren_uitzender.factor_laag|number_format:3:',':'.'}</td>
+											<td></td>
+										</tr>
+									</table>
+
+								</fieldset>
 
 								<form method="post" action="">
 									<fieldset class="mb-3">
@@ -317,7 +332,7 @@
 													</td>
 													<td>
 														{if $urentype.default_urentype != 1}
-														<a class="text-danger" href="{$base_url}/crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-urentypes?delurentype={$urentype.inlener_urentype_id}">
+														<a class="text-danger" href="{$base_url}/crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-urentypes&delurentype={$urentype.inlener_urentype_id}">
 															<i class="icon-trash mr-1"></i>verwijderen
 														</a>
                                                         {/if}
@@ -425,9 +440,63 @@
 							<!-------------------------------------------------------------------------------------------------------------------------------------------------
 							|| Vergoedingen
 							-------------------------------------------------------------------------------------------------------------------------------------------------->
-							<div class="tab-pane fade" id="card-tab3">
+							<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-vergoedingen'}show active{/if}"" id="tab-vergoedingen" >
 
+							<div class="btn-group">
+								<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#modal_add_vergoeding">
+									<i class="icon-plus-circle2"></i>
+									<span class="d-none d-inline-block ml-2">Vergoeding toevoegen</span>
+								</button>
 							</div>
+
+							<fieldset class="mb-0 mt-3">
+								<legend class="text-uppercase font-size-sm font-weight-bold text-primary mb-1">Vergoedingen voor inlener</legend>
+							</fieldset>
+
+							<table class="table table-striped table-xs">
+								<thead>
+									<tr>
+										<th style="width: 180px">Vergoeding</th>
+										<th style="width: 120px">Type</th>
+										<th style="width: 140px">Bedrag per uur</th>
+										<th style="width: 135px">Doorbelasten</th>
+										<th style="width: 190px">Uitkeren aan werknemer</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+                                    {if is_array($werknemervergoedingen)}
+                                        {foreach $werknemervergoedingen as $vergoeding}
+											<tr>
+												<td>{$vergoeding.naam}</td>
+												<td>{$vergoeding.vergoeding_type}</td>
+												<td>
+                                                    {if $vergoeding.vergoeding_type == 'vast'}€ {$vergoeding.bedrag_per_uur|number_format:2:',':'.'}{/if}
+												</td>
+												<td>
+													{if $vergoeding.doorbelasten !== NULL }{$vergoeding.doorbelasten}{else}keuze bij invoer{/if}
+												</td>
+												<td>
+                                                    {if $vergoeding.uitkeren_werknemer == 1 }Ja{else}Nee{/if}
+												</td>
+												<td>
+                                                    {if $urentype.default_urentype != 1}
+														<a class="text-danger" href="{$base_url}/crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-vergoedingen&delvergoeding={$vergoeding.inlener_vergoeding_id}">
+															<i class="icon-trash mr-1"></i>verwijderen
+														</a>
+                                                    {/if}
+												</td>
+											</tr>
+                                        {/foreach}
+                                    {/if}
+								</tbody>
+							</table>
+
+							{*
+							<fieldset class="mb-0 mt-4">
+								<legend class="text-uppercase font-size-sm font-weight-bold text-primary mb-0">Urentypes per werknemer</legend>
+							</fieldset>
+							*}
 
 						</div><!-- /card body-->
 					</div><!-- /basic card -->

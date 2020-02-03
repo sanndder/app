@@ -18,24 +18,17 @@ let tplOverzichtTabEmpty = '<div class="p-4 font-italic"><i class="icon-exclamat
 //overzicht tabel tr
 let tplTrOverzicht = `<tr>
 						<td class="pr-4" style="width: 400px">
-						<h6 class="media-title font-weight-semibold" style="font-size: 14px">
-							<a href="javascript:void(0)" data-id="{werknemer_id}" data-vi-action="gotoWerknemerInvoer">{werknemer_id} -  {naam}</a>
-						</h6>
+							<h6 class="media-title font-weight-semibold" style="font-size: 14px">
+								<a href="javascript:void(0)" data-id="{werknemer_id}" data-vi-action="gotoWerknemerInvoer">{werknemer_id} -  {naam}</a>
+							</h6>
 							<ul class="list-inline list-inline-dotted text-danger mb-2">
 								<li class="list-inline-item">{msg}</li>
 							</ul>
 						</td>
-						<td>
-							<table class="vi-table-werknemer-detail"> <tr> <th colspan="2">UREN</th> </tr> </table>
-						</td>
-						<td>
-							<table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Kilometers</th> </tr> </table>
-						</td>
-						<td>
-							<table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Vergoedingen</th> </tr> </table> </td>
-						<td>
-							<table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Reserveringen</th> </tr> </table>
-						</td>
+						<td><table class="vi-table-werknemer-detail"> <tr> <th colspan="2">UREN</th> </tr> </table></td>
+						<td><table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Kilometers</th> </tr> </table></td>
+						<td><table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Vergoedingen</th> </tr> </table></td>
+						<td><table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Reserveringen</th> </tr> </table></td>
 					</tr>`;
 
 
@@ -52,9 +45,7 @@ let tplUrenTypesSelect = '<option value="{id}">{label}</option>';
 
 //ureninvoer tabel row
 let tplUrenInvoerTr = `<tr class="{class}" data-id="{invoer_id}">
-							<td>
-								<i class="icon-add icon-add-row mr-2" data-vi-action="addUrenInvoerRow" data-title="Regel invoegen" title="Regel invoegen" data-popup="tooltip" data-placement="left"></i>
-							</td>
+							<td><i class="icon-add icon-add-row mr-2" data-vi-action="addUrenInvoerRow" data-title="Regel invoegen" title="Regel invoegen" data-popup="tooltip" data-placement="left"></i></td>
 							<td>{week}</td>
 							<td>{dag}</td>
 							<td class="td-datum">{datum}</td>
@@ -63,15 +54,9 @@ let tplUrenInvoerTr = `<tr class="{class}" data-id="{invoer_id}">
 									{select_uren}
 								</select>
 							</td>
-							<td>
-								<input autocomplete="off" value="{aantal}" name="aantal" type="text" class="form-control text-right" placeholder="0:00" style="width: 40px" data-vi-action="saveUrenRow">
-							</td>
-							<td>
-								<input value="{project_tekst}" name="project_tekst" type="text" class="form-control" data-vi-action="saveUrenRow">
-							</td>
-							<td>
-								<input value="{locatie_tekst}" name="locatie_tekst" type="text" class="form-control" data-vi-action="saveUrenRow">
-							</td>
+							<td><input autocomplete="off" value="{aantal}" name="aantal" type="text" class="form-control text-right" placeholder="0:00" style="width: 40px" data-vi-action="saveUrenRow"></td>
+							<td><input value="{project_tekst}" name="project_tekst" type="text" class="form-control" data-vi-action="saveUrenRow"></td>
+							<td><input value="{locatie_tekst}" name="locatie_tekst" type="text" class="form-control" data-vi-action="saveUrenRow"></td>
 						</tr>`;
 
 //km status
@@ -88,18 +73,10 @@ let tplKmInvoerTr = `<tr data-id="">
 								<input value="{datum}" type="text" class="form-control pickadate-vi-km" name="datum" data-vi-action="saveKmRow" />
 							</div>
 						</td>
-						<td>
-							<input value="{locatie_van}" type="text" class="form-control" name="locatie_van" data-bing="location" placeholder="Plaats, Straatnaam" autocomplete="off" data-vi-action="saveKmRow" />
-						</td>
-						<td>
-							<input value="{locatie_naar}" type="text" class="form-control" name="locatie_naar" data-bing="location" placeholder="Plaats, Straatnaam" autocomplete="off" data-vi-action="saveKmRow" />
-						</td>
-						<td>
-							<input value="{aantal}" type="text" class="form-control text-right" name="aantal" readonly data-vi-action="saveKmRow" />
-						</td>
-						<td>
-							<input value="{opmerking_tekst}" type="text" class="form-control" name="opmerking_tekst" data-vi-action="saveKmRow" />
-						</td>
+						<td><input value="{locatie_van}" type="text" class="form-control" name="locatie_van" data-bing="location" placeholder="Plaats, Straatnaam" autocomplete="off" data-vi-action="saveKmRow" /></td>
+						<td><input value="{locatie_naar}" type="text" class="form-control" name="locatie_naar" data-bing="location" placeholder="Plaats, Straatnaam" autocomplete="off" data-vi-action="saveKmRow" /></td>
+						<td><input value="{aantal}" type="text" class="form-control text-right" name="aantal" readonly data-vi-action="saveKmRow" /></td>
+						<td><input value="{opmerking_tekst}" type="text" class="form-control" name="opmerking_tekst" data-vi-action="saveKmRow" /></td>
 						<td>
 							<select name="doorbelasten" class="form-control" data-vi-action="saveKmRow">
 								<option></option>
@@ -116,13 +93,13 @@ let tplKmInvoerTr = `<tr data-id="">
 					</tr>`;
 
 //bijlages tabel
-let tplBijlageTr = `<tr>
+let tplBijlageTr = `<tr data-id="{file_id}">
 						<td class="pr-3"> <i class="icon-radio-unchecked text-grey-200"></i></td>
-						<td> <img class="file-icon" src="recources/img/icons/{icon}"/></td>
-						<td> <a href="" target="_blank">{file_name_display}</a></td>
+						<td><img class="file-icon" src="recources/img/icons/{icon}"/></td>
+						<td><a href="ureninvoer/bijlage/{file_id}" target="_blank">{file_name_display}</a></td>
 						<td>{project_naam}</td>
 						<td class="text-right">{file_size}</td>
 						<td>{timestamp}</td>
 						<td>{user}</td>
-						<td></td>
+						<td><span class="text-warning" style="font-size: 11px; cursor:pointer;" data-vi-action="delBijlage"> <i class="icon-trash mr-1"></i>verwijderen</span></td>
 						</tr>`;

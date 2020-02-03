@@ -1,6 +1,8 @@
 <?php
 
+use models\file\File;
 use models\uitzenders\UitzenderGroup;
+use models\verloning\Invoer;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -34,6 +36,31 @@ class Ureninvoer extends MY_Controller
 			$this->smarty->display('ureninvoer/main.tpl');
 		
 	}
-
-
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// bijlage bekijken
+	//-----------------------------------------------------------------------------------------------------------------
+	public function bijlage( $file_id = NULL )
+	{
+		$invoer = new Invoer();
+		$file_array = $invoer->getBijlage( $file_id );
+		
+		if( $file_array === NULL )
+			die('Geen toegang');
+		
+		if( $this->user->user_type == 'werknemer' )
+			die('Geen toegang');
+		
+		if( $this->user->user_type == 'uitzender' &&  $file_array['uitzender_id'] != $this->uitzender->id )
+			die('Geen toegang');
+		
+		if( $this->user->user_type == 'inlener' &&  $file_array['inlener_id'] != $this->inlener->id )
+			die('Geen toegang');
+		
+		$file = new File($file_array);
+		$file->inline();
+		
+	}
+	
 }

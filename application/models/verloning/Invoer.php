@@ -4,6 +4,7 @@ namespace models\verloning;
 
 use models\Connector;
 use models\forms\Validator;
+use models\users\UserGroup;
 use models\utils\DBhelper;
 use models\utils\Tijdvak;
 use models\werknemers\PlaatsingGroup;
@@ -224,6 +225,7 @@ class Invoer extends Connector
 	 */
 	public function saveBijlageToDatabase( array $file_info ) :bool
 	{
+
 		$insert = $file_info;
 		
 		$insert['tijdvak'] = $this->_tijdvak;
@@ -271,12 +273,50 @@ class Invoer extends Connector
 			if( $row['project_id'] == NULL ) $row['project_naam'] = '';
 			$row['file_size'] = size($row['file_size']);
 			
+			$date = new \DateTime($row['timestamp']);
+			$row['timestamp'] = $date->format("d-m-Y \o\m H:i" );
 			$data[] = $row;
 		}
+
+		$data = UserGroup::findUserNames($data);
 		
 		return $data;
 	}
 
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Haal alle bijlages op
+	 * @return ?array
+	 */
+	public function getBijlage( ?int $file_id ) :?array
+	{
+		$query = $this->db_user->query( "SELECT * FROM invoer_bijlages WHERE file_id = ? AND deleted = 0 LIMIT 1", array($file_id) );
+		return DBhelper::toRow( $query, 'NULL' );
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * verwijder 1 bijlage
+	 *
+	 */
+	public function delBijlage() :bool
+	{
+		$bijlage = $this->getBijlage( $_POST['file_id'] );
+		
+		//check
+		if( $bijlage['inlener_id'] != $this->_inlener_id || $bijlage['uitzender_id'] != $this->_uitzender_id || $bijlage['tijdvak'] != $this->_tijdvak || $bijlage['jaar'] != $this->_jaar || $bijlage['periode'] != $this->_periode  )
+			return false;
+		
+		$this->db_user->query( "UPDATE invoer_bijlages SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE file_id = ?", array( $this->user->user_id, $_POST['file_id'] ) );
+		
+		if( $this->db_user->affected_rows() < 1 )
+			return false;
+		
+		return true;
+	}
+
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

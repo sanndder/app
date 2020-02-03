@@ -30,12 +30,13 @@ function log(message) {
 }
 
 //vars function
+// TODO dubbele for is een shortcut, vervangen door regex
 function replaceVars( string, data ) {
 
     for( let key of Object.keys(data) )
-    {
         string = string.replace( '{' + key + '}', data[key] );
-    }
+    for( let key of Object.keys(data) )
+        string = string.replace( '{' + key + '}', data[key] );
     
     return string;
 }

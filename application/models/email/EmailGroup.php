@@ -98,7 +98,7 @@ class EmailGroup extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array| boolean
 	 */
 	public function errors()
 	{

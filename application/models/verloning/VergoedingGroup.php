@@ -71,7 +71,7 @@ class VergoedingGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * set werknemer id
+	 * alle vergoedingen ophalen
 	 *
 	 */
 	public function all()
@@ -80,6 +80,61 @@ class VergoedingGroup extends Connector
 		$query = $this->db_user->query( $sql );
 		
 		return DBhelper::toArray( $query, 'vergoeding_id' );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * vergoedingen voor inlener ophalen
+	 *
+	 */
+	public function vergoedingenInlener()
+	{
+		$sql = "SELECT inleners_vergoedingen.*, vergoedingen.naam, vergoedingen.belast
+				FROM inleners_vergoedingen
+				LEFT JOIN vergoedingen ON inleners_vergoedingen.vergoeding_id = vergoedingen.vergoeding_id
+				WHERE inleners_vergoedingen.deleted = 0 AND inlener_id = $this->_inlener_id
+				ORDER BY vergoedingen.naam";
+		
+		$query = $this->db_user->query( $sql );
+		
+		return DBhelper::toArray( $query, 'inlener_vergoeding_id' );
+		
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * werknemers met vergoedingen ophalen
+	 *
+	 */
+	public function werknemersEnVergoedingen()
+	{
+		//alle urentypes voor inlener ophalen
+		$vergoedingen = $this->vergoedingenInlener();
+		
+		$sql = "SELECT werknemers_vergoedingen.vergoeding_active, werknemers_vergoedingen.id, inleners_vergoedingen.*, vergoedingen.naam, vergoedingen.belast ,werknemers_gegevens.achternaam,
+       				werknemers_gegevens.voornaam, werknemers_gegevens.voorletters, werknemers_gegevens.tussenvoegsel
+				FROM werknemers_vergoedingen
+				LEFT JOIN inleners_vergoedingen ON inleners_vergoedingen.vergoeding_id = werknemers_vergoedingen.vergoeding_id
+				LEFT JOIN vergoedingen ON werknemers_vergoedingen.vergoeding_id = vergoedingen.vergoeding_id
+				LEFT JOIN werknemers_gegevens ON werknemers_vergoedingen.werknemer_id = werknemers_gegevens.werknemer_id
+				LEFT JOIN werknemers_status ON werknemers_vergoedingen.werknemer_id = werknemers_status.werknemer_id
+				WHERE werknemers_vergoedingen.deleted = 0 AND inleners_vergoedingen.deleted = 0 AND vergoedingen.deleted = 0 AND werknemers_gegevens.deleted = 0 AND werknemers_status.archief = 0
+				ORDER BY werknemers_gegevens.achternaam";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return $vergoedingen;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$row['werknemer_naam'] = make_name( $row );
+			$vergoedingen[$row['inlener_vergoeding_id']]['werknemers'][] = $row;
+		}
+		
+		return $vergoedingen;
 	}
 	
 	

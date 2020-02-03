@@ -378,6 +378,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		showPreview: false,
 		dropZoneEnabled: false,
 		uploadAsync: true,
+		maxFileCount: 6,
 		elErrorContainer: "#upload-error",
 		allowedFileExtensions: ["jpg", "jpeg", "png", "pdf"],
 		msgUploadError: '',

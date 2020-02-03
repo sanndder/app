@@ -9,27 +9,52 @@
     "deleted_on"
   ],
   "field": {
-    "naam": {
+    "vergoeding_id": {
       "label": "Vergoeding",
       "rules": {
-        "required": true,
-        "minlength": 3,
-        "maxlength": 100,
-        "tolower" : true,
-        "trim": true,
-        "striptags": true
+        "required": true
+      },
+      "list": {
+        "options": "vergoedingen"
       }
     },
-    "belast": {
-      "label": "Belast/Onbelast",
+    "vergoeding_type": {
+      "label": "Vergoeding type",
       "rules": {
         "required": true
       },
       "radio": {
         "inline": true,
         "options": {
-          "1": "Belast",
-          "0": "Onbelast"
+          "vast": "Bedrag per uur",
+          "variabel": "Variabel (Vrij in te vullen bij invoer)"
+        }
+      },
+      "doorbelasten": {
+        "label": "Doorbelasten",
+        "rules": {
+          "required": true
+        },
+        "radio": {
+          "inline": true,
+          "options": {
+            "0": "Keuze bij invoer",
+            "inlener": "Inlener",
+            "uitzender": "Uitzender"
+          }
+        }
+      },
+      "uitkeren_werknemer": {
+        "label": "Uitkeren aan werknemer",
+        "rules": {
+          "required": true
+        },
+        "radio": {
+          "inline": true,
+          "options": {
+            "1": "Ja",
+            "0": "Nee"
+          }
         }
       }
     }

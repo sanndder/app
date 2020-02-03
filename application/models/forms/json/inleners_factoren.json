@@ -35,7 +35,7 @@
       }
     },
     "factor_hoog": {
-      "label": "Factor normale uren",
+      "label": "Factor standaard uren",
       "rules": {
         "required": true,
         "minlength": 1,

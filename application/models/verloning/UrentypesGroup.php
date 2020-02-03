@@ -151,7 +151,6 @@ class UrentypesGroup extends Connector
 		foreach( $query->result_array() as $row )
 		{
 			$row['werknemer_naam'] = make_name( $row );
-			
 			$urentypes[$row['inlener_urentype_id']]['werknemers'][] = $row;
 		}
 		

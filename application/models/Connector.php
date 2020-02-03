@@ -16,12 +16,25 @@ if (!defined('BASEPATH'))
 
 class Connector
 {
+	/* @var \CI_DB_driver */
 	protected $db_user = NULL;
+	
+	/* @var \User_model */
 	protected $user = NULL;
+	
+	/* @var \Werknemer_model */
 	protected $werknemer = NULL;
+	
+	/* @var \Zzp_model */
 	protected $zzp = NULL;
+	
+	/* @var \Inlener_model */
 	protected $inlener = NULL;
+	
+	/* @var \Uitzender_model */
 	protected $uitzender = NULL;
+	
+	/* @var \Werkgever_model */
 	protected $werkgever = NULL;
 
 

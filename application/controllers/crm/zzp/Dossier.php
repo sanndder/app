@@ -229,7 +229,7 @@ class Dossier extends MY_Controller
 			$document = DocumentFactory::createFromTemplateObject( $template );
 			$document->setZzpID( $zzp_id )->build()->pdf();
 			
-			redirect( $this->config->item( 'base_url' ) . '/crm/zzp/dossier/documenten/' . $zzp_id ,'location' );
+			redirect( $this->config->item( 'base_url' ) . 'crm/zzp/dossier/documenten/' . $zzp_id ,'location' );
 		}*/
 		
 		//ID opslaan vanuit wizard

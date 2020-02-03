@@ -79,6 +79,47 @@ class UserGroup extends Connector {
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * users in array voegen
+	 *
+	 */
+	static function findUserNames( $array = array() )
+	{
+		if( count($array) == 0 )
+			return $array;
+		
+		$user_ids = array();
+		
+		foreach( $array as $a )
+		{
+			if( isset($a['user_id']) )
+				$user_ids[] = $a['user_id'];
+			if( isset($a['created_by']) )
+				$user_ids[] = $a['created_by'];
+			if( isset($a['deleted_by']) )
+				$user_ids[] = $a['deleted_by'];
+		}
+		
+		if( count($user_ids) == 0)
+			return $array();
+		
+		$users = UserGroup::list( $user_ids );
+		
+		foreach( $array as &$a )
+		{
+			if( isset($a['user_id']) )
+				$a['user'] = $users[$a['user_id']];
+			if( isset($a['created_by']) )
+				$a['user'] = $users[$a['created_by']];
+			if( isset($a['deleted_by']) )
+				$a['user'] = $users[$a['deleted_by']];
+		}
+
+		return $array;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * Alle users ophalen aan de hand van de zoekcriteria
 	 */
 	public function uitzender( $uitzender_id ) :UserGroup

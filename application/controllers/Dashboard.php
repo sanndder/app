@@ -35,8 +35,9 @@ class Dashboard extends MY_Controller {
 	public function werkgever()
 	{
 		$uitzendergroup = new UitzenderGroup();
-		$inlenergroup = new ZzpGroup();
-		$werknemergroup = new ZzpGroup();
+		$inlenergroup = new InlenerGroup();
+		$werknemergroup = new WerknemerGroup();
+		$zzpgroup = new ZzpGroup();
 		$kredietgroup = new KredietaanvraagGroup();
 		
 		$this->smarty->assign('uitzenders', $uitzendergroup->new());

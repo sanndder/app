@@ -553,7 +553,25 @@ class Inlener extends Connector
 		
 	}
 	
-	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * uren aanmaken
+	 * @return void
+	 */
+	private function _setDefaultFactor( $uitzender_id )
+	{
+		$uitzender = new Uitzender( $uitzender_id );
+		$factoren = $uitzender->factoren();
+		
+		$_POST = array(
+			'default_factor' => 1,
+			'omschrijving' => 'Standaard factor',
+			'factor_hoog' => $factoren['factor_hoog'],
+			'factor_laag' => $factoren['factor_laag']
+		);
+		
+		$this->setFactoren();
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -561,6 +579,8 @@ class Inlener extends Connector
 	 * Kan alleen als basis bedrijfsgegevens ingevuld zijn
 	 * Entry in status tabel maken, dit levert inlener_id op
 	 * Voor bemiddeling cao op complete
+	 * Factor uiztender overnemen
+	 * TODO: aanmeld acties
 	 * @return boolean
 	 */
 	private function _new()
@@ -578,6 +598,8 @@ class Inlener extends Connector
 			//koppeling uitzender aanmaken indien gewenst
 			if( $this->_uitzender_id_new !== NULL )
 				$this->koppelenAanUitzender( $this->_uitzender_id_new );
+			
+			$this->_setDefaultFactor( $this->_uitzender_id_new );
 				
 			return true;
 		}
@@ -590,13 +612,21 @@ class Inlener extends Connector
 	 * Sla data op na controle
 	 * Oude gegevens worden als verwijderd aangemerkt
 	 * Geeft ingevoerde data terug
-	 * @return array
+	 * @return array|bool
 	 */
 	private function _set($table = '', $method = '', $where = NULL)
 	{
 		//uitzender ID loskoppelen
 		if( isset($_POST['uitzender_id']) && intval($_POST['uitzender_id']) > 0 )
-			$this->_uitzender_id_new = intval($_POST['uitzender_id']);
+		{
+			//vooralsnog geen payrollklanten
+			if (intval($_POST['uitzender_id']) == 0 )
+			{
+				$this->_error[] = 'Selecteer een uitzender';
+				return $_POST;
+			}
+			$this->_uitzender_id_new = intval( $_POST['uitzender_id'] );
+		}
 		
 		//altijd er uit
 		unset($_POST['uitzender_id']);

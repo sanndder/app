@@ -137,14 +137,14 @@ class Dossier extends MY_Controller
 		if( isset($_GET['dellogo']) )
 		{
 			$uitzender->delLogo();
-			redirect($this->config->item('base_url') . '/crm/uitzenders/dossier/algemeneinstellingen/' . $uitzender_id ,'location');
+			redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/algemeneinstellingen/' . $uitzender_id ,'location');
 		}
 
 		//del handtekening
 		if( isset($_GET['delhandtekening']) )
 		{
 			$uitzender->delHandtekening();
-			redirect($this->config->item('base_url') . '/crm/uitzenders/dossier/algemeneinstellingen/' . $uitzender_id ,'location');
+			redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/algemeneinstellingen/' . $uitzender_id ,'location');
 		}
 
 		//set bedrijfsgegevens

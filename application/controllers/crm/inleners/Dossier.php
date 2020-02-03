@@ -10,11 +10,14 @@ use models\forms\Formbuilder;
 use models\inleners\Inlener;
 use models\inleners\Kredietaanvraag;
 use models\inleners\KredietaanvraagGroup;
+use models\uitzenders\Uitzender;
 use models\uitzenders\UitzenderGroup;
 use models\utils\History;
 use models\utils\VisitsLogger;
 use models\verloning\Urentypes;
 use models\verloning\UrentypesGroup;
+use models\verloning\Vergoeding;
+use models\verloning\VergoedingGroup;
 use models\werknemers\WerknemerGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -198,7 +201,7 @@ class Dossier extends MY_Controller
 	{
 		//historische data ophalen
 		$log = new History();
-		$data = $log->table( 'inlener_bedrijfsgegevens')->index( array('inlener_id' => 3 ) )->data();
+		$data = $log->table( 'inlener_bedrijfsgegevens')->index( array('inlener_id' => $inlener_id ) )->data();
 		//show($data);
 		
 		//load the formbuilder
@@ -370,7 +373,7 @@ class Dossier extends MY_Controller
 				if( $cao->errors() === false )
 				{
 					$inlener->_updateStatus( 'cao_complete' );
-					redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/contactpersonen/' . $inlener_id . '?tab=tab-cao', 'location' );
+					redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/contactpersonen/' . $inlener_id . '?tab=tab-cao', 'location' );
 				} else
 					$this->smarty->assign( 'msg', msg( 'danger', $cao->errors() ) );
 			}
@@ -382,7 +385,7 @@ class Dossier extends MY_Controller
 			$cao = new CAO( $_GET['delcao'] );
 			$cao->delCAOFromInlener( $inlener_id );
 			if( $cao->errors() === false )
-				redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/cao/'.$inlener_id.'?tab=tab-cao' ,'location' );
+				redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/cao/'.$inlener_id.'?tab=tab-cao' ,'location' );
 			
 			//msg wanneer geen redirect
 			$this->smarty->assign('msg', msg('warning', $cao->errors() ));
@@ -403,7 +406,10 @@ class Dossier extends MY_Controller
 		$inlener = new Inlener( $inlener_id );		
 		$urentypes = new Urentypes();
 		$urentypesgroup = new UrentypesGroup();
+		$vergoeding = new Vergoeding();
+		$vergoedinggroup = new VergoedingGroup();
 		$CAOgroup = new CAOGroup();
+		$uitzender = new Uitzender( $inlener->uitzenderID() );
 		
 		//del data
 		if( isset($_POST['del']) )
@@ -422,13 +428,24 @@ class Dossier extends MY_Controller
 			$cao = new CAO( $_GET['delcao'] );
 			$cao->delCAOFromInlener( $inlener_id );
 			if( $cao->errors() === false )
-				redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-cao' ,'location' );
+				redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-cao' ,'location' );
+			
+			//msg wanneer geen redirect
+			$this->smarty->assign('msg', msg('warning', $cao->errors() ));
+		}
+		
+		//del vergoeding
+		if( isset($_GET['delvergoeding']) )
+		{
+			$vergoeding->deleteInlenerVergoeding( $_GET['delvergoeding'] );
+			if( $vergoeding->errors() === false )
+				redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-vergoedingen' ,'location' );
 			
 			//msg wanneer geen redirect
 			$this->smarty->assign('msg', msg('warning', $cao->errors() ));
 		}
 			
-			//set data
+		//set data
 		if( isset($_POST['set']) )
 		{
 			//switch for each tab
@@ -437,22 +454,29 @@ class Dossier extends MY_Controller
 				case 'inleners_factoren':
 					$inlener->setFactoren();
 					if( $inlener->errors() === false )
-						redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id ,'location' );
+						redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/verloninginstellingen/'.$inlener_id ,'location' );
 					$errors = $inlener->errors();
 					break;
 				//urentype aan inlener koppelen
 				case 'add_urentype_to_inlener':
 					$urentypes->addUrentypeToInlener( $inlener_id, $_POST );
 					if( $urentypes->errors() === false )
-						redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-urentypes' ,'location' );
+						redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-urentypes' ,'location' );
 					$errors = $urentypes->errors();
+					break;
+				//urentype aan inlener koppelen
+				case 'add_vergoeding_to_inlener':
+					$vergoeding->addVergoedingToInlener( $inlener_id, $_POST );
+					if( $vergoeding->errors() === false )
+						redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-vergoedingen' ,'location' );
+					$errors = $vergoeding->errors();
 					break;
 				//cao aan inlener koppelen
 				case 'add_cao_to_inlener':
 					$cao = new CAO( $_POST['cao_id'] );
 					$cao->addCAOToInlener( $inlener_id );
 					if( $cao->errors() === false )
-						redirect( $this->config->item( 'base_url' ) . '/crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-cao' ,'location' );
+						redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/verloninginstellingen/'.$inlener_id.'?tab=tab-cao' ,'location' );
 					$errors = $cao->errors();
 					break;
 			}
@@ -461,12 +485,16 @@ class Dossier extends MY_Controller
 			$this->smarty->assign('msg', msg('warning', $errors ));
 		}
 		
-		$matrix = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
-		//show($matrix);
+		$urenmatrix = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
+		$werknemervergoedingen = $vergoedinggroup->inlener( $inlener_id )->werknemersEnVergoedingen();
 		
+		$this->smarty->assign( 'uitzender', $uitzender->bedrijfsgegevens() );
+		$this->smarty->assign( 'factoren_uitzender', $uitzender->factoren() );
 		$this->smarty->assign( 'urentypes', $urentypes->getAll() );
+		$this->smarty->assign( 'vergoedingen', $vergoedinggroup->all() );
 		$this->smarty->assign( 'factoren', $inlener->factoren() );
-		$this->smarty->assign( 'matrix', $matrix );
+		$this->smarty->assign( 'matrix', $urenmatrix );
+		$this->smarty->assign( 'werknemervergoedingen', $werknemervergoedingen );
 		$this->smarty->assign( 'caos', $CAOgroup->all() );
 		$this->smarty->assign( 'caos_inlener', $CAOgroup->inlener( $inlener_id ) );
 		

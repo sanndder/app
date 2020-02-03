@@ -314,7 +314,7 @@
 							<div class="row">
 								<div class="col-md-6">
 
-									<fieldset class="mt-4">
+									<fieldset class="mt-0">
 										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Bestand(en) uploaden</legend>
 									</fieldset>
 
@@ -329,34 +329,40 @@
 							<div class="row">
 								<div class="col-md-12">
 
-									<fieldset class="mt-4">
+									<fieldset class="mt-5">
 										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Bijlages en Werkbonnen</legend>
 									</fieldset>
 
-									<table class="table-vi-bijlages">
-										<thead>
-											<tr>
-												<th style="width: 35px">
-													<i class="icon-radio-unchecked text-grey-200" style="visibility: visible; padding-left: 14px" data-vi-action="checkAllBijlages"></i>
-												</th>
-												<th style="width: 35px"></th>
-												<th>Bestand</th>
-												<th>Project</th>
-												<th>Grootte</th>
-												<th>Geupload op</th>
-												<th>Geupload door</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody></tbody>
-									</table>
+									<div class="table-vi-bijlages-container" style="display: none">
+										<table class="table-vi-bijlages">
+											<thead>
+												<tr>
+													<th style="width: 35px">
+														<i class="icon-radio-unchecked text-grey-200" style="padding-left: 14px" data-vi-action="checkAllBijlages"></i>
+													</th>
+													<th style="width: 35px"></th>
+													<th>Bestand</th>
+													<th>Project</th>
+													<th>Grootte</th>
+													<th>Geupload op</th>
+													<th>Geupload door</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody></tbody>
+										</table>
 
 
-									<div class="mb-2 mt-3">
-										<i class="icon-arrow-up32 mr-2" style="margin-left: 16px"></i> Met geselecteerde:
-										<button class="btn btn-light btn-sm ml-2">
-											<i class="icon-trash mr-2"></i>Bestanden verwijderen
-										</button>
+										<div class="mb-2 mt-3">
+											<i class="icon-arrow-up32 mr-2" style="margin-left: 16px"></i> Met geselecteerde:
+											<button class="btn btn-light btn-sm ml-2" data-vi-action="delSelectedBijlages">
+												<i class="icon-trash mr-2"></i>Bestanden verwijderen
+											</button>
+										</div>
+									</div>
+
+									<div class="table-vi-bijlages-empty">
+										<i class="icon-exclamation mr-1"></i> Geen bijlages gevonden
 									</div>
 
 								</div><!-- /col -->

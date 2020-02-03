@@ -5,6 +5,7 @@ use models\api\Kvk;
 use models\cao\CAOGroup;
 use models\inleners\Inlener;
 use models\verloning\Urentypes;
+use models\verloning\Vergoeding;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -110,6 +111,27 @@ class Ajax extends MY_Controller
 		echo json_encode( $response );
 	}
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// validate input vergoeding
+	//-----------------------------------------------------------------------------------------------------------------
+	public function validatevergoeding()
+	{
+		$vergoeding = new Vergoeding();
+		
+		//valideren
+		$vergoeding->validateInlenerVergoeding();
+		
+		//init response
+		$response = array( 'status' => 'error' );
+		
+		//msg
+		if( $vergoeding->errors() === false )
+			$response['status'] = 'success';
+		else
+			$response['error'] = $vergoeding->errors();
+		
+		echo json_encode( $response );
+	}
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// get contactpersoon JSON

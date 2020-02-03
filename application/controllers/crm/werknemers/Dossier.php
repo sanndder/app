@@ -178,7 +178,7 @@ class Dossier extends MY_Controller
 			$document = DocumentFactory::createFromTemplateObject( $template );
 			$document->setWerknemerID( $werknemer_id )->build()->pdf();
 			
-			redirect( $this->config->item( 'base_url' ) . '/crm/werknemers/dossier/documenten/' . $werknemer_id ,'location' );
+			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id ,'location' );
 		}
 		
 		//ID opslaan vanuit wizard
@@ -420,7 +420,7 @@ class Dossier extends MY_Controller
 		if( isset($_GET['delbsn']) )
 		{
 			$et->delbsn();
-			redirect($this->config->item('base_url') . '/crm/werknemers/dossier/etregeling/' . $werknemer_id ,'location');
+			redirect($this->config->item('base_url') . 'crm/werknemers/dossier/etregeling/' . $werknemer_id ,'location');
 		}
 		
 		if( $et !== NULL )

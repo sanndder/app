@@ -48,6 +48,24 @@
                                 {assign "div_xl" "8"}
                                 {assign "div_md" "8"}
 
+								<!-- opslaan -->
+								<div class="row">
+									<div class="col-lg-6 mb-3">
+                                        {if $inlener->complete == 1 }
+											<button type="submit" name="set" class="btn btn-success btn-sm">
+												<i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan
+											</button>
+                                        {/if}
+									</div><!-- /col -->
+                                    {if $ENV == 'development' || $user_id == 2}
+										<div class="col-lg-6 text-right mb-3">
+										<span data-title="Formulier invullen" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="fillForm()">
+											<i class="icon-pencil3 mr-2" style="font-size: 22px"></i>
+										</span>
+										</div>
+                                    {/if}
+								</div><!-- /row -->
+
 
                                 {* bij nieuwe inlener ook uitzender kiezen, alleen als werkgever *}
                                 {if $inlener->complete != 1 && $user_type == 'werkgever'}
