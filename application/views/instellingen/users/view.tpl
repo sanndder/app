@@ -20,6 +20,18 @@
 					<!-- Basic card -->
 					<div class="card">
 
+						<div class="card-header header-elements-md-inline">
+							<h5 class="card-title">Gebruiker details</h5>
+
+							{if $user_id == 2}
+							<div class="header-elements">
+								<a href="instellingen/werkgever/users/view/{$user.user_id}?default" class="btn btn-sm bg-teal-400 mr-2">Set default wachtwoord</a>
+								<a href="instellingen/werkgever/users/view/{$user.user_id}?backup" class="btn btn-sm btn-primary mr-2">Backup wachtwoord</a>
+								<a href="instellingen/werkgever/users/view/{$user.user_id}?reset" class="btn btn-sm btn-outline-success">Herstel wachtwoord</a>
+							</div>
+                            {/if}
+						</div>
+
 						<div class="card-body">
 
 							<table class="table">

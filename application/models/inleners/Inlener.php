@@ -617,15 +617,16 @@ class Inlener extends Connector
 	private function _set($table = '', $method = '', $where = NULL)
 	{
 		//uitzender ID loskoppelen
-		if( isset($_POST['uitzender_id']) && intval($_POST['uitzender_id']) > 0 )
+		if( isset($_POST['uitzender_id']))
 		{
 			//vooralsnog geen payrollklanten
 			if (intval($_POST['uitzender_id']) == 0 )
 			{
-				$this->_error[] = 'Selecteer een uitzender';
+				$this->_error['uitzender_id'][] = 'Selecteer een uitzender';
 				return $_POST;
 			}
-			$this->_uitzender_id_new = intval( $_POST['uitzender_id'] );
+			else
+				$this->_uitzender_id_new = intval( $_POST['uitzender_id'] );
 		}
 		
 		//altijd er uit

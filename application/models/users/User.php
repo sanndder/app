@@ -358,8 +358,59 @@ class User extends Connector
 		
 		return true;
 	}
+
+
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * wachtwoord default
+	 * @return bool
+	 */
+	public function defaultPassword()
+	{
+		$sql = "UPDATE users SET password = '".$this->hashPassword('test')."' WHERE user_id = $this->user_id LIMIT 1";
+		$this->db_admin->query( $sql );
+		
+		if( $this->db_admin->affected_rows() != -1 )
+			return true;
+		return false;
+		
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * wachtwoord resetten
+	 * @return bool
+	 */
+	public function resetPassword()
+	{
+		$sql = "UPDATE users SET password = password_backup WHERE user_id = $this->user_id LIMIT 1";
+		$query = $this->db_admin->query( $sql );
+		
+		if( $this->db_admin->affected_rows() != -1 )
+			return true;
+		return false;
+		
+	}
 	
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * wachtwoord backuppen
+	 * @return bool
+	 */
+	public function backupPassword()
+	{
+		$sql = "UPDATE users SET password_backup = password WHERE user_id = $this->user_id LIMIT 1";
+		$query = $this->db_admin->query( $sql );
+		
+		if( $this->db_admin->affected_rows() != -1 )
+			return true;
+		return false;
+		
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

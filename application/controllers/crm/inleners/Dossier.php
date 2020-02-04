@@ -12,6 +12,7 @@ use models\inleners\Kredietaanvraag;
 use models\inleners\KredietaanvraagGroup;
 use models\uitzenders\Uitzender;
 use models\uitzenders\UitzenderGroup;
+use models\users\UserGroup;
 use models\utils\History;
 use models\utils\VisitsLogger;
 use models\verloning\Urentypes;
@@ -58,6 +59,7 @@ class Dossier extends MY_Controller
 	public function overzicht( $inlener_id = NULL )
 	{
 		$inlener = new Inlener( $inlener_id );
+		$usersgroup = new UserGroup();
 
 		//redirect indien nodig
 		if( $inlener->complete == 0 )
@@ -71,6 +73,7 @@ class Dossier extends MY_Controller
 
 		//show($inleners);
 		
+		$this->smarty->assign('users',  $usersgroup->inlener( $inlener_id )->all() );
 		$this->smarty->assign('bedrijfsgegevens', $inlener->bedrijfsgegevens());
 		$this->smarty->assign('emailadressen', $inlener->emailadressen() );
 		
@@ -411,6 +414,9 @@ class Dossier extends MY_Controller
 		$CAOgroup = new CAOGroup();
 		$uitzender = new Uitzender( $inlener->uitzenderID() );
 		
+		//cao's hier al ophalen, kan gebruikt worden
+		$caos_inlener = $CAOgroup->inlener( $inlener_id );
+
 		//del data
 		if( isset($_POST['del']) )
 		{
@@ -443,6 +449,22 @@ class Dossier extends MY_Controller
 			
 			//msg wanneer geen redirect
 			$this->smarty->assign('msg', msg('warning', $cao->errors() ));
+		}
+		
+		//acties
+		if( isset($_GET['action']) )
+		{
+			//switch for each tab
+			switch ($_GET['action'])
+			{
+				//extra factoren toevoegen
+				case 'copyUrentypesFromCao':
+					$urentypes->inlener($inlener_id)->copyFromCao( $caos_inlener[$_GET['cao_code']] );
+					if( $urentypes->errors() === false )
+						redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/verloninginstellingen/' . $inlener_id . '?tab=tab-urentypes', 'location' );
+					$this->smarty->assign('msg_copy', msg('warning', $urentypes->errors() ));
+					break;
+			}
 		}
 			
 		//set data
@@ -496,7 +518,7 @@ class Dossier extends MY_Controller
 		$this->smarty->assign( 'matrix', $urenmatrix );
 		$this->smarty->assign( 'werknemervergoedingen', $werknemervergoedingen );
 		$this->smarty->assign( 'caos', $CAOgroup->all() );
-		$this->smarty->assign( 'caos_inlener', $CAOgroup->inlener( $inlener_id ) );
+		$this->smarty->assign( 'caos_inlener', $caos_inlener );
 		
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/verloninginstellingen.tpl');

@@ -92,6 +92,39 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// validate input urentype
 	//-----------------------------------------------------------------------------------------------------------------
+	public function setverkooptarief()
+	{
+		$urentypes = new Urentypes();
+		
+		//update
+		if( $urentypes->updateVerkooptarief( $_POST ) !== false )
+			$response = array( 'status' => 'success' );
+		else
+			$response = array( 'status' => 'error' );
+		
+		echo json_encode( $response );
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// validate input urentype
+	//-----------------------------------------------------------------------------------------------------------------
+	public function seturentypelabel()
+	{
+		$urentypes = new Urentypes();
+		
+		//update
+		if( $urentypes->updateLabel( $_POST ) !== false )
+			$response = array( 'status' => 'success' );
+		else
+			$response = array( 'status' => 'error' );
+		
+		echo json_encode( $response );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// validate input urentype
+	//-----------------------------------------------------------------------------------------------------------------
 	public function validateurentype()
 	{
 		$urentypes = new Urentypes();

@@ -3342,7 +3342,6 @@
     <column id="758" parent="282" name="bedrag_per_uur">
       <Position>5</Position>
       <DataType>decimal(4,2 digit)|0s</DataType>
-      <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
     <column id="759" parent="282" name="doorbelasten">

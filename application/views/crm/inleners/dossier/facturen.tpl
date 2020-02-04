@@ -16,7 +16,7 @@
 		<!-- Content area -->
 		<div class="content">
 
-
+{*
 			<div class="row">
 				<div class="col-xl-12">
 
@@ -73,6 +73,7 @@
 
 				</div><!-- /col -->
 			</div><!-- /row -->
+*}
 
 		</div><!-- /content area -->
 	</div>

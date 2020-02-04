@@ -73,7 +73,8 @@
 										<legend class="text-uppercase font-size-sm font-weight-bold">Uitzender</legend>
 
 										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label">Uitzender:</label>
+                                            {assign "field" "uitzender_id"}
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">Uitzender:</label>
 											<div class="col-form-label col-xl-{$div_xl} col-md-{$div_md} pt-0">
 
                                                 {* vanuit uizender geen dropdownlijst *}
@@ -83,7 +84,7 @@
                                                         {$uitzenders[$smarty.get.uitzender_id]}
 													</div>
                                                 {else}
-													<select name="uitzender_id" class="form-control select-search">
+													<select name="uitzender_id" class="form-control select-search {if isset($formdata.$field.error)}border-danger{/if}">
 														<option value="0">Geen uitzender (payrollklant)</option>
                                                         {if $uitzenders !== NULL}
                                                             {foreach $uitzenders as $u}
@@ -91,6 +92,9 @@
                                                             {/foreach}
                                                         {/if}
 													</select>
+                                                    {if isset($formdata.$field.error)}
+		                                                <span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}</span>
+                                                    {/if}
                                                 {/if}
 
 											</div>

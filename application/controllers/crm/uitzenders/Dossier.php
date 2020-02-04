@@ -83,14 +83,9 @@ class Dossier extends MY_Controller
 		if( isset($_POST['werkgever_id']) )
 		{
 			if( $uitzender->copyToOndernemingen( $_POST['werkgever_id'] ) )
-			{
 				$this->smarty->assign('msg', msg('success', 'Uitzender is gekopieerd'));
-				
-			}
 			else
-			{
 				$this->smarty->assign('msg', msg('warning', $uitzender->errors()) );
-			}
 		}
 		
 

@@ -45,6 +45,33 @@ class Users extends MY_Controller {
 		//init
 		$user = new User( $user_id );
 		
+		//backup
+		if(isset($_GET['backup']))
+		{
+			if( $user->backupPassword() )
+				redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/users/view/' . $user_id ,'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Wachtwoord kon niet worden gekopieerd' ) );
+		}
+		
+		//backup
+		if(isset($_GET['reset']))
+		{
+			if( $user->resetPassword() )
+				redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/users/view/' . $user_id ,'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Wachtwoord kon niet worden hersteld' ) );
+		}
+		
+		//default
+		if(isset($_GET['default']))
+		{
+			if( $user->defaultPassword() )
+				redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/users/view/' . $user_id ,'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Wachtwoord kon niet worden ingesteld' ) );
+		}
+		
 		$this->smarty->assign('user', $user->data());
 		$this->smarty->display('instellingen/users/view.tpl');
 	}

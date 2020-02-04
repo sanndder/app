@@ -23,6 +23,7 @@ class UserGroup extends Connector {
 	private $db_admin = NULL;
 	
 	private $_uitzender_id = NULL;
+	private $_inlener_id = NULL;
 	
 	/**
 	 * @var array
@@ -120,13 +121,24 @@ class UserGroup extends Connector {
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Alle users ophalen aan de hand van de zoekcriteria
+	 * set uitzender
 	 */
 	public function uitzender( $uitzender_id ) :UserGroup
 	{
 		$this->_uitzender_id = intval($uitzender_id);
 		return $this;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set inlener
+	 */
+	public function inlener( $inlener_id ) :UserGroup
+	{
+		$this->_inlener_id = intval($inlener_id);
+		return $this;
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -146,6 +158,11 @@ class UserGroup extends Connector {
 		//alleen voor uitzender
 		if( $this->_uitzender_id !== NULL )
 			$sql .= " AND uitzender_id = $this->_uitzender_id ";
+		
+		//alleen voor inlener
+		if( $this->_inlener_id !== NULL )
+			$sql .= " AND inlener_id = $this->_inlener_id ";
+		
 		
 		//order
 		$sql .= " ORDER BY users.username";

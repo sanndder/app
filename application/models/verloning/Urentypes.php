@@ -20,6 +20,8 @@ if (!defined('BASEPATH'))exit('No direct script access allowed');
 class Urentypes extends Connector
 {
 
+	private $_inlener_id = NULL;
+	
 	/*
 	 * @var array
 	 */
@@ -40,8 +42,21 @@ class Urentypes extends Connector
 		parent::__construct();
 
 	}
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set inlener
+	 *
+	 */
+	public function inlener( $id ) :Urentypes
+	{
+		$this->_inlener_id = intval( $id );
+		return $this;
+	}
+	
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * werknemer urentype id
@@ -51,8 +66,48 @@ class Urentypes extends Connector
 		$this->_werknemer_urentype_id = intval( $id );
 		return $this;
 	}
+
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Verkooptarief updaten
+	 *
+	 */
+	public function updateVerkooptarief( $post )
+	{
+		$update['standaard_verkooptarief'] = prepareAmountForDatabase($post['value']);
+		$this->db_user->where( 'inlener_id', $post['inlener_id'] );
+		$this->db_user->where( 'inlener_urentype_id', $post['urentype_id'] );
+		
+		$this->db_user->update( 'inleners_urentypes', $update );
+		
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		
+		return false;
+	}
 	
-	
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Label updaten
+	 *
+	 */
+	public function updateLabel( $post )
+	{
+		$update['label'] = $post['value'];
+		$this->db_user->where( 'inlener_id', $post['inlener_id'] );
+		$this->db_user->where( 'inlener_urentype_id', $post['urentype_id'] );
+		
+		$this->db_user->update( 'inleners_urentypes', $update );
+		
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		
+		return false;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -82,9 +137,6 @@ class Urentypes extends Connector
 	{
 		return $this->select_all( 'urentypes_categorien', 'urentype_categorie_id' );
 	}
-
-
-
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -129,6 +181,104 @@ class Urentypes extends Connector
 		
 		//show($result);
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * urentypes vanuit cao aanmaken
+	 *
+	 */
+	public function copyFromCao( $cao )
+	{
+		//show($cao);
+		if( !isset($cao['werksoort']))
+		{
+			$this->_error[] = 'Geen urentypes gevonden in CAO';
+			return false;
+		}
+		
+		//door alle uren heenlopen
+		foreach( $cao['werksoort'] as $werksoort )
+		{
+			//standaard uur overslaan
+			if( $werksoort['name'] != 'Standaard uur' )
+			{
+				unset( $_POST );
+				//toeslag
+				if( $werksoort['name'] == 'Toeslag' || $werksoort['name'] == 'Ploegentoeslag' )
+				{
+					//percentage aanpassen
+					if( $werksoort['amount'] > 100 )
+						$werksoort['amount'] = $werksoort['amount'] - 100;
+					
+					$_POST['urentype_categorie_id'] = 2; // 2 is overuren
+					$_POST['percentage'] = $werksoort['amount'] ;
+					$_POST['naam'] = 'toeslag ' . $werksoort['amount']  . '%';
+				}
+				
+				//overuren
+				if( $werksoort['name'] == 'Overuur' )
+				{
+					$_POST['urentype_categorie_id'] = 2; // 2 is overuren
+					$_POST['percentage'] = $werksoort['amount'] ;
+					$_POST['naam'] = 'overuren ' . $werksoort['amount']  . '%';
+				}
+				
+				//urentype ID ophalen
+				$urentype_id = $this->_getUrentypeId( $_POST );
+
+				//aan inlener toevoegen
+				$urentype['inlener_id'] = $this->_inlener_id; 
+				$urentype['urentype_id'] = $urentype_id; 
+				$urentype['doorbelasten_uitzender'] = 0;
+				$urentype['label'] = NULL;
+				$urentype['standaard_verkooptarief'] = NULL;
+				$urentype['user_id'] = $this->user->id;
+				
+				if( !$this->_urentypeInlenerExists($urentype) )
+					$this->addUrentypeToInlener( $this->_inlener_id, $urentype );
+			}
+		}
+
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * check if urentype exists with inlener
+	 *
+	 * @return bool
+	 */
+	private function _urentypeInlenerExists( $data ) :bool
+	{
+		$sql = "SELECT * FROM inleners_urentypes WHERE urentype_id = ? AND inlener_id = ? AND deleted = 0 LIMIT 1";
+		$query = $this->db_user->query( $sql, array( $data['urentype_id'], $this->_inlener_id ) );
+		
+		if( $query->num_rows() == 0 )
+			return false;
+		
+		return true;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * check if urentype exists and return ID if so
+	 * else insert uretype
+	 *
+	 * @return int
+	 */
+	private function _getUrentypeId( $data ) :int
+	{
+		$sql = "SELECT urentype_id FROM urentypes WHERE urentype_categorie_id = ".$data['urentype_categorie_id']." AND percentage = ".$data['percentage']." LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		
+		//nieuwe type aanmaken
+		if( $query->num_rows() == 0 )
+			return $this->add();
+		
+		$data = $query->row_array();
+		return $data['urentype_id'];
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -281,6 +431,9 @@ class Urentypes extends Connector
 			
 			$input['user_id'] = $this->user->user_id;
 			$this->db_user->insert( 'urentypes', $input );
+			
+			if( $this->db_user->insert_id() > 0 )
+				return  $this->db_user->insert_id();
 		}
 		//fouten aanwezig
 		else

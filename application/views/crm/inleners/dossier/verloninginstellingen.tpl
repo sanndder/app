@@ -6,6 +6,8 @@
 
 {block "content"}
 
+	<script src="recources/js/inlener/verloninginstellingen.js?{$time}"></script>
+
     {include file='crm/inleners/dossier/_sidebar.tpl' active='verloninginstellingen'}
     {include file='crm/inleners/dossier/modals/urentype_toevoegen.tpl'}
     {include file='crm/inleners/dossier/modals/vergoeding_toevoegen.tpl'}
@@ -209,9 +211,12 @@
 								</form>
 
 
+								{*********************************** CAO details **********************************************************}
 								<fieldset class="mt-4">
 									<legend class="text-uppercase font-size-sm font-weight-bold text-primary">CAO overzicht</legend>
 								</fieldset>
+
+                                {if isset($msg_copy)}{$msg_copy}{/if}
 
                                 {foreach $caos_inlener as $cao}
 
@@ -240,15 +245,28 @@
 					                                <th>Avv</th>
 					                                <td>{if $cao.avv == 1}Ja{else}Nee{/if}</td>
 				                                </tr>
+				                                <tr>
+					                                <td colspan="2" style="height: 20px;"></td>
+				                                </tr>
+				                                <tr>
+					                                <td colspan="2">
+						                                <a href="crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-cao&action=copyUrentypesFromCao&cao_code={$cao.code}">
+							                                <i class="icon-copy3 mr-1"></i>urentypes overnemen van CAO
+						                                </a>
+					                                </td>
+				                                </tr>
 			                                </table>
 
 		                                </div>
+
+		                                {* CAO urentypes*}
 		                                <div class="col-md-9">
 
 			                                <table>
 				                                <tr>
 					                                <th>Urentype</th>
 					                                <th>Percentage</th>
+					                                <th></th>
 				                                </tr>
                                                 {foreach $cao.werksoort as $werksoort}
 					                                <tr>
@@ -282,6 +300,8 @@
 									<legend class="text-uppercase font-size-sm font-weight-bold text-primary mb-1">Urentypes voor inlener</legend>
 								</fieldset>
 
+								<input type="hidden" class="inlener-id" value="{$inlener->inlener_id}" />
+
 								<table class="table table-striped table-xs">
 									<thead>
 										<tr>
@@ -296,17 +316,17 @@
 									<tbody>
                                         {if is_array($matrix)}
                                             {foreach $matrix as $urentype}
-												<tr>
+												<tr data-id="{$urentype.inlener_urentype_id}">
 													<td>{$urentype.naam}</td>
 													<td>{$urentype.percentage|number_format:2:',':'.'}%</td>
 													<td>
                                                         {* standaard uren niet aanpasbaar*}
                                                         {if $urentype.default_urentype != 1}
-														<input name="" value="{$urentype.label}" type="text" class="form-control"/>
+														<input name="" value="{$urentype.label}" type="text" class="form-control input-label" />
                                                         {/if}
 													</td>
 													<td>
-														<input name="" value="{$urentype.standaard_verkooptarief|number_format:2:',':'.'}" type="text" class="form-control text-right"/>
+														<input name="" value="{$urentype.standaard_verkooptarief|number_format:2:',':'.'}" type="text" class="form-control text-right input-verkooptarief" />
 													</td>
 													<td>
 														{* standaard uren niet aanpasbaar*}
@@ -399,41 +419,7 @@
 							</div>
 							<script>
 								{literal}
-								$('.toggle-urentype-active').on('change', function() {
 
-								    $obj = $(this);
-									$formcheck = $obj.closest('.form-check');
-									$formcheck.find('.spinner').show();
-                                    $formcheck.find('.form-check-label').hide();
-
-                                    $.get( 'crm/werknemers/ajax/toggleurentype?id='+$obj.data('id')+'&state=' +  $obj.prop('checked'), function( result ) {
-	                                    json = JSON.parse(result);
-                                        if (json.status == 'error' )
-                                            failed();
-                                        else
-                                        {
-	                                        if( $obj.prop('checked') )
-                                                $formcheck.closest('tr').removeClass('text-grey-200');
-	                                        else
-                                                $formcheck.closest('tr').addClass('text-grey-200');
-                                        }
-                                    })
-                                    .fail(function() {
-                                        failed();
-                                    }).always(function(){
-                                        $formcheck.find('.spinner').hide();
-                                        $formcheck.find('.form-check-label').show();
-                                    });
-
-                                    function failed()
-                                    {
-                                        if( $obj.prop('checked') )
-                                            $obj.prop('checked', false ).closest('span').removeClass('checked');
-                                        else
-                                            $obj.prop('checked', true ).closest('span').addClass('checked');
-                                        Swal.fire({type: 'error', title: 'Er ging wat fout', text: 'Wijzigingen zijn niet uitgevoerd!', confirmButtonClass: 'btn btn-info'});
-                                    }
-                                });
 								{/literal}
 							</script>
 

@@ -96,6 +96,7 @@ class CAOGroup extends Connector {
 			$id = $row['code'];
 			
 			$data[$id]['cao_name'] = $row['cao_name'];
+			$data[$id]['code'] = $row['code'];
 			$data[$id]['cao_id_intern'] = $row['cao_id_intern'];
 			$data[$id]['duration_start'] = $row['duration_start'];
 			$data[$id]['duration_end'] = $row['duration_end'];
