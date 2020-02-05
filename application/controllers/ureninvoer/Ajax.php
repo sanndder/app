@@ -5,6 +5,7 @@ use models\inleners\InlenerGroup;
 use models\verloning\Invoer;
 use models\verloning\InvoerKm;
 use models\verloning\InvoerUren;
+use models\verloning\InvoerVergoedingen;
 use models\verloning\UrentypesGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -28,6 +29,10 @@ class Ajax extends MY_Controller
 		//uitzender instellen
 		if( $this->user->user_type == 'uitzender' )
 			$this->_uitzender_id = $this->uitzender->id;
+		
+		//uitzender instellen
+		if( $this->user->user_type == 'inlener' )
+			$this->_inlener_id = $this->inlener->id;
 		
 		if( $this->user->user_type == 'werkgever' && isset($_POST['uitzender_id']) )
 			$this->_uitzender_id = intval($_POST['uitzender_id']);
@@ -53,12 +58,18 @@ class Ajax extends MY_Controller
 		
 		$invoerKm = new InvoerKm( $this->invoer );
 		$invoerKm->setWerknemer( $_POST['werknemer_id'] );
+		
+		$invoervergoedingen = new InvoerVergoedingen( $this->invoer );
+		$invoervergoedingen->setWerknemer( $_POST['werknemer_id'] );
 
 		//urenmatrix
 		$array['invoer']['uren'] = $invoerUren->urenMatrix();
 		
 		//kilometers
 		$array['invoer']['km'] = $invoerKm->getWerknemerKilometers();
+		
+		//vergoedingen
+		$array['invoer']['vergoedingen'] = $invoervergoedingen->getWerknemerVergoedingen();
 		
 		//urentypes erbij
 		$urentypesGroup = new UrentypesGroup();
@@ -148,7 +159,7 @@ class Ajax extends MY_Controller
 			$array['tijdvak'] = 'w';
 			$array['titel'] = 'week';
 			$array['jaren'] = array( 2020 );
-			$array['periodes'] = array( 2 => '02',  3=> '03', 4 => '04');
+			$array['periodes'] = array( 5 => '05');
 		}
 		
 		if( $factuurgegevens['frequentie'] == '4w')

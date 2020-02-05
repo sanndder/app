@@ -92,6 +92,22 @@ let tplKmInvoerTr = `<tr data-id="">
 						<td class="td-status pt-1"></td>
 					</tr>`;
 
+//vergoeding invoer tabel row
+let tplVergoedingVastTr = `<tr>
+								<td class="td-vergoeding">{vergoeding}</td>
+								<td class="td-euro">€</td>
+								<td style="width: 75px;" class="td-input">{bedrag}</td>
+							</tr>`;
+
+let tplVergoedingVariabelTr = `<tr>
+								<td class="td-vergoeding">{vergoeding}</td>
+								<td class="td-euro">€</td>
+								<td  style="width: 75px;" class="td-input">
+									<input style="width: 75px;" type="text" class="form-control" value="{bedrag}">
+								</td>
+							</tr>`;
+
+
 //bijlages tabel
 let tplBijlageTr = `<tr data-id="{file_id}">
 						<td class="pr-3"> <i class="icon-radio-unchecked text-grey-200"></i></td>

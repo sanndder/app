@@ -385,12 +385,16 @@ document.addEventListener('DOMContentLoaded', function(){
 	});
 	
 	//wanneer user uitzender, gelijk inleners laden
-	if( document.getElementsByClassName('uitzender-id').length == 0 )
+	if( document.getElementsByClassName('uitzender-id').length == 0 && document.getElementsByClassName('vi-list-inleners').length > 0 )
 		invoer.getInleners();
+	
+	//wanneer user inlener, gelijk werknemers laden
+	if( document.getElementsByClassName('vi-list-inleners').length == 0 )
+		invoer.setInlener( $('.inlener-id').val() );
 	
 	$('.uitzender-id').val(383).trigger('change');
 	
-	
+	/*
 	setTimeout(function(){
 		$('[data-vi-action="setInlener"][data-id="24"]').trigger('click');
 		
@@ -400,10 +404,10 @@ document.addEventListener('DOMContentLoaded', function(){
 			
 		}, 300);
 		
-	}, 300);
+	}, 300);*/
 	
 	
-	/*
+	
 	setTimeout(function(){
 		$('[data-vi-action="setInlener"][data-id="24"]').trigger('click');
 		
@@ -414,14 +418,15 @@ document.addEventListener('DOMContentLoaded', function(){
 				$('[data-id="14000"]').trigger('click');
 				
 				setTimeout(function(){
-					$('[href="#sub-kilometers"]').trigger('click');
+					$('[href="#sub-vergoedingen"]').trigger('click');
 					
+					/*
 					setTimeout(function(){
 						$('[name="locatie_van"]').val('Sterrenmos 52, Zwolle');
 						$('[name="locatie_naar"]').val("Reitscheweg, 5232 's-Hertogenbosch");
 						$('[name="datum"]').val('07-01-2020');
 						$('[name="aantal"]').val(134);
-					}, 300);
+					}, 300);*/
 					
 				}, 300);
 				
@@ -429,6 +434,6 @@ document.addEventListener('DOMContentLoaded', function(){
 			
 		}, 300);
 		
-	}, 300); */
+	}, 300);
 	
 });

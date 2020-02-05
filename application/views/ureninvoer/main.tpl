@@ -73,16 +73,11 @@
 								<td>
 									<ul class="list-inline list-inline-condensed vi-list-periodes mb-0">
 										<li class="list-inline-item dropdown pl-0" data-ajax-list="true" data-value="w">
-											<a data-value="2" href="javascript:void(0)" class="btn btn-link text-left text-default dropdown-toggle pl-2 vi-periode" data-toggle="dropdown" style="width: 100px;">
-												02
+											<a data-value="5" href="javascript:void(0)" class="btn btn-link text-left text-default dropdown-toggle pl-2 vi-periode" data-toggle="dropdown" style="width: 100px;">
+
 											</a>
 											<div class="dropdown-menu">
-												<a href="javascript:void(0)" class="dropdown-item" data-value="3" data-vi-action="setPeriode">
-													03
-												</a>
-												<a href="javascript:void(0)" class="dropdown-item" data-value="4" data-vi-action="setPeriode">
-													04
-												</a>
+
 											</div>
 										</li>
 									</ul>
@@ -113,9 +108,12 @@
                     {/if}
 
                     {*************** inlener keuze ****************************}
-					<ul class="nav nav-sidebar vi-list-inleners" data-nav-type="accordion">
-
-					</ul>
+                    {if $user_type == 'werkgever' || $user_type == 'uitzender'}
+						<ul class="nav nav-sidebar vi-list-inleners" data-nav-type="accordion">
+						</ul>
+                    {else}
+						<input type="hidden" class="inlener-id" value="{$inlener_id}">
+                    {/if}
 				</div>
 				<!-- /main navigation -->
 
@@ -289,7 +287,27 @@
 
                                         {****** Invoer: vergoedingen *****************************************************}
 										<div class="tab-pane tab-pane-sub fade" id="sub-vergoedingen">
-											vergoedingen
+
+											<table class="mt-2 vi-input vi-table-vergoedingen vi-vergoedingen-vast">
+												<thead>
+													<tr>
+														<th colspan="3">Vaste vergoedingen</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+
+											<table class="mt-4 vi-input vi-table-vergoedingen vi-vergoedingen-variabel">
+												<thead>
+													<tr>
+														<th colspan="3">Variabele vergoedingen</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+
 										</div>
 
                                         {****** Invoer: reserveringen *****************************************************}

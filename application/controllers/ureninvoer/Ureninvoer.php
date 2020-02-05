@@ -28,6 +28,11 @@ class Ureninvoer extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
+		//inlener
+		if( $this->user->user_type == 'inlener' )
+			$this->smarty->assign('inlener_id', $this->inlener->id);
+		
+		
 		$this->smarty->assign('uitzenders', UitzenderGroup::list()); //uitzenders voor werkgever ophalen
 		
 		if( isset($_GET['dummy']))

@@ -179,6 +179,12 @@
     color: #DDD
 }
 
+.vi-table-vergoedingen{ font-size: 13px;}
+.vi-table-vergoedingen .td-vergoeding{ width: 210px; }
+.vi-table-vergoedingen .td-euro{ padding-right: 10px; }
+.vi-table-vergoedingen .td-input{ text-align: right; width: 80px; }
+.vi-table-vergoedingen .td-input input{ text-align: right; width: 75px; }
+
 /* bijlages */
 .table-vi-bijlages {
     empty-cells: show;
