@@ -75,6 +75,75 @@
 
 								</fieldset>
 
+								<!-------------------------------------------------------------------------------------------------------------------------------------------------
+								|| Fase
+								-------------------------------------------------------------------------------------------------------------------------------------------------->
+								{if $user_type == 'werkgever'}
+								<fieldset class="mb-3">
+
+									<legend class="text-uppercase font-size-sm font-weight-bold">Fase instellingen</legend>
+
+									<div class="form-check">
+										<label class="form-check-label">
+											<span class="checked">
+												<input value="A" type="radio" class="form-input-styled" name="fase" checked="">
+											</span>
+											Fase A
+										</label>
+									</div>
+									<div class="form-check">
+										<label class="form-check-label">
+											<span>
+												<input value="B" type="radio" class="form-input-styled" name="fase">
+											</span>
+											Fase B
+										</label>
+									</div>
+									<div class="form-check">
+										<label class="form-check-label">
+											<span>
+												<input value="B" type="radio" class="form-input-styled" name="fase">
+											</span>
+											Fase C
+										</label>
+									</div>
+
+								</fieldset>
+
+								<!-------------------------------------------------------------------------------------------------------------------------------------------------
+								|| Pensioen
+								-------------------------------------------------------------------------------------------------------------------------------------------------->
+								<fieldset class="mb-3">
+
+									<legend class="text-uppercase font-size-sm font-weight-bold">Pensioen instellingen</legend>
+
+									<div class="form-check">
+										<label class="form-check-label">
+											<span class="checked">
+												<input value="0" type="radio" class="form-input-styled" name="stipp" checked="">
+											</span>
+											Geen pensioen
+										</label>
+									</div>
+									<div class="form-check">
+										<label class="form-check-label">
+											<span>
+												<input value="basis" type="radio" class="form-input-styled" name="stipp">
+											</span>
+											Stipp Basis
+										</label>
+									</div>
+									<div class="form-check">
+										<label class="form-check-label">
+											<span>
+												<input value="plus" type="radio" class="form-input-styled" name="stipp">
+											</span>
+											Stipp Plus
+										</label>
+									</div>
+
+								</fieldset>
+                                {/if}
 
 								<!-- opslaan -->
 								<div class="row mt-4">

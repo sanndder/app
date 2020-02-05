@@ -5,7 +5,7 @@
 
 {block "content"}
 
-	{include file='crm/inleners/dossier/_sidebar.tpl' active='overzicht'}
+    {include file='crm/inleners/dossier/_sidebar.tpl' active='overzicht'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@
 							<span><i>Geen fatcuren gevonden</i></span>
 						</div>
 
-						{*
+                        {*
 						<div class="table-responsive">
 							<table class="table table-striped table-bordered table-hover">
 								<thead>
@@ -188,27 +188,30 @@
 				<div class="col-md-3">
 
 					<!------------------------------------------------------- card: Uitzender ------------------------------------------------------>
-					<div class="card">
-						<div class="card-header bg-transparent header-elements-inline">
-							<span class="text-uppercase font-size-sm font-weight-semibold">Uitzender</span>
-							<div class="header-elements">
-								<div class="list-icons">
-									<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}" data-popup="tooltip" data-placement="top" data-title="Wijzig uitzender">
-										<i class="icon-pencil7"></i>
-									</a>
+                    {if $user_type == 'werkgever'}
+						<div class="card">
+							<div class="card-header bg-transparent header-elements-inline">
+								<span class="text-uppercase font-size-sm font-weight-semibold">Uitzender</span>
+								<div class="header-elements">
+									<div class="list-icons">
+										<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}" data-popup="tooltip" data-placement="top" data-title="Wijzig uitzender">
+											<i class="icon-pencil7"></i>
+										</a>
+									</div>
 								</div>
 							</div>
-						</div>
 
-						<div class="card-body">
-							{if $inlener->uitzenderID() == NULL}
-								<i>Inlener is niet aan uitzender gekoppeld</i>
-							{else}
-                                {$inlener->uitzenderID()} - {$uitzender}
-							{/if}
+							<div class="card-body">
+                                {if $inlener->uitzenderID() == NULL}
+									<i>Inlener is niet aan uitzender gekoppeld</i>
+                                {else}
+                                    {$inlener->uitzenderID()} - {$uitzender}
+                                {/if}
 
+							</div>
 						</div>
-					</div><!-- /card: Uitzender  -->
+						<!-- /card: Uitzender  -->
+                    {/if}
 
 					<!------------------------------------------------------- card: Accountmanager ------------------------------------------------------>
 					<div class="card">
@@ -229,51 +232,55 @@
 					</div><!-- /card: Accountmanager  -->
 
 					<!------------------------------------------------------- card: Gebruikers --------------------------------------------------------->
-					<div class="card">
-						<div class="card-header bg-transparent header-elements-inline">
-							<span class="text-uppercase font-size-sm font-weight-semibold">Users</span>
-							<div class="header-elements">
-								<div class="list-icons">
-									<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Usermanagement">
-										<i class="icon-pencil7"></i>
-									</a>
+                    {if $user_type == 'werkgever'}
+						<div class="card">
+							<div class="card-header bg-transparent header-elements-inline">
+								<span class="text-uppercase font-size-sm font-weight-semibold">Users</span>
+								<div class="header-elements">
+									<div class="list-icons">
+										<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Usermanagement">
+											<i class="icon-pencil7"></i>
+										</a>
+									</div>
 								</div>
 							</div>
+
+							<div class="card-body">
+
+								<ul class="media-list">
+                                    {if $users == NULL }
+										<a href="{$base_url}/instellingen/werkgever/users/add?id={$inlener->inlener_id}&user_type=inlener">User aanmaken</a>
+                                    {else}
+                                        {foreach $users as $u}
+											<li class="media mt-0">
+
+												<div class="media-body">
+													<a href="#" class="media-title font-weight-semibold">{$u.username}</a>
+													<div class="font-size-sm text-muted">{$u.naam}</div>
+												</div>
+                                                {*
+												<div class="ml-3 align-self-center">
+													<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Login als">
+														<i class="icon-enter"></i>
+													</a>
+												</div>
+												*}
+											</li>
+                                        {/foreach}
+                                    {/if}
+								</ul>
+
+							</div>
 						</div>
-
-						<div class="card-body">
-
-							<ul class="media-list">
-                                {if $users == NULL }
-									<a href="{$base_url}/instellingen/werkgever/users/add?id={$inlener->inlener_id}&user_type=inlener">User aanmaken</a>
-                                {else}
-                                    {foreach $users as $u}
-										<li class="media mt-0">
-
-											<div class="media-body">
-												<a href="#" class="media-title font-weight-semibold">{$u.username}</a>
-												<div class="font-size-sm text-muted">{$u.naam}</div>
-											</div>
-                                            {*
-											<div class="ml-3 align-self-center">
-												<a href="javascript:void()" data-popup="tooltip" data-placement="top" data-title="Login als">
-													<i class="icon-enter"></i>
-												</a>
-											</div>
-											*}
-										</li>
-                                    {/foreach}
-                                {/if}
-							</ul>
-
-						</div>
-					</div><!-- /card: Accountmanager  -->
+						<!-- /card: users  -->
+                    {/if}
 
 				</div><!-- / Right side -->
 			</div><!-- /einde main row -->
 
 		</div><!-- /content area -->
-	</div>	<!-- /main content -->
+	</div>
+	<!-- /main content -->
 
 
 {/block}

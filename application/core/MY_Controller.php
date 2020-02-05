@@ -36,9 +36,18 @@ class MY_Controller extends CI_Controller
 		//controllers die benaderd mogen worden zonder login
 		$no_login = array('aanmelden', 'crm', 'usermanagement');
 		
-		//validate user, wanneer ingelogd daan nooit no access
+
+		
+		//validate user, wanneer ingelogd dan nooit no-access
 		if( !in_array($this->uri->segment(1),$no_login) || isset($_SESSION['logindata']['main']) )
 		{
+			//inloggen als iemand anders
+			if( isset($_GET['loginals']) && $_SESSION['logindata']['user_type'] == 'werkgever' )
+			{
+				$redirect_url = $this->auth->loginOverrideByUsertype( $_GET['loginals'],  $_GET['id'] );
+				redirect( $redirect_url  ,'location' );
+			}
+			
 			//eventueel switchen VOOR de check ivm connect database
 			if( isset($_GET['switchto']) )
 			{
@@ -55,6 +64,7 @@ class MY_Controller extends CI_Controller
 		}
 		else
 			$this->auth->validate_nologin();
+		
 		
 		//init user
 		$this->load->model('user_model', 'user');

@@ -14,6 +14,7 @@ class User_model extends MY_Model
 	public $user_name = NULL;
 	public $username = NULL;
 	public $user_id = NULL;
+	public $active_user_id = NULL;
 	public $id = NULL; // alias
 	public $user_type = NULL;
 	public $account_id = NULL;
@@ -44,23 +45,40 @@ class User_model extends MY_Model
 		//main user
 		if( isset($logindata['main']['user_id']) && $logindata['main']['user_id'] != NULL )
 		{
+			//altijd hoofd ID gebruiken
 			$this->user_id = $logindata['main']['user_id'];
-			$this->username = $logindata['main']['username'];
-			$this->user_name = $logindata['main']['user_name'];
-			$this->user_type = $logindata['main']['user_type'];
+			$this->active_user_id = $this->user_id;
+			
+			//is er een override?
+			if( isset($logindata['override']) )
+			{
+				$this->username = $logindata['override']['username'];
+				$this->user_name = $logindata['override']['user_name'];
+				$this->user_type = $logindata['override']['user_type'];
+				
+				$this->uitzender_id = $logindata['override']['uitzender_id'] ?? NULL;
+				$this->inlener_id = $logindata['override']['inlener_id'] ?? NULL;
+				$this->werknemer_id = $logindata['override']['werknemer_id'] ?? NULL;
+				$this->zzp_id = $logindata['override']['zzp_id'] ?? NULL;
+				
+				$this->active_user_id = $logindata['override']['user_id'];
+			}
+			else
+			{
+				$this->username = $logindata['main']['username'];
+				$this->user_name = $logindata['main']['user_name'];
+				$this->user_type = $logindata['main']['user_type'];
+				
+				$this->uitzender_id = $logindata['main']['uitzender_id'] ?? NULL;
+				$this->inlener_id = $logindata['main']['inlener_id'] ?? NULL;
+				$this->werknemer_id = $logindata['main']['werknemer_id'] ?? NULL;
+				$this->zzp_id = $logindata['main']['zzp_id'] ?? NULL;
+			}
+			
 			$this->werkgever_id = $logindata['werkgever_id'];
 			$this->werkgever_naam = $logindata['werkgever_naam'];
 			$this->werkgever_type = $logindata['werkgever_type'];
 			$this->account_id = $logindata['account_id'];
-			
-			if( $this->user_type == 'uitzender' )
-				$this->uitzender_id = $logindata['main']['uitzender_id'];
-			if( $this->user_type == 'inlener' )
-				$this->inlener_id = $logindata['main']['inlener_id'];
-			if( $this->user_type == 'werknemer' )
-				$this->werknemer_id = $logindata['main']['werknemer_id'];
-			if( $this->user_type == 'zzp' )
-				$this->zzp_id = $logindata['main']['zzp_id'];
 
 			$this->smarty->assign( 'user_name' , $this->user_name );
 		}
@@ -71,7 +89,7 @@ class User_model extends MY_Model
 			$this->werkgever_id = $logindata['werkgever_id'];
 			$this->user_id = 0;
 		}
-		
+
 		//niet voor external
 		if( $this->user_type !== 'external' )
 			$this->_getLinkedAccounts();
@@ -82,7 +100,7 @@ class User_model extends MY_Model
 	/*************************************************************************************************
 	 * get linked accounts to switch to
 	 * TODO: dit kan wel handiger
-	 *
+	 * TODO: bij login als ook andere lijst weergeven. Account ID moet mee vanuit main en override
 	 * @return void
 	 *
 	 */
@@ -92,7 +110,7 @@ class User_model extends MY_Model
 		$sql = "SELECT users_accounts.id, users_accounts.user_id, users_accounts.werkgever_id, users_accounts.uitzender_id, users_accounts.inlener_id, users_accounts.werknemer_id, users_accounts.user_type, users_accounts.admin, w.name
 				FROM users_accounts
 				LEFT JOIN werkgevers w on users_accounts.werkgever_id = w.werkgever_id
-				WHERE user_id = $this->user_id AND users_accounts.deleted = 0";
+				WHERE user_id = $this->active_user_id AND users_accounts.deleted = 0";
 		
 		$query = $this->db_admin->query( $sql );
 		$this->user_accounts = DBhelper::toArray( $query, 'id', 'NULL' );

@@ -1,0 +1,61 @@
+{
+  "remove": [
+    "set",
+    "gb_datum_submit",
+    "id",
+    "user_id",
+    "werknemer_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "land_id": {
+      "label": "Land",
+      "rules": {
+        "required": true
+      },
+      "list": {
+        "empty": false,
+        "options": "landen"
+      }
+    },
+    "straat": {
+      "label": "Straat",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 40
+      }
+    },
+    "huisnummer": {
+      "label": "Huisnummer",
+      "rules": {
+        "required": true,
+        "minlength": 1,
+        "maxlength": 5
+      }
+    },
+    "postcode": {
+      "label": "Postcode",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 10,
+        "toupper": true,
+        "removespaces": true,
+        "removechars": "-,.,_",
+        "type": "postcode"
+      }
+    },
+    "plaats": {
+      "label": "Plaats",
+      "rules": {
+        "required": true,
+        "minlength": 2,
+        "maxlength": 100
+      }
+    }
+  }
+}

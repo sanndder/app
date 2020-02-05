@@ -10,7 +10,7 @@
 		</button>
 	</div>
 
-	{if isset($user_accounts) && is_array($user_accounts) && count($user_accounts) > 1}
+	{if isset($user_accounts) && is_array($user_accounts) && count($user_accounts) > 1 && !isset($smarty.session.logindata.override)}
 	<div class="collapse navbar-collapse" id="navbar-mobile">
 		<ul class="navbar-nav">
 

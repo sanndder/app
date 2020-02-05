@@ -50,6 +50,7 @@
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Instellingen verloning</legend>
 
+									{if $user_type == 'werkgever'}
 									<div class="row">
 										<label class="col-md-2">Vakantiegeld direct uitkeren</label>
 
@@ -58,7 +59,7 @@
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 													<span class="checked">
-														<input value="0" type="radio" class="form-input-styled" name="vakantiegeld_direct" checked="">
+														<input value="1" type="radio" class="form-input-styled" name="vakantiegeld_direct" required {if isset($verloning.vakantiegeld_direct) && $verloning.vakantiegeld_direct == 1} checked{/if}>
 													</span>
 													Ja
 												</label>
@@ -66,7 +67,7 @@
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 												<span>
-													<input value="basis" type="radio" class="form-input-styled" name="vakantiegeld_direct">
+													<input value="0" type="radio" class="form-input-styled" name="vakantiegeld_direct" {if isset($verloning.vakantiegeld_direct) && $verloning.vakantiegeld_direct == 0} checked{/if}>
 												</span>
 													Nee
 												</label>
@@ -82,7 +83,7 @@
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 													<span class="checked">
-														<input value="0" type="radio" class="form-input-styled" name="vakantieuren_direct" checked="">
+														<input value="1" type="radio" class="form-input-styled" name="vakantieuren_direct" required {if isset($verloning.vakantieuren_direct) && $verloning.vakantieuren_direct == 1} checked{/if}>
 													</span>
 													Ja
 												</label>
@@ -90,7 +91,7 @@
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 												<span>
-													<input value="basis" type="radio" class="form-input-styled" name="vakantieuren_direct">
+													<input value="0" type="radio" class="form-input-styled" name="vakantieuren_direct" {if isset($verloning.vakantieuren_direct) && $verloning.vakantieuren_direct == 0} checked{/if}>
 												</span>
 													Nee
 												</label>
@@ -106,7 +107,7 @@
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 													<span class="checked">
-														<input value="0" type="radio" class="form-input-styled" name="atv_direct" checked="">
+														<input value="1" type="radio" class="form-input-styled" name="atv_direct" required {if isset($verloning.atv_direct) && $verloning.atv_direct == 1} checked{/if}>
 													</span>
 													Ja
 												</label>
@@ -114,23 +115,24 @@
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 												<span>
-													<input value="basis" type="radio" class="form-input-styled" name="atv_direct">
+													<input value="0" type="radio" class="form-input-styled" name="atv_direct" {if isset($verloning.atv_direct) && $verloning.atv_direct == 0} checked{/if}>
 												</span>
 													Nee
 												</label>
 											</div>
 										</div>
 									</div>
+                                    {/if}
 
 									<div class="row mt-4">
-										<label class="col-md-2">Deelnemen ET-regeling</label>
+										<label class="col-md-2">Deelnemer ET-regeling</label>
 
-										<div class="col-md-8">
+										<div class="col-md-2">
 
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 													<span>
-														<input value="0" type="radio" class="form-input-styled" name="et_regeling">
+														<input value="1" type="radio" class="form-input-styled" name="et_regeling" required {if isset($verloning.et_regeling) && $verloning.et_regeling == 1} checked{/if}>
 													</span>
 													Ja
 												</label>
@@ -138,11 +140,14 @@
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 												<span class="checked">
-													<input value="basis" type="radio" class="form-input-styled" name="et_regeling" checked="">
+													<input value="0" type="radio" class="form-input-styled" name="et_regeling" {if isset($verloning.et_regeling) && $verloning.et_regeling == 0} checked{/if}>
 												</span>
 													Nee
 												</label>
 											</div>
+										</div>
+										<div class="col-md-8">
+											<i>Deelnemen aan de ET-regeling is alleen voor werknemers die woonachtig zijn in het buitenland en voor werk in Nederland verblijven</i>
 										</div>
 									</div>
 

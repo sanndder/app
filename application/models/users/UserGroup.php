@@ -45,7 +45,41 @@ class UserGroup extends Connector {
 		$this->db_admin = $CI->auth->db_admin;
 		
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * lijst met users
+	 *
+	 */
+	static function listUsertypeID( $user_type = '', $ids = array() )
+	{
+		$list = array();
 
+		if( !is_array($ids) || count($ids) == 0 )
+			return $list;
+		
+		if( current($ids) === NULL )
+			return $list;
+		
+		$CI =& get_instance();
+		$db_admin = $CI->auth->db_admin;
+		
+		$sql = "SELECT users.user_id, users_accounts.".$user_type ."_id
+				FROM users
+				LEFT JOIN users_accounts ON users.user_id = users_accounts.user_id
+				WHERE users_accounts.admin = 1 AND werkgever_id = ".$_SESSION['logindata']['werkgever_id']." AND users_accounts.".$user_type ."_id IN (".implode(',',$ids).")";
+
+				
+		$query = $db_admin->query( $sql );
+
+		if( $query->num_rows() == 0 )
+			return $list;
+		
+		foreach( $query->result_array() as $row )
+			$list[$row[$user_type . '_id']] = $row[$user_type . '_id'];
+
+		return $list;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -77,6 +111,7 @@ class UserGroup extends Connector {
 		
 		return $list;
 	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

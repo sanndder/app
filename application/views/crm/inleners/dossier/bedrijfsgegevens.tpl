@@ -49,23 +49,39 @@
                                 {assign "div_md" "8"}
 
 								<!-- opslaan -->
-								<div class="row">
-									<div class="col-lg-6 mb-3">
-                                        {if $inlener->complete == 1 }
-											<button type="submit" name="set" class="btn btn-success btn-sm">
-												<i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan
-											</button>
+                                {if $user_type == 'werkgever'}
+									<div class="row">
+										<div class="col-lg-6 mb-3">
+                                            {* bovenste knop alleen wanneer inlener compleet *}
+                                            {if $inlener->complete == 1 }
+												<button type="submit" name="set" class="btn btn-success btn-sm">
+													<i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan
+												</button>
+                                            {/if}
+										</div><!-- /col -->
+                                        {if $ENV == 'development' || $user_id == 2}
+											<div class="col-lg-6 text-right mb-3">
+											<span data-title="Formulier invullen" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="fillForm()">
+												<i class="icon-pencil3 mr-2" style="font-size: 22px"></i>
+											</span>
+											</div>
                                         {/if}
-									</div><!-- /col -->
-                                    {if $ENV == 'development' || $user_id == 2}
-										<div class="col-lg-6 text-right mb-3">
-										<span data-title="Formulier invullen" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="fillForm()">
-											<i class="icon-pencil3 mr-2" style="font-size: 22px"></i>
-										</span>
-										</div>
-                                    {/if}
-								</div><!-- /row -->
+									</div>
+									<!-- /row -->
 
+									<!------ opslaan --------->
+									<div class="row">
+                                        {* geschiedenis alleen wanneer inlener compleet *}
+                                        {if $inlener->complete == 1}
+											<div class="col-lg-6 text-right mb-3">
+												<span data-title="Wijzigingen weergeven" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="showHistory('inlener_bedrijfsgegevens', 'inlener_id', {$inlener->inlener_id} )">
+													<i class="icon-history mr-2" style="font-size: 22px"></i>
+												</span>
+											</div>
+                                        {/if}
+									</div>
+									<!-- /row -->
+                                {/if}
 
                                 {* bij nieuwe inlener ook uitzender kiezen, alleen als werkgever *}
                                 {if $inlener->complete != 1 && $user_type == 'werkgever'}
@@ -93,7 +109,11 @@
                                                         {/if}
 													</select>
                                                     {if isset($formdata.$field.error)}
-		                                                <span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}</span>
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
+
+
+																<br/>
+                                                            {/foreach}</span>
                                                     {/if}
                                                 {/if}
 
@@ -102,28 +122,6 @@
 
 									</fieldset>
                                 {/if}
-
-								<!------ opslaan --------->
-								<div class="row">
-                                    {* bovenste knop alleen wanneer inlener compleet *}
-                                    {if $inlener->complete == 1}
-										<div class="col-lg-6 mb-3">
-											<button type="submit" name="set" class="btn btn-success btn-sm">
-												<i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan
-											</button>
-										</div>
-                                    {/if}
-
-                                    {* geschiedenis alleen wanneer inlener compleet *}
-                                    {if $inlener->complete == 1}
-										<div class="col-lg-6 text-right mb-3">
-											<span data-title="Wijzigingen weergeven" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="showHistory('inlener_bedrijfsgegevens', 'inlener_id', {$inlener->inlener_id} )">
-												<i class="icon-history mr-2" style="font-size: 22px"></i>
-											</span>
-										</div>
-                                    {/if}
-								</div><!-- /row -->
-
 
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Bedrijfsgegevens</legend>
@@ -361,13 +359,16 @@
 								</fieldset>
 
 								<!-- opslaan -->
-								<div class="row">
-									<div class="col-lg-12 mb-3">
-										<button type="submit" name="set" class="btn btn-success btn-sm">
-											<i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan
-										</button>
-									</div><!-- /col -->
-								</div><!-- /row -->
+                                {if $user_type == 'werkgever'}
+									<div class="row">
+										<div class="col-lg-12 mb-3">
+											<button type="submit" name="set" class="btn btn-success btn-sm">
+												<i class="icon-checkmark2 mr-1"></i>Wijzigingen opslaan
+											</button>
+										</div><!-- /col -->
+									</div>
+									<!-- /row -->
+                                {/if}
 
 							</form>
 

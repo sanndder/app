@@ -46,7 +46,11 @@ class Uitzender_model extends MY_Model
 		parent::__construct();
 		
 		//uitzender id
-		$this->uitzender_id = $_SESSION['logindata']['main']['uitzender_id'];
+		if( isset( $_SESSION['logindata']['override']['uitzender_id'] ) )
+			$this->uitzender_id = $_SESSION['logindata']['override']['uitzender_id'];
+		else
+			$this->uitzender_id = $_SESSION['logindata']['main']['uitzender_id'];
+		
 		$this->id = $this->uitzender_id;
 	}
 

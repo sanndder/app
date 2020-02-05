@@ -3,6 +3,7 @@
 {block "header-icon"}icon-office{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 {assign "select2" "true"}
+{assign "datamask" "true"}
 {assign "uploader" "true"}
 
 {block "content"}
@@ -61,27 +62,37 @@
 												<input name="file" type="file" id="fileupload" class="file-input">
 											</form>
                                         {else}
-											<table>
-												<tr>
-													<td class="font-weight-bold pr-4">Bestand:</td>
-													<td class="pr-4">
-														<a href="{$base_url}/crm/werknemers/dossier/etregeling/{$werknemer->werknemer_id}/?delbsn">
-															<i class="icon-file-empty mr-1"></i>inschrijving.pdf
-														</a>
-													</td>
-													<td>
-														<a href="{$base_url}/crm/werknemers/dossier/etregeling/{$werknemer->werknemer_id}/?delbsn" class="text-danger">
-															<i class="icon-cross"></i>verwijderen
-														</a>
-													</td>
-												</tr>
-												<tr>
-													<td class="font-weight-bold pr-4 pt-3">Vervaldatum:</td>
-													<td class="pt-3">
-														<input name="vervaldatum" value="" type="text" class="form-control "/>
-													</td>
-												</tr>
-											</table>
+											<form action="" method="post">
+												<table>
+													<tr>
+
+														<td class="font-weight-bold pr-4">Bestand:</td>
+														<td class="pr-4">
+															<a href="{$base_url}/crm/werknemers/dossier/etregeling/{$werknemer->werknemer_id}" target="_blank">
+																<i class="icon-file-empty mr-1"></i>inschrijving.pdf
+															</a>
+														</td>
+														<td>
+															<a href="{$base_url}/crm/werknemers/dossier/etregeling/{$werknemer->werknemer_id}/?delbsn" class="text-danger">
+																<i class="icon-cross"></i>verwijderen
+															</a>
+														</td>
+													</tr>
+													<tr>
+														<td class="font-weight-bold pr-4 pt-3">Dagtekening inschrijving:</td>
+														<td class="pt-3">
+															<input name="dagtekening" placeholder="dd-mm-jjjj" data-mask="99-99-9999" value="{if $dagtekening != NULL}{$dagtekening|date_format: '%d-%m-%Y'}{/if}" type="text" class="form-control "/>
+														</td>
+													</tr>
+
+												</table>
+
+
+												<button type="submit" name="set" value="dagtekening" class="btn btn-success btn-sm mt-3">
+													<i class="icon-checkmark2 mr-1"></i>Dagtekening opslaan
+												</button>
+
+											</form>
                                         {/if}
 
 									</div>
@@ -92,9 +103,11 @@
 						</div><!-- /card body-->
 					</div><!-- /basic card -->
 
+
 					<!-------------------------------------------------------------------------------------------------------------------------------------------------
-				|| Adresgegevens
-				-------------------------------------------------------------------------------------------------------------------------------------------------->
+					|| Instellingen
+					-------------------------------------------------------------------------------------------------------------------------------------------------->
+                    {*
 					<!-- Basic card -->
 					<div class="card">
 
@@ -142,6 +155,7 @@
 							</form>
 						</div><!-- /card body-->
 					</div><!-- /basic card -->
+					*}
 
 					<!-------------------------------------------------------------------------------------------------------------------------------------------------
 					|| Adresgegevens
@@ -158,6 +172,97 @@
                                 {* Adres Nederland *}
 								<div class="col-md-5">
 									<form method="post" action="">
+										<fieldset class="mb-3">
+											<legend class="text-uppercase font-size-sm font-weight-bold mb-1">Adres land van herkomst</legend>
+
+											<div class="table-responsive">
+												<table class="table">
+													<tr>
+                                                        {if isset($formdata.land_id)}
+                                                        {assign "field" "land_id"}
+														<td>
+															<label class="col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}</label>
+														</td>
+														<td>
+															<select class="form-control select-search {if isset($formdata.$field.error)}border-danger{/if}" name="land_id">
+																<option value="">Selecteer een land</option>
+                                                                {foreach $landen as $land}
+	                                                                {if $land != 'Nederland'}
+																		<option {if $formdata.$field.value == $land@key} selected{/if} value="{$land@key}">{$land}</option>
+                                                                    {/if}
+                                                                {/foreach}
+															</select>
+														</td>
+                                                        {/if}
+													</tr>
+													<tr>
+														<!-- straat -->
+                                                        {if isset($formdata.straat)}
+                                                            {assign "field" "straat"}
+															<td>
+																<label class="col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}</label>
+															</td>
+															<td>
+																<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" autocomplete="off">
+                                                                {if isset($formdata.$field.error)} <span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}</span>{/if}
+															</td>
+                                                        {/if}
+													</tr>
+													<tr>
+														<!-- huisnummer -->
+                                                        {if isset($formdata.huisnummer)}
+                                                            {assign "field" "huisnummer"}
+															<td>
+																<label class="col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}</label>
+															</td>
+															<td>
+																<input style="width: 100px;" value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" autocomplete="off">
+                                                                {if isset($formdata.$field.error)} <span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}</span>{/if}
+															</td>
+                                                        {/if}
+													</tr>
+													<tr>
+														<!-- postcode -->
+                                                        {if isset($formdata.postcode)}
+                                                            {assign "field" "postcode"}
+															<td>
+																<label class="col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}</label>
+															</td>
+															<td>
+																<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" autocomplete="off">
+                                                                {if isset($formdata.$field.error)} <span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}</span>{/if}
+															</td>
+                                                        {/if}
+													</tr>
+													<tr>
+														<!-- plaats -->
+                                                        {if isset($formdata.plaats)}
+                                                            {assign "field" "plaats"}
+															<td>
+																<label class="col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}</label>
+															</td>
+															<td>
+																<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" autocomplete="off">
+                                                                {if isset($formdata.$field.error)} <span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}</span>{/if}
+															</td>
+                                                        {/if}
+													</tr>
+												</table>
+											</div>
+
+											<button type="submit" name="set" value="adres" class="btn btn-success btn-sm mt-3">
+												<i class="icon-checkmark2 mr-1"></i>Adres opslaan
+											</button>
+
+										</fieldset>
+									</form>
+								</div><!-- /col -->
+
+
+                                {* Adres Buitenland *}
+								<div class="col-md-5 offset-lg-1">
+
+									<form method="post" action="">
 										<fieldset class="mb-2">
 											<legend class="text-uppercase font-size-sm font-weight-bold mb-1">Adres verblijf Nederland</legend>
 
@@ -172,87 +277,30 @@
 													<tr>
 														<td>Straat</td>
 														<td>
-															<input name="straat" value="" type="text" class="form-control"/>
+															<input name="straat" value="{$gegevens.straat}" type="text" class="form-control" disabled/>
 														</td>
 													</tr>
 													<tr>
 														<td>Huisnummer</td>
 														<td>
-															<input style="width: 100px;" name="huisnummer" value="" type="text" class="form-control"/>
+															<input style="width: 100px;" name="huisnummer" value="{$gegevens.huisnummer}" type="text" class="form-control" disabled/>
 														</td>
 													</tr>
 													<tr>
 														<td>Postcode</td>
 														<td>
-															<input style="width: 100px;" name="postcode" value="" type="text" class="form-control"/>
+															<input style="width: 100px;" name="postcode" value="{$gegevens.postcode}" type="text" class="form-control" disabled/>
 														</td>
 													</tr>
 													<tr>
 														<td>Plaats</td>
 														<td>
-															<input name="plaats" value="" type="text" class="form-control"/>
+															<input name="plaats" value="{$gegevens.plaats}" type="text" class="form-control" disabled/>
 														</td>
 													</tr>
 												</table>
 											</div>
 
-											<button type="submit" name="set" value="werknemers_factoren" class="btn btn-success btn-sm mt-3">
-												<i class="icon-checkmark2 mr-1"></i>Adres opslaan
-											</button>
-										</fieldset>
-									</form>
-								</div><!-- /col -->
-
-
-                                {* Adres Buitenland *}
-								<div class="col-md-5 offset-lg-1">
-									<form method="post" action="">
-										<fieldset class="mb-3">
-											<legend class="text-uppercase font-size-sm font-weight-bold mb-1">Adres land van herkomst</legend>
-
-											<div class="table-responsive">
-												<table class="table">
-													<tr>
-														<td>Land</td>
-														<td>
-															<select class="form-control select-search">
-																<option>Selecteer een land</option>
-                                                                {foreach $landen as $land}
-																	<option value="{$land@key}">{$land}</option>
-                                                                {/foreach}
-															</select>
-														</td>
-													</tr>
-													<tr>
-														<td>Straat</td>
-														<td>
-															<input name="straat" value="" type="text" class="form-control"/>
-														</td>
-													</tr>
-													<tr>
-														<td>Huisnummer</td>
-														<td>
-															<input style="width: 100px;" name="huisnummer" value="" type="text" class="form-control"/>
-														</td>
-													</tr>
-													<tr>
-														<td>Postcode</td>
-														<td>
-															<input name="postcode" value="" type="text" class="form-control"/>
-														</td>
-													</tr>
-													<tr>
-														<td>Plaats</td>
-														<td>
-															<input name="plaats" value="" type="text" class="form-control"/>
-														</td>
-													</tr>
-												</table>
-											</div>
-
-											<button type="submit" name="set" value="werknemers_factoren" class="btn btn-success btn-sm mt-3">
-												<i class="icon-checkmark2 mr-1"></i>Adres opslaan
-											</button>
 										</fieldset>
 									</form>
 								</div><!-- /col -->

@@ -166,7 +166,7 @@ class Valid
 		if( preg_match( "/^\W*[1-9]{1}[0-9]{3}\W*[a-zA-Z]{2}\W*$/", $postcode ) )
 			return true;
 		else
-			return false;
+			return true;
 		
 	}
 	

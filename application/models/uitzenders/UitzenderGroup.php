@@ -3,6 +3,7 @@
 namespace models\uitzenders;
 
 use models\Connector;
+use models\users\UserGroup;
 use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -158,9 +159,13 @@ class UitzenderGroup extends Connector {
 			return $data;
 
 		foreach ($query->result_array() as $row)
-		{
 			$data[$row['uitzender_id']] = $row;
-		}
+
+		//kijken of uitzender users heeft
+		$users = UserGroup::listUsertypeID('uitzender', array_keys($data));
+		
+		foreach ( $users as $user )
+			$data[$user]['user'] = 1;
 
 		return $data;
 	}

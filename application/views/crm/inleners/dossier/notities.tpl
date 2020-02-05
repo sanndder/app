@@ -54,6 +54,7 @@
 				</div>
 			</div>
 
+            {*
 			<div class="row">
 				<div class="col-xl-11">
 
@@ -133,6 +134,7 @@
 
 				</div><!-- /col -->
 			</div><!-- /row -->
+*}
 
 		</div><!-- /content area -->
 	</div>

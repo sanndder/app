@@ -88,7 +88,6 @@ class Dossier extends MY_Controller
 				$this->smarty->assign('msg', msg('warning', $uitzender->errors()) );
 		}
 		
-
 		//redirect indien nodig
 		if( $uitzender->complete == 0 )
 		{
@@ -97,6 +96,21 @@ class Dossier extends MY_Controller
 			if( $uitzender->factuurgegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/factuurgegevens/' . $uitzender_id ,'location');
 			if( $uitzender->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/uitzenders/dossier/contactpersonen/' . $uitzender_id ,'location');
 		}
+		
+		//acties
+		if( isset($_GET['action']) )
+		{
+			switch( $_GET['action'] )
+			{
+				case 'archief':
+					$uitzender->setArchief( true );
+					break;
+				case 'uitarchief':
+					$uitzender->setArchief( false );
+					break;
+			}
+		}
+		
 		
 		//uitzender users ophalen
 		$usersgroup = new UserGroup();

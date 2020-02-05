@@ -42,9 +42,13 @@ class Inlener_model extends MY_Model
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		//inlener id
-		$this->inlener_id = $_SESSION['logindata']['main']['inlener_id'];
+		if( isset( $_SESSION['logindata']['override']['inlener_id'] ) )
+			$this->inlener_id = $_SESSION['logindata']['override']['inlener_id'];
+		else
+			$this->inlener_id = $_SESSION['logindata']['main']['inlener_id'];
+
 		$this->id = $this->inlener_id;
 	}
 

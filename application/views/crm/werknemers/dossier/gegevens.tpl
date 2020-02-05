@@ -2,7 +2,7 @@
 {block "title"}Werknemer{/block}
 {block "header-icon"}icon-office{/block}
 {assign "select2" "true"}
-{assign "datamask" "true"}
+{assign "datamask" "true"}data
 {block "header-title"}
     {if $werknemer->werknemer_id == 0}
 		Nieuwe werknemer aanmelden
@@ -76,7 +76,6 @@
                                     {if $user_type == 'werkgever'}
 										<fieldset class="mb-3">
 											<legend class="text-uppercase font-size-sm font-weight-bold">Uitzender</legend>
-
 											<div class="form-group row">
 												<label class="col-lg-{$label_lg} col-form-label">Uitzender:</label>
 												<div class="col-form-label col-xl-{$div_xl} col-md-{$div_md} pt-0">
@@ -85,7 +84,7 @@
 														<option value="">Selecteer een uitzender</option>
                                                         {if $uitzenders !== NULL}
                                                             {foreach $uitzenders as $u}
-																<option {if $formdata.uitzender_id.value == $u@key} selected{/if} value="{$u@key}">{$u@key} - {$u}</option>
+																<option {if $formdata.uitzender_id.value == $u@key || (isset($smarty.post.uitzender_id) && $smarty.post.uitzender_id == $u@key )} selected{/if} value="{$u@key}">{$u@key} - {$u}</option>
                                                             {/foreach}
                                                         {/if}
 													</select>

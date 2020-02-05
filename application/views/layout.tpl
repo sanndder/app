@@ -51,13 +51,18 @@
 		<script src="template/global_assets/js/plugins/forms/inputs/inputmask.js" type="text/javascript"></script>
     {/if}
 
-
-
 	<!-- /JS plugins -->
 
 </head>
 
 <body>
+
+{* Login als message *}
+{if isset($smarty.session.logindata.override)}
+	<div class="override-msg">
+		<i class="icon-warning22 mr-1"></i> LET OP: U bent ingelogd onder een andere acoount: {$smarty.session.logindata.override.user_name} (ID: {$smarty.session.logindata.override.user_id})
+	</div>
+{/if}
 
 <!-- Div wrapper to push page to the left -->
 <div class="page-wrapper">

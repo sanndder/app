@@ -13,57 +13,64 @@ use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingGroup;
 use models\werknemers\Werknemer;
 
-defined('BASEPATH') OR exit('No direct script access allowed');
-
+defined( 'BASEPATH' ) OR exit( 'No direct script access allowed' );
 
 /**
  * Instellingen controller
  */
 class Dossier extends MY_Controller
 {
-
+	//TODO per class beveiligen
 	//-----------------------------------------------------------------------------------------------------------------
 	// Constructor
 	//-----------------------------------------------------------------------------------------------------------------
 	public function __construct()
 	{
 		parent::__construct();
-
+		
 		//Deze pagina mag alleen bezocht worden door werkgever
-		if( $this->user->user_type != 'werkgever' &&  $this->user->user_type != 'uitzender' )forbidden();
-
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )
+			forbidden();
+		
 		//method naar smarty
-		$this->smarty->assign('method', $this->router->method);
+		$this->smarty->assign( 'method', $this->router->method );
 		
 		//log visit
 		$log = new VisitsLogger();
-		$log->logCRMVisit( 'werknemer', $this->uri->segment(5));
+		$log->logCRMVisit( 'werknemer', $this->uri->segment( 5 ) );
 	}
-
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// Overzicht pagina
 	//-----------------------------------------------------------------------------------------------------------------
 	public function overzicht( $werknemer_id = NULL )
 	{
 		$werknemer = new Werknemer( $werknemer_id );
-
+		
 		//redirect indien nodig
 		if( $werknemer->complete == 0 )
 		{
-			if( $werknemer->gegevens_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/gegevens/' . $werknemer_id ,'location');
-			if( $werknemer->documenten_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/documenten/' . $werknemer_id ,'location');
-			//if( $werknemer->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/werknemers/dossier/contactpersonen/' . $werknemer_id ,'location');
+			if( $werknemer->gegevens_complete != 1 )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/gegevens/' . $werknemer_id, 'location' );
+			if( $werknemer->documenten_complete != 1 )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
+			if( $werknemer->dienstverband_complete != 1 )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/dienstverband/' . $werknemer_id, 'location' );
+			if( $werknemer->verloning_complete != 1 )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/verloning/' . $werknemer_id, 'location' );
+			if( $werknemer->etregeling != 1 )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/etregeling/' . $werknemer_id, 'location' );
 		}
-
+		
 		//show($werknemers);
-
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->assign('gegevens', $werknemer->gegevens());
-		$this->smarty->display('crm/werknemers/dossier/overzicht.tpl');
+		
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->assign( 'gegevens', $werknemer->gegevens() );
+		$this->smarty->display( 'crm/werknemers/dossier/overzicht.tpl' );
 	}
-
-
-
+	
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// Algemene instellingen
 	//-----------------------------------------------------------------------------------------------------------------
@@ -71,43 +78,43 @@ class Dossier extends MY_Controller
 	{
 		//load the formbuilder
 		$formbuidler = new Formbuilder();
-
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
-
+		
 		//set gegevens
-		if( isset($_POST['set']) )
+		if( isset( $_POST['set'] ) )
 		{
 			//sitch
-			switch ($_POST['set']) {
+			switch( $_POST['set'] )
+			{
 				case 'werknemers_factoren':
 					$factoren = $werknemer->setFactoren();
 					break;
 			}
-
+			
 			$errors = $werknemer->errors();
-
+			
 			//msg
 			if( $errors === false )
-				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+				$this->smarty->assign( 'msg', msg( 'success', 'Wijzigingen opgeslagen!' ) );
 			else
-				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
-		}
-		else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!' ) );
+		} else
 		{
 			//$factoren =  $werknemer->factoren();
 			//$errors = false; //no errors
 		}
-
+		
 		//form maken
 		//$formdata = $formbuidler->table( 'werknemers_factoren' )->data( $factoren )->errors( $errors )->build();
 		//$this->smarty->assign('formdata', $formdata);
-
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/algemeneinstellingen.tpl');
+		
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/algemeneinstellingen.tpl' );
 	}
-
-
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// Bedrijfsgegevens
 	//-----------------------------------------------------------------------------------------------------------------
@@ -115,48 +122,45 @@ class Dossier extends MY_Controller
 	{
 		//load the formbuilder
 		$formbuidler = new Formbuilder();
-
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
 		//set gegevens
-		if( isset($_POST['set']) )
+		if( isset( $_POST['set'] ) )
 		{
-			$bedrijfsgevens = $werknemer->setGegevens();
+			$gegevens = $werknemer->setGegevens();
 			$errors = $werknemer->errors();
-
+			
 			//msg
 			if( $errors === false )
 			{
 				//nieuwe aanmelding doorzetten naar volgende pagina
 				if( $werknemer->documenten_complete != 1 )
-					redirect( $this->config->item('base_url') . 'crm/werknemers/dossier/documenten/' . $werknemer->werknemer_id ,'location');
-
+					redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer->werknemer_id, 'location' );
+				
 				//bestaande uiztender melding tonen
-				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
-			}
-			else
-				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
-		}
-		else
+				$this->smarty->assign( 'msg', msg( 'success', 'Wijzigingen opgeslagen!' ) );
+			} else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!' ) );
+		} else
 		{
-			$bedrijfsgevens =  $werknemer->gegevens();
+			$gegevens = $werknemer->gegevens();
 			$errors = false; //no errors
 		}
-
+		
 		//form opbouwen
-		$formdata = $formbuidler->table( 'werknemers_gegevens' )->data( $bedrijfsgevens )->errors( $errors )->build();
-		$formdata['uitzender_id']['value'] = $werknemer->uitzenderID();
-
-		$this->smarty->assign('formdata', $formdata);
+		$formdata = $formbuidler->table( 'werknemers_gegevens' )->data( $gegevens )->errors( $errors )->build();
+		
+		$this->smarty->assign( 'formdata', $formdata );
 		
 		//show(Codering::listNationaliteiten());
-		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
-		$this->smarty->assign('list', array( 'nationaliteiten' => Codering::listNationaliteiten(), 'landen' => Codering::listLanden() ));
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/gegevens.tpl');
+		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
+		$this->smarty->assign( 'list', array( 'nationaliteiten' => Codering::listNationaliteiten(), 'landen' => Codering::listLanden() ) );
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/gegevens.tpl' );
 	}
-
+	
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -172,22 +176,22 @@ class Dossier extends MY_Controller
 		$idbewijs->werknemer( $werknemer_id );
 		
 		//TODO weghalen
-		if( isset($_GET['contract']) )
+		if( isset( $_GET['contract'] ) )
 		{
 			$template = new Template( 7 ); //4 is samenwerkingsovereenkomst
 			$document = DocumentFactory::createFromTemplateObject( $template );
 			$document->setWerknemerID( $werknemer_id )->build()->pdf();
 			
-			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id ,'location' );
+			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
 		}
 		
 		//ID opslaan vanuit wizard
-		if( isset($_POST['set_wizard']) )
+		if( isset( $_POST['set_wizard'] ) )
 		{
 			$idbewijs->setVervalDatum( $_POST['vervaldatum'] );
 			
-			if( $idbewijs->errors() !== false)
-				$this->smarty->assign('msg', msg('warning', $idbewijs->errors() ));
+			if( $idbewijs->errors() !== false )
+				$this->smarty->assign( 'msg', msg( 'warning', $idbewijs->errors() ) );
 			else
 			{
 				//check of alles compleet is
@@ -201,8 +205,7 @@ class Dossier extends MY_Controller
 					//nieuwe aanmelding doorzetten naar volgende pagina
 					if( $documenten_complete_cache != 1 )
 						redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/dienstverband/' . $werknemer->werknemer_id, 'location' );
-				}
-				else
+				} else
 				{
 					//set documenten als NIET complete
 					$werknemer->documenten_complete( false );
@@ -211,18 +214,18 @@ class Dossier extends MY_Controller
 			}
 		}
 		
-		$this->smarty->assign('werknemer', $werknemer);
-
-		$this->smarty->assign('contract', $werknemer->contract());
-		$this->smarty->assign('id_voorkant', $idbewijs->url( 'voorkant' ));
-		$this->smarty->assign('id_achterkant', $idbewijs->url( 'achterkant' ));
-		$this->smarty->assign('vervaldatum', $idbewijs->vervaldatum() );
-
+		$this->smarty->assign( 'werknemer', $werknemer );
+		
+		$this->smarty->assign( 'contract', $werknemer->contract() );
+		$this->smarty->assign( 'id_voorkant', $idbewijs->url( 'voorkant' ) );
+		$this->smarty->assign( 'id_achterkant', $idbewijs->url( 'achterkant' ) );
+		$this->smarty->assign( 'vervaldatum', $idbewijs->vervaldatum() );
+		
 		//afwijkende template voor
 		if( $werknemer->complete != 1 )
-			$this->smarty->display('crm/werknemers/dossier/documenten_wizard.tpl');
+			$this->smarty->display( 'crm/werknemers/dossier/documenten_wizard.tpl' );
 		else
-			$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+			$this->smarty->display( 'crm/werknemers/dossier/documenten.tpl' );
 		
 	}
 	
@@ -237,10 +240,11 @@ class Dossier extends MY_Controller
 		$plaatsingGroup = new PlaatsingGroup();
 		
 		//Uitzender wijzigen
-		if( isset($_POST['set']) )
+		if( isset( $_POST['set'] ) )
 		{
 			//switch for verschillende forms
-			switch ($_POST['set']){
+			switch( $_POST['set'] )
+			{
 				//extra factoren toevoegen
 				case 'set_uitzender':
 					$werknemer->setUitzender( $_POST['uitzender_id'] );
@@ -253,21 +257,21 @@ class Dossier extends MY_Controller
 		}
 		
 		//plaatsing verwijderen
-		if( isset($_GET['delplaatsing']) )
+		if( isset( $_GET['delplaatsing'] ) )
 		{
 			$plaatsing = new Plaatsing( $_GET['delplaatsing'] );
 			$plaatsing->delete();
 		}
 		
 		$inleners = $inlenerGroup->uitzender( $werknemer->uitzenderID() )->all();
-
+		
 		//$this->smarty->assign('plaatsingen', $plaatsingen );
-		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
-		$this->smarty->assign('inleners', $inleners );
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->assign('plaatsingen', $plaatsingGroup->werknemer($werknemer_id)->all() );
-		$this->smarty->assign('werknemer_uitzender', $werknemer->uitzender());
-		$this->smarty->display('crm/werknemers/dossier/plaatsingen.tpl');
+		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
+		$this->smarty->assign( 'inleners', $inleners );
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->assign( 'plaatsingen', $plaatsingGroup->werknemer( $werknemer_id )->all() );
+		$this->smarty->assign( 'werknemer_uitzender', $werknemer->uitzender() );
+		$this->smarty->display( 'crm/werknemers/dossier/plaatsingen.tpl' );
 	}
 	
 	
@@ -279,8 +283,8 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/documenten.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -291,8 +295,8 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/ziekmeldingen.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -303,8 +307,8 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/ziekmeldingen.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -315,8 +319,8 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/ziekmeldingen.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -327,8 +331,8 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/documenten.tpl');
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/ziekmeldingen.tpl' );
 	}
 	
 	
@@ -339,9 +343,9 @@ class Dossier extends MY_Controller
 	{
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
-
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/notities.tpl');
+		
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/notities.tpl' );
 	}
 	
 	
@@ -354,39 +358,37 @@ class Dossier extends MY_Controller
 		$werknemer = new Werknemer( $werknemer_id );
 		
 		//set wizard
-		if( isset($_POST['set_wizard'] ))
+		if( isset( $_POST['set_wizard'] ) )
 		{
 			$werknemer->setDefaultCao( $_POST['default_cao'] );
 			$werknemer->setStartDienstverband( $_POST['indienst'] );
 			
 			if( $werknemer->errors() !== false )
-				$this->smarty->assign('errors', $werknemer->errors() );
+				$this->smarty->assign( 'errors', $werknemer->errors() );
 			else
 			{
 				$werknemer->dienstverbandIsSet();
-				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/overzicht/success' ,'location' );
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/verloning/' . $werknemer_id, 'location' );
 			}
-				
+			
 		}
 		
 		//CAO anapassen
-		if( isset($_POST['set_cao'] ))
+		if( isset( $_POST['set_cao'] ) )
 		{
 			$werknemer->setDefaultCao( $_POST['default_cao'] );
 			if( $werknemer->errors() !== false )
-				$this->smarty->assign('errors', $werknemer->errors() );
+				$this->smarty->assign( 'errors', $werknemer->errors() );
 		}
 		
+		$this->smarty->assign( 'default_cao', $werknemer->defaultCao() );
+		$this->smarty->assign( 'indienst', $werknemer->startDienstverband() );
+		$this->smarty->assign( 'werknemer', $werknemer );
 		
-		
-		$this->smarty->assign('default_cao', $werknemer->defaultCao() );
-		$this->smarty->assign('indienst', $werknemer->startDienstverband() );
-		$this->smarty->assign('werknemer', $werknemer);
-		
-		if( $this->user->user_type == 'uitzender' )
-			$this->smarty->display('crm/werknemers/dossier/dienstverband_uitzender.tpl');
+		if( $werknemer->complete != 1 )
+			$this->smarty->display( 'crm/werknemers/dossier/dienstverband_wizard.tpl' );
 		else
-			$this->smarty->display('crm/werknemers/dossier/dienstverband.tpl');
+			$this->smarty->display( 'crm/werknemers/dossier/dienstverband.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -397,14 +399,33 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
-		//TODO: aanpaasen
-		if( isset($_POST['set'] ))
+		//verlonings instellingen aanpassen
+		if( isset( $_POST['set'] ) )
 		{
+			//cache value, wordt te vroeg bijgewerkt
+			$complete_cache = $werknemer->complete;
+			
 			$werknemer->setVerloning();
+			if( $werknemer->errors() !== false )
+				$this->smarty->assign( 'errors', $werknemer->errors() );
+			else
+			{
+				if( $werknemer->verloning_complete != NULL AND $werknemer->complete == 0 )
+				{
+					$verloning = $werknemer->verloning();
+					//bij et regeling naar ET wizard
+					if( $verloning['et_regeling'] == 1 )
+						redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/etregeling/' . $werknemer_id, 'location' );
+					//anders is het klaar
+					else
+						redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/overzicht/success', 'location' );
+				}
+			}
 		}
 		
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/verloning.tpl');
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->assign( 'verloning', $werknemer->verloning() );
+		$this->smarty->display( 'crm/werknemers/dossier/verloning.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -412,26 +433,72 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function etregeling( $werknemer_id = NULL )
 	{
+		//load the formbuilder
+		$formbuidler = new Formbuilder();
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		$et = $werknemer->etregeling();
 		
 		//del bsn
-		if( isset($_GET['delbsn']) )
+		if( isset( $_GET['delbsn'] ) )
 		{
 			$et->delbsn();
-			redirect($this->config->item('base_url') . 'crm/werknemers/dossier/etregeling/' . $werknemer_id ,'location');
+			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/etregeling/' . $werknemer_id, 'location' );
 		}
 		
+		//wanneer ET actief, bestand ophalen
 		if( $et !== NULL )
+			$this->smarty->assign( 'bsn', $et->fileBsn() );
+		
+		//dagteking opslaan
+		if( isset( $_POST['set'] ) && $_POST['set'] == 'dagtekening' )
 		{
-			$this->smarty->assign('bsn',  $et->fileBsn() );
+			$et->setDagtekening( $_POST['dagtekening'] );
+			if( $et->errors() !== false )
+				$this->smarty->assign( 'msg', msg( 'warning', $et->errors() ) );
+			else
+				$this->smarty->assign( 'msg', msg( 'success', 'Dagtekening opgeslagen!' ) );
 		}
 		
+		//adres opslaan
+		if( isset( $_POST['set'] ) && $_POST['set'] == 'adres' )
+		{
+			$verblijf =	$et->setVerblijf();
+			$errors = $et->errors();
+			
+			//msg
+			if( $errors === false )
+				$this->smarty->assign( 'msg', msg( 'success', 'Wijzigingen opgeslagen!' ) );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!' ) );
+			
+		}
+		else
+		{
+			$verblijf = $et->verblijf();
+			$errors = false; //no errors
+		}
 		
-		$this->smarty->assign('landen',  Codering::listLanden() );
-		$this->smarty->assign('werknemer', $werknemer);
-		$this->smarty->display('crm/werknemers/dossier/etregeling.tpl');
+		//is ET compleet ingevuld
+		if( $werknemer->complete != 1 )
+		{
+			if( $et->isComplete() )
+			{
+				$werknemer->setEtComplete();
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/overzicht/success', 'location' );
+			}
+		}
+		
+		//form opbouwen
+		$formdata = $formbuidler->table( 'werknemers_et_verblijf' )->data( $verblijf )->errors( $errors )->build();
+		
+		$this->smarty->assign( 'formdata', $formdata );
+		$this->smarty->assign( 'landen', Codering::listLanden() );
+		$this->smarty->assign( 'gegevens', $werknemer->gegevens() );
+		$this->smarty->assign( 'dagtekening', $et->dagtekening() );
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/etregeling.tpl' );
 	}
-
+	
 }

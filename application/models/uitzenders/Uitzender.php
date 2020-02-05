@@ -146,6 +146,34 @@ class Uitzender extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * Set ID
+	 *
+	 */
+	public function setArchief( $archief )
+	{
+		//naar archief
+		if( $archief )
+		{
+			$update['archief'] = 1;
+		}
+		
+		//uit archief
+		if( !$archief )
+		{
+			$update['archief'] = 0;
+		}
+		
+		$update['last_update_by'] = $this->user->id;
+		
+		$this->db_user->where( 'uitzender_id', $this->uitzender_id );
+		$this->db_user->update( 'uitzenders_status', $update );
+		
+		$this->archief = $update['archief'];
+	}
+
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * ALLEEN VOOR DEVOLPMENT
 	 * TODO: verwijderen
 	 */

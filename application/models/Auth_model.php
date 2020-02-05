@@ -181,6 +181,56 @@ class Auth_model extends CI_Model
 
 
 	/*************************************************************************************************
+	 * login als iemadn anders
+	 *
+	 * @return string
+	 */
+	public function loginOverrideByUsertype( $user_type, $id )
+	{
+		if( $user_type == 'uitzender' )
+		{
+			$sql = "SELECT users_accounts.*, users.username, users.naam
+					FROM users_accounts
+					LEFT JOIN users ON users.user_id = users_accounts.user_id
+					WHERE uitzender_id = ? AND werkgever_id = ? AND admin = 1 AND users.deleted = 0 LIMIT 1";
+			
+			$url = 'dashboard/uitzender';
+		}
+		
+		if( $user_type == 'inlener' )
+		{
+			$sql = "SELECT users_accounts.*, users.username, users.naam
+					FROM users_accounts
+					LEFT JOIN users ON users.user_id = users_accounts.user_id
+					WHERE inlener_id = ? AND werkgever_id = ? AND admin = 1 AND users.deleted = 0 LIMIT 1";
+			
+			$url = 'dashboard/inlener';
+		}
+		
+		$query = $this->db_admin->query( $sql, array($id, $_SESSION['logindata']['werkgever_id']) );
+		$user = $query->row_array();
+		
+		//add user to logindata
+		$session = 	$this->session->userdata();
+		
+		$session['logindata']['override']['user_id'] = $user['user_id'];
+		$session['logindata']['override']['user_name'] = $user['naam'];
+		$session['logindata']['override']['username'] = $user['username'];
+		$session['logindata']['override']['user_type'] = $user['user_type'];
+		$session['logindata']['override']['redirect'] = $_SERVER['HTTP_REFERER'];
+		$session['logindata']['user_type'] = $user['user_type'];
+		
+		if( $user['user_type'] == 'uitzender' ) $session['logindata']['override']['uitzender_id'] =  $user['uitzender_id'];
+		if( $user['user_type'] == 'inlener' ) $session['logindata']['override']['inlener_id'] =  $user['inlener_id'];
+		if( $user['user_type'] == 'werknemer' ) $session['logindata']['override']['werknemer_id'] =  $user['werknemer_id'];
+		if( $user['user_type'] == 'zzp' ) $session['logindata']['override']['zzp_id'] =  $user['zzp_id'];
+		
+		$this->session->set_userdata( $session );
+		
+		return $url;
+	}
+
+	/*************************************************************************************************
 	 * switch to other account
 	 *
 	 * @return void
@@ -297,35 +347,54 @@ class Auth_model extends CI_Model
 
 
 	/*************************************************************************************************
-	 * store login session in database
+	 * end login session in database
 	 * @return void
 	 */
 	public function logout( $user_id, $sid, $reason = '', $redirect = true )
 	{
-		//end database session
-		$update['session_logout'] = date('Y-m-d H:i:s');
-		$update['session_logout_reason'] = $reason;
-
-		$this->db_admin->where( 'user_id', $user_id );
-		$this->db_admin->where( 'sid', $sid );
-		$this->db_admin->update('users_sessions', $update);
-
-		//destroy browser session
-		$this->session->unset_userdata('logindata');
-		$this->session->unset_userdata('entiteit_id');
-		
-		//store url in session
-		$this->session->set_userdata('ref_url', base_url(uri_string()) );
-
-		//redirect to
-		$url = $this->config->item('base_url') . 'login';
-
-		if( $redirect )
+		//bij override alleen diepere login uitloggen
+		if( isset($_SESSION['logindata']['override']) )
 		{
+			$_SESSION['logindata']['user_type'] = $_SESSION['logindata']['main']['user_type'];
+			
+			//redirect naar
+			$url = $_SESSION['logindata']['override']['redirect'];
+			
+			//weggooien
+			unset($_SESSION['logindata']['override']);
 			redirect( $url, 'location' );
 			die();
 		}
+		else
+		{
+			
+			//end database session
+			$update['session_logout'] = date( 'Y-m-d H:i:s' );
+			$update['session_logout_reason'] = $reason;
+			
+			$this->db_admin->where( 'user_id', $user_id );
+			$this->db_admin->where( 'sid', $sid );
+			$this->db_admin->update( 'users_sessions', $update );
+			
+			//destroy browser session
+			$this->session->unset_userdata( 'logindata' );
+			$this->session->unset_userdata( 'entiteit_id' );
+			
+			//store url in session
+			$this->session->set_userdata( 'ref_url', base_url( uri_string() ) );
+			
+			//redirect to
+			$url = $this->config->item( 'base_url' ) . 'login';
+			
+			if( $redirect )
+			{
+				redirect( $url, 'location' );
+				die();
+			}
+		}
 	}
+	
+	
 
 	/*************************************************************************************************
 	 * is IP blocked

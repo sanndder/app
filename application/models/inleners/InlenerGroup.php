@@ -3,6 +3,7 @@
 namespace models\inleners;
 
 use models\Connector;
+use models\users\UserGroup;
 use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -156,10 +157,14 @@ class InlenerGroup extends Connector {
 			return $data;
 
 		foreach ($query->result_array() as $row)
-		{
 			$data[$row['inlener_id']] = $row;
-		}
-
+		
+		//kijken of inlener users heeft
+		$users = UserGroup::listUsertypeID('inlener', array_keys($data));
+		
+		foreach ( $users as $user )
+			$data[$user]['user'] = 1;
+		
 		return $data;
 	}
 	

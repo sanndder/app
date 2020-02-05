@@ -43,16 +43,19 @@
 						<div class="card-header bg-light pb-0 pt-sm-0 header-elements-sm-inline">
 							<div class="header-elements">
 								<ul class="nav nav-tabs nav-tabs-highlight card-header-tabs">
+									{if $user_type == 'werkgever'}
 									<li class="nav-item">
 										<a href="#tab-factoren" class="nav-link {if !isset($smarty.get.tab) || $smarty.get.tab == 'tab-factoren'}active{/if}" data-toggle="tab">
 											Factoren
 										</a>
 									</li>
+                                    {/if}
 									<li class="nav-item">
-										<a href="#tab-cao" class="nav-link {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao'}active{/if}" data-toggle="tab">
+										<a href="#tab-cao" class="nav-link {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao' || ($user_type == 'uitzender' && !isset($smarty.get.tab))}active{/if}" data-toggle="tab">
 											CAO
 										</a>
 									</li>
+                                    {if $user_type == 'werkgever'}
 									<li class="nav-item">
 										<a href="#tab-urentypes" class="nav-link {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-urentypes'}active{/if}" data-toggle="tab">
 											Urentypes
@@ -68,6 +71,7 @@
 											Staffelkorting
 										</a>
 									</li>
+                                    {/if}
 								</ul>
 							</div>
 						</div>
@@ -78,6 +82,7 @@
 							<!-------------------------------------------------------------------------------------------------------------------------------------------------
 							|| Factoren
 							-------------------------------------------------------------------------------------------------------------------------------------------------->
+                            {if $user_type == 'werkgever'}
 							<div class="tab-pane fade {if !isset($smarty.get.tab) || $smarty.get.tab == 'tab-factoren'}show active{/if}" id="tab-factoren">
 
 								<fieldset class="mb-4">
@@ -165,11 +170,12 @@
 								</table>
 
 							</div><!-- /einde tab -->
+							{/if}
 
 							<!-------------------------------------------------------------------------------------------------------------------------------------------------
 							|| CAO
 							-------------------------------------------------------------------------------------------------------------------------------------------------->
-							<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao'}show active{/if}" id="tab-cao">
+							<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao' || ($user_type == 'uitzender' && !isset($smarty.get.tab))} show active {/if}" id="tab-cao">
 
 								<form method="post" action="">
 									<fieldset class="mb-3">
@@ -249,11 +255,13 @@
 					                                <td colspan="2" style="height: 20px;"></td>
 				                                </tr>
 				                                <tr>
+                                                    {if $user_type == 'werkgever'}
 					                                <td colspan="2">
 						                                <a href="crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-cao&action=copyUrentypesFromCao&cao_code={$cao.code}">
 							                                <i class="icon-copy3 mr-1"></i>urentypes overnemen van CAO
 						                                </a>
 					                                </td>
+					                                {/if}
 				                                </tr>
 			                                </table>
 
@@ -287,6 +295,7 @@
 							<!-------------------------------------------------------------------------------------------------------------------------------------------------
 							|| Urentypes
 							-------------------------------------------------------------------------------------------------------------------------------------------------->
+                            {if $user_type == 'werkgever'}
 							<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-urentypes'}show active{/if}" id="tab-urentypes">
 
 								<div class="btn-group">
@@ -417,15 +426,12 @@
                                 {/foreach}
 
 							</div>
-							<script>
-								{literal}
-
-								{/literal}
-							</script>
+							{/if}
 
 							<!-------------------------------------------------------------------------------------------------------------------------------------------------
 							|| Vergoedingen
 							-------------------------------------------------------------------------------------------------------------------------------------------------->
+                            {if $user_type == 'werkgever'}
 							<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-vergoedingen'}show active{/if}"" id="tab-vergoedingen" >
 
 							<div class="btn-group">
@@ -477,7 +483,7 @@
                                     {/if}
 								</tbody>
 							</table>
-
+							{/if}
 							{*
 							<fieldset class="mb-0 mt-4">
 								<legend class="text-uppercase font-size-sm font-weight-bold text-primary mb-0">Urentypes per werknemer</legend>

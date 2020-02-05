@@ -3,6 +3,7 @@
 {block "header-icon"}icon-office{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 {assign "uploader" "true"}
+{assign "datamask" "true"}
 
 {block "content"}
 
@@ -135,7 +136,7 @@
 									<div class="form-group row">
 										<label class="col-lg-2 col-form-label">Vervaldatum:</label>
 										<div class="col-lg-6 text-right mb-3">
-											<input required name="vervaldatum" value="{if isset($smarty.post.vervaldatum)}{$smarty.post.vervaldatum}{else}{if $vervaldatum !== NULL}{$vervaldatum|date_format: '%d-%m-%Y'}{/if}{/if}" type="text" class="form-control pickadate-id" style="width: 130px;"/>
+											<input placeholder="dd-mm-jjjj" data-mask="99-99-9999" required name="vervaldatum" value="{if isset($smarty.post.vervaldatum)}{$smarty.post.vervaldatum}{else}{if $vervaldatum !== NULL}{$vervaldatum|date_format: '%d-%m-%Y'}{/if}{/if}" type="text" class="form-control" style="width: 130px;"/>
 										</div>
 									</div>
 								</fieldset>

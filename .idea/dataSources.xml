@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="app_001@localhost" read-only="true" uuid="87926f25-e21f-48d0-aab0-26d462ae4182">
+    <data-source source="LOCAL" name="@localhost" uuid="b1ee3220-1234-4825-981f-359b5d97aee1">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost/app_001</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="app_admin@localhost" uuid="bc39deae-5621-474b-a7dc-e3fbd08609d0">
+    <data-source source="LOCAL" name="app_admin@localhost" uuid="fab3a2a8-2466-4ce7-91f4-1ddd5f43054c">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/app_admin</jdbc-url>
-      <driver-properties>
-        <property name="autoReconnect" value="true" />
-        <property name="zeroDateTimeBehavior" value="CONVERT_TO_NULL" />
-        <property name="tinyInt1isBit" value="false" />
-        <property name="characterEncoding" value="utf8" />
-        <property name="characterSetResults" value="utf8" />
-        <property name="yearIsDateType" value="false" />
-      </driver-properties>
     </data-source>
   </component>
 </project>

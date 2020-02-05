@@ -41,6 +41,8 @@ class Werknemer extends Connector
 	public $documenten_complete = NULL;
 	public $dienstverband_complete = NULL;
 	public $verloning_complete = NULL;
+	public $etregeling_complete = 1;
+	public $deelnemer_etregeling = NULL;
 
 	public $next = array();
 	public $prev = array();
@@ -94,7 +96,8 @@ class Werknemer extends Connector
 	public function getStatus()
 	{
 		//status opahlen en basis gegevens
-		$sql = "SELECT * FROM werknemers_status
+		$sql = "SELECT werknemers_gegevens.*, werknemers_status.*
+				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_gegevens.werknemer_id = werknemers_status.werknemer_id
 				WHERE werknemers_gegevens.deleted = 0 AND werknemers_status.werknemer_id = $this->werknemer_id
 				LIMIT 1";
@@ -104,16 +107,17 @@ class Werknemer extends Connector
 		//bij leeg alles wel aanmaken
 		if ($query->num_rows() == 0)
 			return false;
-
+		
 		$this->_status = $query->row_array();
 		$this->_status['naam'] = make_name($this->_status);
-
+		
 		$this->complete = $this->_status['complete'];
 		$this->archief = $this->_status['archief'];
 		$this->gegevens_complete = $this->_status['gegevens_complete'];
 		$this->documenten_complete = $this->_status['documenten_complete'];
 		$this->dienstverband_complete = $this->_status['dienstverband_complete'];
 		$this->verloning_complete = $this->_status['verloning_complete'];
+		$this->etregeling_complete = $this->_status['etregeling_complete'];
 
 		//set public vars
 		$this->naam = $this->_status['naam'];
@@ -124,7 +128,12 @@ class Werknemer extends Connector
 		$this->next['naam'] = $this->naam;  //default self
 		$this->prev['id'] = $this->werknemer_id;    //default self
 		$this->prev['naam'] = $this->naam;  //default self
+		
+		//ET regeling ?
+		$query = $this->db_user->query( "SELECT et_regeling FROM werknemers_verloning_instellingen WHERE werknemer_id = $this->werknemer_id AND deleted = 0" );
+		$this->deelnemer_etregeling = DBhelper::toRow( $query, 'NULL', 'et_regeling' );
 
+		//vorige volgende
 		$sql = "SELECT werknemers_status.werknemer_id, werknemers_gegevens.achternaam, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam, werknemers_gegevens.tussenvoegsel
 				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_status.werknemer_id = werknemers_gegevens.werknemer_id
@@ -180,7 +189,7 @@ class Werknemer extends Connector
 	 *
 	 * @return object
 	 */
-	public function etregeling()
+	public function etregeling() :Et
 	{
 		$query = $this->db_user->query( "SELECT et_regeling FROM werknemers_verloning_instellingen WHERE werknemer_id = $this->werknemer_id AND et_regeling = 1 AND deleted = 0 LIMIT 1" );
 		if( $query->num_rows() > 0 )
@@ -191,7 +200,7 @@ class Werknemer extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get bedrijfsgegevens
+	 * get persoonsgegevens
 	 */
 	public function gegevens()
 	{
@@ -202,7 +211,6 @@ class Werknemer extends Connector
 	}
 
 	
-
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Nieuwe werknemer aanmaken
@@ -502,9 +510,6 @@ class Werknemer extends Connector
 	public function dienstverbandIsSet()
 	{
 		$this->_updateStatus( 'dienstverband_complete' );
-		
-		//verloning ook update wanneer de uitzender invult, want die slaat verloning over
-		$this->_updateStatus( 'verloning_complete' );
 	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -537,7 +542,8 @@ class Werknemer extends Connector
 				$this->gegevens_complete == 1 &&
 				$this->documenten_complete == 1 &&
 				$this->dienstverband_complete == 1 &&
-				$this->verloning_complete == 1
+				$this->verloning_complete == 1 &&
+				$this->etregeling_complete == 1
 			)
 				$update_status['complete'] = 1;
 
@@ -606,13 +612,53 @@ class Werknemer extends Connector
 	 */
 	public function setVerloning()
 	{
-		$this->_updateStatus('dienstverband_complete');
-		$this->_updateStatus('verloning_complete');
+		//oude record evrwijderen
+		$this->db_user->query( "UPDATE werknemers_verloning_instellingen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE werknemer_id = $this->werknemer_id AND deleted = 0", array( $this->user->user_id ) );
+		
+		$insert['werknemer_id'] = $this->werknemer_id;
+		$insert['vakantiegeld_direct'] = intval($_POST['vakantiegeld_direct']);
+		$insert['vakantieuren_direct'] = intval($_POST['vakantieuren_direct']);
+		$insert['atv_direct'] = intval($_POST['atv_direct']);
+		$insert['et_regeling'] = intval($_POST['et_regeling']);
+		$insert['user_id'] = $this->user->user_id;
+		
+		$this->db_user->insert( 'werknemers_verloning_instellingen', $insert );
+		
+		$this->deelnemer_etregeling = $insert['et_regeling'];
+		
+		//wanneer nodig status update
+		if( $this->complete != 1 )
+			$this->_updateStatus('verloning_complete');
+		
+		//ET compleet wanneer noodig
+		if( $this->complete != 1 && $insert['et_regeling'] == 0)
+			$this->_updateStatus('etregeling_complete');
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * ET regeling is compleet
+	 *
+	 */
+	public function setEtComplete()
+	{
+		$this->_updateStatus('etregeling_complete');
+	}
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get verloning instellingen
+	 */
+	public function verloning()
+	{
+		$sql = "SELECT * FROM werknemers_verloning_instellingen WHERE deleted = 0 AND werknemer_id = $this->werknemer_id LIMIT 1";
+		$query = $this->db_user->query($sql);
+		
+		return DBhelper::toRow($query, 'NULL');
 	}
 
 	
-
-
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors

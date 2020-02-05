@@ -6,7 +6,7 @@
 
 {block "content"}
 
-	{include file='crm/inleners/dossier/_sidebar.tpl' active='algemeneinstellingen'}
+    {include file='crm/inleners/dossier/_sidebar.tpl' active='algemeneinstellingen'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -18,14 +18,14 @@
 		<div class="content">
 
 			<!-- msg -->
-			{if isset($msg)}
+            {if isset($msg)}
 				<div class="row">
 					<div class="col-xl-10">
-						{$msg}
+                        {$msg}
 					</div><!-- /col -->
 				</div>
 				<!-- /row -->
-			{/if}
+            {/if}
 
 			<div class="row">
 				<div class="col-xl-10">
@@ -44,45 +44,51 @@
 								<fieldset class="mb-1">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Uitzender</legend>
 
-									{* inlener is gekoppeld *}
-									{if $inlener->uitzenderID() != NULL}
-										<div class="mb-3">
+                                    {* inlener is gekoppeld *}
+                                    {if $inlener->uitzenderID() != NULL}
+                                        {if $user_type == 'werkgever'}
+	                                    <div class="mb-3">
 											<a href="crm/uitzenders/dossier/overzicht/{$inlener->uitzenderID()}">
-												{$inlener->uitzenderID()} - {$uitzenders[$inlener->uitzenderID()]}
+                                                {$inlener->uitzenderID()} - {$uitzenders[$inlener->uitzenderID()]}
 											</a>
 										</div>
+	                                    {else}
+                                            {$inlener->uitzenderID()} - {$uitzenders[$inlener->uitzenderID()]}
+	                                    {/if}
+                                        {if $user_type == 'werkgever'}
+											<input type="hidden" name="uitzender_id" value="{$inlener->uitzenderID()}"/>
+											<button type="submit" name="del" class="btn btn-danger">
+												<i class="icon-unlink mr-1"></i>
+												Koppeling verwijderen
+											</button>
+                                        {/if}
 
-										<input type="hidden" name="uitzender_id" value="{$inlener->uitzenderID()}" />
-										<button type="submit" name="del" class="btn btn-danger">
-											<i class="icon-unlink mr-1"></i>
-											Koppeling verwijderen
-										</button>
+                                        {* inlener is NIET gekoppeld *}
+                                    {else}
+                                        {if $user_type == 'werkgever'}
+											<div class="form-group row">
+												<label class="col-form-label col-md-2">
+													Koppelen aan uitzender
+												</label>
+												<div class="col-lg-6 col-md-8">
 
-										{* inlener is NIET gekoppeld *}
-									{else}
-										<div class="form-group row">
-											<label class="col-form-label col-md-2">
-												Koppelen aan uitzender
-											</label>
-											<div class="col-lg-6 col-md-8">
+													<select name="uitzender_id" class="form-control select-search">
+														<option value="0">Geen uitzender (payrollklant)</option>
+                                                        {if $uitzenders !== NULL}
+                                                            {foreach $uitzenders as $u}
+																<option value="{$u@key}">{$u@key} - {$u}</option>
+                                                            {/foreach}
+                                                        {/if}
+													</select>
 
-												<select name="uitzender_id" class="form-control select-search">
-													<option value="0">Geen uitzender (payrollklant)</option>
-													{if $uitzenders !== NULL}
-														{foreach $uitzenders as $u}
-															<option value="{$u@key}">{$u@key} - {$u}</option>
-														{/foreach}
-													{/if}
-												</select>
-
+												</div>
 											</div>
-										</div>
-
-										<button type="submit" name="set" class="btn btn-success">
-											<i class="icon-link mr-1"></i>
-											Inlener koppelen
-										</button>
-									{/if}
+											<button type="submit" name="set" class="btn btn-success">
+												<i class="icon-link mr-1"></i>
+												Inlener koppelen
+											</button>
+                                        {/if}
+                                    {/if}
 
 								</fieldset>
 

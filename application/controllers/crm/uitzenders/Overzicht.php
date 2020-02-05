@@ -39,8 +39,6 @@ class Overzicht extends MY_Controller
 			$uitzender->del($_GET['del']);
 		}
 		
-		$bedrijfsgegevens = $this->werkgever->bedrijfsgegevens();
-		
 		$uitzendergroup = new UitzenderGroup();
 		$uitzenders = $uitzendergroup->all( $_GET );
 

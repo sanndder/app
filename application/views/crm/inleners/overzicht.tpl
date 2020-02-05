@@ -235,9 +235,12 @@
 									<td>
 										<a href="crm/uitzenders/dossier/overzicht/{$i.uitzender_id}">{$i.uitzender}</a>
 									</td>
-									<td>
+									<td style="white-space: nowrap">
 										{if $ENV == 'development'}
 											<a href="{$base_url}/crm/inleners?del={$i.inlener_id}"><i class="icon-trash font-size-sm"></i></a>
+                                        {/if}
+                                        {if isset($i.user)}
+											<a href="{$base_url}/dashboard/uitzender?loginals=inlener&id={$i.inlener_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
                                         {/if}
 									</td>
 								</tr>

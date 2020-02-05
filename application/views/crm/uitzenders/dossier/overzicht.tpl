@@ -1,7 +1,7 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Uitzender{/block}
 {block "header-icon"}icon-office{/block}
-{block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{/block}
+{block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{if $uitzender->archief == 1} <span style="color:red">(archief)</span> {/if}{/block}
 
 {block "content"}
 
@@ -63,9 +63,24 @@
                                                 {/if}
 											</ul>
 										</div>
-									</div><!-- /row -->
 
+									</div><!-- /row -->
 								</div>
+
+
+								<div>
+									{if $uitzender->archief == 0}
+									<a style="width: 200px" href="crm/uitzenders/dossier/overzicht/{$uitzender->uitzender_id}?action=archief" class="btn btn-light">
+										<i class="icon-archive mr-1"></i>Naar archief
+									</a>
+                                    {/if}
+                                    {if $uitzender->archief == 1}
+										<a style="width: 200px" href="crm/uitzenders/dossier/overzicht/{$uitzender->uitzender_id}?action=uitarchief" class="btn btn-light">
+											<i class="icon-archive mr-1"></i>Uit archief
+										</a>
+                                    {/if}
+								</div>
+
 							</div>
 
 

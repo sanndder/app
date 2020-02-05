@@ -232,9 +232,12 @@
                                         {/if}
 										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.bedrijfsnaam}</a>
 									</td>
-									<td>
+									<td style="white-space: nowrap">
                                         {if $user_id == 2}
 											<a href="{$base_url}/crm/uitzenders?del={$u.uitzender_id}"><i class="icon-trash font-size-sm"></i></a>
+                                        {/if}
+										{if isset($u.user)}
+											<a href="{$base_url}/dashboard/uitzender?loginals=uitzender&id={$u.uitzender_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
                                         {/if}
 									</td>
 								</tr>
