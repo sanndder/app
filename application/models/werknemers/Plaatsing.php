@@ -3,6 +3,7 @@
 namespace models\werknemers;
 
 use models\Connector;
+use models\inleners\Inlener;
 use models\utils\DBhelper;
 use models\verloning\Urentypes;
 
@@ -46,6 +47,25 @@ class Plaatsing extends Connector
 	public function setID($plaatsing_id)
 	{
 		$this->_plaatsing_id = intval($plaatsing_id);
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * factor plaatsing aanpassen
+	 *
+	 */
+	public function setFactor( $factor_id ) :bool
+	{
+		$update['factor_id'] = intval($factor_id);
+		
+		$this->db_user->where( 'plaatsing_id', $this->_plaatsing_id );
+		$this->db_user->update( 'werknemers_inleners', $update );
+		
+		if( $this->db_user->affected_rows() > 0 )
+			return true;
+		
+		return false;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -93,6 +113,12 @@ class Plaatsing extends Connector
 			return false;
 		}
 		
+		//factor ophalen
+		$inlener = new Inlener($data['inlener_id']);
+		$standaardfactor =  $inlener->standaardfactor();
+		
+		$input['factor_id'] = $standaardfactor['factor_id'];
+		
 		$input['werknemer_id'] = $data['werknemer_id'];
 		$input['inlener_id'] = $data['inlener_id'];
 		$input['cao_id_intern'] = $data['cao_id'];
@@ -102,6 +128,8 @@ class Plaatsing extends Connector
 		$input['periodiek'] = $data['periodiek_id'] ?? null;
 		$input['bruto_loon'] = prepareAmountForDatabase($data['brutoloon']);
 		$input['start_plaatsing'] = reverseDate($data['start_plaatsing']);
+		
+		
 		
 		$this->db_user->insert( 'werknemers_inleners', $input );
 		

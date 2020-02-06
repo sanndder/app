@@ -216,8 +216,12 @@ class InvoerUren extends Invoer
 	 */
 	public function getWerknemerUren()
 	{
-		$sql = "SELECT invoer_id, aantal, uren_type_id_werknemer, datum, project_id, project_tekst, locatie_tekst, uitkeren
-				FROM invoer_uren WHERE werknemer_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?";
+		$sql = "SELECT invoer_uren.invoer_id, invoer_uren.aantal, invoer_uren.uren_type_id_werknemer, invoer_uren.datum, invoer_uren.project_id, invoer_uren.project_tekst, invoer_uren.locatie_tekst, invoer_uren.uitkeren,
+       					urentypes.urentype_categorie_id
+				FROM invoer_uren
+				LEFT JOIN werknemers_urentypes ON invoer_uren.uren_type_id_werknemer = werknemers_urentypes.id
+				LEFT JOIN urentypes ON urentypes.urentype_id = werknemers_urentypes.urentype_id
+				WHERE invoer_uren.werknemer_id = ? AND invoer_uren.inlener_id = ? AND invoer_uren.datum >= ? AND invoer_uren.datum <= ?";
 		
 		$query = $this->db_user->query( $sql, array( $this->_werknemer_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
 		

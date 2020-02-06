@@ -509,7 +509,7 @@ class Dossier extends MY_Controller
 		
 		$urenmatrix = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
 		$werknemervergoedingen = $vergoedinggroup->inlener( $inlener_id )->werknemersEnVergoedingen();
-		
+
 		$this->smarty->assign( 'uitzender', $uitzender->bedrijfsgegevens() );
 		$this->smarty->assign( 'factoren_uitzender', $uitzender->factoren() );
 		$this->smarty->assign( 'urentypes', $urentypes->getAll() );

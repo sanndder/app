@@ -70,9 +70,10 @@ class Inlener extends Connector
 	/*
 	 * Set ID
 	 */
-	public function setID($inlener_id)
+	public function setID($inlener_id) :Inlener
 	{
 		$this->inlener_id = intval($inlener_id);
+		return $this;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -83,6 +84,34 @@ class Inlener extends Connector
 	{
 		$this->_force_check = true;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Set ID
+	 *
+	 */
+	public function setArchief( $archief )
+	{
+		//naar archief
+		if( $archief )
+		{
+			$update['archief'] = 1;
+		}
+		
+		//uit archief
+		if( !$archief )
+		{
+			$update['archief'] = 0;
+		}
+		
+		$update['last_update_by'] = $this->user->id;
+		
+		$this->db_user->where( 'inlener_id', $this->inlener_id );
+		$this->db_user->update( 'inleners_status', $update );
+		
+		$this->archief = $update['archief'];
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -394,6 +423,17 @@ class Inlener extends Connector
 
 		return $row;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get factoren
+	 */
+	public function standaardfactor()
+	{
+		$query = $this->db_user->query( "SELECT * FROM inleners_factoren WHERE inlener_id = ? AND default_factor = 1 AND deleted = 0", array($this->inlener_id) );
+		return DBhelper::toRow( $query, 'NULL' );
+	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -599,7 +639,8 @@ class Inlener extends Connector
 			if( $this->_uitzender_id_new !== NULL )
 				$this->koppelenAanUitzender( $this->_uitzender_id_new );
 			
-			$this->_setDefaultFactor( $this->_uitzender_id_new );
+			if( $this->user->werkgever_type == 'uitzenden' )
+				$this->_setDefaultFactor( $this->_uitzender_id_new );
 				
 			return true;
 		}
@@ -642,7 +683,7 @@ class Inlener extends Connector
 			$id = current($where);
 		else
 			$id = NULL;
-
+		
 		//geen fouten, nieuwe insert doen wanneer er wijzigingen zijn
 		if ($validator->success())
 		{

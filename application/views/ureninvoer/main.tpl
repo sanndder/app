@@ -14,6 +14,7 @@
 	<script src="recources/js/verloning_invoer/invoer.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoeruren.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoerkm.js?{$time}"></script>
+	<script src="recources/js/verloning_invoer/invoervergoedingen.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoerbijlages.js?{$time}"></script>
 	<link href="recources/css/verloning_input.css?{$time}" rel="stylesheet" type="text/css">
 	<!-- Main sidebar -->
@@ -206,11 +207,13 @@
 												Reserveringen
 											</a>
 										</li>
+										{*
 										<li class="nav-item">
 											<a href="#sub-inhoudingen" class="tab-sub nav-link" data-toggle="tab">
 												Inhoudingen
 											</a>
 										</li>
+										*}
 									</ul>
 								</div>
 							</div>
@@ -292,6 +295,7 @@
 												<thead>
 													<tr>
 														<th colspan="3">Vaste vergoedingen</th>
+														<th>Doorbelasten</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -302,6 +306,7 @@
 												<thead>
 													<tr>
 														<th colspan="3">Variabele vergoedingen</th>
+														<th>Doorbelasten</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -312,7 +317,7 @@
 
                                         {****** Invoer: reserveringen *****************************************************}
 										<div class="tab-pane tab-pane-sub fade" id="sub-reserveringen">
-											reserveringen
+											<i>Geen reserveringen in systeem</i>
 										</div>
 
                                         {****** Invoer: inhoudingen *****************************************************}

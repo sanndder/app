@@ -172,6 +172,7 @@
 											<div class="col-xl-2 pt-1">Uurloon</div>
 											<div class="col-xl-6">
 
+												<input class="form-control" type="hidden" name="user_type" value="{$user_type}">
 												<input class="form-control" type="text" name="uurloon" value="">
 
 											</div>
@@ -207,32 +208,57 @@
 										<thead>
 											<tr>
 												<th colspan="2">Inlener</th>
+												<th class="p-0"></th>
+												<th class="pl-1">Factor</th>
+												<th>Stardatum</th>
+												<th>Uurloon</th>
 												<th>CAO</th>
 												<th>Loontabel</th>
 												<th>Functie</th>
-												<th>Uurloon</th>
-												<th>Stardatum</th>
 												<th></th>
 											</tr>
 										</thead>
 										<tbody>
                                             {foreach $plaatsingen as $p}
-												<tr>
-													<td style="width: 25px;">{$p.inlener_id}</td>
-													<td>
+												<tr data-id="{$p.plaatsing_id}" style="background-color: #F3F3F3">
+													<td style="white-space: nowrap; width: 10px; padding-right: 5px;">
+														<a href="{$base_url}/crm/inleners/dossier/overzicht/{$p.inlener_id}">{$p.inlener_id}</a>
+													</td>
+													<td style="padding-left: 10px;">
 														<a href="{$base_url}/crm/inleners/dossier/overzicht/{$p.inlener_id}">
                                                             {$p.inlener}
 														</a>
 													</td>
+													<td class="p-0">
+														<div class="status">
+															<i class="spinner icon-spinner2" style="display: none"></i>
+															<i class="icon-check text-green" style="display: none"></i>
+															<i class="icon-warning2 text-warning" style="display: none"></i>
+														</div>
+													</td>
+													<td class="pl-1">
+														<select class="form-control change-factor" style="padding: 2px; height: 30px;">
+                                                            {if isset($p.factoren) && $p.factoren != NULL}
+                                                                {foreach $p.factoren as $f}
+																	<option {if $p.factor_id == $f.factor_id} selected{/if} value="{$f.factor_id}">{$f.omschrijving} - {$f.factor_hoog}/{$f.factor_laag}</option>
+                                                                {/foreach}
+                                                            {/if}
+														</select>
+													</td>
+													<td>{$p.start_plaatsing|date_format: '%d-%m-%Y'}</td>
+													<td>€ {$p.bruto_loon|number_format:2:',':'.'}</td>
 													<td>{$p.cao}</td>
 													<td>{$p.loontabel}</td>
 													<td>{$p.functie}</td>
-													<td>€ {$p.bruto_loon|number_format:2:',':'.'}</td>
-													<td>{$p.start_plaatsing|date_format: '%d-%m-%Y'}</td>
 													<td>
 														<a class="text-danger" href="{$base_url}/crm/werknemers/dossier/plaatsingen/{$werknemer->id}/?delplaatsing={$p.plaatsing_id}" onclick="return confirm('Plaasting verwijderen?')">
 															<i class="icon-trash mr-1"></i>verwijderen
 														</a>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="8" style="border-top:0; padding-bottom: 25px;">
+														Uren
 													</td>
 												</tr>
                                             {/foreach}

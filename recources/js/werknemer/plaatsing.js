@@ -18,6 +18,12 @@ let plaatsing = {
 	
 	//events aan dom binden
 	events(){
+		
+		//factor bij plaatsing wijzigen
+		$('.change-factor').on('change', function(){
+			plaatsing.setFactor( this );
+		});
+		
 		//inlener selecteren
 		$('[name="inlener_id"]').on('change', function(){
 			data.inlener_id = $(this).val();
@@ -58,6 +64,36 @@ let plaatsing = {
 			cao.setPeriodiekID($(this).val());
 			plaatsing.updateDropdowns();
 		});
+	},
+	
+	
+	//factor bij plaatsing wijzigen
+	setFactor( obj ){
+		$select = $(obj);
+		$tr = $select.closest('tr');
+		
+		data.plaatsing_id = $tr.data('id');
+		data.factor_id = $select.find('option:selected').val();
+		
+		$tr.find('.spinner').show();
+		$tr.find('.icon-warning2').hide();
+		$tr.find('.icon-check').hide();
+		
+		xhr.url = base_url + 'crm/werknemers/ajax/setplaatsingfactor';
+		var response = xhr.call();
+		if( response !== false ){
+			response.done(function(json){
+				if( json.status != 'success' )
+				{
+					alert('Factor kon niet worden gewijzigd!');
+					$tr.find('.icon-warning2').show();
+				}
+				else
+					$tr.find('.icon-check').show();
+				
+				$tr.find('.spinner').hide();
+			});
+		}
 	},
 	
 	//dropdowns met nieuwe data vullen
@@ -200,9 +236,10 @@ let plaatsing = {
 		//kijken of brutoloon niet te laag is
 		brutoloon = $('#plaatsing [name="uurloon"]').val();
 		brutoloon = brutoloon.replace(',', '.');
+		user_type = $('#plaatsing [name="user_type"]').val();
 		
 		//check
-		if( brutoloon < plaatsing.brutoloon ){
+		if( brutoloon < plaatsing.brutoloon && user_type != 'werkgever' ){
 			Swal.fire({type:'warning', title:'Brutoloon is te laag', text:"Opgegeven brutoloon mag niet lager zijn dan het cao-loon", buttonsStyling:false, confirmButtonClass:'btn btn-primary'});
 		}
 		else if( $('#plaatsing [name="start_plaatsing"]').val() == '')

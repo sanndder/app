@@ -25,6 +25,21 @@ class Ajax extends MY_Controller
 		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )forbidden();
 
 	}
+
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// factor voor plaatsing wijzigen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function setplaatsingfactor()
+	{
+		$plaatsing = new Plaatsing( $_POST['plaatsing_id'] );
+		if( $plaatsing->setFactor( $_POST['factor_id'] ))
+			$response = array( 'status' => 'success' );
+		else
+			$response = array( 'status' => 'error' );
+		
+		echo json_encode( $response );
+	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// plaatsing voor werknemer toevoegen

@@ -39,6 +39,13 @@ class Overzicht extends MY_Controller
 			$inlener->del($_GET['del']);
 		}
 		
+		//acties
+		if( isset($_GET['action']) && $_GET['action'] == 'archief' )
+		{
+			$inlener = new Inlener( $_GET['inlener_id'] );
+			$inlener->setArchief( true );
+		}
+		
 		//kredietaanvragen ophalen
 		$kredietgroup = new KredietaanvraagGroup();
 		$kredietaanvragen = $kredietgroup->all();

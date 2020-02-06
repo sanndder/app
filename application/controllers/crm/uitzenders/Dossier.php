@@ -111,7 +111,6 @@ class Dossier extends MY_Controller
 			}
 		}
 		
-		
 		//uitzender users ophalen
 		$usersgroup = new UserGroup();
 

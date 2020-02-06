@@ -256,6 +256,12 @@ let invoer = {
 				if( invoer.invoertab == 'kilometers' )
 					invoerkm.buildKmInvoer(json);
 				
+				//km invoer laden
+				if( invoer.invoertab == 'vergoedingen' )
+					invoervergoedingen.buildVergoedingenInvoer(json);
+				
+				
+				
 			});
 		}
 		
@@ -368,6 +374,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	invoer.init();
 	invoeruren.init();
 	invoerkm.init();
+	invoervergoedingen.init();
 	invoerbijlages.init();
 	
 	$('#upload-bijlages').fileinput({

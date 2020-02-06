@@ -457,7 +457,7 @@
 									</tr>
 								</thead>
 								<tbody>
-                                    {if is_array($werknemervergoedingen)}
+                                    {if is_array($werknemervergoedingen) && count($werknemervergoedingen) > 0}
                                         {foreach $werknemervergoedingen as $vergoeding}
 											<tr>
 												<td>{$vergoeding.naam}</td>

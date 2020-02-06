@@ -162,6 +162,8 @@ class Vergoeding extends Connector
 		
 		//toevoegen aan werknemers
 		$this->addVergoedingToWerknemers( $inlener_id, $inlener_vergoeding_id, $insert );
+		
+		return true;
 	}
 	
 	

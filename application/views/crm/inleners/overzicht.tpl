@@ -240,7 +240,10 @@
 											<a href="{$base_url}/crm/inleners?del={$i.inlener_id}"><i class="icon-trash font-size-sm"></i></a>
                                         {/if}
                                         {if isset($i.user)}
-											<a href="{$base_url}/dashboard/uitzender?loginals=inlener&id={$i.inlener_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
+											<a href="{$base_url}/dashboard/inlener?loginals=inlener&id={$i.inlener_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
+                                        {/if}
+                                        {if $i.complete == 0}
+											<a href="{$base_url}/crm/inleners?action=archief&inlener_id={$i.inlener_id}" class="ml-2"> archief</a>
                                         {/if}
 									</td>
 								</tr>

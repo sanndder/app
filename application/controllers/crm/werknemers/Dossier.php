@@ -402,9 +402,6 @@ class Dossier extends MY_Controller
 		//verlonings instellingen aanpassen
 		if( isset( $_POST['set'] ) )
 		{
-			//cache value, wordt te vroeg bijgewerkt
-			$complete_cache = $werknemer->complete;
-			
 			$werknemer->setVerloning();
 			if( $werknemer->errors() !== false )
 				$this->smarty->assign( 'errors', $werknemer->errors() );
@@ -422,7 +419,7 @@ class Dossier extends MY_Controller
 				}
 			}
 		}
-		
+
 		$this->smarty->assign( 'werknemer', $werknemer );
 		$this->smarty->assign( 'verloning', $werknemer->verloning() );
 		$this->smarty->display( 'crm/werknemers/dossier/verloning.tpl' );

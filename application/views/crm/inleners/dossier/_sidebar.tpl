@@ -64,7 +64,7 @@
 
 					<!-- li Contactpersonen, verplaatsen naar einde lijst wanneer nieuwe aanmelding -->
 					<li class="nav-item {if $inlener->complete != 1}order-6{/if}">
-						<a {if $inlener->cao_complete != NULL || $inlener->complete == 1}href="crm/inleners/dossier/contactpersonen/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->cao_complete == NULL && $inlener->complete == 0}nav-link-disabled{/if} {if $active == 'contactpersonen'}active{/if}">
+						<a {if ($inlener->cao_complete != NULL && $inlener->factuurgegevens_complete != NULL) || $inlener->complete == 1}href="crm/inleners/dossier/contactpersonen/{$inlener->inlener_id}"{/if} class="nav-link {if ($inlener->cao_complete == NULL || $inlener->factuurgegevens_complete == NULL) && $inlener->complete == 0}nav-link-disabled{/if} {if $active == 'contactpersonen'}active{/if}">
                             {* afwijkende icons voor nieuwe aanmelding *}
                             {if $inlener->contactpersoon_complete == NULL}
 								<i class="icon-checkbox-unchecked2 mr-2"></i>
@@ -195,8 +195,8 @@
 								Factuurgegevens
 							</a>
 						</li>
-                        {if $inlener->complete != 1 }
-                            {* li CAO alleen bij aanmelden *}
+                        {if $inlener->complete != 1 && $werkgever_type == 'uitzenden' }
+                            {* li CAO alleen bij aanmelden uitzend bv *}
 							<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
 								<a {if $inlener->factuurgegevens_complete != NULL}href="crm/inleners/dossier/cao/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->factuurgegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'cao'}active{/if}">
                                     {* afwijkende icons voor nieuwe aanmelding *}

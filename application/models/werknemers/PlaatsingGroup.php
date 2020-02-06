@@ -3,6 +3,7 @@
 namespace models\werknemers;
 
 use models\Connector;
+use models\inleners\Inlener;
 use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))
@@ -86,7 +87,17 @@ class PlaatsingGroup extends Connector
 		
 		$query = $this->db_user->query( $sql );
 		
-		$data = DBhelper::toArray( $query, 'plaatsing_id', 'array' );
+		if( $query->num_rows() == 0 )
+			return array();
+		
+		$inlener = new Inlener( NULL );
+		
+		foreach( $query->result_array() as $row )
+		{
+			//factoren ophalen
+			$row['factoren'] = $inlener->setID( $row['inlener_id'] )->factoren();
+			$data[$row['plaatsing_id']] = $row;
+		}
 		
 		return $data;
 	}

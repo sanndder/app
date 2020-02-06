@@ -69,6 +69,7 @@ class Ajax extends MY_Controller
 		$array['invoer']['km'] = $invoerKm->getWerknemerKilometers();
 		
 		//vergoedingen
+		$invoervergoedingen->setWerknemerUren( $invoerUren->getWerknemerUren() );
 		$array['invoer']['vergoedingen'] = $invoervergoedingen->getWerknemerVergoedingen();
 		
 		//urentypes erbij
@@ -108,6 +109,44 @@ class Ajax extends MY_Controller
 		echo json_encode( $array );
 	}
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// vergoeding doorbelasten opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveVergoedingDoorbelasten()
+	{
+		$invoerVergoedingen = new InvoerVergoedingen( $this->invoer );
+		$invoerVergoedingen->setWerknemer( $_POST['werknemer_id'] );
+		
+		//save
+		if( $invoerVergoedingen->setDoorbelasten( $_POST['invoer_id'], $_POST['doorbelasten'] ) )
+			$array['status'] = 'success';
+		else
+			$array['status'] = 'error';
+		
+		echo json_encode( $array );
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// vergoeding bedrag opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveVergoedingBedrag()
+	{
+		$invoerVergoedingen = new InvoerVergoedingen( $this->invoer );
+		$invoerVergoedingen->setWerknemer( $_POST['werknemer_id'] );
+		
+		//save
+		if( $invoerVergoedingen->setBedrag( $_POST['invoer_id'], $_POST['werknemer_vergoeding_id'], $_POST['bedrag'] ) )
+		{
+			$array['status'] = 'success';
+			$array['invoer_id'] = $invoerVergoedingen->getVergoedingInsertId();
+		}
+		else
+			$array['status'] = 'error';
+		
+		echo json_encode( $array );
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// km opslaan
@@ -124,7 +163,6 @@ class Ajax extends MY_Controller
 		
 		echo json_encode( $array );
 	}
-
 
 
 	//-----------------------------------------------------------------------------------------------------------------

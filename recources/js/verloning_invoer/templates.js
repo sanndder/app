@@ -93,17 +93,31 @@ let tplKmInvoerTr = `<tr data-id="">
 					</tr>`;
 
 //vergoeding invoer tabel row
-let tplVergoedingVastTr = `<tr>
-								<td class="td-vergoeding">{vergoeding}</td>
+let tplVergoedingVastTr = `<tr data-id="{invoer_id}">
+								<td class="td-vergoeding">{naam}</td>
 								<td class="td-euro">€</td>
 								<td style="width: 75px;" class="td-input">{bedrag}</td>
+								<td>
+									<select class="form-control" data-vi-action="setVergoedingDoorbelasten">
+										<option class="keuze">Maak een keuze</option>
+										<option value="inlener">Inlener</option>
+										<option value="uitzender">Uitzender</option>
+									</select>
+								</td>
 							</tr>`;
 
-let tplVergoedingVariabelTr = `<tr>
-								<td class="td-vergoeding">{vergoeding}</td>
+let tplVergoedingVariabelTr = `<tr data-id="{invoer_id}" data-werknemer-vergoeding-id="{id}">
+								<td class="td-vergoeding">{naam}</td>
 								<td class="td-euro">€</td>
 								<td  style="width: 75px;" class="td-input">
-									<input style="width: 75px;" type="text" class="form-control" value="{bedrag}">
+									<input data-vi-action="setVergoedingBedrag" style="width: 75px;" type="text" class="form-control" value="{bedrag}">
+								</td>
+								<td>
+									<select class="form-control" data-vi-action="setVergoedingDoorbelasten">
+										<option class="keuze">Maak een keuze</option>
+										<option value="inlener">Inlener</option>
+										<option value="uitzender">Uitzender</option>
+									</select>
 								</td>
 							</tr>`;
 

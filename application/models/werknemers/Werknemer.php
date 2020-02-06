@@ -617,8 +617,12 @@ class Werknemer extends Connector
 		
 		$insert['werknemer_id'] = $this->werknemer_id;
 		$insert['vakantiegeld_direct'] = intval($_POST['vakantiegeld_direct']);
-		$insert['vakantieuren_direct'] = intval($_POST['vakantieuren_direct']);
+		$insert['vakantieuren_wettelijk_direct'] = intval($_POST['vakantieuren_wettelijk_direct']);
+		$insert['vakantieuren_bovenwettelijk_direct'] = intval($_POST['vakantieuren_bovenwettelijk_direct']);
+		$insert['aantal_vakantiedagen_wettelijk'] = intval($_POST['aantal_vakantiedagen_wettelijk']);
+		$insert['aantal_vakantiedagen_bovenwettelijk'] = intval($_POST['aantal_vakantiedagen_bovenwettelijk']);
 		$insert['atv_direct'] = intval($_POST['atv_direct']);
+		$insert['aantal_atv_dagen'] = intval($_POST['aantal_atv_dagen']);
 		$insert['et_regeling'] = intval($_POST['et_regeling']);
 		$insert['user_id'] = $this->user->user_id;
 		

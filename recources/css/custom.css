@@ -70,3 +70,12 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
 }
+
+/* tr grey */
+.row-light-plus{
+    background-color: #F3F3F3 !important;
+    color: #333;
+    padding: 8px 0 0 0;
+}
+
+.row-light-plus input{ margin-bottom: 8px;}

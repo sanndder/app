@@ -17,6 +17,7 @@ let invoerkm = {
 		$(document).on('focus', '.table-vi-km input', function(){
 			invoerkm.focusKmRow(this);
 		});
+		
 		$(document).on('click', '.table-vi-km select', function(){
 			invoerkm.focusKmRow(this);
 		});
