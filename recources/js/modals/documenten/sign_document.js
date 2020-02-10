@@ -1,4 +1,11 @@
 
+var wrapper;
+var canvas;
+var clearButton;
+var signButton;
+var signaturePad;
+var global_document_id;
+
 //==========================================================
 // Sign SamenwerkingsOvereenkomst
 //==========================================================
@@ -18,7 +25,7 @@ function modalSignDocumentWelkom( document_id, step )
         //kijken of alles getekend is
         checkAllWelkomDocumentsSigned();
     };
-
+    
     //call sign modal
     modalSignDocument(document_id, callback );
 }
@@ -39,7 +46,6 @@ function modalSignDocument( document_id, callback )
     $('#pdfviewer').css('height', '90%');
     $('.toggle-pad').show();
 
-
     //open moal
     $modal.modal('show');
 
@@ -48,11 +54,11 @@ function modalSignDocument( document_id, callback )
 
     //signature pad aanmaken -> https://github.com/szimek/signature_pad
 
-    var wrapper  = document.getElementById("signature-pad");
-    var canvas = wrapper.querySelector("canvas");
-    var clearButton = wrapper.querySelector("[data-action=clear]");
-    var signButton = wrapper.querySelector("[data-action=sign]");
-    var signaturePad = new SignaturePad(canvas, {backgroundColor: 'rgb(255, 255, 255)'});
+    wrapper  = document.getElementById("signature-pad");
+    canvas = wrapper.querySelector("canvas");
+    clearButton = wrapper.querySelector("[data-action=clear]");
+    signButton = wrapper.querySelector("[data-action=sign]");
+    signaturePad = new SignaturePad(canvas, {backgroundColor: 'rgb(255, 255, 255)'});
 
     signButton.disabled = false;
 
@@ -62,24 +68,34 @@ function modalSignDocument( document_id, callback )
     });
 
     //sign document
-    signButton.addEventListener("click", function (event) {
+    global_document_id = document_id;
+    signButton.addEventListener("click", ajaxSign);
 
-        if (signaturePad.isEmpty()) {
-            alert('Fout: Uw handtekening is leeg.');
-            return false;
-        }
+    //tekenknop wordt aangeklikt
+    $('.toggle-pad').on('click', function(){
+        $(this).hide();
+        $('#signature-pad').show();
+        $('#pdfviewer').css('height', '67%');
+    });
+}
 
-        signButton.disabled = true;
-
-        var dataUrl = signaturePad.toDataURL("image/jpeg");
-        console.log(dataUrl);
-        $.ajax({
-            url: 'documenten/ajax/signdocument/'+document_id,
-            type: 'POST',
-            dataType: 'json',
-            data: { imageData: dataUrl },
-        })
-        .done(function(json) {
+function ajaxSign(){
+    if (signaturePad.isEmpty()) {
+        alert('Fout: Uw handtekening is leeg.');
+        return false;
+    }
+    
+    signButton.disabled = true;
+    
+    var dataUrl = signaturePad.toDataURL("image/jpeg");
+    console.log(dataUrl);
+    $.ajax({
+        url: 'documenten/ajax/signdocument/'+global_document_id,
+        type: 'POST',
+        dataType: 'json',
+        data: { imageData: dataUrl },
+    })
+    .done(function(json) {
         if( json.status == 'success' )
         {
             $modal.modal('hide');
@@ -88,16 +104,10 @@ function modalSignDocument( document_id, callback )
         }
         else
             alert(json.error);
-        })
-        .fail(function(json) {
-            console.log("error: " + json);
-        });
-    });
-
-    //tekenknop wordt aangeklikt
-    $('.toggle-pad').on('click', function(){
-        $(this).hide();
-        $('#signature-pad').show();
-        $('#pdfviewer').css('height', '67%');
+    })
+    .fail(function(json) {
+        console.log("error: " + json);
+    }).always( function(){
+       
     });
 }

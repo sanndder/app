@@ -36,7 +36,7 @@ class ZzpGroup extends Connector {
 	/*
 	 * list zzpers for inlener
 	 *
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	static function inlener( $inlener_id )
 	{
@@ -188,7 +188,7 @@ class ZzpGroup extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

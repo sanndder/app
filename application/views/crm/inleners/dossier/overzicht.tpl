@@ -187,6 +187,77 @@
 				--------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 				<div class="col-md-3">
 
+					<!------------------------------------------------------- card: Status ------------------------------------------------------>
+                    {if $user_type == 'werkgever'}
+						<div class="card">
+							<div class="card-header bg-transparent header-elements-inline">
+								<span class="text-uppercase font-size-sm font-weight-semibold">Status</span>
+							</div>
+
+							<div class="card-body">
+								<ul class="media-list">
+
+									<li class="media">
+										<div class="mr-2">
+											{if $acties.user != NULL}
+												<i class="icon-checkbox-checked2 text-green-700"></i>
+											{else}
+												<i class="icon-checkbox-unchecked2 text-grey-300"></i>
+											{/if}
+										</div>
+										<div class="media-body {if $acties.user == NULL} text-grey-300{/if}">
+											User aangemaakt en verzonden naar inlener
+										</div>
+									</li>
+
+									<li class="media mt-2">
+										<div class="mr-2">
+                                            {if $acties.user_password != NULL}
+												<i class="icon-checkbox-checked2 text-green-700"></i>
+                                            {else}
+												<i class="icon-checkbox-unchecked2 text-grey-300"></i>
+                                            {/if}
+										</div>
+										<div class="media-body {if $acties.user_password == NULL} text-grey-300{/if}">
+											Inlener heeft een wachtwoord aangemaakt
+										</div>
+									</li>
+
+									<li class="media mt-2">
+										<div class="mr-2">
+                                            {if $acties.av_id != NULL}
+												<i class="icon-checkbox-checked2 text-green-700"></i>
+                                            {else}
+												<i class="icon-checkbox-unchecked2 text-grey-300"></i>
+                                            {/if}
+										</div>
+										<div class="media-body {if $acties.av_id == NULL} text-grey-300{/if}">
+											Algemene voowaarden zijn getekend
+										</div>
+									</li>
+
+									<li class="media mt-2">
+										<div class="mr-2">
+                                            {if $acties.overeenkomst_opdracht != NULL}
+												<i class="icon-checkbox-checked2 text-green-700"></i>
+                                            {else}
+												<i class="icon-checkbox-unchecked2 text-grey-300"></i>
+                                            {/if}
+										</div>
+										<div class="media-body {if $acties.overeenkomst_opdracht == NULL} text-grey-300{/if}">
+											Overeenkomst van opdracht is getekend
+										</div>
+									</li>
+
+								</ul>
+							</div>
+						</div>
+						<!-- /card: Status  -->
+                    {/if}
+
+
+
+
 					<!------------------------------------------------------- card: Uitzender ------------------------------------------------------>
                     {if $user_type == 'werkgever'}
 						<div class="card">

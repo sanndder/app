@@ -230,6 +230,7 @@ class Werknemer extends Connector
 			//koppeling uitzender aanmaken indien gewenst
 			if( $this->_uitzender_id_new !== NULL )
 				$this->setUitzender( $this->_uitzender_id_new );
+
 			
 			return true;
 		}
@@ -616,6 +617,7 @@ class Werknemer extends Connector
 		$this->db_user->query( "UPDATE werknemers_verloning_instellingen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE werknemer_id = $this->werknemer_id AND deleted = 0", array( $this->user->user_id ) );
 		
 		$insert['werknemer_id'] = $this->werknemer_id;
+		$insert['inhouden_zorgverzekering'] = intval($_POST['inhouden_zorgverzekering']);
 		$insert['vakantiegeld_direct'] = intval($_POST['vakantiegeld_direct']);
 		$insert['vakantieuren_wettelijk_direct'] = intval($_POST['vakantieuren_wettelijk_direct']);
 		$insert['vakantieuren_bovenwettelijk_direct'] = intval($_POST['vakantieuren_bovenwettelijk_direct']);
@@ -666,7 +668,7 @@ class Werknemer extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

@@ -36,7 +36,7 @@ class WerknemerGroup extends Connector {
 	/*
 	 * list werknemers for inlener
 	 *
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	static function inlener( $inlener_id )
 	{
@@ -187,7 +187,7 @@ class WerknemerGroup extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

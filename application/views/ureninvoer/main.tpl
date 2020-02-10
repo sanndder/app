@@ -15,8 +15,10 @@
 	<script src="recources/js/verloning_invoer/invoeruren.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoerkm.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoervergoedingen.js?{$time}"></script>
+	<script src="recources/js/verloning_invoer/invoeret.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoerbijlages.js?{$time}"></script>
 	<link href="recources/css/verloning_input.css?{$time}" rel="stylesheet" type="text/css">
+
 	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-wide sidebar-expand-md align-self-start">
 
@@ -202,12 +204,17 @@
 												Vergoedingen
 											</a>
 										</li>
+										<li class="nav-item nav-et">
+											<a href="#sub-et" class="tab-sub nav-link" data-toggle="tab">
+												ET-regeling
+											</a>
+										</li>
 										<li class="nav-item">
 											<a href="#sub-reserveringen" class="tab-sub nav-link" data-toggle="tab">
 												Reserveringen
 											</a>
 										</li>
-										{*
+                                        {*
 										<li class="nav-item">
 											<a href="#sub-inhoudingen" class="tab-sub nav-link" data-toggle="tab">
 												Inhoudingen
@@ -310,6 +317,45 @@
 													</tr>
 												</thead>
 												<tbody>
+												</tbody>
+											</table>
+
+										</div>
+
+                                        {****** Invoer: ET-regeling *****************************************************}
+										<div class="tab-pane tab-pane-sub fade" id="sub-et">
+
+											<table class="mt-2 vi-input vi-table-et">
+												<thead>
+												</thead>
+												<tbody>
+													<tr>
+														<td class="font-size-base" style="padding-right: 25px;">Vergoeding huisvesting</td>
+														<td class="d-flex flex-row-reverse">
+															<input style="width: 80px" type="text" class="form-control text-right" name="vergoeding-huisvesting" />
+															<div style="font-size: 15px" class="pr-1 pt-1">€</div>
+														</td>
+													</tr>
+													<tr>
+														<td class="font-size-base" style="padding-right: 25px;">Vergoeding verschil levensstandaard</td>
+														<td class="d-flex">
+															<select class="form-control" name="vergoeding-levensstandaard">
+																<option></option>
+																{foreach $cola as $c}
+																	<option value="{$c.bedrag}">{$c.land} - € {$c.bedrag|number_format:2:',':'.'}</option>
+																{/foreach}
+															</select>
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2" style="height: 15px"></td>
+													</tr>
+													<tr>
+														<td class="font-size-base" style="padding-right: 25px;">Maximaal uit te ruilen</td>
+														<td class="text-right" style="font-size: 15px">
+															€ <span class="vi-et-max"></span>
+														</td>
+													</tr>
 												</tbody>
 											</table>
 

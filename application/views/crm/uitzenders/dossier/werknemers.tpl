@@ -2,6 +2,7 @@
 {block "title"}Uitzender{/block}
 {block "header-icon"}icon-office{/block}
 {block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{if $uitzender->archief == 1} <span style="color:red">(archief)</span> {/if}{/block}
+{assign "datatable" "true"}
 
 {block "content"}
 

@@ -214,7 +214,7 @@ class Vergoeding extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

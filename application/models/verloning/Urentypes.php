@@ -61,14 +61,31 @@ class Urentypes extends Connector
 	/*
 	 * werknemer urentype id
 	 */
-	public function setWerknemerUrentypeID( $id )
+	public function setWerknemerUrentypeID( $id ) :Urentypes
 	{
 		$this->_werknemer_urentype_id = intval( $id );
 		return $this;
 	}
-
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Verkooptarief updaten
+	 *
+	 */
+	public function setVerkooptariefWerknemer( $tarief )
+	{
+		$update['verkooptarief'] = prepareAmountForDatabase($tarief);
+		$this->db_user->where( 'id', $this->_werknemer_urentype_id );
+		
+		$this->db_user->update( 'werknemers_urentypes', $update );
+		
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		
+		return false;
+	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -473,7 +490,7 @@ class Urentypes extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

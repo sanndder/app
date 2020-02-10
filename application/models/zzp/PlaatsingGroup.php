@@ -1,6 +1,6 @@
 <?php
 
-namespace models\werknemers;
+namespace models\zzp;
 
 use models\Connector;
 use models\utils\DBhelper;

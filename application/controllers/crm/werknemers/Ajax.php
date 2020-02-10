@@ -30,6 +30,40 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// factor voor plaatsing wijzigen
 	//-----------------------------------------------------------------------------------------------------------------
+	public function setverkooptarief()
+	{
+		$urentype = new Urentypes();
+		$urentype->setWerknemerUrentypeID( $_POST['id'] );
+		
+		if( $urentype->setVerkooptariefWerknemer( $_POST['tarief'] ))
+			$response = array( 'status' => 'success' );
+		else
+			$response = array( 'status' => 'error' );
+		
+		echo json_encode( $response );
+	}
+
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// uurloon wijzigen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function setuurloon()
+	{
+		$plaatsing = new Plaatsing( $_POST['id'] );
+
+		if( $plaatsing->setBrutoUurloon( $_POST['uurloon'] ))
+			$response = array( 'status' => 'success' );
+		else
+			$response = array( 'status' => 'error' );
+
+		echo json_encode( $response );
+	}
+
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// factor voor plaatsing wijzigen
+	//-----------------------------------------------------------------------------------------------------------------
 	public function setplaatsingfactor()
 	{
 		$plaatsing = new Plaatsing( $_POST['plaatsing_id'] );

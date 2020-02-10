@@ -78,6 +78,25 @@ class Plaatsing extends Connector
 		return DBhelper::toRow( $query, 'NULL' );
 		
 	}
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * update bruto uurloon
+	 * TODO: minimumloon
+	 */
+	public function setBrutoUurloon( $uurloon )
+	{
+		$update['bruto_loon'] = prepareAmountForDatabase($uurloon);
+
+		$this->db_user->where( 'plaatsing_id', $this->_plaatsing_id );
+		$this->db_user->update( 'werknemers_inleners', $update );
+
+		if( $this->db_user->affected_rows() > 0 )
+			return true;
+
+		return false;
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -101,7 +120,7 @@ class Plaatsing extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * add plaatsing
-	 * TODO: validate input
+	 * TODO: validate input, minimumloon
 	 */
 	public function add( $data )
 	{
@@ -130,10 +149,9 @@ class Plaatsing extends Connector
 		$input['start_plaatsing'] = reverseDate($data['start_plaatsing']);
 		
 		
-		
 		$this->db_user->insert( 'werknemers_inleners', $input );
 		
-		//bruto uurloon naar de standaard tabel
+		//TODO bruto uurloon naar de standaard tabel
 		
 		
 		//als het gelukt is dan uretypes koppelen

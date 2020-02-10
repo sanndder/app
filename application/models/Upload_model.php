@@ -292,7 +292,7 @@ class Upload_model extends MY_Model
 	/*
 	 * Toon errors
 	 *
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

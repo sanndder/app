@@ -48,6 +48,7 @@ class InlenerGroup extends Connector {
 		return $data['count'];
 	}
 	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * lijst voor ureninvoer, minder data via ajax sturen
@@ -169,6 +170,91 @@ class InlenerGroup extends Connector {
 	}
 	
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * wat heeft de inlener wel en niet gedaan
+	 *
+	 */
+	public function aanmeldActies( $inlener_id = NULL )
+	{
+		
+		$sql = "SELECT inleners_status.inlener_id, inleners_status.complete, inleners_av_accepted.av_id, inleners_bedrijfsgegevens.bedrijfsnaam
+				FROM inleners_status
+				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
+				LEFT JOIN inleners_av_accepted ON inleners_av_accepted.inlener_id = inleners_status.inlener_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0";
+		
+		if( $inlener_id !== NULL )
+			$sql .= " AND inleners_status.inlener_id = $inlener_id LIMIT 1";
+		else
+			$sql .= " AND inleners_status.archief = 0";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		//array aanmaken
+		foreach( $query->result_array() as $row )
+		{
+			$data[$row['inlener_id']] = $row;
+		}
+		
+		//users erbij
+		$usergroup = new UserGroup();
+		$users = $usergroup->forInleners( array_keys($data) );
+		
+		//documenten
+		// TODO naar document group met juiste template ID
+		$sql = "SELECT inlener_id, document_id FROM documenten WHERE signed_file_name_display IS NOT NULL AND inlener_id IN (".array_keys_to_string($data).") AND deleted = 0 AND file_name_display = 'overeenkomst_van_opdracht.pdf'";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+				$documenten[$row['inlener_id']] = $row;
+		}
+
+		//data aanvullen
+		foreach( $data as $i_id => $row )
+		{
+			//users
+			if(isset($users[$i_id]))
+			{
+				$data[$i_id]['user'] = $users[$i_id]['user_id'];
+				if( $users[$i_id]['password'] !== NULL )
+					$data[$i_id]['user_password'] = true;
+				else
+					$data[$i_id]['user_password'] = NULL;
+			}
+			else
+			{
+				$data[$i_id]['user'] = NULL;
+				$data[$i_id]['user_password'] = NULL;
+			}
+			
+			//documenten
+			if(isset($documenten[$i_id]))
+				$data[$i_id]['overeenkomst_opdracht'] = true;
+			else
+				$data[$i_id]['overeenkomst_opdracht'] = NULL;
+			
+			//opschonen
+			if( $inlener_id === NULL )
+			{
+				if( $data[$i_id]['av_id'] !== NULL && $data[$i_id]['user'] !== NULL && $data[$i_id]['user_password'] !== NULL && $data[$i_id]['overeenkomst_opdracht'] !== NULL )
+					unset( $data[$i_id] );
+			}
+		}
+		
+		if( $inlener_id !== NULL )
+			return $data[$inlener_id];
+		
+		return $data;
+	}
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * uitzender ID toevoegen
@@ -227,7 +313,7 @@ class InlenerGroup extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

@@ -493,7 +493,7 @@ class User extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Nieuwe gebruiker aanmaken
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function add()
 	{

@@ -40,7 +40,10 @@ class Dashboard extends MY_Controller {
 		$zzpgroup = new ZzpGroup();
 		$kredietgroup = new KredietaanvraagGroup();
 		
+		//show($inlenergroup->aanmeldActies());
+		
 		$this->smarty->assign('uitzenders', $uitzendergroup->new());
+		$this->smarty->assign('inlener_acties', $inlenergroup->aanmeldActies() );
 		$this->smarty->assign('count_uitzenders', $uitzendergroup->count());
 		$this->smarty->assign('inleners', $inlenergroup->new());
 		$this->smarty->assign('kredietaanvragen', $kredietgroup->all() );

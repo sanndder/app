@@ -108,7 +108,7 @@ class Feestdagen extends Connector
 	/*
 	 * Toon errors
 	 *
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

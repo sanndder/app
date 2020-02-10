@@ -1,28 +1,27 @@
 <?php
 
-namespace models\facturatie;
+namespace models\verloning;
 
 use models\Connector;
+use models\forms\Validator;
+use models\utils\DBhelper;
+use models\werknemers\WerknemerGroup;
 
-if (!defined('BASEPATH'))
-	exit('No direct script access allowed');
+if (!defined('BASEPATH'))exit('No direct script access allowed');
 
 
 /*
- * Betaaltermijnen class
- *
+ * Urentypes class
+ * Aanmaken, wijzigen en verwijderen urentypes
  *
  *
  */
 
-class Betaaltermijnen extends Connector
+class ETregeling extends Connector
 {
-	/*
-	 * @var array
-	 */
+
 	private $_error = NULL;
-
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * constructor
@@ -31,36 +30,26 @@ class Betaaltermijnen extends Connector
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
+
 	}
-	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * haal betaaltermijnen op
-	 *
-	 * @return array | bool
+	 * cola bedragen ophalen
 	 */
-	static function list()
+	static function colBebedragen()
 	{
 		$CI =& get_instance();
 		$db_user = $CI->db_user;
 		
-		$sql = "SELECT termijn FROM settings_betaaltermijnen WHERE deleted = 0 ORDER BY termijn";
-		$query = $db_user->query( $sql );
+		$query = $db_user->query( "SELECT * FROM settings_cola_bedragen" );
 		
-		if( $query->num_rows() == 0 )
-			return NULL;
-		
-		foreach( $query->result_array() as $row )
-			$data[$row['termijn']] = $row['termijn'] . ' dagen';
-		
-		return $data;
+		return DBhelper::toArray( $query, 'id', 'array' );
 	}
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 *
 	 * @return array | bool
 	 */
 	public function errors()

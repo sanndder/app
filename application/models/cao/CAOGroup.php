@@ -39,7 +39,7 @@ class CAOGroup extends Connector {
 	/*
 	 * Alle COA's
 	 * Standaard alleen huidige of toekomstige CAO's
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function all()
 	{
@@ -132,7 +132,7 @@ class CAOGroup extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

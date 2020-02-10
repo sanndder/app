@@ -89,7 +89,7 @@ class PdfBuilder extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * View pdf in browser
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function preview()
 	{

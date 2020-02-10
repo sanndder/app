@@ -202,9 +202,11 @@ let invoer = {
 					var html = '';
 					for( var frequentie of Object.keys(json.inleners) ){
 						var element = tplInlenersTitle.replace('{frequentie}', frequentie);
+						
 						html += element;
 						html += '<li class="nav-item">';
 						for( var inlener of Object.values(json.inleners[frequentie]) ){
+							var set_inlener_id = inlener.inlener_id;
 							var element = tplInlenersLi.replace(/{inlener}/g, inlener.bedrijfsnaam);
 							var element = element.replace('{key}', inlener.inlener_id);
 							html += element;
@@ -212,6 +214,9 @@ let invoer = {
 						html += '</li>';
 					}
 					$(html).appendTo('.vi-list-inleners');
+					
+					if( Object.keys(json.inleners).length == 1 )
+						$list.find('[data-id="'+set_inlener_id+'"]').trigger('click');
 				}
 			});
 		}
@@ -238,6 +243,7 @@ let invoer = {
 		//voor elke tab wordt de invoer opnieuw geladen
 		xhr.url = base_url + 'ureninvoer/ajax/werknemerInvoer';
 		xhr.data = data;
+		
 		var response = xhr.call();
 		if( response !== false ){
 			response.done(function(json){
@@ -246,6 +252,16 @@ let invoer = {
 				
 				//opslaan
 				invoer.data = json;
+				
+				//wel of geen ET regeling
+				if( json.info.et_regeling != 1 )
+				{
+					$('.nav-et').hide();
+					if( invoer.invoertab == 'et' )
+						$('[href="#sub-uren"]').trigger('click');
+				}
+				else
+					$('.nav-et').show();
 				
 				//ureninvoer laden
 				log(json);
@@ -256,11 +272,13 @@ let invoer = {
 				if( invoer.invoertab == 'kilometers' )
 					invoerkm.buildKmInvoer(json);
 				
-				//km invoer laden
+				//invoer invoer laden
 				if( invoer.invoertab == 'vergoedingen' )
 					invoervergoedingen.buildVergoedingenInvoer(json);
 				
-				
+				//ET invoer laden
+				if( invoer.invoertab == 'et' )
+					invoeret.buildETInvoer(json);
 				
 			});
 		}
@@ -375,6 +393,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	invoeruren.init();
 	invoerkm.init();
 	invoervergoedingen.init();
+	invoeret.init();
 	invoerbijlages.init();
 	
 	$('#upload-bijlages').fileinput({
@@ -425,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				$('[data-id="14000"]').trigger('click');
 				
 				setTimeout(function(){
-					$('[href="#sub-vergoedingen"]').trigger('click');
+					$('[href="#sub-et"]').trigger('click');
 					
 					/*
 					setTimeout(function(){

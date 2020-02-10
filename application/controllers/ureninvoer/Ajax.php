@@ -3,10 +3,12 @@
 use models\inleners\Inlener;
 use models\inleners\InlenerGroup;
 use models\verloning\Invoer;
+use models\verloning\InvoerET;
 use models\verloning\InvoerKm;
 use models\verloning\InvoerUren;
 use models\verloning\InvoerVergoedingen;
 use models\verloning\UrentypesGroup;
+use models\werknemers\Werknemer;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -53,6 +55,8 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function werknemerInvoer()
 	{
+		$werknemer = new Werknemer( $_POST['werknemer_id'] );
+		
 		$invoerUren = new InvoerUren( $this->invoer );
 		$invoerUren->setWerknemer( $_POST['werknemer_id'] );
 		
@@ -61,6 +65,9 @@ class Ajax extends MY_Controller
 		
 		$invoervergoedingen = new InvoerVergoedingen( $this->invoer );
 		$invoervergoedingen->setWerknemer( $_POST['werknemer_id'] );
+		
+		$invoerET = new InvoerET( $this->invoer );
+		$invoerET->setWerknemer( $_POST['werknemer_id'] );
 
 		//urenmatrix
 		$array['invoer']['uren'] = $invoerUren->urenMatrix();
@@ -72,12 +79,21 @@ class Ajax extends MY_Controller
 		$invoervergoedingen->setWerknemerUren( $invoerUren->getWerknemerUren() );
 		$array['invoer']['vergoedingen'] = $invoervergoedingen->getWerknemerVergoedingen();
 		
+		//et regeling		
+		$array['invoer']['et'] = $invoerET->getEtRow();;
+		
 		//urentypes erbij
 		$urentypesGroup = new UrentypesGroup();
-		$array['info']['urentypes'] = $urentypesGroup->urentypesWerknemer( $_POST['werknemer_id'] );
+		$array['info']['urentypes'] = $urentypesGroup->inlener(  $_POST['inlener_id'] )->urentypesWerknemer( $_POST['werknemer_id'] );
 		
 		$array['info']['periode_start'] = $invoerUren->getPeriodeStart();
 		$array['info']['periode_einde'] = $invoerUren->getPeriodeEinde();
+		
+		//ET info
+		$invoerET->setWerknemerUren( $invoerUren->getWerknemerUren() );
+		
+		$array['info']['et_regeling'] = $werknemer->deelnemer_etregeling;
+		$array['info']['et']['max'] = $invoerET->maxUitruil();
 		
 		echo json_encode( $array );
 	}
@@ -126,6 +142,41 @@ class Ajax extends MY_Controller
 		echo json_encode( $array );
 	}
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// vergoeding bedrag opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveEtHuisvesting()
+	{
+		$invoerET = new InvoerET( $this->invoer );
+		$invoerET->setWerknemer( $_POST['werknemer_id'] );
+		
+		//save
+		if( $invoerET->setBedrag( $_POST['bedrag'], 'bedrag_huisvesting' ) )
+			$array['status'] = 'success';
+		else
+			$array['status'] = 'error';
+		
+		echo json_encode( $array );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// vergoeding bedrag opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveEtLevensstandaard()
+	{
+		$invoerET = new InvoerET( $this->invoer );
+		$invoerET->setWerknemer( $_POST['werknemer_id'] );
+		
+		//save
+		if( $invoerET->setBedrag( $_POST['bedrag'], 'bedrag_levensstandaard' ) )
+			$array['status'] = 'success';
+		else
+			$array['status'] = 'error';
+		
+		echo json_encode( $array );
+	}
+
+
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// vergoeding bedrag opslaan
@@ -197,7 +248,7 @@ class Ajax extends MY_Controller
 			$array['tijdvak'] = 'w';
 			$array['titel'] = 'week';
 			$array['jaren'] = array( 2020 );
-			$array['periodes'] = array( 5 => '05');
+			$array['periodes'] = array( 4 => '04', 5 => '05', 6 => '06');
 		}
 		
 		if( $factuurgegevens['frequentie'] == '4w')
@@ -233,7 +284,6 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function getWerknemerOverzicht()
 	{
-	
 		$array['werknemers'] = $this->invoer->getWerknemerOverzicht();
 		echo json_encode( $array );
 	}

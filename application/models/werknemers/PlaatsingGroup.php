@@ -5,6 +5,7 @@ namespace models\werknemers;
 use models\Connector;
 use models\inleners\Inlener;
 use models\utils\DBhelper;
+use models\verloning\UrentypesGroup;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -91,11 +92,19 @@ class PlaatsingGroup extends Connector
 			return array();
 		
 		$inlener = new Inlener( NULL );
+		$urentypesGroup = new UrentypesGroup();
 		
 		foreach( $query->result_array() as $row )
 		{
+			//medewerker naam
+			$row['naam'] = make_name($row);
+			
 			//factoren ophalen
 			$row['factoren'] = $inlener->setID( $row['inlener_id'] )->factoren();
+			
+			//urentypes
+			$row['urentypes'] = $urentypesGroup->inlener( $row['inlener_id'] )->urentypesWerknemer( $row['werknemer_id'], true );
+			
 			$data[$row['plaatsing_id']] = $row;
 		}
 		

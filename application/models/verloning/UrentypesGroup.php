@@ -70,18 +70,25 @@ class UrentypesGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * set werknemer id
+	 * urentypes voor werknemer
 	 *
 	 */
-	public function urentypesWerknemer( $werknemer_id ) :array
+	public function urentypesWerknemer( $werknemer_id, $include_not_active = false ) :array
 	{
-		$sql = "SELECT werknemers_urentypes.id, inleners_urentypes.doorbelasten_uitzender, inleners_urentypes.label, urentypes.naam, urentypes.percentage, urentypes_categorien.naam AS categorie
+		$sql = "SELECT werknemers_urentypes.id, inleners_urentypes.doorbelasten_uitzender, inleners_urentypes.label, urentypes.naam, urentypes.percentage, urentypes_categorien.naam AS categorie, werknemers_urentypes.verkooptarief,
+     			werknemers_urentypes.urentype_active, inleners_urentypes.default_urentype
 				FROM werknemers_urentypes
 				LEFT JOIN inleners_urentypes ON inleners_urentypes.inlener_urentype_id = werknemers_urentypes.inlener_urentype_id
 				LEFT JOIN urentypes ON inleners_urentypes.urentype_id = urentypes.urentype_id
 				LEFT JOIN urentypes_categorien on urentypes.urentype_categorie_id = urentypes_categorien.urentype_categorie_id
-				WHERE werknemers_urentypes.deleted = 0 AND werknemers_urentypes.werknemer_id = $werknemer_id AND werknemers_urentypes.urentype_active= 1
-				ORDER BY urentypes.urentype_categorie_id, inleners_urentypes.inlener_urentype_id, urentypes.percentage";
+				WHERE werknemers_urentypes.deleted = 0 AND werknemers_urentypes.werknemer_id = $werknemer_id AND inleners_urentypes.inlener_id = $this->_inlener_id
+				";
+		
+		//alleen actief
+		if( !$include_not_active )
+			$sql .= " AND werknemers_urentypes.urentype_active = 1 ";
+		
+		$sql .=	"ORDER BY urentypes.urentype_categorie_id, inleners_urentypes.inlener_urentype_id, urentypes.percentage";
 		
 		$query = $this->db_user->query( $sql );
 		
@@ -92,6 +99,9 @@ class UrentypesGroup extends Connector
 		{
 			if( $row['label'] == '' )
 				$row['label'] = $row['naam'];
+			
+			//werknemer mag nooit uurtarief zien
+			if( $this->user->user_type == 'werknemer' ) unset($row['verkooptarief']);
 			
 			$data[$row['id']] = $row;
 		}

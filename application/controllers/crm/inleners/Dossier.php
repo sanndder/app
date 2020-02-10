@@ -60,7 +60,7 @@ class Dossier extends MY_Controller
 	{
 		$inlener = new Inlener( $inlener_id );
 		$usersgroup = new UserGroup();
-
+		
 		//redirect indien nodig
 		if( $inlener->complete == 0 )
 		{
@@ -76,6 +76,7 @@ class Dossier extends MY_Controller
 		$this->smarty->assign('users',  $usersgroup->inlener( $inlener_id )->all() );
 		$this->smarty->assign('bedrijfsgegevens', $inlener->bedrijfsgegevens());
 		$this->smarty->assign('emailadressen', $inlener->emailadressen() );
+		$this->smarty->assign('acties', $inlener->aanmeldActies() );
 		
 		$this->smarty->assign('uitzender', UitzenderGroup::bedrijfsnaam( $inlener->uitzenderID() ) );
 		$this->smarty->assign('inlener', $inlener);

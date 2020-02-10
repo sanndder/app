@@ -24,6 +24,17 @@ let plaatsing = {
 			plaatsing.setFactor( this );
 		});
 		
+		//verkooptarief updaten
+		$('.update-verkooptarief').on('change', function(){
+			plaatsing.setVerkooptarief( this );
+		});
+
+		//verkooptarief updaten
+		$('.change-uurloon').on('change', function(){
+			plaatsing.setUurloon( this );
+		});
+
+		
 		//inlener selecteren
 		$('[name="inlener_id"]').on('change', function(){
 			data.inlener_id = $(this).val();
@@ -67,6 +78,64 @@ let plaatsing = {
 	},
 	
 	
+	//verkooptarief bij plaatsing wijzigen
+	setVerkooptarief( obj ){
+		$input = $(obj);
+		$tr = $input.closest('tr');
+		
+		data.id = $tr.data('id');
+		data.tarief = $input.val();
+		
+		$tr.find('.spinner').show();
+		$tr.find('.icon-warning2').hide();
+		$tr.find('.icon-check').hide();
+		
+		xhr.url = base_url + 'crm/werknemers/ajax/setverkooptarief';
+		var response = xhr.call();
+		if( response !== false ){
+			response.done(function(json){
+				if( json.status != 'success' )
+				{
+					alert('Verkooptarief kon niet worden gewijzigd!');
+					$tr.find('.icon-warning2').show();
+				}
+				else
+					$tr.find('.icon-check').show();
+				
+				$tr.find('.spinner').hide();
+			});
+		}
+	},
+
+	//uurloon updaten
+	setUurloon( obj ){
+		$input = $(obj);
+		$tr = $input.closest('tr');
+
+		data.id = $tr.data('id');
+		data.uurloon = $input.val();
+
+		$tr.find('.spinner').show();
+		$tr.find('.icon-warning2').hide();
+		$tr.find('.icon-check').hide();
+
+		xhr.url = base_url + 'crm/werknemers/ajax/setuurloon';
+		var response = xhr.call();
+		if( response !== false ){
+			response.done(function(json){
+				if( json.status != 'success' )
+				{
+					alert('Uurloon kon niet worden gewijzigd!');
+					$tr.find('.icon-warning2').show();
+				}
+				else
+					$tr.find('.icon-check').show();
+
+				$tr.find('.spinner').hide();
+			});
+		}
+	},
+
 	//factor bij plaatsing wijzigen
 	setFactor( obj ){
 		$select = $(obj);

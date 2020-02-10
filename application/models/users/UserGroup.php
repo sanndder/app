@@ -217,10 +217,29 @@ class UserGroup extends Connector {
 		return $data;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Admin user voor inleners
+	 *
+	 */
+	public function forInleners( array $inlener_ids )
+	{
+		$sql = "SELECT users_accounts.user_id, users_accounts.inlener_id, users.password
+				FROM users_accounts
+				LEFT JOIN users ON users_accounts.user_id = users.user_id
+				WHERE users_accounts.inlener_id IN (".implode(',',$inlener_ids).") AND users_accounts.werkgever_id = ".$this->user->werkgever_id."
+				AND users_accounts.user_type = 'inlener' AND users_accounts.admin = 1 AND users_accounts.deleted = 0";
+
+		$query = $this->db_admin->query( $sql );
+		return DBhelper::toArray( $query, 'inlener_id', 'array' );
+	}
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

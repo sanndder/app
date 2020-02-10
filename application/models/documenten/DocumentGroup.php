@@ -60,7 +60,7 @@ class DocumentGroup extends Connector {
 	 * met verwijderde items
 	 * @return object
 	 */
-	public function deleted()
+	public function deleted() :DocumentGroup
 	{
 		$this->_deleted = 1;
 		return $this;

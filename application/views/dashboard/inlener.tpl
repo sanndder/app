@@ -33,20 +33,16 @@
 							<ul class="media-list">
 
 								<li class="media">
-									<div class="mr-3 align-self-center">
-										<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
+									<div class="mr-2 align-self-center">
+										<img src="recources/img/icons/pdf.svg" style="height: 25px">
 									</div>
 
 									<div class="media-body">
 										<div class="font-weight-semibold">
 											<a href="{$base_url}/documenten/pdf/av" target="_blank">
-												algemenevoorwaarden.pdf
+												Algemene voorwaarden
 											</a>
 										</div>
-										<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-											<li class="list-inline-item">01-01-2020</li>
-											<li class="list-inline-item">0.01Mb</a></li>
-										</ul>
 									</div>
 
 									<div class="ml-3">
@@ -59,20 +55,16 @@
 
                                 {if $werkgever_type == 'uitzenden'}
 									<li class="media">
-										<div class="mr-3 align-self-center">
-											<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
+										<div class="mr-2 align-self-center">
+											<img src="recources/img/icons/pdf.svg" style="height: 25px">
 										</div>
 
 										<div class="media-body">
 											<div class="font-weight-semibold">
 												<a href="{$base_url}/recources/docs/grekening.pdf" target="_blank">
-													bankverklaring grekening.pdf
+													bankverklaring grekening
 												</a>
 											</div>
-											<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-												<li class="list-inline-item">09-01-2020</li>
-												<li class="list-inline-item">0.15Mb</a></li>
-											</ul>
 										</div>
 
 										<div class="ml-3">
@@ -83,20 +75,16 @@
 										</div>
 									</li>
 									<li class="media">
-										<div class="mr-3 align-self-center">
-											<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
+										<div class="mr-2 align-self-center">
+											<img src="recources/img/icons/pdf.svg" style="height: 25px">
 										</div>
 
 										<div class="media-body">
 											<div class="font-weight-semibold">
 												<a href="{$base_url}/recources/docs/kvkuitzenden.pdf" target="_blank">
-													Uittreksel KvK.pdf
+													Uittreksel KvK
 												</a>
 											</div>
-											<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-												<li class="list-inline-item">09-01-2020</li>
-												<li class="list-inline-item">0.15Mb</a></li>
-											</ul>
 										</div>
 
 										<div class="ml-3">
@@ -107,20 +95,16 @@
 										</div>
 									</li>
 									<li class="media">
-										<div class="mr-3 align-self-center">
-											<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
+										<div class="mr-2 align-self-center">
+											<img src="recources/img/icons/pdf.svg" style="height: 25px">
 										</div>
 
 										<div class="media-body">
 											<div class="font-weight-semibold">
 												<a href="{$base_url}/recources/docs/nbbu.pdf" target="_blank">
-													NBBU lidmaatschap.pdf
+													NBBU lidmaatschap
 												</a>
 											</div>
-											<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-												<li class="list-inline-item">09-01-2020</li>
-												<li class="list-inline-item">0.15Mb</a></li>
-											</ul>
 										</div>
 
 										<div class="ml-3">
@@ -131,20 +115,16 @@
 										</div>
 									</li>
 									<li class="media">
-										<div class="mr-3 align-self-center">
-											<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
+										<div class="mr-2 align-self-center">
+											<img src="recources/img/icons/pdf.svg" style="height: 25px">
 										</div>
 
 										<div class="media-body">
 											<div class="font-weight-semibold">
 												<a href="{$base_url}/recources/docs/nen.pdf" target="_blank">
-													NEN certtificaat.pdf
+													NEN certtificaat
 												</a>
 											</div>
-											<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-												<li class="list-inline-item">09-01-2020</li>
-												<li class="list-inline-item">0.15Mb</a></li>
-											</ul>
 										</div>
 
 										<div class="ml-3">
@@ -155,20 +135,16 @@
 										</div>
 									</li>
 									<li class="media">
-										<div class="mr-3 align-self-center">
-											<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
+										<div class="mr-2 align-self-center">
+											<img src="recources/img/icons/pdf.svg" style="height: 25px">
 										</div>
 
 										<div class="media-body">
 											<div class="font-weight-semibold">
 												<a href="{$base_url}/recources/docs/betalinguitzenden.pdf" target="_blank">
-													verklaring betalingsgedrag.pdf
+													verklaring betalingsgedrag
 												</a>
 											</div>
-											<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-												<li class="list-inline-item">09-01-2020</li>
-												<li class="list-inline-item">0.15Mb</a></li>
-											</ul>
 										</div>
 
 										<div class="ml-3">
@@ -181,20 +157,16 @@
                                 {/if}
                                 {if $werkgever_type == 'bemiddeling'}
 									<li class="media">
-										<div class="mr-3 align-self-center">
-											<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
+										<div class="mr-2 align-self-center">
+											<img src="recources/img/icons/pdf.svg" style="height: 25px">
 										</div>
 
 										<div class="media-body">
 											<div class="font-weight-semibold">
 												<a href="{$base_url}/recources/docs/kvkbemiddeling.pdf" target="_blank">
-													Uittreksel KvK.pdf
+													Uittreksel KvK
 												</a>
 											</div>
-											<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-												<li class="list-inline-item">09-01-2020</li>
-												<li class="list-inline-item">0.15Mb</a></li>
-											</ul>
 										</div>
 
 										<div class="ml-3">
@@ -205,20 +177,16 @@
 										</div>
 									</li>
 									<li class="media">
-										<div class="mr-3 align-self-center">
-											<i class="icon-file-pdf icon-2x text-warning-300 top-0"></i>
+										<div class="mr-2 align-self-center">
+											<img src="recources/img/icons/pdf.svg" style="height: 25px">
 										</div>
 
 										<div class="media-body">
 											<div class="font-weight-semibold">
 												<a href="{$base_url}/recources/docs/betalingbemiddeling.pdf" target="_blank">
-													verklaring betalingsgedrag.pdf
+													verklaring betalingsgedrag
 												</a>
 											</div>
-											<ul class="list-inline list-inline-dotted list-inline-condensed font-size-sm text-muted">
-												<li class="list-inline-item">09-01-2020</li>
-												<li class="list-inline-item">0.15Mb</a></li>
-											</ul>
 										</div>
 
 										<div class="ml-3">
@@ -230,8 +198,6 @@
 									</li>
                                 {/if}
 							</ul>
-
-
 						</div>
 					</div>
 

@@ -2,6 +2,7 @@
 
 use models\file\File;
 use models\uitzenders\UitzenderGroup;
+use models\verloning\ETregeling;
 use models\verloning\Invoer;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -33,6 +34,7 @@ class Ureninvoer extends MY_Controller
 			$this->smarty->assign('inlener_id', $this->inlener->id);
 		
 		
+		$this->smarty->assign('cola', ETregeling::colBebedragen() ); // cola bedragen
 		$this->smarty->assign('uitzenders', UitzenderGroup::list()); //uitzenders voor werkgever ophalen
 		
 		if( isset($_GET['dummy']))

@@ -187,6 +187,9 @@
                                                     {foreach $options as $option}
 														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
                                                     {/foreach}
+                                                    {if $user_type == 'werkgever'}
+														<option value="45">45</option>
+                                                    {/if}
 												</select>
 
                                                 {if isset($formdata.$field.error)}

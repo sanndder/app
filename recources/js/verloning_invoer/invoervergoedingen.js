@@ -140,6 +140,16 @@ let invoervergoedingen = {
 				
 			}
 			
+			//lege tabellen verbergen
+			if( $tabel_vast.find('tbody').html() == '' )
+				$tabel_vast.hide();
+			else
+				$tabel_vast.show();
+			
+			if( $tabel_variabel.find('tbody').html() == '' )
+				$tabel_variabel.hide();
+			else
+				$tabel_variabel.show();
 		}
 	}
 };

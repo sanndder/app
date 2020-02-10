@@ -1,6 +1,7 @@
 <?php
 
 use models\documenten\DocumentFactory;
+use models\documenten\DocumentGroup;
 use models\documenten\IDbewijs;
 use models\documenten\Template;
 use models\forms\Formbuilder;
@@ -214,8 +215,11 @@ class Dossier extends MY_Controller
 			}
 		}
 		
-		$this->smarty->assign( 'werknemer', $werknemer );
+		$documentGroup = new DocumentGroup();
+		$documenten = $documentGroup->werknemer( $werknemer_id )->get();
 		
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->assign('documenten', $documenten);
 		$this->smarty->assign( 'contract', $werknemer->contract() );
 		$this->smarty->assign( 'id_voorkant', $idbewijs->url( 'voorkant' ) );
 		$this->smarty->assign( 'id_achterkant', $idbewijs->url( 'achterkant' ) );
@@ -284,7 +288,7 @@ class Dossier extends MY_Controller
 		$werknemer = new Werknemer( $werknemer_id );
 		
 		$this->smarty->assign( 'werknemer', $werknemer );
-		$this->smarty->display( 'crm/werknemers/dossier/documenten.tpl' );
+		$this->smarty->display( 'crm/werknemers/dossier/reserveringen.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -404,9 +408,10 @@ class Dossier extends MY_Controller
 		{
 			$werknemer->setVerloning();
 			if( $werknemer->errors() !== false )
-				$this->smarty->assign( 'errors', $werknemer->errors() );
+				$this->smarty->assign( 'msg', msg( 'error', $werknemer->errors() ) );
 			else
 			{
+				$this->smarty->assign( 'msg',  msg( 'success', 'Wijzigingen opgeslagen' ));
 				if( $werknemer->verloning_complete != NULL AND $werknemer->complete == 0 )
 				{
 					$verloning = $werknemer->verloning();

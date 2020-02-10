@@ -51,7 +51,31 @@
 									<legend class="text-uppercase font-size-sm font-weight-bold">Instellingen verloning</legend>
 
                                     {if $user_type == 'werkgever'}
-										<div class="row row-light-plus">
+	                                    <div class="row ">
+		                                    <label class="col-md-3">Inhouden zorgverzekering</label>
+
+		                                    <div class="col-md-8">
+
+			                                    <div class="form-check form-check-inline">
+				                                    <label class="form-check-label">
+													<span class="checked">
+														<input value="1" type="radio" class="form-input-styled" name="inhouden_zorgverzekering" required {if (isset($verloning.inhouden_zorgverzekering) && $verloning.inhouden_zorgverzekering == 1)} checked{/if}>
+													</span>
+					                                    Ja
+				                                    </label>
+			                                    </div>
+			                                    <div class="form-check form-check-inline">
+				                                    <label class="form-check-label">
+												<span>
+													<input value="0" type="radio" class="form-input-styled" name="inhouden_zorgverzekering" {if (isset($verloning.inhouden_zorgverzekering) && $verloning.inhouden_zorgverzekering == 0) || $verloning.inhouden_zorgverzekering == NULL} checked{/if}>
+												</span>
+					                                    Nee
+				                                    </label>
+			                                    </div>
+		                                    </div>
+	                                    </div>
+
+	                                    <div class="row row-light-plus">
 											<label class="col-md-3">Vakantiegeld direct uitkeren</label>
 
 											<div class="col-md-8">
@@ -67,7 +91,7 @@
 												<div class="form-check form-check-inline">
 													<label class="form-check-label">
 												<span>
-													<input value="0" type="radio" class="form-input-styled" name="vakantiegeld_direct" {if isset($verloning.vakantiegeld_direct) && $verloning.vakantiegeld_direct == 0} checked{/if}>
+													<input value="0" type="radio" class="form-input-styled" name="vakantiegeld_direct" {if (isset($verloning.vakantiegeld_direct) && $verloning.vakantiegeld_direct == 0 ) || $verloning.vakantiegeld_direct == NULL} checked{/if}>
 												</span>
 														Nee
 													</label>
@@ -90,7 +114,7 @@
 												<div class="form-check form-check-inline">
 													<label class="form-check-label">
 												<span>
-													<input value="0" type="radio" class="form-input-styled" name="vakantieuren_wettelijk_direct" {if isset($verloning.vakantieuren_wettelijk_direct) && $verloning.vakantieuren_wettelijk_direct == 0} checked{/if}>
+													<input value="0" type="radio" class="form-input-styled" name="vakantieuren_wettelijk_direct" {if (isset($verloning.vakantieuren_wettelijk_direct) && $verloning.vakantieuren_wettelijk_direct == 0) || $verloning.vakantieuren_wettelijk_direct == NULL} checked{/if}>
 												</span>
 														Nee
 													</label>
@@ -114,7 +138,7 @@
 												<div class="form-check form-check-inline">
 													<label class="form-check-label">
 												<span>
-													<input value="0" type="radio" class="form-input-styled" name="vakantieuren_bovenwettelijk_direct" {if isset($verloning.vakantieuren_bovenwettelijk_direct) && $verloning.vakantieuren_bovenwettelijk_direct == 0} checked{/if}>
+													<input value="0" type="radio" class="form-input-styled" name="vakantieuren_bovenwettelijk_direct" {if (isset($verloning.vakantieuren_bovenwettelijk_direct) && $verloning.vakantieuren_bovenwettelijk_direct == 0) || $verloning.vakantieuren_bovenwettelijk_direct == NULL} checked{/if}>
 												</span>
 														Nee
 													</label>
@@ -127,7 +151,7 @@
 
 		                                    <div class="col-md-8">
 
-			                                    <input style="width: 120px; text-align: right" name="aantal_vakantiedagen_wettelijk" value="{if isset($verloning.aantal_vakantiedagen_wettelijk)}{$verloning.aantal_vakantiedagen_wettelijk|number_format:0}{/if}" type="text" class="form-control"/>
+			                                    <input style="width: 120px; text-align: right" name="aantal_vakantiedagen_wettelijk" value="{if isset($verloning.aantal_vakantiedagen_wettelijk)}{$verloning.aantal_vakantiedagen_wettelijk|number_format:0}{/if}{if $verloning.aantal_vakantiedagen_wettelijk == NULL}20{/if}" type="text" class="form-control"/>
 
 		                                    </div>
 	                                    </div>
@@ -137,7 +161,7 @@
 
 		                                    <div class="col-md-8">
 
-			                                    <input style="width: 120px; text-align: right" name="aantal_vakantiedagen_bovenwettelijk" value="{if isset($verloning.aantal_vakantiedagen_bovenwettelijk)}{$verloning.aantal_vakantiedagen_bovenwettelijk|number_format:0}{/if}" type="text" class="form-control"/>
+			                                    <input style="width: 120px; text-align: right" name="aantal_vakantiedagen_bovenwettelijk" value="{if isset($verloning.aantal_vakantiedagen_bovenwettelijk)}{$verloning.aantal_vakantiedagen_bovenwettelijk|number_format:0}{/if}{if $verloning.aantal_vakantiedagen_bovenwettelijk == NULL}5{/if}" type="text" class="form-control"/>
 
 		                                    </div>
 	                                    </div>
@@ -159,7 +183,7 @@
 												<div class="form-check form-check-inline">
 													<label class="form-check-label">
 												<span>
-													<input value="0" type="radio" class="form-input-styled" name="atv_direct" {if isset($verloning.atv_direct) && $verloning.atv_direct == 0} checked{/if}>
+													<input value="0" type="radio" class="form-input-styled" name="atv_direct" {if (isset($verloning.atv_direct) && $verloning.atv_direct == 0) || $verloning.atv_direct == NULL} checked{/if}>
 												</span>
 														Nee
 													</label>
@@ -172,7 +196,7 @@
 
 		                                    <div class="col-md-8">
 
-			                                    <input style="width: 120px; text-align: right" name="aantal_atv_dagen" value="{if isset($verloning.aantal_atv_dagen)}{$verloning.aantal_atv_dagen|number_format:0}{/if}" type="text" class="form-control"/>
+			                                    <input style="width: 120px; text-align: right" name="aantal_atv_dagen" value="{if isset($verloning.aantal_atv_dagen)}{$verloning.aantal_atv_dagen|number_format:0}{/if}{if $verloning.aantal_atv_dagen == NULL}0{/if}" type="text" class="form-control"/>
 
 		                                    </div>
 	                                    </div>
@@ -196,7 +220,7 @@
 											<div class="form-check form-check-inline">
 												<label class="form-check-label">
 												<span class="checked">
-													<input value="0" type="radio" class="form-input-styled" name="et_regeling" {if isset($verloning.et_regeling) && $verloning.et_regeling == 0} checked{/if}>
+													<input value="0" type="radio" class="form-input-styled" name="et_regeling" {if (isset($verloning.et_regeling) && $verloning.et_regeling == 0) || $verloning.et_regeling == NULL} checked{/if}>
 												</span>
 													Nee
 												</label>

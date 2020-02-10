@@ -111,7 +111,7 @@ class VergoedingGroup extends Connector
 		
 		$query = $this->db_user->query( $sql );
 		
-		return DBhelper::toArray( $query, 'id' );
+		return DBhelper::toArray( $query, 'id', 'array' );
 		
 	}
 	
@@ -176,7 +176,7 @@ class VergoedingGroup extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{

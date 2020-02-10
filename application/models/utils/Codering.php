@@ -39,7 +39,7 @@ class Codering extends Connector
 	/*
 	 * haal landenlijst op
 	 *
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	static function listLanden()
 	{
@@ -59,7 +59,7 @@ class Codering extends Connector
 	/*
 	 * haal nationalititen op
 	 *
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	static function listNationaliteiten()
 	{
@@ -79,7 +79,7 @@ class Codering extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors
-	 * @return array or boolean
+	 * @return array | bool
 	 */
 	public function errors()
 	{
