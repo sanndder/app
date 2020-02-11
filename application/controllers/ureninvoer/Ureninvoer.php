@@ -1,6 +1,8 @@
 <?php
 
+use models\facturatie\Factuur;
 use models\file\File;
+use models\pdf\PdfFactuurDefault;
 use models\uitzenders\UitzenderGroup;
 use models\verloning\ETregeling;
 use models\verloning\Invoer;
@@ -43,6 +45,22 @@ class Ureninvoer extends MY_Controller
 			$this->smarty->display('ureninvoer/main.tpl');
 		
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// factuur bekijken
+	//-----------------------------------------------------------------------------------------------------------------
+	public function factuur()
+	{
+		$factuur = new Factuur();
+		$factuur->setTijdvak( array( 'tijdvak' => $_GET['tijdvak'], 'jaar' => $_GET['jaar'], 'periode' => $_GET['periode']) );
+		$factuur->setInlener( $_GET['inlener'] );
+		$factuur->setUitzender( $_GET['uitzender'] );
+		
+		$factuur->verkoop();
+		
+		
+	}
+	
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------

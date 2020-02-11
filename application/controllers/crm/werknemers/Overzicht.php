@@ -1,6 +1,7 @@
 <?php
 
 use models\utils\VisitsLogger;
+use models\werknemers\Werknemer;
 use models\werknemers\WerknemerGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -31,6 +32,13 @@ class Overzicht extends MY_Controller
 		
 		$werknemergroup = new WerknemerGroup();
 		$werknemers = $werknemergroup->all( $_GET );
+		
+		//alleen in devolpment TODO: remove
+		if( isset($_GET['del']) )
+		{
+			$werknemer = new Werknemer( NULL );
+			$werknemer->del($_GET['del']);
+		}
 
 		//show($werknemers);
 

@@ -30,6 +30,17 @@ class MY_Controller extends CI_Controller
 		else
 			$this->smarty->assign( 'app_name' , APP_NAME);
 
+		//clear
+		/*
+		if( ENVIRONMENT == 'development')
+		{
+			foreach (new DirectoryIterator('application/views/_compile') as $fileInfo) {
+				if(!$fileInfo->isDot()) {
+					unlink($fileInfo->getPathname());
+				}
+			}
+		}*/
+		
 		//logout wanneer user klikt
 		$logout = false; if( isset($_GET['logout']) )$logout = true;
 		

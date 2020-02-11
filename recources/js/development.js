@@ -17,7 +17,7 @@ function fillForm()
    $('[name=tussenvoegsel]').val('van den');
    $('[name=iban]').val('NL96SNSB0821159593');
    $('[name=bsn]').val('290846080');
-   $('[name=gb_datum]').val('1985-06-15');
+   $('[name=gb_datum]').val('15-06-1986');
    $('[name=nationaltieit_id]').val('0001').trigger('change');
    $('[name=telefoon]').val('0612844698');
    $('[name=email]').val('hsmeijering@home.nl');

@@ -11,11 +11,11 @@
 			<table style="color: #FFF; margin-right: 25px;">
 				<tr>
 					<td>Factuurnummer: </td>
-					<td style="font-weight: bold">1505</td>
+					<td style="font-weight: bold">0001</td>
 				</tr>
 				<tr>
 					<td>Relatienummer: </td>
-					<td style="font-weight: bold">2156</td>
+					<td style="font-weight: bold">{$relatienummer}</td>
 				</tr>
 			</table>
 

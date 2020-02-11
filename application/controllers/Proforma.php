@@ -15,8 +15,7 @@ class Proforma extends MY_Controller {
 	{
 		parent::__construct();
 		
-		if(	$this->user->user_type != 'werkgever' )forbidden();
-		
+		if(	$this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender'  )forbidden();
 	}
 	
 	// --------------------------------------------------------------------

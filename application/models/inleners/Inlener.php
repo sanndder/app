@@ -572,8 +572,14 @@ class Inlener extends Connector
 			$insert['factor_laag'] = $factoren['factor_laag'];
 		}
 		
+		//hoogste factor id ophalen, autoincrement is niet van toepassing (zit op andere kolom)
+		$sql = "SELECT MAX(factor_id) AS factor_id FROM inleners_factoren";
+		$query = $this->db_user->query($sql);
+		
+		$data = $query->row_array();
+		
 		$insert['default_factor'] = 1;
-		$insert['factor_id'] = 1; //eerste altijd ID 1
+		$insert['factor_id'] = $data['factor_id'] + 1; //get MAX ID
 		$insert['inlener_id'] = $this->inlener_id;
 		$insert['omschrijving'] = 'standaard factoren';
 		$insert['user_id'] = $this->user->user_id;
@@ -615,7 +621,7 @@ class Inlener extends Connector
 	{
 		$uitzender = new Uitzender( $uitzender_id );
 		$factoren = $uitzender->factoren();
-		
+		show($factoren);
 		$_POST = array(
 			'default_factor' => 1,
 			'omschrijving' => 'Standaard factor',
@@ -688,7 +694,6 @@ class Inlener extends Connector
 		
 		$validator = new Validator();
 		$validator->table($table)->input($_POST)->run();
-
 		$input = $validator->data();
 
 		//juitse paramter meegeven
@@ -783,6 +788,9 @@ class Inlener extends Connector
 	 */
 	public function _updateStatus($property)
 	{
+		if( $property == 'factoren_complete' )
+			return NULL;
+		
 		if ($this->$property === NULL)
 		{
 			//werkgever hoeft niet gecontroleerd te worden
@@ -843,7 +851,7 @@ class Inlener extends Connector
 		//nieuwe factor
 		else
 		{
-			//hoogste contact id ophalen, autoincrement is niet van toepassing (zit op andere kolom)
+			//hoogste factor id ophalen, autoincrement is niet van toepassing (zit op andere kolom)
 			$sql = "SELECT MAX(factor_id) AS factor_id FROM inleners_factoren";
 			$query = $this->db_user->query($sql);
 			

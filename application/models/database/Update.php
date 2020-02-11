@@ -89,7 +89,7 @@ class Update {
 	 */
 	public function getDatabases()
 	{
-		$sql = "SELECT *, AES_DECRYPT( werkgevers.db_password, UNHEX(SHA2('".DB_SECRET."' ,512)) ) AS db_password FROM werkgevers WHERE werkgever_id != 1";
+		$sql = "SELECT *, AES_DECRYPT( werkgevers.db_password, UNHEX(SHA2('".DB_SECRET."' ,512)) ) AS db_password FROM werkgevers";
 		$query = $this->db_admin->query( $sql );
 		
 		if( $query->num_rows() == 0 )

@@ -9,8 +9,8 @@ use models\utils\Tijdvak;
 use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingGroup;
 
-if (!defined('BASEPATH'))exit('No direct script access allowed');
-
+if( !defined( 'BASEPATH' ) )
+	exit( 'No direct script access allowed' );
 
 /*
  * Object voor afhandelen uurinvoer
@@ -36,7 +36,7 @@ class InvoerUren extends Invoer
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
+	 * /*
 	 * gegevens overnemen van invoer object
 	 *
 	 * @return void
@@ -46,10 +46,10 @@ class InvoerUren extends Invoer
 		$this->setTijdvak( $invoer->tijdvakinfo() );
 		
 		if( $invoer->inlener() !== NULL )
-			$this->setInlener( $invoer->inlener()  );
+			$this->setInlener( $invoer->inlener() );
 		
 		if( $invoer->uitzender() !== NULL )
-			$this->setUitzender( $invoer->uitzender()  );
+			$this->setUitzender( $invoer->uitzender() );
 		
 	}
 	
@@ -136,7 +136,7 @@ class InvoerUren extends Invoer
 	public function delRow( $row ): bool
 	{
 		$oude_entry = $this->getRow( $row['invoer_id'] );
-		$this->db_user->query( "DELETE FROM invoer_uren WHERE invoer_id = ? AND werknemer_id = ?", array( $row['invoer_id'], $this->_werknemer_id) );
+		$this->db_user->query( "DELETE FROM invoer_uren WHERE invoer_id = ? AND werknemer_id = ?", array( $row['invoer_id'], $this->_werknemer_id ) );
 		
 		if( $this->db_user->affected_rows() != -1 )
 		{
@@ -184,11 +184,13 @@ class InvoerUren extends Invoer
 		//uren ophalen
 		$uren = $this->getWerknemerUren();
 		
-		if($uren === NULL )
+		if( $uren === NULL )
 			return $matrix;
 		
 		foreach( $uren as $key => $row )
 		{
+			//aantal gegevens filteren die niet naar json mogen
+			
 			$matrix[$row['datum']]['rows'][$key] = $row;
 		}
 		
@@ -211,7 +213,7 @@ class InvoerUren extends Invoer
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
-	 * alle uren voor werknemer ophalen
+	 * alle uren voor werknemer ophalen voor ajax invoer
 	 *
 	 */
 	public function getWerknemerUren()
@@ -232,12 +234,53 @@ class InvoerUren extends Invoer
 		{
 			$row['urentype_id'] = $row['uren_type_id_werknemer'];
 			
-			if( $row['project_tekst'] === NULL ) $row['project_tekst'] = '';
-			if( $row['locatie_tekst'] === NULL ) $row['locatie_tekst'] = '';
+			if( $row['project_tekst'] === NULL )
+				$row['project_tekst'] = '';
+			if( $row['locatie_tekst'] === NULL )
+				$row['locatie_tekst'] = '';
 			
 			$row['decimaal'] = $row['aantal'];
-			$row['aantal'] = d2h($row['aantal']);
+			$row['aantal'] = d2h( $row['aantal'] );
 			
+			$data[$row['invoer_id']] = $row;
+		}
+		
+		return $data;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alle urenrijen voor werknemer ophalen voor facturatie
+	 * bevat meer info die niet over JSON mag
+	 *
+	 */
+	public function getWerknemerUrenRijen()
+	{
+		$sql = "SELECT  invoer_uren.invoer_id, invoer_uren.werknemer_id, invoer_uren.zzp_id, invoer_uren.datum, invoer_uren.aantal, invoer_uren.plaatsing_id, invoer_uren.doorbelasten, invoer_uren.project_id, invoer_uren.project_tekst, invoer_uren.locatie_tekst,
+       					werknemers_urentypes.verkooptarief,
+       					urentypes.naam, urentypes.percentage,
+       					urentypes_categorien.factor,
+						inleners_urentypes.doorbelasten_uitzender, inleners_urentypes.label,
+      					werknemers_inleners.bruto_loon,
+       					inleners_factoren.factor_hoog, inleners_factoren.factor_laag
+				FROM invoer_uren
+				LEFT JOIN werknemers_urentypes ON invoer_uren.uren_type_id_werknemer = werknemers_urentypes.id
+				LEFT JOIN inleners_urentypes ON werknemers_urentypes.inlener_urentype_id = inleners_urentypes.inlener_urentype_id
+				LEFT JOIN urentypes ON inleners_urentypes.urentype_id = urentypes.urentype_id
+				LEFT JOIN urentypes_categorien ON urentypes.urentype_categorie_id = urentypes_categorien.urentype_categorie_id
+				LEFT JOIN werknemers_inleners ON werknemers_inleners.plaatsing_id = werknemers_urentypes.plaatsing_id
+				LEFT JOIN inleners_factoren ON werknemers_inleners.factor_id = inleners_factoren.factor_id
+				WHERE inleners_factoren.deleted = 0 AND werknemers_inleners.deleted = 0 AND invoer_uren.factuur_id IS NULL AND invoer_uren.verloning_id IS NULL
+				  AND invoer_uren.werknemer_id = ? AND invoer_uren.inlener_id = ? AND invoer_uren.datum >= ? AND invoer_uren.datum <= ?";
+		
+		//run query
+		$query = $this->db_user->query( $sql, array( $this->_werknemer_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
 			$data[$row['invoer_id']] = $row;
 		}
 		

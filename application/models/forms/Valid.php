@@ -46,13 +46,14 @@ class Valid
 	 */
 	static function factor( $input )
 	{
+		show($input);
 		if( empty( $input ) )
 			return false;
 		
 		if( !is_numeric( $input ) )
 			return false;
 		
-		if( $input < 1.4 )
+		if( $input < 1.3 )
 			return false;
 		
 		if( $input > 2 )

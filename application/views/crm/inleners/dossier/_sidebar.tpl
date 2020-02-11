@@ -115,8 +115,9 @@
 							</a>
 						</li>
 						<!-- Header Instellingen -->
+	                    <li class="nav-item-header">Instellingen</li>
+
                         {if $user_type == 'werkgever'}
-							<li class="nav-item-header">Instellingen</li>
 							<!-- li Algemene instellingen -->
 							<li class="nav-item {if $inlener->complete != 1}order-1{/if}">
 								<a href="crm/inleners/dossier/algemeneinstellingen/{$inlener->inlener_id}" class="nav-link {if $active == 'algemeneinstellingen'}active{/if}">
@@ -217,6 +218,7 @@
 								</a>
 							</li>
                         {/if}
+                    {/if}
 
                         {if $inlener->complete == 1 }
 							<!-- li Verloningsgegevens, andere volgorde wanneer nieuwe aanmelding -->
@@ -228,7 +230,7 @@
 								</a>
 							</li>
                         {/if}
-                    {/if}
+
 
 				</ul>
 			</div>

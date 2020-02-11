@@ -63,7 +63,7 @@
                     {/if}
 
 					<!-- li Documenten, andere volgorde wanneer nieuwe aanmelding -->
-                    {if  $user_type == 'werkgever'}
+
 						<li class="nav-item {if $werknemer->complete != 1}order-2{/if}">
 							<a {if $werknemer->gegevens_complete != NULL}href="crm/werknemers/dossier/documenten/{$werknemer->werknemer_id}"{/if} class="nav-link {if $werknemer->gegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'documenten'}active{/if}">
                                 {* afwijkende icons voor nieuwe aanmelding *}
@@ -83,16 +83,18 @@
 								Documenten
 							</a>
 						</li>
-                    {/if}
+
 
                     {if $werknemer->complete == 1 }
 						<!-- li plaatsing -->
+
+						<li class="nav-item">
+							<a href="crm/werknemers/dossier/plaatsingen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'plaatsingen'}active{/if}">
+								<i class="far fa-handshake mr-2"></i>Plaatsingen
+							</a>
+						</li>
+
                         {if $user_type == 'werkgever'}
-							<li class="nav-item">
-								<a href="crm/werknemers/dossier/plaatsingen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'plaatsingen'}active{/if}">
-									<i class="far fa-handshake mr-2"></i>Plaatsingen
-								</a>
-							</li>
 							<!-- li Notities -->
 							<li class="nav-item">
 								<a href="crm/werknemers/dossier/notities/{$werknemer->werknemer_id}" class="nav-link {if $active == 'notities'}active{/if}">

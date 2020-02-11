@@ -46,6 +46,13 @@
 				</a>
 			</li>
 
+			<li class="nav-item">
+				<a href="proforma" class="navbar-nav-link">
+					<i class="icon-calculator2 mr-2"></i>
+					Proforma
+				</a>
+			</li>
+
 
 			<li class="nav-item">
 				<a href="ureninvoer" class="navbar-nav-link">

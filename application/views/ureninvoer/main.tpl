@@ -139,7 +139,15 @@
 				<div class="card-header header-elements-inline">
 					<h5 class="card-title vi-card-titel"><i>Geen invoer mogelijk</i></h5>
 
-					<div class="header-elements">
+					<div class="header-elements vi-factuur-buttons" style="display: none !important">
+
+						<a target="_blank" href="ureninvoer/ureninvoer/factuur" class="btn btn-light mr-1 voorbeeld">
+							<i class="far fa-file-pdf mr-1"></i> Factuur voorbeeld
+						</a>
+
+						<button type="button" class="btn btn-success" data-vi-action="factuurGenereren">
+							<i class="far fa-file-pdf mr-1"></i> Factuur genereren
+						</button>
 
 					</div>
 				</div>
@@ -277,8 +285,6 @@
 												<thead>
 													<tr>
 														<th style="width: 85px" class="pl-2">Datum</th>
-														<th style="width: 25%">Van</th>
-														<th style="width: 25%">Naar</th>
 														<th style="width: 35px">Kilometers</th>
 														<th>Opmerking</th>
 														<th>Doorbelasten</th>

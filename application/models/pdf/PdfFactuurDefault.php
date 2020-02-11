@@ -12,13 +12,14 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  */
 class PdfFactuurDefault extends PdfBuilder {
 
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Init new file from array
 	 *
 	 *
 	 * @param array
-	 * @return $this
+	 * @return
 	 */
 	public function __construct()
 	{
@@ -54,7 +55,7 @@ class PdfFactuurDefault extends PdfBuilder {
 	 * header voor de factuur
 	 * @return object
 	 */
-	public function setBody()
+	public function setBody() :PdfFactuurDefault
 	{
 		$body = $this->smarty->fetch('application/views/pdf/facturen/factuur_default.tpl');
 		$this->mpdf->WriteHTML($body);
@@ -62,12 +63,13 @@ class PdfFactuurDefault extends PdfBuilder {
 		return $this;
 	}
 	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * header voor de factuur
 	 * @return object
 	 */
-	public function setHeader()
+	public function setHeader() :PdfFactuurDefault
 	{
 		$header = $this->smarty->fetch('application/views/pdf/facturen/factuur_header.tpl');
 		$this->mpdf->SetHTMLHeader($header);
@@ -80,7 +82,7 @@ class PdfFactuurDefault extends PdfBuilder {
 	 * footer voor de factuur
 	 * @return object
 	 */
-	public function setFooter()
+	public function setFooter() :PdfFactuurDefault
 	{
 		$footer = $this->smarty->fetch('application/views/pdf/footers/footer_full.tpl');
 		$this->mpdf->SetHTMLFooter($footer);

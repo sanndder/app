@@ -67,15 +67,13 @@ let tplKmInvoerStatusError = '<span class="text-danger"><i class="icon-warning22
 
 
 //kilometer invoer tabel row
-let tplKmInvoerTr = `<tr data-id="">
+let tplKmInvoerTr = `<tr data-id="{invoer_id}">
 						<td>
 							<div class="input-group">
 								<input value="{datum}" type="text" class="form-control pickadate-vi-km" name="datum" data-vi-action="saveKmRow" />
 							</div>
 						</td>
-						<td><input value="{locatie_van}" type="text" class="form-control" name="locatie_van" data-bing="location" placeholder="Plaats, Straatnaam" autocomplete="off" data-vi-action="saveKmRow" /></td>
-						<td><input value="{locatie_naar}" type="text" class="form-control" name="locatie_naar" data-bing="location" placeholder="Plaats, Straatnaam" autocomplete="off" data-vi-action="saveKmRow" /></td>
-						<td><input value="{aantal}" type="text" class="form-control text-right" name="aantal" readonly data-vi-action="saveKmRow" /></td>
+						<td><input value="{aantal}" type="text" class="form-control text-right" name="aantal" data-vi-action="saveKmRow" /></td>
 						<td><input value="{opmerking_tekst}" type="text" class="form-control" name="opmerking_tekst" data-vi-action="saveKmRow" /></td>
 						<td>
 							<select name="doorbelasten" class="form-control" data-vi-action="saveKmRow">
@@ -85,9 +83,6 @@ let tplKmInvoerTr = `<tr data-id="">
 							</select>
 						</td>
 						<td class="td-actions pt-1">
-							<a class="text-grey-200" data-vi-action="showRoute" href="" target="_blank" data-title="Route bekijken op kaart" data-popup="tooltip" title="Route bekijken op kaart" data-placement="left">
-								<i class="fas fa-directions fa-2x"></i>
-							</a>
 						</td>
 						<td class="td-status pt-1"></td>
 					</tr>`;

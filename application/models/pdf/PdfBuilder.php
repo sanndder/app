@@ -93,6 +93,7 @@ class PdfBuilder extends Connector {
 	 */
 	public function preview()
 	{
+	
 		$this->mpdf->Output( $this->_file_name_display . '.pdf', Destination::INLINE);
 		
 		//temp

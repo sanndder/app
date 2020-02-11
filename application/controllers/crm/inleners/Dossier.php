@@ -232,6 +232,7 @@ class Dossier extends MY_Controller
 			}
 			else
 				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
+			show($errors);
 		}
 		else
 		{

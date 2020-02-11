@@ -6,6 +6,7 @@ use models\cao\CAO;
 use models\cao\CAOGroup;
 use models\documenten\IDbewijs;
 use models\email\Email;
+use models\facturatie\FactuurFactory;
 use models\file\File;
 use models\file\Img;
 use models\file\Pdf;
@@ -109,6 +110,33 @@ class Test extends MY_Controller {
 		
 		$this->smarty->display('test.tpl');
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// test invoer naar factuur
+	//-----------------------------------------------------------------------------------------------------------------
+	public function factuur()
+	{
+		$_POST['tijdvak'] = 'w';
+		$_POST['jaar'] = '2020';
+		$_POST['periode'] = '6';
+		$_POST['uitzender_id'] = '383';
+		$_POST['inlener_id'] = '24';
+		
+		//tijdvak uit post data
+		$tijdvak = [ 'tijdvak' => $_POST['tijdvak'], 'jaar' => $_POST['jaar'], 'periode' => $_POST['periode'] ];
+		
+		//schoon beginnen
+		FactuurFactory::clear();
+		
+		$factuurFactory = new FactuurFactory();
+		$factuurFactory->setTijdvak( $tijdvak );
+		$factuurFactory->setInlener( $_POST['inlener_id'] );
+		$factuurFactory->setUitzender( $_POST['uitzender_id'] );
+		
+		//alle benodigde gegevens zijn ingesteld, nu aan het werk
+		$factuurFactory->run();
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// test ondertekenen

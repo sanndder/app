@@ -43,9 +43,17 @@
                                 {assign "div_xl" "8"}
                                 {assign "div_md" "8"}
 
+                                {if $ENV == 'development' || $user_id == 2}
+									<div class="col-lg-12 text-right mb-3">
+											<span data-title="Formulier invullen" data-popup="tooltip" data-placement="top" style="cursor:pointer;" onclick="fillForm()">
+												<i class="icon-pencil3 mr-2" style="font-size: 22px"></i>
+											</span>
+									</div>
+                                {/if}
 
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Factuurgegevens</legend>
+
 
 									<!-- iban -->
                                     {if isset($formdata.iban)}
@@ -101,6 +109,9 @@
                                                     {foreach $options as $option}
 														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
                                                     {/foreach}
+                                                    {if $user_type == 'werkgever'}
+														<option value="45">45 dagen</option>
+                                                    {/if}
 												</select>
 
                                                 {if isset($formdata.$field.error)}
@@ -187,9 +198,6 @@
                                                     {foreach $options as $option}
 														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
                                                     {/foreach}
-                                                    {if $user_type == 'werkgever'}
-														<option value="45">45</option>
-                                                    {/if}
 												</select>
 
                                                 {if isset($formdata.$field.error)}

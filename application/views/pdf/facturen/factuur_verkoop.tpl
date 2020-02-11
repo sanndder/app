@@ -9,7 +9,7 @@
 
 			<div class="div-ul">
 				<ul class="contact">
-					<li class="contact-name">Bouwbedrijf Jan Jansen En Zoon</li>
+					<li class="contact-name">{}</li>
 					<li>t.a.v. Debiteurenadministratie</li>
 					<li>Meppelerstraatweg 17</li>
 					<li>4455AA Apeldoorn</li>

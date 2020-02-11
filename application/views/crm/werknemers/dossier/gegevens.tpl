@@ -72,7 +72,7 @@
                                 {assign "div_md" "8"}
 
                                 {* bij nieuwe werknemer ook uitzender kiezen, alleen als werkgever *}
-                                {if $werknemer->complete != 1}
+                                {if $werknemer->complete != 1 && $werknemer->werknemer_id == NULL}
                                     {if $user_type == 'werkgever'}
 										<fieldset class="mb-3">
 											<legend class="text-uppercase font-size-sm font-weight-bold">Uitzender</legend>

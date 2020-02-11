@@ -238,7 +238,7 @@
 														</div>
 													</td>
 													<td class="pl-1">
-														<select class="form-control change-factor" style="padding: 2px; height: 30px;">
+														<select class="form-control change-factor" style="padding: 2px; height: 30px;" {if $user_type != 'werkgever'} disabled{/if}>
                                                             {if isset($p.factoren) && $p.factoren != NULL}
 	                                                            {if $p.factor_id == NULL}
 		                                                            <option>Selecteer factoren</option>
@@ -254,7 +254,7 @@
 														<div class="mt-2 mr-1">
 														€
 														</div>
-														<input type="text" class="form-control text-right change-uurloon" style="width: 80px" value="{$p.bruto_loon|number_format:2:',':'.'}" />
+														<input type="text" class="form-control text-right change-uurloon" style="width: 80px" value="{$p.bruto_loon|number_format:2:',':'.'}"  {if $user_type != 'werkgever'} readonly{/if} />
 													</td>
 													<td>{$p.cao}</td>
 													<td class="d-none d-xl-table-cell">{$p.loontabel}</td>

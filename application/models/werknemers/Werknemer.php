@@ -74,6 +74,38 @@ class Werknemer extends Connector
 		$this->werknemer_id = intval($werknemer_id);
 		$this->id = $this->werknemer_id;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * ALLEEN VOOR DEVOLPMENT
+	 * TODO: verwijderen
+	 */
+	public function del( $id )
+	{
+		if( ENVIRONMENT != 'development' )
+			die('Geen toegand');
+		
+		$this->db_user->query( "DELETE FROM werknemers_dienstverband_cao WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM werknemers_dienstverband_duur WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_gegevens WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_idbewijs WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_inleners WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_last_visited WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_pensioen WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_uitzenders WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_urentypes WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_uurloon WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_vergoedingen WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_verloning_instellingen WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemer_et_bsn WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemer_et_inhouding_huisvesting WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemer_et_settings WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemer_et_verblijf WHERE werknemer_id = $id" );
+		$this->db_user->query( "DELETE FROM	werknemers_status WHERE werknemer_id = $id" );
+		
+		
+	}
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

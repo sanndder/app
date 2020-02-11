@@ -197,20 +197,24 @@
 					</thead>
                     {if isset($werknemers) && is_array($werknemers) && count($werknemers) > 0}
 						<tbody>
-                            {foreach $werknemers as $u}
-								<tr style="{if $u.complete == 0}background-color: #EEE;{/if}{if $u.archief == 1}color: #F44336;{/if}">
-									<td>{$u.complete}</td>
-									<td>{$u.werknemer_id}</td>
+                            {foreach $werknemers as $w}
+								<tr style="{if $w.complete == 0}background-color: #EEE;{/if}{if $w.archief == 1}color: #F44336;{/if}">
+									<td>{$w.complete}</td>
+									<td>{$w.werknemer_id}</td>
 									<td>
-                                        {if $u.complete == 0}
+                                        {if $w.complete == 0}
 											<span class="badge bg-success  mr-1">NIEUW</span>
                                         {/if}
-										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$u.werknemer_id}">{$u.naam}</a>
+										<a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$w.werknemer_id}">{$w.naam}</a>
 									</td>
 									<td>
-										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.uitzender}</a>
+										<a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$w.uitzender_id}">{$w.uitzender}</a>
 									</td>
-									<td></td>
+									<td>
+                                        {if $ENV == 'development'}
+											<a href="{$base_url}/crm/werknemers?del={$w.werknemer_id}"><i class="icon-trash font-size-sm"></i></a>
+                                        {/if}
+									</td>
 								</tr>
                             {/foreach}
 						</tbody>

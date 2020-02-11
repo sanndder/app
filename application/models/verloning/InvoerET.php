@@ -206,12 +206,14 @@ class InvoerET extends Invoer
 	{
 		$aantal = 0;
 		
-		foreach( $this->_uren as $row )
+		if(  $this->_uren !== NULL && count($this->_uren) > 0 )
 		{
-			if( $row['urentype_categorie_id'] == 1)
-				$aantal += $row['decimaal'];
+			foreach( $this->_uren as $row )
+			{
+				if( $row['urentype_categorie_id'] == 1 )
+					$aantal += $row['decimaal'];
+			}
 		}
-		
 		return $aantal;
 	}
 	

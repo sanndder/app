@@ -66,7 +66,34 @@ let invoer = {
 			invoer.buildInvoerTab();
 		});
 		
+		//factuurvoorbeeld
+		$(document).on('click', '[data-vi-action="factuurVoorbeeld"]', function(){
+			//alert('Factuur voor deze periode is al gegenereerd');
+		});
 		
+		//factuur genereren
+		$(document).on('click', '[data-vi-action="factuurGenereren"]', function(){
+			invoer.generateFactuur( this );
+		});
+		
+	},
+	
+	//-- werkgever stelt uitzender in ----------------------------------------------------------------------------------------------------------------------------
+	generateFactuur( obj ){
+		
+		$btn = $(obj);
+		$btn.find('.fa-file-pdf').removeClass('fa-file-pdf');
+		$btn.find('i').addClass('spinner icon-spinner2');
+		
+		xhr.url = base_url + 'ureninvoer/ajax/generateFacturen';
+		xhr.data = data;
+		
+		var response = xhr.call();
+		if( response !== false ){
+			response.done(function(json){
+			
+			});
+		}
 	},
 	
 	
@@ -108,7 +135,7 @@ let invoer = {
 		}
 		
 		$list.find('.dropdown-menu').append(html);
-		$list.find('.dropdown-menu a').first().trigger('click');
+		$list.find('.dropdown-menu a').last().trigger('click');
 		
 	},
 	
@@ -142,6 +169,9 @@ let invoer = {
 	setInlener(inlener_id){
 		//geklikt element
 		$click = $('[data-vi-action="setInlener"][data-id="' + inlener_id + '"]');
+		
+		//factuurknoppen weergeven
+		$('.vi-factuur-buttons').show();
 		
 		//data object instellen
 		data.inlener_id = inlener_id;
@@ -200,13 +230,15 @@ let invoer = {
 				else{
 					$list.html('');
 					var html = '';
+					var count = 0;
 					for( var frequentie of Object.keys(json.inleners) ){
 						var element = tplInlenersTitle.replace('{frequentie}', frequentie);
 						
 						html += element;
 						html += '<li class="nav-item">';
 						for( var inlener of Object.values(json.inleners[frequentie]) ){
-							var set_inlener_id = inlener.inlener_id;
+							var set_inlener_id = inlener.inlener_id; //enige inlener key opslaan
+							count++;
 							var element = tplInlenersLi.replace(/{inlener}/g, inlener.bedrijfsnaam);
 							var element = element.replace('{key}', inlener.inlener_id);
 							html += element;
@@ -215,7 +247,7 @@ let invoer = {
 					}
 					$(html).appendTo('.vi-list-inleners');
 					
-					if( Object.keys(json.inleners).length == 1 )
+					if( count == 1 )
 						$list.find('[data-id="'+set_inlener_id+'"]').trigger('click');
 				}
 			});
@@ -309,7 +341,9 @@ let invoer = {
 		//lijst legen
 		$titel = $('.vi-title-name').html(tplUreninvoerTabLoadList);
 		$list = $('.vi-list-werknemers').html('');
-
+		
+		$('.voorbeeld').attr('href', 'ureninvoer/ureninvoer/factuur?tijdvak=' + data.tijdvak + '&jaar=' + data.jaar + '&periode=' + data.periode +'&inlener=' + data.inlener_id +'&uitzender=' + data.uitzender_id);
+		
 		//werknemrslijst laden
 		xhr.url = base_url + 'ureninvoer/ajax/listWerknemers';
 		xhr.data = data;
@@ -440,23 +474,15 @@ document.addEventListener('DOMContentLoaded', function(){
 		setTimeout(function(){
 			$('[href="#tab-ureninvoer"]').trigger('click');
 			
-			setTimeout(function(){
+			/*setTimeout(function(){
 				$('[data-id="14000"]').trigger('click');
 				
 				setTimeout(function(){
-					$('[href="#sub-et"]').trigger('click');
-					
-					/*
-					setTimeout(function(){
-						$('[name="locatie_van"]').val('Sterrenmos 52, Zwolle');
-						$('[name="locatie_naar"]').val("Reitscheweg, 5232 's-Hertogenbosch");
-						$('[name="datum"]').val('07-01-2020');
-						$('[name="aantal"]').val(134);
-					}, 300);*/
-					
+					$('[href="#sub-uren"]').trigger('click');
+		
 				}, 300);
 				
-			}, 300);
+			}, 300);*/
 			
 		}, 300);
 		

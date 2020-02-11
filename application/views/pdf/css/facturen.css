@@ -19,4 +19,10 @@ td.relatie-info{
 
 .regels{ width: 100%; border-collapse: collapse; margin: 0 15px;}
 
-.regels th{background-color:#D5E9E8; text-align: left; padding: 7px 14px}
+.regels th{background-color:#D5E9E8; padding: 7px 14px}
+.regels tbody td{padding: 3px 14px;}
+
+.totaal td{font-weight: bold}
+
+.text-left{text-align: left}
+.text-right{text-align: right}

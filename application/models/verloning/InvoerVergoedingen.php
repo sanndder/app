@@ -178,8 +178,12 @@ class InvoerVergoedingen extends Invoer
 		$beschikbare_vergoedingen = $vergoedingengroup->inlener( $this->_inlener_id )->werknemer( $this->_werknemer_id )->vergoedingenWerknemer();
 		
 		//nu bedragen er bij halen
-		$sql = "SELECT * FROM invoer_vergoedingen
-				WHERE uitzender_id = ? AND inlener_id = ? AND werknemer_id = ? AND tijdvak = ? AND jaar = ? AND periode = ?";
+		$sql = "SELECT invoer_vergoedingen.*, inleners_factoren.factor_laag AS factor
+				FROM invoer_vergoedingen
+				LEFT JOIN inleners_factoren ON invoer_vergoedingen.inlener_id = inleners_factoren.inlener_id
+				WHERE inleners_factoren.deleted = 0 AND inleners_factoren.default_factor = 1 AND invoer_vergoedingen.uitzender_id = ? AND invoer_vergoedingen.inlener_id = ?
+				  AND invoer_vergoedingen.werknemer_id = ? AND invoer_vergoedingen.tijdvak = ? AND invoer_vergoedingen.jaar = ? AND invoer_vergoedingen.periode = ?";
+		
 		$query = $this->db_user->query( $sql, array( $this->_uitzender_id, $this->_inlener_id, $this->_werknemer_id, $this->_tijdvak, $this->_jaar, $this->_periode ) );
 		
 		$invoer = array();
@@ -208,6 +212,7 @@ class InvoerVergoedingen extends Invoer
 				{
 					$vergoeding['bedrag'] = $invoer[$id]['bedrag'];
 					$vergoeding['doorbelasten'] = $invoer[$id]['doorbelasten'];
+					$vergoeding['factor'] = $invoer[$id]['factor'];
 				}
 				//niet gevonden, bedrag op 0
 				else
@@ -220,6 +225,7 @@ class InvoerVergoedingen extends Invoer
 			if( $vergoeding['vergoeding_type'] == 'vast' )
 			{
 				$vergoeding['bedrag'] = $this->_calcVasteVergoeding( $invoer_id, $vergoeding );
+				$vergoeding['factor'] = $invoer[$id]['factor'];
 				
 				//record bestaat
 				if( isset($invoer[$id]) )

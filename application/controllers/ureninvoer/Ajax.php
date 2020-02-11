@@ -1,5 +1,7 @@
 <?php
 
+use models\facturatie\Factuur;
+use models\facturatie\FactuurFactory;
 use models\inleners\Inlener;
 use models\inleners\InlenerGroup;
 use models\verloning\Invoer;
@@ -48,6 +50,30 @@ class Ajax extends MY_Controller
 		$this->invoer->setUitzender( $this->_uitzender_id );
 		//set header voor hele controller
 		//header( 'Content-Type: application/json' );
+	}
+
+
+
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// factuur genereren
+	//-----------------------------------------------------------------------------------------------------------------
+	public function generateFacturen()
+	{
+		//tijdvak uit post data
+		$tijdvak = [ 'tijdvak' => $_POST['tijdvak'], 'jaar' => $_POST['jaar'], 'periode' => $_POST['periode'] ];
+		
+		//schoon beginnen
+		FactuurFactory::clear();
+		
+		$factuurFactory = new FactuurFactory();
+		$factuurFactory->setTijdvak( $tijdvak );
+		$factuurFactory->setInlener( $_POST['inlener_id'] );
+		$factuurFactory->setUitzender( $_POST['uitzender_id'] );
+		
+		//alle benodigde gegevens zijn ingesteld, nu aan het werk
+		$factuurFactory->run();
+
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------

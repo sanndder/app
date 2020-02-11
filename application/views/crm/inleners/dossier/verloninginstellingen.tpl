@@ -255,13 +255,13 @@
 					                                <td colspan="2" style="height: 20px;"></td>
 				                                </tr>
 				                                <tr>
-                                                    {if $user_type == 'werkgever'}
+
 					                                <td colspan="2">
 						                                <a href="crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}?tab=tab-cao&action=copyUrentypesFromCao&cao_code={$cao.code}">
 							                                <i class="icon-copy3 mr-1"></i>urentypes overnemen van CAO
 						                                </a>
 					                                </td>
-					                                {/if}
+
 				                                </tr>
 			                                </table>
 
