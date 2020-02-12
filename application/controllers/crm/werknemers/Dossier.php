@@ -1,5 +1,6 @@
 <?php
 
+use models\documenten\Document;
 use models\documenten\DocumentFactory;
 use models\documenten\DocumentGroup;
 use models\documenten\IDbewijs;
@@ -219,7 +220,7 @@ class Dossier extends MY_Controller
 		$documenten = $documentGroup->werknemer( $werknemer_id )->get();
 		
 		$this->smarty->assign( 'werknemer', $werknemer );
-		$this->smarty->assign('documenten', $documenten);
+		$this->smarty->assign( 'documenten', $documenten);
 		$this->smarty->assign( 'contract', $werknemer->contract() );
 		$this->smarty->assign( 'id_voorkant', $idbewijs->url( 'voorkant' ) );
 		$this->smarty->assign( 'id_achterkant', $idbewijs->url( 'achterkant' ) );
@@ -232,6 +233,23 @@ class Dossier extends MY_Controller
 			$this->smarty->display( 'crm/werknemers/dossier/documenten.tpl' );
 		
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// document details
+	//-----------------------------------------------------------------------------------------------------------------
+	public function documentdetails( $werknemer_id = NULL, $document_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		$document = new Document( $document_id );
+		
+		$details = $document->details();
+		show($details);
+		$this->smarty->assign( 'document_details', $details );
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/documentdetails.tpl' );
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// plaatsingen pagina

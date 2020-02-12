@@ -80,6 +80,7 @@
 				</tr>
 				{if isset($werknemer.uren_totaal)}
 					{foreach $werknemer.uren_totaal as $urenrow}
+						{if isset($urenrow.naam)}
 						<tr>
 							<td>{$urenrow.naam}</td>
 							<td class="text-right">{$urenrow.aantal}</td>
@@ -88,6 +89,7 @@
 							<td class="text-right">1,000</td>
 							<td class="text-right">&euro; {($urenrow.aantal * $urenrow.verkooptarief)|number_format:2:',':'.'}</td>
 						</tr>
+                        {/if}
 						{$werknemer_totaal = $werknemer_totaal + ($urenrow.aantal * $urenrow.verkooptarief)}
                     {/foreach}
                 {/if}
@@ -117,6 +119,7 @@
                         {$werknemer_totaal = $werknemer_totaal + ($km.aantal*0.19)}
                     {/foreach}
                 {/if}
+
 				{if $werknemer_totaal > 0}
 					<tr class="totaal">
 						<td colspan="5" class="text-right">subtotaal</td>

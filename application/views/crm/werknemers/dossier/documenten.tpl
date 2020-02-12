@@ -124,7 +124,7 @@
 													</a>
 
 													<div class="dropdown-menu dropdown-menu-right">
-														<a href="javascript:void(0)" class="dropdown-item">
+														<a href="crm/werknemers/dossier/documentdetails/{$werknemer->werknemer_id}/{$d.document_id}" class="dropdown-item">
 															<i class="icon-menu7"></i> Details
 														</a>
 														<a href="documenten/pdf/download/{$d.document_id}" class="dropdown-item">

@@ -61,6 +61,16 @@ class Dossier extends MY_Controller
 		$inlener = new Inlener( $inlener_id );
 		$usersgroup = new UserGroup();
 		
+		//kopieren naar andere onderneming
+		if( isset($_POST['werkgever_id']) )
+		{
+			if( $inlener->copyToOndernemingen( $_POST['werkgever_id'] ) )
+				$this->smarty->assign('msg', msg('success', 'Inlener is gekopieerd'));
+			else
+				$this->smarty->assign('msg', msg('warning', $inlener->errors()) );
+		}
+		
+		
 		//redirect indien nodig
 		if( $inlener->complete == 0 )
 		{
@@ -77,6 +87,7 @@ class Dossier extends MY_Controller
 		$this->smarty->assign('bedrijfsgegevens', $inlener->bedrijfsgegevens());
 		$this->smarty->assign('emailadressen', $inlener->emailadressen() );
 		$this->smarty->assign('acties', $inlener->aanmeldActies() );
+		$this->smarty->assign('ondernemingen', $inlener->ondernemingen());
 		
 		$this->smarty->assign('uitzender', UitzenderGroup::bedrijfsnaam( $inlener->uitzenderID() ) );
 		$this->smarty->assign('inlener', $inlener);
@@ -232,7 +243,6 @@ class Dossier extends MY_Controller
 			}
 			else
 				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
-			show($errors);
 		}
 		else
 		{

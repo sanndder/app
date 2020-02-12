@@ -206,8 +206,6 @@ class Vergoeding extends Connector
 		
 		$this->db_user->insert_batch( 'werknemers_vergoedingen', $insert_batch );
 	}
-
-	
 	
 	
 	

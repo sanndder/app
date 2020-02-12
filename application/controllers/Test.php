@@ -114,13 +114,13 @@ class Test extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	// test invoer naar factuur
 	//-----------------------------------------------------------------------------------------------------------------
-	public function factuur()
+	public function factuur( $inlener_id = 24 )
 	{
 		$_POST['tijdvak'] = 'w';
 		$_POST['jaar'] = '2020';
 		$_POST['periode'] = '6';
 		$_POST['uitzender_id'] = '383';
-		$_POST['inlener_id'] = '24';
+		$_POST['inlener_id'] = $inlener_id;
 		
 		//tijdvak uit post data
 		$tijdvak = [ 'tijdvak' => $_POST['tijdvak'], 'jaar' => $_POST['jaar'], 'periode' => $_POST['periode'] ];
@@ -135,6 +135,9 @@ class Test extends MY_Controller {
 		
 		//alle benodigde gegevens zijn ingesteld, nu aan het werk
 		$factuurFactory->run();
+		
+		show( $factuurFactory->errors() );
+		vshow( $factuurFactory->errors() );
 	}
 	
 	

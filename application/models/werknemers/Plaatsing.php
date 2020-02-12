@@ -6,6 +6,8 @@ use models\Connector;
 use models\inleners\Inlener;
 use models\utils\DBhelper;
 use models\verloning\Urentypes;
+use models\verloning\Vergoeding;
+use models\verloning\VergoedingGroup;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -114,6 +116,9 @@ class Plaatsing extends Connector
 		{
 			$urentypes = new Urentypes();
 			$urentypes->deleteUrentypesWerknemerForInlener( $plaatsing['werknemer_id'], $plaatsing['inlener_id'] );
+			
+			$vergoedingengroup = new VergoedingGroup();
+			$vergoedingengroup->deleteVergoedingenWerknemerForInlener( $plaatsing['werknemer_id'], $plaatsing['inlener_id'] );
 		}
 	}
 
@@ -159,6 +164,10 @@ class Plaatsing extends Connector
 		{
 			$urentypes = new Urentypes();
 			$urentypes->addUrentypesWerknemerForInlener($this->db_user->insert_id(), $input['werknemer_id'], $input['inlener_id'] );
+			
+			$vergoedinggroup = new VergoedingGroup();
+			$vergoedinggroup->addVergoedingenWerknemerForInlener( $this->db_user->insert_id(), $input['werknemer_id'], $input['inlener_id'] );
+
 		}
 	}
 	

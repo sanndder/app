@@ -6,6 +6,7 @@ use models\Connector;
 use models\forms\Validator;
 use models\uitzenders\Uitzender;
 use models\utils\DBhelper;
+use models\utils\Ondernemingen;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -84,6 +85,80 @@ class Inlener extends Connector
 	{
 		$this->_force_check = true;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Haal gekoppelde ondernemingen op
+	 * TODO: verplaatsen naar ondernemingen
+	 */
+	public function ondernemingen()
+	{
+		$bedrijfsgegevens = $this->bedrijfsgegevens();
+		
+		$ondernemingen = Ondernemingen::all();
+		
+		$CI =& get_instance();
+		$db = $CI->load->database('admin', TRUE);
+		
+		//kijken waar kvk bestaat
+		foreach( $ondernemingen as $o )
+		{
+			$db->database = $o['db_name'];
+			$db->close();
+			$db->initialize();
+			
+			$sql = "SELECT inleners_status.archief, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_bedrijfsgegevens.kvknr
+					FROM inleners_status
+					LEFT JOIN inleners_bedrijfsgegevens ON inleners_status.inlener_id = inleners_bedrijfsgegevens.inlener_id
+					WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_bedrijfsgegevens.kvknr = '".$bedrijfsgegevens['kvknr']."' LIMIT 1";
+			$query = $db->query( $sql );
+			
+			$inlener = $query->row_array();
+			
+			if( is_array($inlener))
+				$ondernemingen[$o['werkgever_id']] = $ondernemingen[$o['werkgever_id']] + $inlener;
+		}
+		
+		return $ondernemingen;
+	}
+	
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Kopieer inlener
+	 *
+	 */
+	public function copyToOndernemingen( int $werkgever_id ) :bool
+	{
+		//chekc for dubbel en rechten
+		$ondernemingen = $this->ondernemingen();
+		
+		if( !isset($ondernemingen[$werkgever_id]) )
+		{
+			$this->_error[] = '<b>KOPPELING MISLUKT:</b> Onderneming niet gevonden';
+			return false;
+		}
+		
+		if( isset($ondernemingen[$werkgever_id]['bedrijfsnaam']) )
+		{
+			$this->_error[] = '<b>KOPPELING MISLUKT:</b> Onderneming is al gekoppeld';
+			return false;
+		}
+		
+		$ondernemingenHelper = new Ondernemingen();
+		
+		if( !$ondernemingenHelper->inlener( $this->inlener_id )->copy( $ondernemingen[$werkgever_id] ) )
+		{
+			$this->_error[] = $ondernemingenHelper->errors();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -621,7 +696,7 @@ class Inlener extends Connector
 	{
 		$uitzender = new Uitzender( $uitzender_id );
 		$factoren = $uitzender->factoren();
-		show($factoren);
+
 		$_POST = array(
 			'default_factor' => 1,
 			'omschrijving' => 'Standaard factor',

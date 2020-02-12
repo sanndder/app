@@ -84,9 +84,10 @@ class Document extends Connector {
 	 */
 	public function _load()
 	{
-		$sql = "SELECT documenten.*, documenten_templates_settings.owner, documenten_templates_settings.template_name
+		$sql = "SELECT documenten.*, documenten_templates_settings.owner, documenten_templates_settings.template_name, documenten_templates_settings.categorie_id, documenten_categorieen.*
 				FROM documenten
 				LEFT JOIN documenten_templates_settings ON documenten_templates_settings.template_id = documenten.template_id
+				LEFT JOIN documenten_categorieen ON documenten_categorieen.categorie_id = documenten_templates_settings.categorie_id
 				WHERE documenten.document_id = $this->_document_id AND documenten_templates_settings.deleted = 0
 				LIMIT 1";
 		

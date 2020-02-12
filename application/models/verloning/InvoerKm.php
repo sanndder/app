@@ -179,10 +179,40 @@ class InvoerKm extends Invoer
 		@$this->db_user->insert( 'invoer_kilometers_log', $insert );
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alle kilometers voor werknemer voor facturatie ophalen
+	 *
+	 */
+	public function getWerknemerKilometerRijen()
+	{
+		$sql = "SELECT invoer_id, aantal, datum, project_id, project_tekst, locatie_tekst, opmerking_tekst, doorbelasten, locatie_van, locatie_naar
+				FROM invoer_kilometers WHERE invoer_kilometers.factuur_id IS NULL AND werknemer_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?
+				ORDER BY datum";
+		
+		$query = $this->db_user->query( $sql, array( $this->_werknemer_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $row['project_tekst'] === NULL ) $row['project_tekst'] = '';
+			if( $row['locatie_tekst'] === NULL ) $row['locatie_tekst'] = '';
+			if( $row['opmerking_tekst'] === NULL ) $row['opmerking_tekst'] = '';
+			
+			$row['datum'] = reverseDate($row['datum']);
+			
+			$data[] = $row;
+		}
+		
+		return $data;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
-	 * alle uren voor werknemer ophalen
+	 * alle kilometers voor werknemer ophalen
 	 *
 	 */
 	public function getWerknemerKilometers()

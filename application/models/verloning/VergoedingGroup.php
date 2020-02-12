@@ -138,6 +138,47 @@ class VergoedingGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * Add vergoedingen bij nieuwe koppeling
+	 *
+	 */
+	public function addVergoedingenWerknemerForInlener( $plaatsing_id, $werknemer_id, $inlener_id )
+	{
+		$vergoedingen = $this->inlener( $inlener_id )->vergoedingenInlener();
+		
+		foreach( $vergoedingen as $vergoeding )
+		{
+			unset($insert);
+			$insert['inlener_id'] = $inlener_id;
+			$insert['werknemer_id'] = $werknemer_id;
+			$insert['inlener_vergoeding_id'] = $vergoeding['inlener_vergoeding_id'];
+			$insert['vergoeding_active'] = 1;
+			$insert['vergoeding_id'] =  $vergoeding['vergoeding_id'];
+			$insert['user_id'] = $this->user->user_id;
+			
+			$insert_batch[] = $insert;
+		}
+		
+		if( isset($insert_batch) )
+		{
+			$this->db_user->insert_batch( 'werknemers_vergoedingen', $insert_batch );
+		}
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * vergoedingen weghalen bij inlener voor bepaalde werknemer
+	 *
+	 */
+	public function deleteVergoedingenWerknemerForInlener( $werknemer_id, $inlener_id )
+	{
+		$sql = "UPDATE werknemers_vergoedingen SET deleted = 1, deleted_on = NOW(), deleted_by = ?	WHERE werknemer_id = ? AND inlener_id = ? AND deleted = 0";
+		$this->db_user->query( $sql, array($this->user->user_id, $werknemer_id, $inlener_id) );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * werknemers met vergoedingen ophalen
 	 *
 	 */

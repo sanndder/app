@@ -14,6 +14,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Ondernemingen extends Connector
 {
 	private $_uitzender_id = NULL;
+	private $_inlener_id = NULL;
 	private $_onderneming = NULL;
 	private $_error = NULL;
 	
@@ -44,6 +45,20 @@ class Ondernemingen extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * set get inlener ID
+	 * @return int|object
+	 */
+	public function inlener( $inlener_id = NULL ) :?Ondernemingen
+	{
+		if( $inlener_id === NULL )
+			return $inlener_id;
+		
+		$this->_inlener_id = intval($inlener_id);
+		return $this;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * copy factory
 	 * @return bool
 	 */
@@ -53,7 +68,175 @@ class Ondernemingen extends Connector
 		
 		if( $this->_uitzender_id !== NULL )
 			return $this->_copyUitzender();
+		
+		if( $this->_inlener_id !== NULL )
+			return $this->_copyInlener();
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * copy inlener
+	 *
+	 * @return bool
+	 */
+	public function _copyInlener() :bool
+	{
+		//juiste database
+		$CI =& get_instance();
+		$db = $CI->load->database('admin', TRUE);
+		
+		$db->database = $this->_onderneming['db_name'];
+		$db->close();
+		$db->initialize();
+		
+		$werkgever_id_old = $this->user->werkgever_id;
+		$werkgever_id_new = $this->_onderneming['werkgever_id'];
+		
+		//eerst status doen voor
+		$query = $this->db_user->query( "SELECT * FROM inleners_status WHERE inlener_id = $this->_inlener_id LIMIT 1" );
+		$insert = $query->row_array();
+		
+		//insert nieuwe
+		unset($insert['inlener_id']);
+		$db->insert( 'inleners_status', $insert );
+		
+		//nieuwe ID
+		$inlener_id = $db->insert_id();
+		
+		//check
+		if( $inlener_id < 1 )
+		{
+			$this->_error[] = 'Fout bij nieuwe INSERT: Geen ID ontvangen.';
+			return false;
+		}
+		
+		// bedrijfsgegevens
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_bedrijfsgegevens WHERE inlener_id = $this->_inlener_id AND deleted = 0 LIMIT 1" );
+		$insert = $query->row_array();
+		$insert['inlener_id'] = $inlener_id;
+		unset($insert['id']);
+		unset($insert['timestamp']);
+		$db->insert( 'inleners_bedrijfsgegevens', $insert );
+		
+		// inleners cao
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_cao WHERE inlener_id = $this->_inlener_id AND deleted = 0" );
+		foreach( $query->result_array() as $row )
+		{
+			$row['inlener_id'] = $inlener_id;
+			unset($row['id']);
+			unset($row['timestamp']);
+			$insert[] = $row;
+		}
+		if(isset($insert))
+			$db->insert_batch( 'inleners_cao', $insert );
+		
+		// contactpersonen
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_contactpersonen WHERE inlener_id = $this->_inlener_id AND deleted = 0" );
+		foreach( $query->result_array() as $row )
+		{
+			$row['inlener_id'] = $inlener_id;
+			unset($row['id']);
+			unset($row['timestamp']);
+			$insert[] = $row;
+		}
+		$db->insert_batch( 'inleners_contactpersonen', $insert );
+		
+		// emailadressen
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_emailadressen WHERE inlener_id = $this->_inlener_id AND deleted = 0 LIMIT 1" );
+		$insert = $query->row_array();
+		$insert['inlener_id'] = $inlener_id;
+		unset($insert['id']);
+		unset($insert['timestamp']);
+		$db->insert( 'inleners_emailadressen', $insert );
+		
+		// factoren
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_factoren WHERE inlener_id = $this->_inlener_id AND deleted = 0" );
+		foreach( $query->result_array() as $row )
+		{
+			$row['inlener_id'] = $inlener_id;
+			unset($row['id']);
+			unset($row['timestamp']);
+			$insert[] = $row;
+		}
+		$db->insert_batch( 'inleners_factoren', $insert );
+		
+		// factuurgegevens
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_factuurgegevens WHERE inlener_id = $this->_inlener_id AND deleted = 0 LIMIT 1" );
+		$insert = $query->row_array();
+		$insert['inlener_id'] = $inlener_id;
+		unset($insert['id']);
+		unset($insert['timestamp']);
+		$db->insert( 'inleners_factuurgegevens', $insert );
+		
+		// uitzenders
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_uitzenders WHERE inlener_id = $this->_inlener_id AND deleted = 0" );
+		foreach( $query->result_array() as $row )
+		{
+			$uitzender_id_new = $this::switchUitzenderId( $row['uitzender_id'], $werkgever_id_old, $werkgever_id_new );
+			
+			$row['inlener_id'] = $inlener_id;
+			$row['uitzender_id'] = $uitzender_id_new;
+			unset($row['id']);
+			unset($row['timestamp']);
+			$insert[] = $row;
+		}
+		$db->insert_batch( 'inleners_uitzenders', $insert );
+		
+		// urentypes
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_urentypes WHERE inlener_id = $this->_inlener_id AND deleted = 0" );
+		foreach( $query->result_array() as $row )
+		{
+			$row['inlener_id'] = $inlener_id;
+			unset($row['id']);
+			unset($row['timestamp']);
+			$insert[] = $row;
+		}
+		if(isset($insert))
+			$db->insert_batch( 'inleners_urentypes', $insert );
+		
+		// vergoedingen
+		unset($insert);
+		$query = $this->db_user->query( "SELECT * FROM inleners_vergoedingen WHERE inlener_id = $this->_inlener_id AND deleted = 0" );
+		foreach( $query->result_array() as $row )
+		{
+			$row['inlener_id'] = $inlener_id;
+			unset($row['id']);
+			unset($row['timestamp']);
+			$insert[] = $row;
+		}
+		if(isset($insert))
+			$db->insert_batch( 'inleners_vergoedingen', $insert );
+		
+		//user accounts kopieren
+		$db->database = 'app_admin';
+		$db->close();
+		$db->initialize();
+		
+		unset($insert);
+		
+		$query = $db->query( "SELECT * FROM users_accounts WHERE inlener_id = $this->_inlener_id AND deleted = 0 AND werkgever_id = ".$this->user->werkgever_id );
+		
+		foreach( $query->result_array() as $row )
+		{
+			$row['inlener_id'] = $inlener_id;
+			$row['werkgever_id'] = $this->_onderneming['werkgever_id'];
+			unset($row['id']);
+			unset($row['timestamp']);
+			$insert[] = $row;
+		}
+		$db->insert_batch( 'users_accounts', $insert );
+		
+		return true;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -206,7 +389,7 @@ class Ondernemingen extends Connector
 		//uitzender
 		if(strpos($url,'uitzenders/dossier/') !== false )
 		{
-			$new_url = BASE_URL . 'crm/uitzenders';
+			$new_url = BASE_URL . '/crm/uitzenders';
 			
 			$parts = explode('/',$url );
 			$uitzender_id = end($parts);
@@ -228,8 +411,58 @@ class Ondernemingen extends Connector
 			
 		}
 		
+		//uitzender
+		if(strpos($url,'inleners/dossier/') !== false )
+		{
+			$new_url = BASE_URL . '/crm/inleners';
+			
+			$parts = explode('/',$url );
+			$inlener_id = end($parts);
+			
+			//$sql = "SELECT werkgever_id, uitzender_id, user_id FROM users_accounts WHERE werkgever_id = " . $_SESSION['logindata']['prev_werkgever_id']. " AND deleted = 0";
+			// user bij uitzender_id zoeken
+			$query = $db_admin->query( "SELECT werkgever_id, inlener_id, user_id FROM users_accounts WHERE inlener_id = $inlener_id AND werkgever_id = $werkgever_id_old AND deleted = 0 AND admin = 1 ORDER BY id LIMIT 1" );
+			if( $query->num_rows() == 0 ) return $new_url;
+			
+			$user = $query->row_array();
+			
+			//nu voor nieuwe werkgeve juiste inlener ID zoeken
+			$query = $db_admin->query( "SELECT werkgever_id, inlener_id, user_id FROM users_accounts WHERE werkgever_id = $werkgever_id_new AND user_id = ".$user['user_id']." AND deleted = 0 AND admin = 1 ORDER BY id LIMIT 1");
+			if( $query->num_rows() == 0 )return $new_url;
+			
+			$user = $query->row_array();
+			
+			$new_url = str_replace( $inlener_id, $user['inlener_id'], $url);
+			
+		}
+		
 		return $new_url;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * ruimt een temp directory op, standaard ouder dan 2 minuten
+	 * @return array
+	 */
+	public static function switchUitzenderId( $uitzender_id, $werkgever_id_old, $werkgever_id_new )
+	{
+		$CI =& get_instance();
+		$db_admin = $CI->load->database('admin', TRUE);
+		
+		$query = $db_admin->query( "SELECT werkgever_id, uitzender_id, user_id FROM users_accounts WHERE uitzender_id = $uitzender_id AND werkgever_id = $werkgever_id_old AND deleted = 0 AND admin = 1 ORDER BY id LIMIT 1" );
+		if( $query->num_rows() == 0 ) return NULL;
+		
+		$user = $query->row_array();
+		
+		//nu voor nieuwe werkgeve juiste uitzender ID zoeken
+		$query = $db_admin->query( "SELECT werkgever_id, uitzender_id, user_id FROM users_accounts WHERE werkgever_id = $werkgever_id_new AND user_id = ".$user['user_id']." AND deleted = 0 AND admin = 1 ORDER BY id LIMIT 1");
+		if( $query->num_rows() == 0 )return NULL;
+		
+		$user = $query->row_array();
+		
+		return $user['uitzender_id'];
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

@@ -33,9 +33,16 @@
 					<a href="crm/inleners" class="dropdown-item">
 						<i class="icon-user-tie"></i>Inleners
 					</a>
-					<a href="crm/werknemers" class="dropdown-item">
-						<i class="icon-user"></i>Werknemers
-					</a>
+                    {if $werkgever_type == 'uitzenden'}
+						<a href="crm/werknemers" class="dropdown-item">
+							<i class="icon-user"></i>Werknemers
+						</a>
+                    {/if}
+                    {if $werkgever_type == 'bemiddeling'}
+						<a href="crm/zzp" class="dropdown-item">
+							<i class="icon-user"></i>ZZP'ers
+						</a>
+                    {/if}
 				</div>
 			</li>
 

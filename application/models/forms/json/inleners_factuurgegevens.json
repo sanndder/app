@@ -66,6 +66,19 @@
         }
       }
     },
+    "btw_verleggen": {
+      "label": "BTW verleggen",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
     "g_rekening": {
       "label": "G-rekening gebruiken",
       "rules": {

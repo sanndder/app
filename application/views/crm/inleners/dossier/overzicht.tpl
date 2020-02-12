@@ -5,6 +5,7 @@
 
 {block "content"}
 
+    {include file='crm/inleners/dossier/modals/kopieer.tpl'}
     {include file='crm/inleners/dossier/_sidebar.tpl' active='overzicht'}
 
 
@@ -16,6 +17,7 @@
 		<!-- Content area -->
 		<div class="content">
 
+            {if isset($msg)}{$msg}{/if}
 
 			<div class="row">
 				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -255,8 +257,36 @@
 						<!-- /card: Status  -->
                     {/if}
 
+                    {if $user_type == 'werkgever'}
+					<!------------------------------------------------------- card: acties ------------------------------------------------------>
+					<div class="card">
+						<div class="card-header bg-transparent header-elements-inline">
+							<span class="text-uppercase font-size-sm font-weight-semibold">Gekoppelde Ondernemingen</span>
+							<div class="header-elements">
+								<div class="list-icons">
+								</div>
+							</div>
+						</div>
 
-
+						<ul class="list-group list-group-flush m-0 p-0">
+                            {foreach $ondernemingen as $o}
+                                {if isset($o.bedrijfsnaam)}
+									<li class="list-group-item p-0 pt-1">
+										<div class="pl-3 py-2">
+											<i style="font-size: 21px" class="icon-checkmark-circle text-success mr-2"></i>
+                                            {$o.name}
+										</div>
+									</li>
+                                {/if}
+                            {/foreach}
+							<li class="list-group-item p-0">
+								<a href="javascript:void(0)"  class="dropdown-item py-3 pl-3" data-toggle="modal" data-target="#modal_copy">
+									<i class="icon-copy4 mr-2"></i> Kopiëren naar andere onderneming
+								</a>
+							</li>
+						</ul>
+					</div><!-- /card: acties  -->
+					{/if}
 
 					<!------------------------------------------------------- card: Uitzender ------------------------------------------------------>
                     {if $user_type == 'werkgever'}

@@ -2,7 +2,6 @@
 
 namespace models\pdf;
 
-use models\inleners\Inlener;
 use models\utils\Tijdvak;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -15,13 +14,10 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  */
 class PdfFactuur extends PdfBuilder {
 	
-	protected $_inlener = NULL;
-	protected $_uiztender = NULL;
 	protected $_factuurdatum = NULL;
 	protected $_tijdvak = NULL;
 	protected $_jaar = NULL;
 	protected $_periode = NULL;
-	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -47,7 +43,7 @@ class PdfFactuur extends PdfBuilder {
 		parent::__construct($config);
 
 		//stylesheet erin
-		$stylesheet = file_get_contents('application/views/pdf/facturen/facturen.css');
+		$stylesheet = file_get_contents('application/views/pdf/css/facturen.css');
 		$this->mpdf->WriteHTML($stylesheet, 1);
 		
 		//default date er in
@@ -55,35 +51,22 @@ class PdfFactuur extends PdfBuilder {
 
 		return $this;
 	}
-	
-	
-	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * inlenergegevens voor de factuur
-	 *
-	 */
-	public function setInlener( Inlener $inlener ) :PdfFactuur
-	{
-		$this->_inlener = $inlener;
-		$this->smarty->assign( 'inlener_bedrijfsgegevens', $this->_inlener->bedrijfsgegevens() );
-		
-		return $this;
-	}
-	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * uiztendergegevens voor de factuur
-	 *
-	 */
-	public function setUitzender( $uitzender ) :PdfFactuur
-	{
-		$this->_uiztender = $uitzender;
-		$this->smarty->assign( 'uitzender', $this->_uiztender );
-		
-		return $this;
-	}
 
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * relatie gegevens voor de factuur
+	 *
+	 */
+	public function setRelatieGegevens( $bedrijfsgegevens, $factuurgegevens )
+	{
+		$this->smarty->assign( 'relatie_gegevens', $bedrijfsgegevens );
+		$this->smarty->assign( 'relatie_factuurgegevens', $factuurgegevens );
+		
+		return $this;
+	}
+	
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -103,22 +86,6 @@ class PdfFactuur extends PdfBuilder {
 		return $this;
 	}
 
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Naar wie moet de factuur
-	 *
-	 */
-	public function setRelatie( $relatie_type = 'inlener') :PdfFactuur
-	{
-		$this->smarty->assign( 'relatie_type', $relatie_type );
-		
-		if(	$relatie_type == 'inlener' )
-		{
-			$this->smarty->assign( 'relatienummer', $this->_inlener->inlener_id );
-		}
-		
-		return $this;
-	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

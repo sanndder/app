@@ -259,7 +259,7 @@ class InvoerUren extends Invoer
 		$sql = "SELECT  invoer_uren.invoer_id, invoer_uren.werknemer_id, invoer_uren.zzp_id, invoer_uren.datum, invoer_uren.aantal, invoer_uren.plaatsing_id, invoer_uren.doorbelasten, invoer_uren.project_id, invoer_uren.project_tekst, invoer_uren.locatie_tekst,
        					werknemers_urentypes.verkooptarief,
        					urentypes.naam, urentypes.percentage,
-       					urentypes_categorien.factor,
+       					urentypes_categorien.factor, urentypes_categorien.naam AS categorie,
 						inleners_urentypes.doorbelasten_uitzender, inleners_urentypes.label,
       					werknemers_inleners.bruto_loon,
        					inleners_factoren.factor_hoog, inleners_factoren.factor_laag
@@ -281,6 +281,13 @@ class InvoerUren extends Invoer
 		
 		foreach( $query->result_array() as $row )
 		{
+			//juiste factor
+			$row['factor'] = $row['factor_' . $row['factor']];
+			
+			//naam naar label
+			if( $row['label'] == '' )
+				$row['label'] = $row['naam'];
+			
 			$data[$row['invoer_id']] = $row;
 		}
 		
