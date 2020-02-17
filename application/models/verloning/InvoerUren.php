@@ -36,7 +36,7 @@ class InvoerUren extends Invoer
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	 * /*
+	 *
 	 * gegevens overnemen van invoer object
 	 *
 	 * @return void
@@ -257,6 +257,7 @@ class InvoerUren extends Invoer
 	public function getWerknemerUrenRijen()
 	{
 		$sql = "SELECT  invoer_uren.invoer_id, invoer_uren.werknemer_id, invoer_uren.zzp_id, invoer_uren.datum, invoer_uren.aantal, invoer_uren.plaatsing_id, invoer_uren.doorbelasten, invoer_uren.project_id, invoer_uren.project_tekst, invoer_uren.locatie_tekst,
+       					DAYOFWEEK(invoer_uren.datum) AS dag_nr, WEEK(invoer_uren.datum, 3) AS week_nr,
        					werknemers_urentypes.verkooptarief,
        					urentypes.naam, urentypes.percentage,
        					urentypes_categorien.factor, urentypes_categorien.naam AS categorie,

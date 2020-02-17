@@ -9,7 +9,7 @@
                 {$bedrijfsgegevens.telefoon|default:''}
 			</td>
 			<td style="width: 25%;">
-                KvK nr. {$bedrijfsgegevens.kvknr|default:''}
+                KvK nr.: {$bedrijfsgegevens.kvknr|default:''}
 			</td>
 		</tr>
 
@@ -21,7 +21,7 @@
                 {$bedrijfsgegevens.email|default:''}
 			</td>
 			<td>
-				BTW nr. {$bedrijfsgegevens.btwnr|default:''}
+				BTW nr.: {$bedrijfsgegevens.btwnr|default:''}
 			</td>
 		</tr>
 
@@ -33,7 +33,13 @@
                 {$bedrijfsgegevens.website|default:''}
 			</td>
 			<td>
-				IBAN {$bedrijfsgegevens.iban|default:''}
+				IBAN:
+				{if isset($iban_factoring) && $iban_factoring != NULL && $iban_factoring != ''}
+					{$iban_factoring}
+				{else}
+                    {$bedrijfsgegevens.iban|default:''}
+				{/if}
+
 			</td>
 		</tr>
 

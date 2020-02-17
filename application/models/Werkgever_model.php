@@ -24,6 +24,12 @@ class Werkgever_model extends MY_Model
 	private $_entiteit_id = NULL;
 	
 	/*
+	 * @var array
+	 * cache bedrijfsgegevens
+	 */
+	private $_bedrijfsgegevens = NULL;
+	
+	/*
 	 * @var string
 	 * WID externe links
 	 */
@@ -528,16 +534,28 @@ class Werkgever_model extends MY_Model
 	 * Get bedrijfsgegevens
 	 *
 	 */
-	public function bedrijfsgegevens()
+	public function bedrijfsgegevens( $refresh = false )
 	{
-		$sql = "SELECT * FROM werkgever_bedrijfsgegevens WHERE deleted = 0 AND entiteit_id = $this->_entiteit_id ORDER BY id DESC LIMIT 1";
-		$query = $this->db_user->query($sql);
-
-		if ( $query->num_rows() == 0 )
-			return NULL;
-
-		return $query->row_array();
+		if( isset($this->_bedrijfsgegevens[$this->_entiteit_id]) && $this->_bedrijfsgegevens[$this->_entiteit_id] !== NULL && !$refresh )
+			return $this->_bedrijfsgegevens[$this->_entiteit_id];
+		
+		$query = $this->db_user->query("SELECT * FROM werkgever_bedrijfsgegevens WHERE deleted = 0 AND entiteit_id = $this->_entiteit_id ORDER BY id DESC LIMIT 1");
+		$this->_bedrijfsgegevens[$this->_entiteit_id] = DBhelper::toRow( $query, 'NULL' );
+		
+		return $this->_bedrijfsgegevens[$this->_entiteit_id];
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Get factoring instellingen
+	 *
+	 */
+	public function factoring()
+	{
+		$query = $this->db_user->query("SELECT * FROM settings_factoring WHERE deleted = 0 ORDER BY id DESC LIMIT 1");
+		return DBhelper::toRow( $query, 'NULL' );
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

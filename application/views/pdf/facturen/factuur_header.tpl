@@ -8,6 +8,7 @@
 		</td>
 		<td style="text-align: right; vertical-align: text-top; padding-top: 8px;">
 
+            {if $type == 'verkoop' || $type == 'marge'}
 			<table style="color: #FFF; margin-right: 25px;">
 				<tr>
 					<td>Factuurnummer: </td>
@@ -23,6 +24,7 @@
 					</td>
 				</tr>
 			</table>
+			{/if}
 
 		</td>
 	</tr>

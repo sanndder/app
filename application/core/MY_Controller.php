@@ -45,9 +45,7 @@ class MY_Controller extends CI_Controller
 		$logout = false; if( isset($_GET['logout']) )$logout = true;
 		
 		//controllers die benaderd mogen worden zonder login
-		$no_login = array('aanmelden', 'crm', 'usermanagement');
-		
-
+		$no_login = array('aanmelden', 'crm', 'usermanagement', 'sign', 'documenten');
 		
 		//validate user, wanneer ingelogd dan nooit no-access
 		if( !in_array($this->uri->segment(1),$no_login) || isset($_SESSION['logindata']['main']) )
@@ -93,6 +91,7 @@ class MY_Controller extends CI_Controller
 		$no_redirect[] = 'welkom';
 		$no_redirect[] = 'ajax';
 		$no_redirect[] = 'documenten';
+		$no_redirect[] = 'sign';
 		
 		//usertype model laden
 		if( $this->user->user_type == 'uitzender' )

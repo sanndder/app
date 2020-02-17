@@ -95,7 +95,7 @@ class PdfBuilder extends Connector {
 	{
 	
 		$this->mpdf->Output( $this->_file_name_display . '.pdf', Destination::INLINE);
-		
+		die();
 		//temp
 		//if( isset($_GET['p']) )
 			//$this->mpdf->Output();

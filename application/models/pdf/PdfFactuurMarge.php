@@ -9,7 +9,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  *
  *
  */
-class PdfFactuurVerkoopUren extends PdfFactuur {
+class PdfFactuurMarge extends PdfFactuur {
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -30,7 +30,7 @@ class PdfFactuurVerkoopUren extends PdfFactuur {
 		$config['margin_header'] = 0;
 		$config['margin_footer'] = 0;
 
-		$config['format'] = 'L';
+		$config['format'] = 'P';
 		$config['titel'] = 'Factuur';
 		
 		parent::__construct($config);
@@ -47,54 +47,18 @@ class PdfFactuurVerkoopUren extends PdfFactuur {
 		return $this;
 	}
 	
-
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * cessie tekst voor de factuur
-	 * @return object
-	 */
-	public function setGRekening( $bedrag, $percentage ) :PdfFactuurVerkoopUren
-	{
-		$this->smarty->assign( 'grekening_bedrag', $bedrag);
-		$this->smarty->assign( 'grekening_percentage', $percentage);
-		return $this;
-	}
-
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * cessie tekst voor de factuur
-	 * @return object
-	 */
-	public function setCessieTekst( $cessie_tekst ) :PdfFactuurVerkoopUren
-	{
-		$this->smarty->assign( 'cessie_tekst', $cessie_tekst);
-		return $this;
-	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * body voor de factuur
 	 * @return object
 	 */
-	public function setIbanFactoring( $iban ) :PdfFactuurVerkoopUren
-	{
-		$this->smarty->assign( 'iban_factoring', $iban);
-		return $this;
-	}
-
-
-	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * body voor de factuur
-	 * @return object
-	 */
-	public function setBody( $factuur, $regels ) :PdfFactuurVerkoopUren
+	public function setBody( $factuur, $regels ) :PdfFactuurMarge
 	{
 		$this->smarty->assign( 'factuur', $factuur);
 		$this->smarty->assign( 'regels', $regels);
 		
-		$body = $this->smarty->fetch('application/views/pdf/facturen/factuur_verkoop_uren.tpl');
+		$body = $this->smarty->fetch('application/views/pdf/facturen/factuur_marge.tpl');
 		$this->mpdf->WriteHTML($body);
 		
 		return $this;
@@ -106,7 +70,7 @@ class PdfFactuurVerkoopUren extends PdfFactuur {
 	 * header voor de factuur
 	 * @return object
 	 */
-	public function setHeader() :PdfFactuurVerkoopUren
+	public function setHeader() :PdfFactuurMarge
 	{
 		$header = $this->smarty->fetch('application/views/pdf/facturen/factuur_header.tpl');
 		$this->mpdf->SetHTMLHeader($header);

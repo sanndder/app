@@ -30,6 +30,22 @@ function modalSignDocumentWelkom( document_id, step )
     modalSignDocument(document_id, callback );
 }
 
+//==========================================================
+// Sign SamenwerkingsOvereenkomst
+//==========================================================
+function modalSignDocumentExternal( document_id )
+{
+    //set success callback
+    callback = function(){
+        $('.btn-sign').remove();
+        $('.signed').show();
+    };
+    
+    //call sign modal
+    modalSignDocument(document_id, callback );
+}
+
+
 
 //==========================================================
 // algemene functie document sign modal

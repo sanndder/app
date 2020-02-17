@@ -19,6 +19,12 @@ class PdfFactuur extends PdfBuilder {
 	protected $_jaar = NULL;
 	protected $_periode = NULL;
 	
+	//verkoop of kostenoverzicht
+	private $_type = NULL;
+	
+	private $_factuur_nr = '[CONCEPT]';
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Init new file from array
@@ -51,9 +57,22 @@ class PdfFactuur extends PdfBuilder {
 
 		return $this;
 	}
-
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * welk type
+	 * @return object
+	 */
+	public function setType( $type = NULL ) :PdfFactuur
+	{
+		$this->_type = $type;
+		$this->smarty->assign( 'type', $type );
+		return $this;
+	}
+	
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * relatie gegevens voor de factuur
@@ -85,6 +104,18 @@ class PdfFactuur extends PdfBuilder {
 		
 		return $this;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * verval datum instellen
+	 *
+	 */
+	public function setVervaldatum( $datum = NULL ) :PdfFactuur
+	{
+		$this->smarty->assign( 'vervaldatum', $datum );
+		return $this;
+	}
+
 
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -104,9 +135,8 @@ class PdfFactuur extends PdfBuilder {
 	/*
 	 * Tijdvak info instellen
 	 * TODO: controle op periodes
-	 * @return void
 	 */
-	public function setTijdvak( $data )
+	public function setTijdvak( $data ) :PdfFactuur
 	{
 		if( isset($data['tijdvak']) ) $this->_tijdvak = $data['tijdvak'];
 		if( isset($data['periode']) ) $this->_periode = intval($data['periode']);
@@ -120,8 +150,22 @@ class PdfFactuur extends PdfBuilder {
 		
 		$this->smarty->assign( 'jaar', $this->_jaar );
 		$this->smarty->assign( 'periode', $this->_periode );
+		
+		return $this;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * factuur nr
+	 * @return object
+	 */
+	public function setFactuurNr( $nr ) :PdfFactuur
+	{
+		$this->_factuur_nr = $nr;
+		$this->smarty->assign( 'factuur_nr', $nr );
+		
+		return $this;
+	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

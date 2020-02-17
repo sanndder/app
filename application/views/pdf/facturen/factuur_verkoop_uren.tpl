@@ -1,11 +1,13 @@
 <table style="margin-left: 15px; width: 100%">
 	<tr>
 		<td style="font-size: 40px; color:#002E65">
-			FACTUUR
+			{if !isset($type) || $type == 'verkoop'} FACTUUR {/if}
+			{if $type == 'kosten'} KOSTENOVERZICHT {/if}
 		</td>
 		<td rowspan="2" style="text-align: right; padding-right: 25px; padding-top: 6px;">
 
-			<table style="font-size: 13px;">
+            {if $type == 'verkoop'}
+			<table style="font-size: 12px;">
 				<tr>
 					<td class="relatie">bedrijfsnaam</td>
 					<td class="relatie-info">
@@ -33,16 +35,27 @@
 				<tr>
 					<td class="relatie">factuurdatum</td>
 					<td class="relatie-info">
-                        {$factuurdatum|date_format: '%d-%m-%Y'}
+                        {if isset($factuurdatum)}
+							{$factuurdatum|date_format: '%d-%m-%Y'}
+						{/if}
+					</td>
+				</tr>
+				<tr>
+					<td class="relatie">vervaldatum</td>
+					<td class="relatie-info">
+						{if isset($vervaldatum)}
+                            {$vervaldatum|date_format: '%d-%m-%Y'}
+                        {/if}
 					</td>
 				</tr>
 			</table>
+            {/if}
 
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<table style="margin-top: -35px; color:#002E65; font-size: 16px; font-weight: bold; font-style: italic">
+			<table style="{if $type == 'kosten'}margin-top:0px;{else}margin-top: -35px;{/if} color:#002E65; font-size: 16px; font-weight: bold; font-style: italic">
 				<tr>
 					<td>Week {$periode} - {$jaar}</td>
 				</tr>
@@ -86,26 +99,37 @@
 
                 {* regels met invoer *}
                 {if $r.row_start == NULL && $r.row_end == NULL}
+	                {if ($type == 'verkoop' && $r.doorbelasten_aan != 'uitzender') || $type == 'kosten'}
 					<tr>
 						<td style="padding-left: 18px">{$r.omschrijving}</td>
-						<td class="text-right">{$r.uren_aantal}</td>
-						<td class="text-right">{$r.uren_decimaal|number_format:2:',':'.'}</td>
+						<td class="text-right">
+                            {if $r.uren_aantal != NULL}{$r.uren_aantal}{/if}
+						</td>
+						<td class="text-right">
+							{if $r.uren_decimaal != NULL}{$r.uren_decimaal|number_format:2:',':'.'}{/if}
+						</td>
 						<td class="text-right">
 							{if $type == 'verkoop'}&euro; {$r.verkooptarief|number_format:2:',':'.'} {/if}
-							{if $type == 'ksoten'}&euro; {$r.bruto_uurloon|number_format:2:',':'.'} {/if}
+							{if $type == 'kosten'}&euro; {$r.bruto_uurloon|number_format:2:',':'.'} {/if}
 						</td>
 						<td class="text-right">
-                            {if $type == 'verkoop'}&euro; {$r.verkooptarief|number_format:2:',':'.'} {/if}
-                            {if $type == 'ksoten'}&euro; {$r.bruto_uurloon|number_format:2:',':'.'} {/if}
+							{* uren bij verkoop altijd factor 1 *}
+                            {if $r.uren_aantal != NULL}
+                                {if $type == 'verkoop'}1,000{else}{$r.factor|number_format:3:',':'.'}{/if}
+	                        {else}
+                                {$r.factor|number_format:3:',':'.'}
+	                        {/if}
 						</td>
 						<td class="text-right">
-                           &euro; {$r.factor|number_format:3:',':'.'}
+                            {if $type == 'verkoop'}100%{/if}
+                            {if $type == 'kosten'}{$r.percentage|number_format:2:',':'.'}%{/if}
 						</td>
 						<td class="text-right">
                             {if $type == 'verkoop'}&euro; {$r.subtotaal_verkoop|number_format:2:',':'.'} {/if}
-                            {if $type == 'ksoten'}&euro; {$r.subtotaal_kosten|number_format:2:',':'.'} {/if}
+                            {if $type == 'kosten'}&euro; {$r.subtotaal_kosten|number_format:2:',':'.'} {/if}
 						</td>
 					</tr>
+                    {/if}
                 {/if}
 
                 {* regel met subtotaal *}
@@ -122,5 +146,53 @@
 
             {/foreach}
         {/if}
+
+        {* factuur totalen *}
+		<tr>
+			<td colspan="7" style="height: 25px;"></td>
+		</tr>
+		<tr class="totaal">
+			<td colspan="6" class="text-right">totaal excl. BTW</td>
+			<td class="text-right">&euro;
+                {if $type == 'verkoop'}{$factuur.bedrag_excl|number_format:2:',':'.'}{/if}
+                {if $type == 'kosten'}{$factuur.kosten_excl|number_format:2:',':'.'}{/if}
+			</td>
+		</tr>
+		<tr class="totaal">
+			<td colspan="6" class="text-right">BTW</td>
+			<td class="text-right">
+                {if $factuur.bedrag_btw == NULL}
+					BTW verlegd
+                {else}
+					&euro;
+					{if $type == 'verkoop'}{$factuur.bedrag_btw|number_format:2:',':'.'}{/if}
+					{if $type == 'kosten'}{$factuur.kosten_btw|number_format:2:',':'.'}{/if}
+                {/if}
+
+			</td>
+		</tr>
+		<tr class="totaal">
+			<td colspan="6" class="text-right">totaal</td>
+			<td class="text-right">
+				&euro;
+                {if $type == 'verkoop'}{$factuur.bedrag_incl|number_format:2:',':'.'}{/if}
+                {if $type == 'kosten'}{$factuur.kosten_incl|number_format:2:',':'.'}{/if}
+			</td>
+		</tr>
+
 	</tbody>
 </table>
+
+{if $type == 'verkoop'}
+	{if isset($grekening_bedrag) && $grekening_bedrag != NULL && $grekening_bedrag != '' && $grekening_bedrag != 0}
+		<div class="grekening">
+	        Er mag {$grekening_percentage|number_format:0:',':'.'}% (&euro; {$grekening_bedrag|number_format:2:',':'.'}) naar de G-rekening op IBAN {$iban_factoring}
+		</div>
+	{/if}
+
+	{if isset($cessie_tekst) && $cessie_tekst != NULL && $cessie_tekst != ''}
+		<div class="cessie_tekst">
+			{$cessie_tekst}
+		</div>
+	{/if}
+	{/if}

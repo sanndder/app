@@ -74,7 +74,7 @@ class DocumentGroup extends Connector {
 	public function get()
 	{
 		$sql = "SELECT documenten.document_id, documenten.werknemer_id, documenten.inlener_id, documenten.uitzender_id, documenten.send, documenten.file_name, documenten.signed, documenten.timestamp AS aangemaakt, documenten.deleted, documenten.deleted_by, documenten.deleted_on,
-       					documenten_templates_settings.*, dc.categorie
+       					documenten_templates_settings.*, dc.categorie, documenten.send_on, documenten.send_by, documenten.signed_on
 				FROM documenten
 				LEFT JOIN documenten_templates_settings ON documenten.template_id = documenten_templates_settings.template_id
 				LEFT JOIN documenten_categorieen dc on documenten_templates_settings.categorie_id = dc.categorie_id

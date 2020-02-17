@@ -2,8 +2,10 @@
 
 namespace models\documenten;
 use models\Connector;
+use models\email\Email;
 use models\file\Pdf;
 use models\utils\DBhelper;
+use models\werknemers\Werknemer;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -51,8 +53,97 @@ class Document extends Connector {
 		if( $document_id !== NULL )
 			$this->setDocumentId( $document_id );
 	}
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get by hash
+	 *
+	 */
+	public function getByHash( $hash = '' )
+	{
+		$query = $this->db_user->query( "SELECT document_id FROM documenten WHERE document_hash = ? AND deleted = 0 LIMIT 1", [$hash] );
+		
+		if( $query->num_rows() == 0 )
+			return false;
+		
+		$data = $query->row_array();
+		
+		$this->setDocumentId( $data['document_id'] );
+		
+		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get by hash
+	 *
+	 */
+	public function emailSignLink()
+	{
+		if( $this->_data['document_hash'] === NULL )
+			$this->_setHash();
+		
+		//reload
+		$this->_load();
+		
+		$werknemer = new Werknemer($this->_data['werknemer_id']);
+		$gegevens = $werknemer->gegevens();
+		
+		if( ENVIRONMENT == 'development')
+			$link = 'http://192.168.1.2/app/sign/document?wid='.$this->werkgever->wid().'&wg_hash='.$this->werkgever->hash().'&werknemer='.$this->_data['werknemer_id'].'&document=' . $this->_data['document_hash'];
+		else
+			$link = 'https://www.devisonline.nl/sign/document?wid='.$this->werkgever->wid().'&wg_hash='.$this->werkgever->hash().'&werknemer='.$this->_data['werknemer_id'].'&document=' . $this->_data['document_hash'];
+		
+		$email = new Email();
+		
+		$to['email'] = $gegevens['email'];
+		$to['name'] = $gegevens['voornaam'] . ' ' . $gegevens['tussenvoegsel'] . ' ' . $gegevens['achternaam'];
+		
+		if( $to['email'] == '' )
+			return false;
+		
+		$email->to( $to );
+		$email->setSubject('U heeft een document ontvangen voor ondertekening');
+		$email->setTitel('Document voor ondertekening');
+		$email->setBody('Er staat voor u een document klaar om te ondertekenen. Klik om onderstaande link om het document te bekijken en te tekenen.
+						<br /><br />
+						<a href="'.$link.'">
+						'.$link.'</a>
+						<br /><br />
+						Mocht u problemen ondervinden, neem dan contact met ons op.
+						Met vriendelijke groet,<br />Abering HR Services');
+		$email->useHtmlTemplate( 'devis' );
+		$email->delay( 0 );
+		
+		$email->send();
+		
+		$update['send'] = 1;
+		$update['send_on'] = date( 'Y-m-d H:i:s' );
+		$update['send_by'] = $this->user->user_id;
+		
+		$this->db_user->where( 'document_id', $this->_document_id );
+		$this->db_user->update( 'documenten', $update );
+		
+		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * sey hash
+	 *
+	 */
+	private function _setHash()
+	{
+		$update['document_hash']  = md5( time() . $this->_data['document_id'] . $this->_data['file_name'] );
+		$this->db_user->where( 'document_id', $this->_document_id );
+		$this->db_user->update( 'documenten', $update );
+	}
+	
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Delete document
@@ -93,7 +184,7 @@ class Document extends Connector {
 		
 		$query = $this->db_user->query( $sql );
 		$this->_data = DBhelper::toRow( $query );
-		
+
 		$this->_html = $this->_data['html'];//html los in een var
 		unset($this->_data['html']);//hier weghalen
 		
@@ -218,7 +309,7 @@ class Document extends Connector {
 		if( $query->num_rows() == 0 )
 		{
 			$this->db_user->where( 'document_id', $this->_document_id );
-			$this->db_user->update( 'documenten', array('signed'=>1) );
+			$this->db_user->update( 'documenten', array('signed'=>1, 'signed_on'=>date('Y-m-d H:i:s')) );
 		}
 	}
 	
@@ -272,6 +363,10 @@ class Document extends Connector {
 		
 		if( $this->owner() == 'werknemer' )
 		{
+			//external mag
+			if( $this->user->user_type == 'external' )
+				return true;
+			
 			//uitzender documenten mag alleen door werkgever of uitzender zelf bekeken worden
 			if( $this->user->user_type == 'werkgever' )
 				return true;

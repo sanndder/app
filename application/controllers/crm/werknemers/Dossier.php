@@ -187,6 +187,19 @@ class Dossier extends MY_Controller
 			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
 		}
 		
+		//contract verzenden
+		if( isset( $_GET['sendforsign'] ) )
+		{
+			$document = new Document($_GET['sendforsign'] );
+			if( $document->emailSignLink() )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/'.$werknemer_id.'?send' ,'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Document kon niet worden verstuurd!' ) );
+			
+		}
+		if( isset( $_GET['send'] ) )
+			$this->smarty->assign( 'msg', msg( 'success', 'Document is verstuurd!' ) );
+			
 		//ID opslaan vanuit wizard
 		if( isset( $_POST['set_wizard'] ) )
 		{

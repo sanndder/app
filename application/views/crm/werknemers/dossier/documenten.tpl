@@ -106,13 +106,19 @@
 										<td class="align-text-top">{$d.categorie}</td>
 										<td class="align-text-top">{$d.lang}</td>
 										<td class="align-text-top">
-                                            {$d.aangemaakt|date_format: '%d-%m-%Y om %R:%S'}
+                                            {if $d.send == 1}
+                                                {$d.send_on|date_format: '%d-%m-%Y om %R:%S'}
+                                            {else}
+												niet verzonden
+                                            {/if}
 										</td>
 										<td class="align-text-top">
                                             {if $d.signed == 1}
-												<i class="icon-check"></i>
+												<i class="icon-check"></i> {$d.signed_on|date_format: '%d-%m-%Y om %R:%S'}
                                             {else}
-												<span class="text-muted"><i class="icon-hour-glass2"></i> wachten op ondertekening....</span>
+                                                {if $d.send == 1}
+													<span class="text-muted"><i class="icon-hour-glass2"></i> wachten op ondertekening....</span>
+                                                {/if}
                                             {/if}
 										</td>
 										<td class="text-right sorting_disabled">
@@ -130,8 +136,13 @@
 														<a href="documenten/pdf/download/{$d.document_id}" class="dropdown-item">
 															<i class="icon-download"></i> Downloaden
 														</a>
+														{*
 														<a href="javascript:void(0)" class="dropdown-item">
 															<i class="icon-envelop3"></i> Emailen
+														</a>
+	                                                     *}
+														<a href="crm/werknemers/dossier/documenten/{$werknemer->werknemer_id}?sendforsign={$d.document_id}" class="dropdown-item">
+															<i class="icon-pencil5"></i> Email digitaal tekenen
 														</a>
 														<div class="dropdown-divider"></div>
 														<a href="javascript:void(0)" class="dropdown-item">
