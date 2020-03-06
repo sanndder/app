@@ -118,7 +118,7 @@
 
 
 			<div class="row">
-				<div class="col-xl-10">
+				<div class="col-md-12">
 
 					<!-- Basic card -->
 					<div class="card">
@@ -134,73 +134,80 @@
 						<table class="table table-striped text-nowrap datatable-basic no-footer" data-order="[[1,&quot;asc&quot; ]]">
 							<thead>
 								<tr role="row">
-									<th></th>
-									<th></th>
+									<th>Periode</th>
+									<th>Inlener</th>
 									<th>Factuur nr.</th>
 									<th>Bedrag</th>
 									<th>Aangemaakt</th>
 									<th>Verzenden</th>
 								</tr>
 							</thead>
-							<tbody>
-								{if isset($facturen) && $facturen != NULL}
-                                {foreach $documenten as $d}
-									<tr role="row" class="odd">
-										<td></td>
-										<td>
-											<div class="media">
-												<div class="mr-3 mt-1">
-													<i class="icon-file-pdf" style="font-size: 26px"></i>
-												</div>
+                            {if $facturen != NULL}
+								<tbody>
+                                    {foreach $facturen as $f}
+										<tr>
+											<td>{$f.verkoop.periode}</td>
+											<td>
+                                                {$f.verkoop.bedrijfsnaam}
+                                                {if $f.verkoop.project != NULL}
+													- {$f.verkoop.project}
+                                                {/if}
+											</td>
+											<td class="text-right">
+                                                {$f.verkoop.factuur_nr}
+											</td>
+											<td class="text-right">
+												€ {$f.verkoop.bedrag_incl|number_format:2:',':'.'}
+											</td>
+											<td>
+												<a target="_blank" href="facturatie/factuur/view/{$f.verkoop.factuur_id}">
+													factuur_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+												</a>
+											</td>
+											<td class="text-right">
+												€ {$f.verkoop.kosten_incl|number_format:2:',':'.'}
+											</td>
+											<td>
+												<a target="_blank" href="facturatie/factuur/viewkosten/{$f.verkoop.factuur_id}">
+													kostenoverzicht_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+												</a>
+											</td>
+											<td class="text-right">
+                                                {$f.marge.factuur_nr}
+											</td>
+											<td class="text-right">
+												€ {$f.marge.bedrag_incl|number_format:2:',':'.'}
+											</td>
+											<td>
+												<a target="_blank" href="facturatie/factuur/view/{$f.marge.factuur_id}">
+													margefactuur_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+												</a>
+											</td>
+											<td>
+												<ul class="list-inline mb-0 mt-2 mt-sm-0">
+													<li class="list-inline-item dropdown">
+														<a href="#" class="text-default dropdown-toggle" data-toggle="dropdown">
+															<i class="icon-menu7"></i></a>
 
-												<div class="media-body align-self-center">
-													<a target="_blank" href="documenten/pdf/view/{$d.document_id}" class="font-weight-semibold">{$d.template_name}</a>
-													<div class="text-muted font-size-sm">
-                                                        {$d.aangemaakt|date_format: '%d-%m-%Y om %R:%S'}
-													</div>
-												</div>
-											</div>
-										</td>
-										<td class="align-text-top">{$d.categorie}</td>
-										<td class="align-text-top">{$d.lang}</td>
-										<td class="align-text-top">
-                                            {if $d.signed == 1}
-												<i class="icon-check"></i>
-                                            {else}
-												<span class="text-muted"><i class="icon-hour-glass2"></i> wachten op ondertekening....</span>
-                                            {/if}
-										</td>
-										<td class="text-right sorting_disabled">
+														<div class="dropdown-menu dropdown-menu-right">
+															<a href="crm/uitzenders/dossier/facturen/{$f.verkoop.uitzender_id}?email={$f.verkoop.factuur_id}" class="dropdown-item">
+																<i class="icon-envelop2"></i> Emailen
+															</a>
+															<a href="javascript:void()" class="dropdown-item">
+																<i class="icon-file-download"></i> Download
+															</a>
+															<a href="crm/uitzenders/dossier/facturen/{$f.verkoop.uitzender_id}?del={$f.verkoop.factuur_id}" class="dropdown-item">
+																<i class="icon-cross2"></i> Verwijderen
+															</a>
+														</div>
+													</li>
+												</ul>
+											</td>
+										</tr>
+                                    {/foreach}
+								</tbody>
+                            {/if}
 
-											<div class="list-icons">
-												<div class="dropdown">
-													<a href="#" class="list-icons-item dropdown-toggle" data-toggle="dropdown">
-														<i class="icon-menu7"></i>
-													</a>
-
-													<div class="dropdown-menu dropdown-menu-right">
-														<a href="javascript:void(0)" class="dropdown-item">
-															<i class="icon-menu7"></i> Details
-														</a>
-														<a href="documenten/pdf/download/{$d.document_id}" class="dropdown-item">
-															<i class="icon-download"></i> Downloaden
-														</a>
-														<a href="javascript:void(0)" class="dropdown-item">
-															<i class="icon-envelop3"></i> Emailen
-														</a>
-														<div class="dropdown-divider"></div>
-														<a href="javascript:void(0)" class="dropdown-item">
-															<i class="icon-trash"></i> Verwijderen
-														</a>
-													</div>
-												</div>
-											</div>
-
-										</td>
-									</tr>
-                                {/foreach}
-                                {/if}
-							</tbody>
 						</table>
 
 

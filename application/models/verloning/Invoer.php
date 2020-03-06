@@ -4,10 +4,10 @@ namespace models\verloning;
 
 use models\Connector;
 use models\forms\Validator;
+use models\inleners\Inlener;
 use models\users\UserGroup;
 use models\utils\DBhelper;
 use models\utils\Tijdvak;
-use models\werknemers\PlaatsingGroup;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 
@@ -146,6 +146,9 @@ class Invoer extends Connector
 		$array['tijdvak'] = $this->_tijdvak;
 		$array['jaar'] = $this->_jaar;
 		$array['periode'] = $this->_periode;
+		$array['periode'] = $this->_periode;
+		$array['periode_start'] = $this->_periode_start;
+		$array['periode_einde'] = $this->_periode_einde;
 		
 		return $array;
 	}
@@ -180,9 +183,14 @@ class Invoer extends Connector
 		$werknemers = array();
 		
 		//plaatsingen eerst laden
-		$plaatsingGroup = new PlaatsingGroup();
-		$plaatsingen = $plaatsingGroup->inlener( $this->_inlener_id )->all();
+		if( $this->user->werkgever_type == 'uitzenden' )
+			$plaatsingGroup = new \models\werknemers\PlaatsingGroup();
+		if( $this->user->werkgever_type == 'bemiddeling')
+			$plaatsingGroup = new \models\zzp\PlaatsingGroup();
 		
+		
+		$plaatsingen = $plaatsingGroup->inlener( $this->_inlener_id )->all();
+
 		//niet verder
 		if( count($plaatsingen) === 0 )
 			return  $werknemers;
@@ -190,8 +198,12 @@ class Invoer extends Connector
 		//info filteren
 		foreach( $plaatsingen as $plaatsing)
 		{
-			$werknemer['werknemer_id'] = $plaatsing['werknemer_id'];
+			if( $this->user->werkgever_type == 'uitzenden' ) $werknemer['id'] = $plaatsing['werknemer_id'];
+			if( $this->user->werkgever_type == 'bemiddeling') $werknemer['id'] = $plaatsing['zzp_id'];
+			
 			$werknemer['naam'] = $plaatsing['naam'];
+			$werknemer['bedrijfsnaam'] = (isset($plaatsing['bedrijfsnaam'])) ? $plaatsing['bedrijfsnaam'] : NULL;
+			
 			$werknemer['start_plaatsing'] = $plaatsing['start_plaatsing'];
 			$werknemer['einde_plaatsing'] = $plaatsing['einde_plaatsing'];
 			$werknemer['block'] = 0;
@@ -317,7 +329,18 @@ class Invoer extends Connector
 		return true;
 	}
 
-	
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * projecten voor inlener
+	 *
+	 */
+	public function getProjecten()
+	{
+		$inlener = new Inlener( $this->_inlener_id);
+		return $inlener->projecten();
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

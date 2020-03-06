@@ -2,6 +2,7 @@
 
 namespace models\file;
 
+use Mpdf\Mpdf;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
 use setasign\Fpdi\PdfReader;
@@ -38,10 +39,90 @@ class Pdf extends File{
 		
 		//load fpdi
 		$this->_fpdi = new Fpdi();
-		$this->_setInfo();
 		
+		if( $this->_error !== NULL )
+			return $this;
+		
+		$this->_setInfo();
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * bestand toevoegen aan pdf
+	 *
+	 * @return bool
+	 */
+	public function addFileToPdf( $file_dir, $file_name )
+	{
+		$this->_fpdi = new Fpdi();
+		
+		//bronbestand instellen
+		$pagecount = $this->_fpdi->setSourceFile( $this->_file_path );
+		for ($i = 1; $i <= $pagecount; $i++)
+		{
+			$tplidx = $this->_fpdi->importPage($i);
+			$specs =  $this->_fpdi->getTemplateSize($tplidx);
 
+			if ($specs['width'] > $specs['height'])
+				$this->_fpdi->AddPage('L', array($specs['width'], $specs['height']));
+			else
+				$this->_fpdi->AddPage('P', array($specs['width'], $specs['height']));
+			
+			$this->_fpdi->useTemplate($tplidx);
+		}
+		
+		$file_path = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $file_dir . '/' . $file_name;
+		
+		if(!file_exists($file_path))
+			return false;
+		
+		//jpg
+		if(mime_content_type($file_path) == 'image/jpeg' )
+		{
+			$temp_path =  UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/temp/' . $file_name . '_' . uniqid() . '.pdf';
+			
+			$mpdf = new mPDF();
+			
+			$mpdf->SetTitle('Bijlages');
+			$mpdf->SetDisplayMode('fullpage');
+			
+			list($width, $height) = getimagesize($file_path);
+			
+			$mpdf->AddPage($height > $width ? 'P' : 'L');
+			
+			$html = '<img src="' . $file_path . '" />';
+			$mpdf->WriteHTML($html, 2);
+			$mpdf->Output($temp_path, 'F');
+			
+			//add bijlage
+			$pagecount = $this->_fpdi->setSourceFile($temp_path);
+			for ($i = 1; $i <= $pagecount; $i++)
+			{
+				$tplidx = $this->_fpdi->importPage($i);
+				$specs = $this->_fpdi->getTemplateSize($tplidx);
+				$this->_fpdi->addPage($specs['height'] > $specs['width'] ? 'P' : 'L');
+				$this->_fpdi->useTemplate($tplidx);
+			}
+		}
+		
+		//pdf
+		if(mime_content_type($file_path) == 'application/pdf' )
+		{
+			$pagecount = $this->_fpdi->setSourceFile($file_path);
+			for ($i = 1; $i <= $pagecount; $i++)
+			{
+				$tplidx = $this->_fpdi->importPage($i);
+				$specs = $this->_fpdi->getTemplateSize($tplidx);
+				$this->_fpdi->addPage($specs['orientation']);
+				$this->_fpdi->useTemplate($tplidx);
+			}
+		}
+
+		$this->_fpdi->Output( $this->_file_path ,'F' );
+		
+		return true;
+	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -226,6 +307,7 @@ class Pdf extends File{
 		
 		return new Pdf( $pdf );
 	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

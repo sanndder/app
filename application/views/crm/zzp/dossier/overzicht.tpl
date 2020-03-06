@@ -46,7 +46,6 @@
 												<li>{$bedrijfsgegevens.postcode} {$bedrijfsgegevens.plaats}</li>
 												<li class="mt-2"></li>
 												<li>{$bedrijfsgegevens.telefoon}</li>
-												<li>{$bedrijfsgegevens.email}</li>
 											</ul>
 
 										</div><!-- /col -->

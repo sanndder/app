@@ -18,6 +18,12 @@
         "maxlength": 128
       }
     },
+    "uitzender_id": {
+      "label": "Uitzender",
+      "rules": {
+        "required": false
+      }
+    },
     "kvknr": {
       "label": "KvK nummer",
       "rules": {

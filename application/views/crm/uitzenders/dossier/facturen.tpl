@@ -1,11 +1,13 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Uitzender{/block}
 {block "header-icon"}icon-office{/block}
-{block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{if $uitzender->archief == 1} <span style="color:red">(archief)</span> {/if}{/block}
+{block "header-title"}Uitzender - {$uitzender->bedrijfsnaam}{if $uitzender->archief == 1}
+	<span style="color:red">(archief)</span>
+{/if}{/block}
 
 {block "content"}
 
-	{include file='crm/uitzenders/dossier/_sidebar.tpl' active='facturen'}
+    {include file='crm/uitzenders/dossier/_sidebar.tpl' active='facturen'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -20,6 +22,8 @@
 			<div class="row">
 				<div class="col-xl-12">
 
+                    {if isset($msg)}{$msg}{/if}
+
 					<!-- Default tabs -->
 					<div class="card">
 
@@ -32,40 +36,108 @@
 						</div>
 
 						<div class="bg-light">
-							<ul class="nav nav-tabs nav-tabs-bottom mb-0">
-								<li class="nav-item">
-									<a href="#card-toolbar-tab1" class="nav-link active show" data-toggle="tab">
-										2019
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#card-toolbar-tab2" class="nav-link" data-toggle="tab">
-										2018
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#card-toolbar-tab2" class="nav-link" data-toggle="tab">
-										2017
-									</a>
-								</li>
-							</ul>
+                            {if $jaren != NULL}
+								<ul class="nav nav-tabs nav-tabs-bottom mb-0">
+                                    {foreach $jaren as $j }
+										<li class="nav-item">
+											<a href="#card-toolbar-tab-{$j}" class="nav-link active show" data-toggle="tab">
+                                                {$j}
+											</a>
+										</li>
+                                    {/foreach}
+								</ul>
+                            {/if}
 						</div>
 
-						<div class="card-body tab-content">
-							<div class="tab-pane fade show active" id="card-toolbar-tab1">
-								This is the first card tab content
-							</div>
+						<div class="card-body tab-content p-0">
+							<div class="tab-pane fade show active" id="card-toolbar-tab-">
 
-							<div class="tab-pane fade" id="card-toolbar-tab2">
-								This is the second card tab content
-							</div>
+								<table class="table table-striped table-hover">
+									<thead>
+										<tr>
+											<th style="width: 25px;">Jaar</th>
+											<th style="width: 25px;">Periode</th>
+											<th>Inlener</th>
+											<th style="width: 100px">Factuur nr</th>
+											<th style="width: 100px">Incl (€)</th>
+											<th>Verkoop</th>
+											<th style="width: 100px">Incl (€)</th>
+											<th>Kosten</th>
+											<th style="width: 100px">Factuur nr</th>
+											<th style="width: 100px">Incl (€)</th>
+											<th>Marge</th>
+											<th style="width: 25px"></th>
+										</tr>
+									</thead>
+                                    {if $facturen != NULL}
+										<tbody>
+                                            {foreach $facturen as $f}
+												<tr>
+													<td>{$f.verkoop.jaar}</td>
+													<td>{$f.verkoop.periode}</td>
+													<td>
+                                                        {$f.verkoop.bedrijfsnaam}
+														{if $f.verkoop.project != NULL}
+															- {$f.verkoop.project}
+														{/if}
+													</td>
+													<td class="text-right">
+                                                        {$f.verkoop.factuur_nr}
+													</td>
+													<td class="text-right">
+														€ {$f.verkoop.bedrag_incl|number_format:2:',':'.'}
+													</td>
+													<td>
+														<a target="_blank" href="facturatie/factuur/view/{$f.verkoop.factuur_id}">
+															factuur_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+														</a>
+													</td>
+													<td class="text-right">
+														€ {$f.verkoop.kosten_incl|number_format:2:',':'.'}
+													</td>
+													<td>
+														<a target="_blank" href="facturatie/factuur/viewkosten/{$f.verkoop.factuur_id}">
+															kostenoverzicht_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+														</a>
+													</td>
+													<td class="text-right">
+                                                        {$f.marge.factuur_nr}
+													</td>
+													<td class="text-right">
+														€ {$f.marge.bedrag_incl|number_format:2:',':'.'}
+													</td>
+													<td>
+														<a target="_blank" href="facturatie/factuur/view/{$f.marge.factuur_id}">
+															margefactuur_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+														</a>
+													</td>
+													<td>
+														<ul class="list-inline mb-0 mt-2 mt-sm-0">
+															<li class="list-inline-item dropdown">
+																<a href="#" class="text-default dropdown-toggle" data-toggle="dropdown">
+																	<i class="icon-menu7"></i></a>
 
-							<div class="tab-pane fade" id="card-tab3">
-								This is the third card tab content
-							</div>
+																<div class="dropdown-menu dropdown-menu-right">
+																	<a href="crm/uitzenders/dossier/facturen/{$uitzender->uitzender_id}?email={$f.verkoop.factuur_id}" class="dropdown-item">
+																		<i class="icon-envelop2"></i> Emailen
+																	</a>
+																	<a href="javascript:void()" class="dropdown-item">
+																		<i class="icon-file-download"></i> Download
+																	</a>
+																	<a href="crm/uitzenders/dossier/facturen/{$uitzender->uitzender_id}?del={$f.verkoop.factuur_id}" class="dropdown-item">
+																		<i class="icon-cross2"></i> Verwijderen
+																	</a>
+																</div>
+															</li>
+														</ul>
+													</td>
+												</tr>
+                                            {/foreach}
+										</tbody>
+                                    {/if}
+								</table>
 
-							<div class="tab-pane fade" id="card-tab4">
-								This is the fourth card tab content
+
 							</div>
 						</div>
 					</div>

@@ -4236,7 +4236,7 @@ class Verloning_model extends CI_Model
 
 			$facturen = array();
 
-			//fatcuren ophalen
+			//facturen ophalen
 			$sql = "SELECT factuur_id, periode, jaar, type, inlener_id
 				FROM facturen
 				WHERE inlener_id IN (" . implode(',', $aInleners) . ") AND periode  IN (" . implode(',', $aPeriodes) . ") AND jaar = $jaar";

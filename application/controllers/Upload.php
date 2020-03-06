@@ -5,6 +5,7 @@ use models\file\File;
 use models\file\Img;
 use models\file\Pdf;
 use models\utils\Carbagecollector;
+use models\verloning\LoonstrokenZip;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -25,6 +26,46 @@ class Upload extends MY_Controller {
 		//$this->load->model('test2_model', 'test2');
 		$this->load->model('upload_model', 'uploadfiles');
 
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// upload handtekening uitzender
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uploadloonstroken()
+	{
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'loonstroken/zip' );
+		$this->uploadfiles->setAllowedFileTypes( 'zip|ZIP' );
+		$this->uploadfiles->setDatabaseTable( 'loonstroken_zip' );
+		$this->uploadfiles->setPrefix( 'zip_' );
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			//save to database
+			$zip_id = $this->uploadfiles->dataToDatabase();
+			
+			//zip uitlezen
+			if( $zip_id > 0 )
+			{
+				$zip = new LoonstrokenZip( $zip_id );
+				$zip->updateZipInfo();
+			}
+			
+			
+			$file_array = $this->uploadfiles->getFileArray();
+			
+			/*$preview[] = 'http://via.placeholder.com/150';
+			$config[] = array('url' => '/test', 'caption' => 'test.jpg', 'key' => 101, 'size' => 100);
+			$result = [ 'initialPreview' => $preview,'initialPreviewConfig' => $config, 'initialPreviewAsData' => true];*/
+			$result = [];
+		}
+		else
+			$result['error'] = $this->uploadfiles->errors();
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+		die();
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -188,8 +229,41 @@ class Upload extends MY_Controller {
 		echo json_encode($result);
 		die();
 	}
-
-
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// upload uittreksel kvk
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uploadkvk( $zzp_id = NULL )
+	{
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'zzp/uittrekselkvk' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|pdf|JPG|PDF' );
+		$this->uploadfiles->setDatabaseTable( 'zzp_kvk_inschrijving' );
+		$this->uploadfiles->setFieldId( 'zzp_id', $zzp_id );
+		$this->uploadfiles->setPrefix( 'kvk_' );
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			//save to database
+			$this->uploadfiles->dataToDatabase( true );
+			
+			$file_array = $this->uploadfiles->getFileArray();
+			
+			/*$preview[] = 'http://via.placeholder.com/150';
+			$config[] = array('url' => '/test', 'caption' => 'test.jpg', 'key' => 101, 'size' => 100);
+			$result = [ 'initialPreview' => $preview,'initialPreviewConfig' => $config, 'initialPreviewAsData' => true];*/
+			$result = [];
+		}
+		else
+			$result['error'] = $this->uploadfiles->errors();
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+		die();
+	}
+	
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// upload bestand met BSN van ET werknemer

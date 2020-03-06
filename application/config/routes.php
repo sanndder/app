@@ -71,6 +71,9 @@ $route['ureninvoer/bijlage/(:any)'] 			= 'ureninvoer/ureninvoer/bijlage/$1';
 $route['instellingen/werkgever/users/view/(:any)'] 				= 'instellingen/users/view/$1';
 $route['instellingen/werkgever/users/view'] 					= 'instellingen/users/view';
 
+$route['instellingen/werkgever/users/edit/(:any)'] 				= 'instellingen/users/edit/$1';
+$route['instellingen/werkgever/users/edit'] 					= 'instellingen/users/edit';
+
 $route['instellingen/werkgever/users/add/(:any)'] 				= 'instellingen/users/add/$1';
 $route['instellingen/werkgever/users/add'] 						= 'instellingen/users/add';
 

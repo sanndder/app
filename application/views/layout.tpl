@@ -55,7 +55,7 @@
 
 </head>
 
-<body>
+<body {if isset($smarty.session.logindata.override)}style="padding-bottom: 40px"{/if}>
 
 {* Login als message *}
 {if isset($smarty.session.logindata.override)}

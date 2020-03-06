@@ -49,7 +49,7 @@
                                 {assign "div_md" "8"}
 
 								<!-- opslaan -->
-                                {if $user_type == 'werkgever'}
+                                {if $user_type == 'werkgever' || $inlener->complete == 0}
 									<div class="row">
 										<div class="col-lg-6 mb-3">
                                             {* bovenste knop alleen wanneer inlener compleet *}
@@ -109,10 +109,7 @@
                                                         {/if}
 													</select>
                                                     {if isset($formdata.$field.error)}
-														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-
-
-																<br/>
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
                                                             {/foreach}</span>
                                                     {/if}
                                                 {/if}
@@ -359,7 +356,7 @@
 								</fieldset>
 
 								<!-- opslaan -->
-                                {if $user_type == 'werkgever'}
+                                {if $user_type == 'werkgever' || $inlener->complete == 0}
 									<div class="row">
 										<div class="col-lg-12 mb-3">
 											<button type="submit" name="set" class="btn btn-success btn-sm">

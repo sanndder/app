@@ -2,10 +2,14 @@
 
 namespace models\werknemers;
 
+use models\cao\CAOGroup;
 use models\Connector;
+use models\documenten\DocumentFactory;
+use models\documenten\Template;
 use models\inleners\Inlener;
 use models\utils\DBhelper;
 use models\verloning\Urentypes;
+use models\verloning\UrentypesGroup;
 use models\verloning\Vergoeding;
 use models\verloning\VergoedingGroup;
 
@@ -80,7 +84,46 @@ class Plaatsing extends Connector
 		return DBhelper::toRow( $query, 'NULL' );
 		
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get details
+	 */
+	public function info() :?array
+	{
+		$sql = "SELECT werknemers_inleners.*, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener,
+       					werknemers_gegevens.gb_datum, werknemers_gegevens.achternaam, werknemers_gegevens.tussenvoegsel, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam,
+       					cao.name AS cao, cao_jobs.name AS functie, REPLACE(LCASE(cao_salary_table.short_name), '_', ' ') AS loontabel
+				FROM werknemers_inleners
+				LEFT JOIN inleners_bedrijfsgegevens ON werknemers_inleners.inlener_id = inleners_bedrijfsgegevens.inlener_id
+				LEFT JOIN werknemers_gegevens ON werknemers_inleners.werknemer_id = werknemers_gegevens.werknemer_id
+				LEFT JOIN cao ON cao.id = werknemers_inleners.cao_id_intern
+				LEFT JOIN cao_jobs ON cao_jobs.id = werknemers_inleners.job_id_intern
+				LEFT JOIN cao_salary_table ON cao_salary_table.salary_table_id = werknemers_inleners.loontabel_id_intern AND cao_salary_table.cao_id_intern = werknemers_inleners.cao_id_intern
+				WHERE werknemers_inleners.deleted = 0 AND inleners_bedrijfsgegevens.deleted = 0 AND werknemers_gegevens.deleted = 0 AND werknemers_inleners.plaatsing_id = $this->_plaatsing_id";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$data = $query->row_array();
+		
+		$CAOgroup = new CAOGroup();
+		$caos_inlener = $CAOgroup->inlener( $data['inlener_id'] );
+		
+		//juiste cao erbij
+		foreach( $caos_inlener as $cao)
+		{
+			if( $cao['cao_id_intern'] == $data['cao_id_intern'] )
+				$data['cao'] = $cao;
+		}
 
+		
+		return $data;
+	}
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * update bruto uurloon
@@ -99,6 +142,31 @@ class Plaatsing extends Connector
 		return false;
 	}
 
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * uitzendbevestiging maken
+	 *
+	 */
+	public function generateUitzendbevestiging()
+	{
+		$plaatsing = $this->info();
+
+		$template = new Template( 8 ); //8 is uitzendbevestiging
+		$document = DocumentFactory::createFromTemplateObject( $template );
+	
+		$pdf = $document->setWerknemerID( $plaatsing['werknemer_id'] )->setInlenerId( $plaatsing['inlener_id'] )->setPlaatsing( $plaatsing )->build()->pdf();
+		
+		if( $document->documentID() !== NULL )
+		{
+			$update['document_id'] = $document->documentID();
+			$this->db_user->where( 'plaatsing_id', $plaatsing['plaatsing_id'] );
+			$this->db_user->update( 'werknemers_inleners', $update );
+		}
+
+		return true;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -129,7 +197,7 @@ class Plaatsing extends Connector
 	 */
 	public function add( $data )
 	{
-		//gen dubbele plaatsing
+		//geen dubbele plaatsing
 		$query = $this->db_user->query( "SELECT plaatsing_id FROM werknemers_inleners WHERE werknemer_id = ? AND inlener_id = ? AND deleted = 0", array( intval($data['werknemer_id']), intval($data['inlener_id']) ) );
 		if( $query->num_rows() > 0 )
 		{

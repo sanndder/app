@@ -132,8 +132,6 @@ class User_model extends MY_Model
 			$data[] = $row;
 		}
 		
-		show($data);
-		
 		$this->db_admin->insert_batch( 'users_accounts', $data );
 	}
 	

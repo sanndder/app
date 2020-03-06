@@ -3,7 +3,9 @@
 namespace models\zzp;
 
 use models\Connector;
+use models\inleners\Inlener;
 use models\utils\DBhelper;
+use models\verloning\UrentypesGroup;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -18,7 +20,7 @@ if (!defined('BASEPATH'))
 
 class PlaatsingGroup extends Connector
 {
-	private $_werknemer_id = NULL;
+	private $_zzp_id = NULL;
 	private $_inlener_id = NULL;
 	
 	private $_error;
@@ -34,15 +36,17 @@ class PlaatsingGroup extends Connector
 		
 	}
 	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * set werknemer ID
 	 */
-	public function werknemer( $werknemer_id ) :PlaatsingGroup
+	public function zzp( $zzp_id ) :PlaatsingGroup
 	{
-		$this->_werknemer_id = intval($werknemer_id);
+		$this->_zzp_id = intval($zzp_id);
 		return $this;
 	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -60,33 +64,46 @@ class PlaatsingGroup extends Connector
 	 * get all
 	 * @return array
 	 */
-	public function all() :array
+	public function all() :?array
 	{
-		$sql = "SELECT werknemers_inleners.*, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener,
-       					werknemers_gegevens.gb_datum, werknemers_gegevens.achternaam, werknemers_gegevens.tussenvoegsel, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam,
-       					cao.name AS cao, cao_jobs.name AS functie, REPLACE(LCASE(cao_salary_table.short_name), '_', ' ') AS loontabel
-				FROM werknemers_inleners
-				LEFT JOIN inleners_bedrijfsgegevens ON werknemers_inleners.inlener_id = inleners_bedrijfsgegevens.inlener_id
-				LEFT JOIN werknemers_gegevens ON werknemers_inleners.werknemer_id = werknemers_gegevens.werknemer_id
-				LEFT JOIN cao ON cao.id = werknemers_inleners.cao_id_intern
-				LEFT JOIN cao_jobs ON cao_jobs.id = werknemers_inleners.job_id_intern
-				LEFT JOIN cao_salary_table ON cao_salary_table.id = werknemers_inleners.loontabel_id_intern
-				WHERE werknemers_inleners.deleted = 0 AND inleners_bedrijfsgegevens.deleted = 0 AND werknemers_gegevens.deleted = 0";
+		$sql = "SELECT zzp_inleners.*, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener,
+       				 	zzp_persoonsgegevens.achternaam, zzp_persoonsgegevens.tussenvoegsel, zzp_persoonsgegevens.voorletters, zzp_persoonsgegevens.voornaam,
+      					zzp_bedrijfsgegevens.bedrijfsnaam
+				FROM zzp_inleners
+				LEFT JOIN inleners_bedrijfsgegevens ON zzp_inleners.inlener_id = inleners_bedrijfsgegevens.inlener_id
+				LEFT JOIN zzp_bedrijfsgegevens ON zzp_inleners.zzp_id = zzp_bedrijfsgegevens.zzp_id
+				LEFT JOIN zzp_persoonsgegevens ON zzp_inleners.zzp_id = zzp_persoonsgegevens.zzp_id
+				WHERE zzp_inleners.deleted = 0 AND inleners_bedrijfsgegevens.deleted = 0 AND zzp_persoonsgegevens.deleted = 0 AND zzp_persoonsgegevens.deleted = 0";
 		
 		//voor werknemer
-		if( $this->_werknemer_id !== NULL )
-			$sql .= " AND werknemers_inleners.werknemer_id = $this->_werknemer_id ";
+		if( $this->_zzp_id !== NULL )
+			$sql .= " AND zzp_inleners.zzp_id = $this->_zzp_id ";
 		
 		//voor inlener
 		if( $this->_inlener_id !== NULL )
-			$sql .= " AND werknemers_inleners.inlener_id = $this->_inlener_id ";
+			$sql .= " AND zzp_inleners.inlener_id = $this->_inlener_id ";
 		
 		//sort
-		$sql .= " ORDER BY werknemers_gegevens.achternaam ASC";
+		$sql .= " ORDER BY zzp_persoonsgegevens.achternaam ASC";
 		
 		$query = $this->db_user->query( $sql );
 		
-		$data = DBhelper::toArray( $query, 'plaatsing_id', 'array' );
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$inlener = new Inlener( NULL );
+		$urentypesGroup = new UrentypesGroup();
+		
+		foreach( $query->result_array() as $row )
+		{
+			//medewerker naam
+			$row['naam'] = make_name($row);
+			
+			//urentypes
+			$row['urentypes'] = $urentypesGroup->inlener( $row['inlener_id'] )->urentypesZzp( $row['zzp_id'], true );
+			
+			$data[$row['plaatsing_id']] = $row;
+		}
 		
 		return $data;
 	}

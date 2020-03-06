@@ -26,6 +26,17 @@
 			</table>
 			{/if}
 
+            {if $type == 'zzp'}
+				<table style="color: #FFF; margin-right: 25px;">
+					<tr>
+						<td>Factuurnummer: </td>
+						<td style="font-weight: bold">
+                            {$factuur_nr|default:'[CONCEPT]'}
+						</td>
+					</tr>
+				</table>
+            {/if}
+
 		</td>
 	</tr>
 </table>

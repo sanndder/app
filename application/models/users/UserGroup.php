@@ -63,12 +63,11 @@ class UserGroup extends Connector {
 		
 		$CI =& get_instance();
 		$db_admin = $CI->auth->db_admin;
-		
 		$sql = "SELECT users.user_id, users_accounts.".$user_type ."_id
 				FROM users
 				LEFT JOIN users_accounts ON users.user_id = users_accounts.user_id
-				WHERE users_accounts.admin = 1 AND werkgever_id = ".$_SESSION['logindata']['werkgever_id']." AND users_accounts.".$user_type ."_id IN (".implode(',',$ids).")";
-
+				WHERE ((users_accounts.user_type = 'werknemer' AND users_accounts.admin = 0) OR users_accounts.admin = 1)
+				 AND werkgever_id = ".$_SESSION['logindata']['werkgever_id']." AND users_accounts.".$user_type ."_id IN (".implode(',',$ids).")";
 				
 		$query = $db_admin->query( $sql );
 

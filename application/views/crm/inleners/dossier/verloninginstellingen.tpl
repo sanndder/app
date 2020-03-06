@@ -43,7 +43,7 @@
 						<div class="card-header bg-light pb-0 pt-sm-0 header-elements-sm-inline">
 							<div class="header-elements">
 								<ul class="nav nav-tabs nav-tabs-highlight card-header-tabs">
-									{if $user_type == 'werkgever'}
+									{if $user_type == 'werkgever' && $werkgever_type == 'uitzenden'}
 									<li class="nav-item">
 										<a href="#tab-factoren" class="nav-link {if !isset($smarty.get.tab) || $smarty.get.tab == 'tab-factoren'}active{/if}" data-toggle="tab">
 											Factoren
@@ -51,7 +51,7 @@
 									</li>
                                     {/if}
 									<li class="nav-item">
-										<a href="#tab-cao" class="nav-link {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao' || ($user_type == 'uitzender' && !isset($smarty.get.tab))}active{/if}" data-toggle="tab">
+										<a href="#tab-cao" class="nav-link {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao' || $werkgever_type == 'bemiddeling' || ($user_type == 'uitzender' && !isset($smarty.get.tab))}active{/if}" data-toggle="tab">
 											CAO
 										</a>
 									</li>
@@ -82,7 +82,7 @@
 							<!-------------------------------------------------------------------------------------------------------------------------------------------------
 							|| Factoren
 							-------------------------------------------------------------------------------------------------------------------------------------------------->
-                            {if $user_type == 'werkgever'}
+                            {if $user_type == 'werkgever' && $werkgever_type == 'uitzenden'}
 							<div class="tab-pane fade {if !isset($smarty.get.tab) || $smarty.get.tab == 'tab-factoren'}show active{/if}" id="tab-factoren">
 
 								<fieldset class="mb-4">
@@ -175,7 +175,7 @@
 							<!-------------------------------------------------------------------------------------------------------------------------------------------------
 							|| CAO
 							-------------------------------------------------------------------------------------------------------------------------------------------------->
-							<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao' || ($user_type == 'uitzender' && !isset($smarty.get.tab))} show active {/if}" id="tab-cao">
+							<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-cao' || $werkgever_type == 'bemiddeling' || ($user_type == 'uitzender' && !isset($smarty.get.tab))} show active {/if}" id="tab-cao">
 
 								<form method="post" action="">
 									<fieldset class="mb-3">

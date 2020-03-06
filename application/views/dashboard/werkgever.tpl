@@ -49,6 +49,7 @@
 						</div>
 
                         {* werknemers of zzp'ers *}
+						{if $werkgever_type == 'uitzenden'}
 						<div class="d-flex align-items-center mb-3 mb-sm-0 mt-3">
 							<a href="crm/werknemers" class="text-default">
 								<div class="rounded-circle bg-blue">
@@ -62,199 +63,54 @@
 								</div>
 							</a>
 						</div>
+						{/if}
+
+                        {if $werkgever_type == 'bemiddeling'}
+							<div class="d-flex align-items-center mb-3 mb-sm-0 mt-3">
+								<a href="crm/zzp" class="text-default">
+									<div class="rounded-circle bg-blue">
+										<i class="icon-user icon-xl text-white p-2"></i>
+									</div>
+								</a>
+								<a href="crm/zzp" class="text-default">
+									<div class="ml-3">
+										<h5 class="font-weight-semibold mb-0">{$count_zzp}</h5>
+										<span class="text-muted text-uppercase">ZZp'ers</span>
+									</div>
+								</a>
+							</div>
+                        {/if}
+
 					</div>
 				</div>
 
-				<!--------------------------------------------------------------------------- documenten ------------------------------------------------->
+				<!--------------------------------------------------------------------------- aantallen ------------------------------------------------->
 				<div class="card">
-					<div class="card-header bg-transparent header-elements-inline">
-						<span class="card-title font-weight-semibold">Documenten Abering</span>
-						<div class="header-elements">
-							<div class="list-icons">
-								<a class="list-icons-item" data-action="collapse"></a>
-							</div>
-						</div>
-					</div>
-
 					<div class="card-body">
 
-						<ul class="media-list">
-
-							<li class="media">
-								<div class="mr-2 align-self-center">
-									<img src="recources/img/icons/pdf.svg" style="height: 25px">
-								</div>
-
-								<div class="media-body">
-									<div class="font-weight-semibold">
-										<a href="{$base_url}/documenten/pdf/av" target="_blank">
-											Algemene voorwaarden
-										</a>
+						{if $werkgever_type == 'uitzenden'}
+							<div class="d-flex align-items-center mb-3 mb-sm-0 mt-1">
+								<a href="crm/werknemers/documenten" class="text-default">
+									<div class="rounded-circle bg-blue">
+										<i class="icon-files-empty icon-xl text-white p-2"></i>
 									</div>
-								</div>
-
-								<div class="ml-3">
-									<div class="list-icons">
-										<a href="{$base_url}/documenten/pdf/av/download" class="list-icons-item"
-										   target="_blank">
-											<i class="icon-download"></i></a>
-									</div>
-								</div>
-							</li>
-
-                            {if $werkgever_type == 'uitzenden'}
-								<li class="media">
-									<div class="mr-2 align-self-center">
-										<img src="recources/img/icons/pdf.svg" style="height: 25px">
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">
-											<a href="{$base_url}/recources/docs/grekening.pdf" target="_blank">
-												bankverklaring grekening
-											</a>
-										</div>
-									</div>
-
+								</a>
+								<a href="crm/werknemers/documenten" class="text-default">
 									<div class="ml-3">
-										<div class="list-icons">
-											<a href="{$base_url}/recources/docs/grekening.pdf" class="list-icons-item"
-											   target="_blank">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-								<li class="media">
-									<div class="mr-2 align-self-center">
-										<img src="recources/img/icons/pdf.svg" style="height: 25px">
-									</div>
+										<h5 class="font-weight-semibold mb-0">Documenten werknemers</h5>
+										<span class="text-muted text-uppercase">
+											{if $documenten_werknemers_flags == 0}
+												geen aandachtspunten
+											{else}
+												{$documenten_werknemers_flags} documenten wachten op actie
+											{/if}
 
-									<div class="media-body">
-										<div class="font-weight-semibold">
-											<a href="{$base_url}/recources/docs/kvkuitzenden.pdf" target="_blank">
-												Uittreksel KvK
-											</a>
-										</div>
+										</span>
 									</div>
+								</a>
+							</div>
+						{/if}
 
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="{$base_url}/recources/docs/kvkuitzenden.pdf"
-											   class="list-icons-item" target="_blank">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-								<li class="media">
-									<div class="mr-2 align-self-center">
-										<img src="recources/img/icons/pdf.svg" style="height: 25px">
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">
-											<a href="{$base_url}/recources/docs/nbbu.pdf" target="_blank">
-												NBBU lidmaatschap
-											</a>
-										</div>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="{$base_url}/recources/docs/nbbu.pdf" class="list-icons-item"
-											   target="_blank">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-								<li class="media">
-									<div class="mr-2 align-self-center">
-										<img src="recources/img/icons/pdf.svg" style="height: 25px">
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">
-											<a href="{$base_url}/recources/docs/nen.pdf" target="_blank">
-												NEN certtificaat
-											</a>
-										</div>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="{$base_url}/recources/docs/nen.pdf" class="list-icons-item"
-											   target="_blank">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-								<li class="media">
-									<div class="mr-2 align-self-center">
-										<img src="recources/img/icons/pdf.svg" style="height: 25px">
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">
-											<a href="{$base_url}/recources/docs/betalinguitzenden.pdf" target="_blank">
-												verklaring betalingsgedrag
-											</a>
-										</div>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="{$base_url}/recources/docs/betalinguitzenden.pdf"
-											   class="list-icons-item" target="_blank">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-                            {/if}
-                            {if $werkgever_type == 'bemiddeling'}
-								<li class="media">
-									<div class="mr-2 align-self-center">
-										<img src="recources/img/icons/pdf.svg" style="height: 25px">
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">
-											<a href="{$base_url}/recources/docs/kvkbemiddeling.pdf" target="_blank">
-												Uittreksel KvK
-											</a>
-										</div>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="{$base_url}/recources/docs/kvkbemiddeling.pdf"
-											   class="list-icons-item" target="_blank">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-								<li class="media">
-									<div class="mr-2 align-self-center">
-										<img src="recources/img/icons/pdf.svg" style="height: 25px">
-									</div>
-
-									<div class="media-body">
-										<div class="font-weight-semibold">
-											<a href="{$base_url}/recources/docs/betalingbemiddeling.pdf"
-											   target="_blank">
-												verklaring betalingsgedrag
-											</a>
-										</div>
-									</div>
-
-									<div class="ml-3">
-										<div class="list-icons">
-											<a href="{$base_url}/recources/docs/betalingbemiddeling.pdf"
-											   class="list-icons-item" target="_blank">
-												<i class="icon-download"></i></a>
-										</div>
-									</div>
-								</li>
-                            {/if}
-						</ul>
 					</div>
 				</div>
 
@@ -269,12 +125,10 @@
 
 					<ul class="nav nav-tabs nav-tabs-highlight nav-justified mb-0">
 						<li class="nav-item">
-							<a href="#tab1" class="nav-link active border-left-0 pt-3 pb-3" data-toggle="tab">Nieuwe
-								aanmeldingen</a>
+							<a href="#tab1" class="nav-link active border-left-0 pt-3 pb-3" data-toggle="tab">Nieuwe aanmeldingen</a>
 						</li>
 						<li class="nav-item">
-							<a href="#tab2" class="nav-link  border-right-0 pt-3 pb-3" data-toggle="tab">Overzicht
-								status</a>
+							<a href="#tab2" class="nav-link  border-right-0 pt-3 pb-3" data-toggle="tab">Overzicht status</a>
 						</li>
 					</ul>
 
@@ -548,10 +402,209 @@
 						</div>
 
 					</div>
+				</div>
 
 
-				</div><!-- /col -->
-				<!--------------------------------------------------------------------------- /left ------------------------------------------------->
+			</div><!-- /col -->
+			<!--------------------------------------------------------------------------- /left ------------------------------------------------->
+
+			<!--------------------------------------------------------------------------- documenten ------------------------------------------------->
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-header bg-transparent header-elements-inline">
+						<span class="card-title font-weight-semibold">Documenten Abering</span>
+						<div class="header-elements">
+							<div class="list-icons">
+								<a class="list-icons-item" data-action="collapse"></a>
+							</div>
+						</div>
+					</div>
+
+					<div class="card-body">
+
+						<ul class="media-list">
+
+							<li class="media">
+								<div class="mr-2 align-self-center">
+									<img src="recources/img/icons/pdf.svg" style="height: 25px">
+								</div>
+
+								<div class="media-body">
+									<div class="font-weight-semibold">
+										<a href="{$base_url}/documenten/pdf/av" target="_blank">
+											Algemene voorwaarden
+										</a>
+									</div>
+								</div>
+
+								<div class="ml-3">
+									<div class="list-icons">
+										<a href="{$base_url}/documenten/pdf/av/download" class="list-icons-item"
+										   target="_blank">
+											<i class="icon-download"></i></a>
+									</div>
+								</div>
+							</li>
+
+                            {if $werkgever_type == 'uitzenden'}
+								<li class="media">
+									<div class="mr-2 align-self-center">
+										<img src="recources/img/icons/pdf.svg" style="height: 25px">
+									</div>
+
+									<div class="media-body">
+										<div class="font-weight-semibold">
+											<a href="{$base_url}/recources/docs/grekening.pdf" target="_blank">
+												bankverklaring grekening
+											</a>
+										</div>
+									</div>
+
+									<div class="ml-3">
+										<div class="list-icons">
+											<a href="{$base_url}/recources/docs/grekening.pdf"
+											   class="list-icons-item"
+											   target="_blank">
+												<i class="icon-download"></i></a>
+										</div>
+									</div>
+								</li>
+								<li class="media">
+									<div class="mr-2 align-self-center">
+										<img src="recources/img/icons/pdf.svg" style="height: 25px">
+									</div>
+
+									<div class="media-body">
+										<div class="font-weight-semibold">
+											<a href="{$base_url}/recources/docs/kvkuitzenden.pdf" target="_blank">
+												Uittreksel KvK
+											</a>
+										</div>
+									</div>
+
+									<div class="ml-3">
+										<div class="list-icons">
+											<a href="{$base_url}/recources/docs/kvkuitzenden.pdf"
+											   class="list-icons-item" target="_blank">
+												<i class="icon-download"></i></a>
+										</div>
+									</div>
+								</li>
+								<li class="media">
+									<div class="mr-2 align-self-center">
+										<img src="recources/img/icons/pdf.svg" style="height: 25px">
+									</div>
+
+									<div class="media-body">
+										<div class="font-weight-semibold">
+											<a href="{$base_url}/recources/docs/nbbu.pdf" target="_blank">
+												NBBU lidmaatschap
+											</a>
+										</div>
+									</div>
+
+									<div class="ml-3">
+										<div class="list-icons">
+											<a href="{$base_url}/recources/docs/nbbu.pdf" class="list-icons-item"
+											   target="_blank">
+												<i class="icon-download"></i></a>
+										</div>
+									</div>
+								</li>
+								<li class="media">
+									<div class="mr-2 align-self-center">
+										<img src="recources/img/icons/pdf.svg" style="height: 25px">
+									</div>
+
+									<div class="media-body">
+										<div class="font-weight-semibold">
+											<a href="{$base_url}/recources/docs/nen.pdf" target="_blank">
+												NEN certtificaat
+											</a>
+										</div>
+									</div>
+
+									<div class="ml-3">
+										<div class="list-icons">
+											<a href="{$base_url}/recources/docs/nen.pdf" class="list-icons-item"
+											   target="_blank">
+												<i class="icon-download"></i></a>
+										</div>
+									</div>
+								</li>
+								<li class="media">
+									<div class="mr-2 align-self-center">
+										<img src="recources/img/icons/pdf.svg" style="height: 25px">
+									</div>
+
+									<div class="media-body">
+										<div class="font-weight-semibold">
+											<a href="{$base_url}/recources/docs/betalinguitzenden.pdf"
+											   target="_blank">
+												verklaring betalingsgedrag
+											</a>
+										</div>
+									</div>
+
+									<div class="ml-3">
+										<div class="list-icons">
+											<a href="{$base_url}/recources/docs/betalinguitzenden.pdf"
+											   class="list-icons-item" target="_blank">
+												<i class="icon-download"></i></a>
+										</div>
+									</div>
+								</li>
+                            {/if}
+                            {if $werkgever_type == 'bemiddeling'}
+								<li class="media">
+									<div class="mr-2 align-self-center">
+										<img src="recources/img/icons/pdf.svg" style="height: 25px">
+									</div>
+
+									<div class="media-body">
+										<div class="font-weight-semibold">
+											<a href="{$base_url}/recources/docs/kvkbemiddeling.pdf" target="_blank">
+												Uittreksel KvK
+											</a>
+										</div>
+									</div>
+
+									<div class="ml-3">
+										<div class="list-icons">
+											<a href="{$base_url}/recources/docs/kvkbemiddeling.pdf"
+											   class="list-icons-item" target="_blank">
+												<i class="icon-download"></i></a>
+										</div>
+									</div>
+								</li>
+								<li class="media">
+									<div class="mr-2 align-self-center">
+										<img src="recources/img/icons/pdf.svg" style="height: 25px">
+									</div>
+
+									<div class="media-body">
+										<div class="font-weight-semibold">
+											<a href="{$base_url}/recources/docs/betalingbemiddeling.pdf"
+											   target="_blank">
+												verklaring betalingsgedrag
+											</a>
+										</div>
+									</div>
+
+									<div class="ml-3">
+										<div class="list-icons">
+											<a href="{$base_url}/recources/docs/betalingbemiddeling.pdf"
+											   class="list-icons-item" target="_blank">
+												<i class="icon-download"></i></a>
+										</div>
+									</div>
+								</li>
+                            {/if}
+						</ul>
+					</div>
+				</div>
+
+
 			</div>
 
 		</div><!-- /content area -->

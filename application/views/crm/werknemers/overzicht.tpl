@@ -192,6 +192,7 @@
 							<th style="width: 75px;">ID</th>
 							<th>Naam</th>
 							<th>Uitzender</th>
+							<th>Plaatsingen</th>
 							<th class="text-center">Actions</th>
 						</tr>
 					</thead>
@@ -211,8 +212,24 @@
 										<a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$w.uitzender_id}">{$w.uitzender}</a>
 									</td>
 									<td>
+										{if isset($w.inleners)}
+											{foreach $w.inleners as $i}
+												<a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/overzicht/{$i@key}">{$i}</a><br />
+                                            {/foreach}
+                                        {/if}
+									</td>
+									<td style="white-space: nowrap">
                                         {if $ENV == 'development'}
 											<a href="{$base_url}/crm/werknemers?del={$w.werknemer_id}"><i class="icon-trash font-size-sm"></i></a>
+                                        {/if}
+										{if $user_type == 'werkgever' || $user_type == 'uitzender'}
+	                                        {if isset($w.user)}
+												<a href="{$base_url}/dashboard/werknemer?loginals=werknemer&id={$w.werknemer_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
+	                                        {else}
+		                                        <a href="{$base_url}/instellingen/werkgever/users/add?id={$w.werknemer_id}&user_type=werknemer" class="ml-2 text-danger">
+			                                        <i class="icon-warning2 mr-1"></i>user aanmaken
+		                                        </a>
+	                                        {/if}
                                         {/if}
 									</td>
 								</tr>
@@ -229,6 +246,7 @@
 	</div>
 	<!-- /main content -->
 
+    {if $user_type == 'werkgever'}
 	<div class="sidebar sidebar-light sidebar-main d-none d-xxl-block sidebar-sections sidebar-expand-lg align-self-start">
 
 		<!-- Sidebar content -->
@@ -262,5 +280,5 @@
 		<!-- /sidebar content -->
 
 	</div>
-
+    {/if}
 {/block}

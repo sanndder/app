@@ -66,7 +66,16 @@ class ZzpGroup extends Connector {
 	 */
 	public function count()
 	{
-		$query = $this->db_user->query( "SELECT COUNT(zzp_id) AS count FROM zzp_status WHERE complete = 1 AND archief = 0" );
+		$sql = "SELECT COUNT(zzp_status.zzp_id) AS count
+				FROM zzp_status
+				LEFT JOIN zzp_uitzenders ON zzp_status.zzp_id = zzp_uitzenders.zzp_id
+				WHERE complete = 1 AND archief = 0";
+				
+		if( $this->user->user_type == 'uitzender')
+			$sql .= " AND zzp_uitzenders.uitzender_id = ". $this->uitzender->id;
+		
+		$query = $this->db_user->query( $sql );
+		
 		$data = DBhelper::toRow( $query );
 		return $data['count'];
 	}

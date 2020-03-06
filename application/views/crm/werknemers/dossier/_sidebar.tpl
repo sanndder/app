@@ -120,13 +120,13 @@
 								<i class="icon-alarm mr-2"></i>Urenbriefjes
 							</a>
 						</li>
+						<!-- li Loonstroken -->
+						<li class="nav-item">
+							<a href="crm/werknemers/dossier/loonstroken/{$werknemer->werknemer_id}" class="nav-link {if $active == 'loonstroken'}active{/if}">
+								<i class="icon-stack-text mr-2"></i>Loonstroken
+							</a>
+						</li>
                         {if  $user_type == 'werkgever'}
-							<!-- li Loonstroken -->
-							<li class="nav-item">
-								<a href="crm/werknemers/dossier/loonstroken/{$werknemer->werknemer_id}" class="nav-link {if $active == 'loonstroken'}active{/if}">
-									<i class="icon-stack-text mr-2"></i>Loonstroken
-								</a>
-							</li>
 							<!-- li loonbeslagen -->
 							<li class="nav-item">
 								<a href="crm/werknemers/dossier/loonbeslagen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'loonbeslagen'}active{/if}">
@@ -147,7 +147,7 @@
                     {/if}
 
 
-                    {if $user_type == 'werkgever'}
+                    {if $user_type == 'werkgever' || $werknemer->complete == 0}
 						<!-- li Gegevens, andere volgorde wanneer nieuwe aanmelding -->
 						<li class="nav-item {if $werknemer->complete != 1}order-1{/if}">
 							<a href="crm/werknemers/dossier/gegevens/{$werknemer->werknemer_id}" class="nav-link {if $active == 'gegevens'}active{/if}">
@@ -191,8 +191,8 @@
 							</a>
 						</li>
 						<!-- li Verloning, andere volgorde wanneer nieuwe aanmelding -->
-                        {if $user_type == 'werkgever' }
-							<li class="nav-item {if $werknemer->complete != 1 && $user_type == 'werkgever' }order-4{/if}">
+                        {if $user_type == 'werkgever' || $werknemer->complete == 0}
+							<li class="nav-item {if $werknemer->complete != 1}order-4{/if}">
 								<a {if $werknemer->dienstverband_complete != NULL}href="crm/werknemers/dossier/verloning/{$werknemer->werknemer_id}"{/if} class="nav-link {if $werknemer->dienstverband_complete == NULL}nav-link-disabled{/if}{if $active == 'verloning'}active{/if}">
                                     {* afwijkende icons voor nieuwe aanmelding *}
                                     {if $werknemer->verloning_complete == NULL}

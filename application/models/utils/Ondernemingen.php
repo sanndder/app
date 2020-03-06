@@ -411,7 +411,7 @@ class Ondernemingen extends Connector
 			
 		}
 		
-		//uitzender
+		//inlener
 		if(strpos($url,'inleners/dossier/') !== false )
 		{
 			$new_url = BASE_URL . '/crm/inleners';
@@ -435,6 +435,14 @@ class Ondernemingen extends Connector
 			$new_url = str_replace( $inlener_id, $user['inlener_id'], $url);
 			
 		}
+		
+		//werknemers naar zzp
+		if(strpos($url,'crm/werknemers') !== false )
+			$new_url = 'crm/zzp';
+		
+		//werknemers naar zzp
+		if(strpos($url,'crm/zzp') !== false )
+			$new_url = 'crm/werknemers';
 		
 		return $new_url;
 	}

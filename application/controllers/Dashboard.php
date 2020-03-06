@@ -1,8 +1,11 @@
 <?php
 
+use models\documenten\DocumentGroup;
 use models\inleners\InlenerGroup;
 use models\inleners\KredietaanvraagGroup;
 use models\uitzenders\UitzenderGroup;
+use models\verloning\LoonstrokenGroup;
+use models\werknemers\Werknemer;
 use models\werknemers\WerknemerGroup;
 use models\zzp\ZzpGroup;
 
@@ -39,6 +42,9 @@ class Dashboard extends MY_Controller {
 		$werknemergroup = new WerknemerGroup();
 		$zzpgroup = new ZzpGroup();
 		$kredietgroup = new KredietaanvraagGroup();
+		$documentengroup = new DocumentGroup();
+		
+		$documentengroup->arbeidscontracten(); //documenten laden om flags te tellen
 		
 		//show($inlenergroup->aanmeldActies());
 		
@@ -50,6 +56,8 @@ class Dashboard extends MY_Controller {
 		$this->smarty->assign('count_inleners', $inlenergroup->count());
 		$this->smarty->assign('werknemers', $werknemergroup->new());
 		$this->smarty->assign('count_werknemers', $werknemergroup->count());
+		$this->smarty->assign('count_zzp', $zzpgroup->count());
+		$this->smarty->assign('documenten_werknemers_flags', $documentengroup->flags() );
 		$this->smarty->display('dashboard/werkgever.tpl');
 	}
 	
@@ -58,6 +66,13 @@ class Dashboard extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function uitzender()
 	{
+		$inlenergroup = new InlenerGroup();
+		$werknemergroup = new WerknemerGroup();
+		$zzpgroup = new ZzpGroup();
+
+		$this->smarty->assign('count_inleners', $inlenergroup->count());
+		$this->smarty->assign('count_werknemers', $werknemergroup->count());
+		$this->smarty->assign('count_zzp', $zzpgroup->count());
 
 		$this->smarty->display('dashboard/uitzender.tpl');
 	}
@@ -68,6 +83,22 @@ class Dashboard extends MY_Controller {
 	public function inlener()
 	{
 		$this->smarty->display('dashboard/inlener.tpl');
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// werknemer TODO: laatste 10 loonstroken
+	//-----------------------------------------------------------------------------------------------------------------
+	public function werknemer()
+	{
+		$werknemer = new Werknemer( $this->werknemer->werknemer_id );
+		
+		$loonstrokengroup = new LoonstrokenGroup();
+		
+		//show($werknemer->gegevens());
+		$this->smarty->assign('werknemer', $werknemer->gegevens() );
+		$this->smarty->assign( 'loonstroken', $loonstrokengroup->werknemer( $this->werknemer->werknemer_id )->all() );
+		$this->smarty->display('dashboard/werknemer.tpl');
 	}
 
 }

@@ -3,6 +3,7 @@
 namespace models\zzp;
 
 use models\Connector;
+use models\file\File;
 use models\forms\Valid;
 use models\forms\Validator;
 use models\utils\DBhelper;
@@ -390,7 +391,35 @@ class Zzp extends Connector
 
 		return $data;
 	}
-
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 *  get uittrelsel
+	 */
+	public function uittreksel( $method = 'row' )
+	{
+		$sql = "SELECT * FROM zzp_kvk_inschrijving WHERE deleted = 0 AND zzp_id = $this->zzp_id LIMIT 1";
+		$query = $this->db_user->query($sql);
+		
+		if ($query->num_rows() == 0)
+			return NULL;
+		
+		$row = $query->row_array();
+		
+		if( $method == 'row' )
+			return $row;
+		
+		//full path
+		$file_path =  UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $row['file_dir'] . '/' . $row['file_name'];
+		
+		//check
+		if( !file_exists($file_path))
+			return false;
+		
+		$file = new File( $row );
+		$file->download();
+		die();
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

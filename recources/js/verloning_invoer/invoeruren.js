@@ -42,8 +42,8 @@ let invoeruren = {
 	//--extra regel invoegen ----------------------------------------------------------------------------------------------------------------------------
 	addUrenInvoerRow(obj){
 		$tr = $(obj).closest('tr').clone();
-		$( $tr ).insertAfter( $(obj).closest('tr') );
-		invoeruren.resetUrenTr( $tr );
+		$($tr).insertAfter($(obj).closest('tr'));
+		invoeruren.resetUrenTr($tr);
 	},
 	
 	//--uren naar database ----------------------------------------------------------------------------------------------------------------------------
@@ -58,6 +58,7 @@ let invoeruren = {
 		data.urenrow.aantal = $tr.find('[name="aantal"]').val();
 		data.urenrow.urentype_id = $tr.find('[name="urentype_id"] option:selected').val();
 		data.urenrow.project_tekst = $tr.find('[name="project_tekst"]').val();
+		data.urenrow.project_id = $tr.find('[name="project_id"]').val();
 		data.urenrow.locatie_tekst = $tr.find('[name="locatie_tekst"]').val();
 		
 		//confirm delete
@@ -82,8 +83,8 @@ let invoeruren = {
 		if( ((data.urenrow.aantal == '' || data.urenrow.aantal == 0) && data.urenrow.invoer_id != '') || data.urenrow.aantal != '' ){
 			xhr.url = base_url + 'ureninvoer/ajax/saveUren';
 			xhr.data = data;
-
-			var response = xhr.call( true );
+			
+			var response = xhr.call(true);
 			if( response !== false ){
 				response.done(function(json){
 					//er gata iets mis
@@ -94,7 +95,7 @@ let invoeruren = {
 					else{
 						//rij is verwijderd
 						if( json.status == 'deleted' ){
-							invoeruren.resetUrenTr( $tr )
+							invoeruren.resetUrenTr($tr)
 						}
 						//set row id
 						if( json.status == 'set' )
@@ -108,13 +109,15 @@ let invoeruren = {
 	},
 	
 	//-- reset uren tr ----------------------------------------------------------------------------------------------------------------------------
-	resetUrenTr( $tr ){
+	resetUrenTr($tr){
 		$tr.data('id', '');
-		$tr.find('select').val( $tr.find('select option:first').val() );
+		$tr.find('select').val($tr.find('select option:first').val());
 		$tr.find('[name="aantal"]').val('');
 		$tr.find('[name="project_tekst"]').val('');
 		$tr.find('[name="locatie_tekst"]').val('');
 		$tr.removeClass('focus');
+		$tr.find('select').prop('disabled', false);
+		$tr.find('input').prop('disabled', false);
 	},
 	
 	
@@ -130,6 +133,10 @@ let invoeruren = {
 			let option = tplUrenTypesSelect.replace('{id}', type.id).replace('{label}', type.label);
 			htmlSelect += option;
 		}
+		
+		//project select opbouwen
+		let htmlProjecten = invoer.getprojectSelect( json );
+
 		//nu de tabel zelf
 		let htmTabel = '';
 		for( let dag of Object.values(json.invoer.uren) ){
@@ -137,22 +144,52 @@ let invoeruren = {
 			let trEmpty = replaceVars(tplUrenInvoerTr, dag);
 			//dropdown erin
 			trEmpty = trEmpty.replace('{select_uren}', htmlSelect);
+			trEmpty = trEmpty.replace('{select_projecten}', htmlProjecten);
 			
 			//zijn er uren uit de datasbase
 			if( typeof dag.rows != 'undefined' ){
 				//extra rijen aanmaken
 				for( let row of Object.values(dag.rows) ){
+					
 					let tr = replaceVars(trEmpty, row);
-					tr = tr.replace('{select_uren}', htmlSelect);
+
 					//gelijk toevoegen, dan kan de select goed gezet worden
 					$row = $(tr).appendTo($tabel.find('tbody'));
-					$row.find('select').val(row.urentype_id);
+					$row.find('[name="urentype_id"]').val(row.urentype_id);
+					
+					if( row.factuur_id !== null ){
+						$row.find('select').prop('disabled', true);
+						$row.find('input').prop('disabled', true);
+					}
+					
+					//wanneer projecten, dan project input vervangen doro select
+					if( htmlProjecten !== null ){
+						//set sekect
+						$row.find('[name="project_id"]').val(row.project_id);
+						
+						$row.find('[name="project_id"]').show();
+						$row.find('[name="project_tekst"]').hide();
+					}
+					else{
+						$row.find('[name="project_id"]').hide();
+						$row.find('[name="project_tekst"]').show();
+					}
+					
 				}
 			}
 			else{
 				//niet gevulde vars eruit halen
 				trEmpty = trEmpty.replace(/\{(.+?)\}/g, '');
-				$tabel.find('tbody').append(trEmpty);
+				$row = $tabel.find('tbody').append(trEmpty);
+				
+				if( htmlProjecten !== null ){
+					$row.find('[name="project_id"]').show();
+					$row.find('[name="project_tekst"]').hide();
+				}
+				else{
+					$row.find('[name="project_id"]').hide();
+					$row.find('[name="project_tekst"]').show();
+				}
 			}
 			
 		}

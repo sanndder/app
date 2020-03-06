@@ -243,7 +243,7 @@
                                 {foreach $last_visits as $visit}
 									<a href="crm/zzp/dossier/overzicht/{$visit.zzp_id}">
 										<div class="float-left" style="width: 45px;">{$visit.zzp_id}</div>
-										<div class="mb-1">{$visit.naam|truncate:28:'...':true}</div>
+										<div class="mb-1">{$visit.bedrijfsnaam|truncate:28:'...':true}</div>
 									</a>
                                 {/foreach}
 							</div>

@@ -43,7 +43,16 @@ class InlenerGroup extends Connector {
 	 */
 	public function count()
 	{
-		$query = $this->db_user->query( "SELECT COUNT(inlener_id) AS count FROM inleners_status WHERE complete = 1 AND archief = 0" );
+		$sql = "SELECT COUNT(inleners_status.inlener_id) AS count 
+				FROM inleners_status
+				LEFT JOIN inleners_uitzenders ON inleners_status.inlener_id = inleners_uitzenders.inlener_id
+				WHERE inleners_uitzenders.deleted = 0 AND inleners_status.complete = 1 AND inleners_status.archief = 0";
+
+		if( $this->user->user_type == 'uitzender')
+			$sql .= " AND inleners_uitzenders.uitzender_id = ". $this->uitzender->id;
+
+		$query = $this->db_user->query( $sql );
+
 		$data = DBhelper::toRow( $query );
 		return $data['count'];
 	}
@@ -208,7 +217,12 @@ class InlenerGroup extends Connector {
 		
 		//documenten
 		// TODO naar document group met juiste template ID
-		$sql = "SELECT inlener_id, document_id FROM documenten WHERE signed_file_name_display IS NOT NULL AND inlener_id IN (".array_keys_to_string($data).") AND deleted = 0 AND file_name_display = 'overeenkomst_van_opdracht.pdf'";
+		if( $this->user->werkgever_type == 'uitzenden' )
+			$sql = "SELECT inlener_id, document_id FROM documenten WHERE signed_file_name_display IS NOT NULL AND inlener_id IN (".array_keys_to_string($data).") AND deleted = 0 AND file_name_display = 'overeenkomst_van_opdracht.pdf'";
+		if( $this->user->werkgever_type == 'uitzenden' )
+			$sql = "SELECT inlener_id, document_id FROM documenten WHERE signed_file_name_display IS NOT NULL AND inlener_id IN (".array_keys_to_string($data).") AND deleted = 0 AND file_name_display = 'overeenkomst_inlener.pdf'";
+		
+		
 		$query = $this->db_user->query( $sql );
 		
 		if( $query->num_rows() > 0 )

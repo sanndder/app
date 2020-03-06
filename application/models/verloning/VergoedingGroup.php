@@ -30,6 +30,7 @@ class VergoedingGroup extends Connector
 	 */
 	private $_inlener_id;
 	private $_werknemer_id;
+	private $_zzp_id;
 	/**
 	 * @var int
 	 */
@@ -80,6 +81,19 @@ class VergoedingGroup extends Connector
 		return $this;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set werknemer id
+	 *
+	 */
+	public function zzp( $id ) :VergoedingGroup
+	{
+		$this->_zzp_id = intval($id);
+		return $this;
+	}
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * alle vergoedingen ophalen
@@ -95,7 +109,7 @@ class VergoedingGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * vergoedingen voor inlener ophalen
+	 * vergoedingen voor werknemer ophalen
 	 *
 	 */
 	public function vergoedingenWerknemer()
@@ -115,6 +129,28 @@ class VergoedingGroup extends Connector
 		
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * vergoedingen voor zzper ophalen
+	 *
+	 */
+	public function vergoedingenZzp()
+	{
+		$sql = "SELECT zzp_vergoedingen.id, inleners_vergoedingen.vergoeding_type, zzp_vergoedingen.inlener_id, inleners_vergoedingen.bedrag_per_uur, inleners_vergoedingen.doorbelasten, inleners_vergoedingen.uitkeren_werknemer, inleners_vergoedingen.label
+   				, vergoedingen.naam, vergoedingen.belast
+				FROM zzp_vergoedingen
+				LEFT JOIN inleners_vergoedingen ON inleners_vergoedingen.inlener_vergoeding_id = zzp_vergoedingen.inlener_vergoeding_id
+				LEFT JOIN vergoedingen ON inleners_vergoedingen.vergoeding_id = vergoedingen.vergoeding_id
+				WHERE zzp_vergoedingen.inlener_id = $this->_inlener_id AND inleners_vergoedingen.deleted = 0 AND zzp_vergoedingen.deleted = 0 AND  zzp_vergoedingen.vergoeding_active = 1
+				AND zzp_vergoedingen.zzp_id = $this->_zzp_id
+				ORDER BY vergoedingen.naam";
+		
+		$query = $this->db_user->query( $sql );
+		
+		return DBhelper::toArray( $query, 'id', 'array' );
+		
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

@@ -72,8 +72,14 @@ class InvoerUren extends Invoer
 		$row['invoer_id'] = intval( $row['invoer_id'] );
 		$row['datum'] = reverseDate( $row['datum'] );
 		$row['uren_type_id_werknemer'] = $row['urentype_id'];
-		unset( $row['urentype_id'] );
 		
+		if( intval($row['project_id']) > 0 )
+			$row['project_id'] = intval($row['project_id']);
+		else
+			$row['project_id'] = NULL;
+		
+		unset( $row['urentype_id'] );
+
 		return $row;
 	}
 	
@@ -101,8 +107,16 @@ class InvoerUren extends Invoer
 		//nieuwe entry
 		if( $set['invoer_id'] == 0 )
 		{
-			$plaatsingGroup = new PlaatsingGroup();
-			$plaatsingen = $plaatsingGroup->werknemer( $this->_werknemer_id )->inlener( $this->_inlener_id )->all();
+			if( $this->user->werkgever_type == 'uitzenden' )
+			{
+				$plaatsingGroup = new \models\werknemers\PlaatsingGroup();
+				$plaatsingen = $plaatsingGroup->werknemer( $this->_werknemer_id )->inlener( $this->_inlener_id )->all();
+			}
+			if( $this->user->werkgever_type == 'bemiddeling' )
+			{
+				$plaatsingGroup = new \models\zzp\PlaatsingGroup();
+				$plaatsingen = $plaatsingGroup->zzp( $this->_zzp_id )->inlener( $this->_inlener_id )->all();
+			}
 			
 			$set['uitzender_id'] = $this->_uitzender_id;
 			$set['inlener_id'] = $this->_inlener_id;
@@ -119,6 +133,7 @@ class InvoerUren extends Invoer
 			$oude_entry = $this->getRow( $set['invoer_id'] );
 			
 			$this->db_user->where( 'invoer_id', $set['invoer_id'] );
+			$this->db_user->where( 'factuur_id',  NULL );
 			$this->db_user->where( 'werknemer_id', $this->_werknemer_id );
 			$this->db_user->update( 'invoer_uren', $set );
 			
@@ -136,7 +151,7 @@ class InvoerUren extends Invoer
 	public function delRow( $row ): bool
 	{
 		$oude_entry = $this->getRow( $row['invoer_id'] );
-		$this->db_user->query( "DELETE FROM invoer_uren WHERE invoer_id = ? AND werknemer_id = ?", array( $row['invoer_id'], $this->_werknemer_id ) );
+		$this->db_user->query( "DELETE FROM invoer_uren WHERE factuur_id IS NULL AND invoer_id = ? AND werknemer_id = ?", array( $row['invoer_id'], $this->_werknemer_id ) );
 		
 		if( $this->db_user->affected_rows() != -1 )
 		{
@@ -182,7 +197,8 @@ class InvoerUren extends Invoer
 		}
 		
 		//uren ophalen
-		$uren = $this->getWerknemerUren();
+		if( $this->user->werkgever_type == 'uitzenden' ) $uren = $this->getWerknemerUren();
+		if( $this->user->werkgever_type == 'bemiddeling' ) $uren = $this->getZzpUren();
 		
 		if( $uren === NULL )
 			return $matrix;
@@ -219,13 +235,50 @@ class InvoerUren extends Invoer
 	public function getWerknemerUren()
 	{
 		$sql = "SELECT invoer_uren.invoer_id, invoer_uren.aantal, invoer_uren.uren_type_id_werknemer, invoer_uren.datum, invoer_uren.project_id, invoer_uren.project_tekst, invoer_uren.locatie_tekst, invoer_uren.uitkeren,
-       					urentypes.urentype_categorie_id
+       					urentypes.urentype_categorie_id, invoer_uren.factuur_id
 				FROM invoer_uren
 				LEFT JOIN werknemers_urentypes ON invoer_uren.uren_type_id_werknemer = werknemers_urentypes.id
 				LEFT JOIN urentypes ON urentypes.urentype_id = werknemers_urentypes.urentype_id
 				WHERE invoer_uren.werknemer_id = ? AND invoer_uren.inlener_id = ? AND invoer_uren.datum >= ? AND invoer_uren.datum <= ?";
 		
 		$query = $this->db_user->query( $sql, array( $this->_werknemer_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$row['urentype_id'] = $row['uren_type_id_werknemer'];
+			
+			if( $row['project_tekst'] === NULL )
+				$row['project_tekst'] = '';
+			if( $row['locatie_tekst'] === NULL )
+				$row['locatie_tekst'] = '';
+			
+			$row['decimaal'] = $row['aantal'];
+			$row['aantal'] = d2h( $row['aantal'] );
+			
+			$data[$row['invoer_id']] = $row;
+		}
+		
+		return $data;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alle uren voor werknemer ophalen voor ajax invoer
+	 *
+	 */
+	public function getZzpUren()
+	{
+		$sql = "SELECT invoer_uren.invoer_id, invoer_uren.aantal, invoer_uren.uren_type_id_werknemer, invoer_uren.datum, invoer_uren.project_id, invoer_uren.project_tekst, invoer_uren.locatie_tekst, invoer_uren.uitkeren,
+       					urentypes.urentype_categorie_id, invoer_uren.factuur_id
+				FROM invoer_uren
+				LEFT JOIN zzp_urentypes ON invoer_uren.uren_type_id_werknemer = zzp_urentypes.id
+				LEFT JOIN urentypes ON urentypes.urentype_id = zzp_urentypes.urentype_id
+				WHERE invoer_uren.zzp_id = ? AND invoer_uren.inlener_id = ? AND invoer_uren.datum >= ? AND invoer_uren.datum <= ?";
+		
+		$query = $this->db_user->query( $sql, array( $this->_zzp_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
 		
 		if( $query->num_rows() == 0 )
 			return NULL;
@@ -273,10 +326,10 @@ class InvoerUren extends Invoer
 				LEFT JOIN inleners_factoren ON werknemers_inleners.factor_id = inleners_factoren.factor_id
 				WHERE inleners_factoren.deleted = 0 AND werknemers_inleners.deleted = 0 AND invoer_uren.factuur_id IS NULL AND invoer_uren.verloning_id IS NULL
 				  AND invoer_uren.werknemer_id = ? AND invoer_uren.inlener_id = ? AND invoer_uren.datum >= ? AND invoer_uren.datum <= ?";
-		
+	
 		//run query
 		$query = $this->db_user->query( $sql, array( $this->_werknemer_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
-		
+
 		if( $query->num_rows() == 0 )
 			return NULL;
 		
@@ -285,9 +338,56 @@ class InvoerUren extends Invoer
 			//juiste factor
 			$row['factor'] = $row['factor_' . $row['factor']];
 			
+			$row['uurtarief'] = NULL;
+			$row['marge'] = NULL;
+			
 			//naam naar label
 			if( $row['label'] == '' )
 				$row['label'] = $row['naam'];
+			
+			$data[$row['invoer_id']] = $row;
+		}
+		
+		return $data;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alle urenrijen voor zzp'er ophalen voor facturatie
+	 * bevat meer info die niet over JSON mag
+	 *
+	 */
+	public function getZzpUrenRijen()
+	{
+		$sql = "SELECT  invoer_uren.invoer_id, invoer_uren.zzp_id, invoer_uren.zzp_id, invoer_uren.datum, invoer_uren.aantal, invoer_uren.plaatsing_id, invoer_uren.doorbelasten, invoer_uren.project_id, invoer_uren.project_tekst, invoer_uren.locatie_tekst,
+       					DAYOFWEEK(invoer_uren.datum) AS dag_nr, WEEK(invoer_uren.datum, 3) AS week_nr,
+       					zzp_urentypes.verkooptarief, zzp_urentypes.uurtarief, zzp_urentypes.marge,
+       					urentypes.naam, urentypes.percentage,
+       					urentypes_categorien.naam AS categorie,
+						inleners_urentypes.doorbelasten_uitzender, inleners_urentypes.label
+				FROM invoer_uren
+				LEFT JOIN zzp_urentypes ON invoer_uren.uren_type_id_werknemer = zzp_urentypes.id
+				LEFT JOIN inleners_urentypes ON zzp_urentypes.inlener_urentype_id = inleners_urentypes.inlener_urentype_id
+				LEFT JOIN urentypes ON inleners_urentypes.urentype_id = urentypes.urentype_id
+				LEFT JOIN urentypes_categorien ON urentypes.urentype_categorie_id = urentypes_categorien.urentype_categorie_id
+				LEFT JOIN zzp_inleners ON zzp_inleners.plaatsing_id = zzp_urentypes.plaatsing_id
+				WHERE zzp_inleners.deleted = 0 AND invoer_uren.factuur_id IS NULL AND invoer_uren.verloning_id IS NULL
+				  AND invoer_uren.zzp_id = ? AND invoer_uren.inlener_id = ? AND invoer_uren.datum >= ? AND invoer_uren.datum <= ?";
+		
+		//run query
+		$query = $this->db_user->query( $sql, array( $this->_zzp_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			//naam naar label
+			if( $row['label'] == '' )
+				$row['label'] = $row['naam'];
+			
+			$row['bruto_loon'] = NULL;
+			$row['factor'] = 1;
 			
 			$data[$row['invoer_id']] = $row;
 		}

@@ -649,14 +649,19 @@ class Werknemer extends Connector
 		$this->db_user->query( "UPDATE werknemers_verloning_instellingen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE werknemer_id = $this->werknemer_id AND deleted = 0", array( $this->user->user_id ) );
 		
 		$insert['werknemer_id'] = $this->werknemer_id;
-		$insert['inhouden_zorgverzekering'] = intval($_POST['inhouden_zorgverzekering']);
-		$insert['vakantiegeld_direct'] = intval($_POST['vakantiegeld_direct']);
-		$insert['vakantieuren_wettelijk_direct'] = intval($_POST['vakantieuren_wettelijk_direct']);
-		$insert['vakantieuren_bovenwettelijk_direct'] = intval($_POST['vakantieuren_bovenwettelijk_direct']);
-		$insert['aantal_vakantiedagen_wettelijk'] = intval($_POST['aantal_vakantiedagen_wettelijk']);
-		$insert['aantal_vakantiedagen_bovenwettelijk'] = intval($_POST['aantal_vakantiedagen_bovenwettelijk']);
-		$insert['atv_direct'] = intval($_POST['atv_direct']);
-		$insert['aantal_atv_dagen'] = intval($_POST['aantal_atv_dagen']);
+		
+		if( $this->user->user_type == 'werkgever' )
+		{
+			$insert['inhouden_zorgverzekering'] = intval( $_POST['inhouden_zorgverzekering'] );
+			$insert['vakantiegeld_direct'] = intval( $_POST['vakantiegeld_direct'] );
+			$insert['vakantieuren_wettelijk_direct'] = intval( $_POST['vakantieuren_wettelijk_direct'] );
+			$insert['vakantieuren_bovenwettelijk_direct'] = intval( $_POST['vakantieuren_bovenwettelijk_direct'] );
+			$insert['aantal_vakantiedagen_wettelijk'] = intval( $_POST['aantal_vakantiedagen_wettelijk'] );
+			$insert['aantal_vakantiedagen_bovenwettelijk'] = intval( $_POST['aantal_vakantiedagen_bovenwettelijk'] );
+			$insert['atv_direct'] = intval( $_POST['atv_direct'] );
+			$insert['aantal_atv_dagen'] = intval( $_POST['aantal_atv_dagen'] );
+		}
+		
 		$insert['et_regeling'] = intval($_POST['et_regeling']);
 		$insert['user_id'] = $this->user->user_id;
 		

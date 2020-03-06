@@ -73,34 +73,49 @@
 												<div class="table-result" {if !isset($bedrijfsgegevens)}style="display: none"{/if}>
 
 													<table class="table" style="width: 100%">
+                                                        {if $user_type == 'werkgever'}
+														<tr>
+															<td style="width: 160px">Uitzender</td>
+															<td class="td-name">
+																<select name="uitzender_id" class="form-control select-search" required data-placeholder="Selecteer een uitzender">
+	                                                                <option></option>
+																	{if $uitzenders !== NULL}
+	                                                                    {foreach $uitzenders as $u}
+																			<option value="{$u@key}">{$u@key} - {$u}</option>
+	                                                                    {/foreach}
+	                                                                {/if}
+																</select>
+															</td>
+														</tr>
+                                                        {/if}
 														<tr>
 															<td style="width: 160px">Bedrijfsnaam</td>
 															<td class="td-name font-weight-bold">
-																<input type="text" class="form-control" name="bedrijfsnaam" readonly="readonly" value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.bedrijfsnaam}{/if}"/>
+																<input type="text" class="form-control" name="bedrijfsnaam" required value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.bedrijfsnaam}{/if}"/>
 															</td>
 														</tr>
 														<tr>
 															<td>Straat</td>
 															<td class="td-street font-weight-bold">
-																<input type="text" class="form-control" name="straat" readonly="readonly" value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.straat}{/if}"/>
+																<input type="text" class="form-control" name="straat" required value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.straat}{/if}"/>
 															</td>
 														</tr>
 														<tr>
 															<td>Huisnummer</td>
 															<td class="td-houseNo font-weight-bold">
-																<input type="text" class="form-control" name="huisnummer" readonly="readonly" value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.huisnummer}{/if}"/>
+																<input type="text" class="form-control" name="huisnummer" required value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.huisnummer}{/if}"/>
 															</td>
 														</tr>
 														<tr>
 															<td>Postcode</td>
 															<td class="td-postCode font-weight-bold">
-																<input type="text" class="form-control" name="postcode" readonly="readonly" value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.postcode}{/if}"/>
+																<input type="text" class="form-control" name="postcode" required value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.postcode}{/if}"/>
 															</td>
 														</tr>
 														<tr>
 															<td>Plaats</td>
 															<td class="td-city font-weight-bold">
-																<input type="text" class="form-control" name="plaats" readonly="readonly" value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.plaats}{/if}"/>
+																<input type="text" class="form-control" name="plaats" required value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.plaats}{/if}"/>
 															</td>
 														</tr>
 														<tr>

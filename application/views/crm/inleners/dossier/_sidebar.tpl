@@ -1,5 +1,5 @@
 <!-- Main sidebar -->
-<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start">
+<div class="sidebar sidebar-light sidebar-main sidebar-expand-md align-self-start" {if $inlener->archief == 1}style="border-color: red"{/if}>
 
 	<!-- Sidebar mobile toggler -->
 	<div class="sidebar-mobile-toggler text-center">
@@ -55,9 +55,9 @@
                     {if $inlener->complete == 1}
 						<li class="nav-item">
 							<a href="crm/inleners/dossier/overzicht/{$inlener->inlener_id}" class="nav-link {if $active == 'overzicht'}active{/if}">
-									<span>
-										<i class="icon-home5 mr-2"></i>Overzicht
-									</span>
+								<span>
+									<i class="icon-home5 mr-2"></i>Overzicht
+								</span>
 							</a>
 						</li>
                     {/if}
@@ -108,12 +108,25 @@
 								<i class="icon-coin-euro mr-2"></i>Facturen
 							</a>
 						</li>
+
 						<!-- li Werknemers -->
+	                    {if $werkgever_type == 'uitzenden'}
 						<li class="nav-item">
 							<a href="crm/inleners/dossier/werknemers/{$inlener->inlener_id}" class="nav-link {if $active == 'werknemers'}active{/if}">
 								<i class="icon-user mr-2"></i>Werknemers
 							</a>
 						</li>
+	                    {/if}
+
+	                    <!-- li Werknemers -->
+                        {if $werkgever_type == 'bemiddeling'}
+		                    <li class="nav-item">
+			                    <a href="crm/inleners/dossier/zzp/{$inlener->inlener_id}" class="nav-link {if $active == 'zzp'}active{/if}">
+				                    <i class="icon-user mr-2"></i>ZZp'ers
+			                    </a>
+		                    </li>
+                        {/if}
+
 						<!-- Header Instellingen -->
 	                    <li class="nav-item-header">Instellingen</li>
 
@@ -129,7 +142,7 @@
                         {/if}
                     {/if}
 
-                    {if $user_type == 'werkgever'}
+                    {if $user_type == 'werkgever' || $inlener->complete == 0}
 						<!-- li Bedrijfsgegevens, andere volgorde wanneer nieuwe aanmelding -->
 						<li class="nav-item {if $inlener->complete != 1}order-2{/if}">
 							<a href="crm/inleners/dossier/bedrijfsgegevens/{$inlener->inlener_id}" class="nav-link {if $active == 'bedrijfsgegevens'}active{/if}">
@@ -196,6 +209,7 @@
 								Factuurgegevens
 							</a>
 						</li>
+
                         {if $inlener->complete != 1 && $werkgever_type == 'uitzenden' }
                             {* li CAO alleen bij aanmelden uitzend bv *}
 							<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
@@ -220,16 +234,27 @@
                         {/if}
                     {/if}
 
-                        {if $inlener->complete == 1 }
-							<!-- li Verloningsgegevens, andere volgorde wanneer nieuwe aanmelding -->
-							<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
-								<a href="crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}" class="nav-link {if $active == 'verloninginstellingen'}active{/if}">
-                                    {* standaard icon *}
-									<i class="icon-cog mr-2"></i>
-									CAO & Verloning
-								</a>
-							</li>
-                        {/if}
+                    {if $inlener->complete == 1 && $inlener->factuur_per_project }
+						<!-- li Verloningsgegevens, andere volgorde wanneer nieuwe aanmelding -->
+						<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
+							<a href="crm/inleners/dossier/projecten/{$inlener->inlener_id}" class="nav-link {if $active == 'projecten'}active{/if}">
+                                {* standaard icon *}
+								<i class="icon-cog mr-2"></i>
+								Projecten
+							</a>
+						</li>
+                    {/if}
+
+                    {if $inlener->complete == 1 }
+						<!-- li Verloningsgegevens, andere volgorde wanneer nieuwe aanmelding -->
+						<li class="nav-item {if $inlener->complete != 1}order-5{/if}">
+							<a href="crm/inleners/dossier/verloninginstellingen/{$inlener->inlener_id}" class="nav-link {if $active == 'verloninginstellingen'}active{/if}">
+                                {* standaard icon *}
+								<i class="icon-cog mr-2"></i>
+								CAO & Verloning
+							</a>
+						</li>
+                    {/if}
 
 
 				</ul>

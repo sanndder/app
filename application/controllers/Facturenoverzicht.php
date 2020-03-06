@@ -1,4 +1,7 @@
 <?php
+
+use models\facturatie\FacturenGroup;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -16,8 +19,22 @@ class Facturenoverzicht extends MY_Controller {
 		parent::__construct();
 
 		//beveiligen
-		//if(	$this->uri->segment(2) != $this->user->user_type )
-			//redirect( $this->config->item( 'base_url' ) . 'dashboard/' . $this->user->user_type  ,'location' );
+		if(	$this->uri->segment(2) != $this->user->user_type )
+			redirect( $this->config->item( 'base_url' ) . 'dashboard/' . $this->user->user_type  ,'location' );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Facturen inlener
+	//-----------------------------------------------------------------------------------------------------------------
+	public function inlener()
+	{
+		
+		
+		$facturengroep = new FacturenGroup();
+		$facturen = $facturengroep->setInlener( $this->inlener->id )->facturenMatrix();
+		
+		$this->smarty->assign( 'facturen', $facturen );
+		$this->smarty->display('facturenoverzicht/inlener.tpl');
 	}
 	
 	
@@ -28,6 +45,11 @@ class Facturenoverzicht extends MY_Controller {
 	{
 		
 		
+		
+		$facturengroep = new FacturenGroup();
+		$facturen = $facturengroep->setUitzender( $this->uitzender->uitzender_id )->facturenMatrix();
+		
+		$this->smarty->assign( 'facturen', $facturen );
 		$this->smarty->display('facturenoverzicht/uitzender.tpl');
 	}
 

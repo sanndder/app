@@ -81,6 +81,21 @@
 				</a>
 			</li>
 
+			{if $user_id == 2}
+				<li class="nav-item dropdown">
+					<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-file-spreadsheet mr-2"></i>
+						Verloning
+					</a>
+
+					<div class="dropdown-menu">
+						<a href="verloning/loonstroken/uploaden" class="dropdown-item">
+							<i class="icon-coin-euro"></i>Loonstroken uploaden
+						</a>
+					</div>
+				</li>
+            {/if}
+
 			<li class="nav-item">
 				<a href="instellingen/werkgever" class="navbar-nav-link">
 					<i class="icon-cog mr-2"></i>

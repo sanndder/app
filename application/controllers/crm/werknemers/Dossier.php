@@ -11,6 +11,8 @@ use models\uitzenders\UitzenderGroup;
 use models\utils\Carbagecollector;
 use models\utils\Codering;
 use models\utils\VisitsLogger;
+use models\verloning\LoonstrokenGroup;
+use models\verloning\Loonstrook;
 use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingGroup;
 use models\werknemers\Werknemer;
@@ -30,8 +32,8 @@ class Dossier extends MY_Controller
 	{
 		parent::__construct();
 		
-		//Deze pagina mag alleen bezocht worden door werkgever
-		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )
+		//Deze pagina mag alleen bezocht worden door werkgever TODO werknemer beveiliging
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' && $this->user->user_type != 'werknemer')
 			forbidden();
 		
 		//method naar smarty
@@ -187,6 +189,19 @@ class Dossier extends MY_Controller
 			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
 		}
 		
+		
+		//contract verzenden
+		if( isset( $_GET['deldocument'] ) )
+		{
+			$document = new Document($_GET['deldocument'] );
+			$document->setWerknemerID($werknemer_id);
+			if( $document->delete() )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/'.$werknemer_id.'?deleted' ,'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Document kon niet worden verwijderd!' ) );
+			
+		}
+		
 		//contract verzenden
 		if( isset( $_GET['sendforsign'] ) )
 		{
@@ -197,8 +212,12 @@ class Dossier extends MY_Controller
 				$this->smarty->assign( 'msg', msg( 'warning', 'Document kon niet worden verstuurd!' ) );
 			
 		}
+		
+		//messages
 		if( isset( $_GET['send'] ) )
 			$this->smarty->assign( 'msg', msg( 'success', 'Document is verstuurd!' ) );
+		if( isset( $_GET['deleted'] ) )
+			$this->smarty->assign( 'msg', msg( 'success', 'Document verwijderd!' ) );
 			
 		//ID opslaan vanuit wizard
 		if( isset( $_POST['set_wizard'] ) )
@@ -298,6 +317,18 @@ class Dossier extends MY_Controller
 			$plaatsing->delete();
 		}
 		
+		//plaatsing verwijderen
+		if( isset( $_GET['uitzendbevestiging'] ) )
+		{
+			$plaatsing = new Plaatsing( $_GET['uitzendbevestiging'] );
+			if( $plaatsing->generateUitzendbevestiging() )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/plaatsingen/' . $werknemer->werknemer_id, 'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Uitzendbevestiging kan niet worden gemaakt' ));
+		}
+		
+		
+		
 		$inleners = $inlenerGroup->uitzender( $werknemer->uitzenderID() )->all();
 		
 		//$this->smarty->assign('plaatsingen', $plaatsingen );
@@ -342,8 +373,12 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
+		$loonstrokengroup = new LoonstrokenGroup();
+		$loonstrokengroup->werknemer( $werknemer_id );
+		
 		$this->smarty->assign( 'werknemer', $werknemer );
-		$this->smarty->display( 'crm/werknemers/dossier/ziekmeldingen.tpl' );
+		$this->smarty->assign( 'loonstroken', $loonstrokengroup->all() );
+		$this->smarty->display( 'crm/werknemers/dossier/loonstroken.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------

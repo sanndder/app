@@ -72,8 +72,8 @@ class PlaatsingGroup extends Connector
 				LEFT JOIN werknemers_gegevens ON werknemers_inleners.werknemer_id = werknemers_gegevens.werknemer_id
 				LEFT JOIN cao ON cao.id = werknemers_inleners.cao_id_intern
 				LEFT JOIN cao_jobs ON cao_jobs.id = werknemers_inleners.job_id_intern
-				LEFT JOIN cao_salary_table ON cao_salary_table.id = werknemers_inleners.loontabel_id_intern
-				WHERE werknemers_inleners.deleted = 0 AND inleners_bedrijfsgegevens.deleted = 0 AND werknemers_gegevens.deleted = 0";
+				LEFT JOIN cao_salary_table ON cao_salary_table.salary_table_id = werknemers_inleners.loontabel_id_intern AND cao_salary_table.cao_id_intern = werknemers_inleners.cao_id_intern
+				WHERE werknemers_inleners.deleted = 0 AND inleners_bedrijfsgegevens.deleted = 0 AND werknemers_gegevens.deleted = 0 ";
 		
 		//voor werknemer
 		if( $this->_werknemer_id !== NULL )

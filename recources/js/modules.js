@@ -307,6 +307,8 @@ var Datepickers = function() {
             selectYears: 1,
             min: startPlaatsingDate
         });
+    
+        $(".pickadate-start-plaatsing").prop('readonly', false);
         
         var curDate = new Date();
         curDate.setDate(curDate.getDate() - 14);

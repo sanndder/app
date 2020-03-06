@@ -69,6 +69,19 @@ class InvoerVergoedingen extends Invoer
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
+	 * Werknemer uren instellen om vergoedingen uit te kunnen rekenen
+	 *
+	 */
+	public function setZzpUren( $uren ) :InvoerVergoedingen
+	{
+		$this->_uren = $uren;
+		return $this;
+	}
+
+
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
 	 * enkele row ophalen
 	 *
 	 */
@@ -123,6 +136,7 @@ class InvoerVergoedingen extends Invoer
 			
 			$update['bedrag'] = $bedrag;
 			$this->db_user->where( 'invoer_id', $invoer_id );
+			$this->db_user->where( 'factuur_id', NULL );
 			$this->db_user->where( 'werknemer_id', $this->_werknemer_id );
 			$this->db_user->where( 'tijdvak', $this->_tijdvak );
 			$this->db_user->where( 'jaar', $this->_jaar );
@@ -186,6 +200,38 @@ class InvoerVergoedingen extends Invoer
 				LEFT JOIN inleners_factoren ON invoer_vergoedingen.inlener_id = inleners_factoren.inlener_id
 				WHERE invoer_vergoedingen.factuur_id IS NULL AND inleners_vergoedingen.deleted = 0 AND inleners_factoren.deleted = 0 AND inleners_factoren.default_factor = 1 AND invoer_vergoedingen.uitzender_id = ? AND invoer_vergoedingen.inlener_id = ?
 				  AND invoer_vergoedingen.werknemer_id = ? AND invoer_vergoedingen.tijdvak = ? AND invoer_vergoedingen.jaar = ? AND invoer_vergoedingen.periode = ?";
+		
+		$query = $this->db_user->query( $sql, array( $this->_uitzender_id, $this->_inlener_id, $this->_werknemer_id, $this->_tijdvak, $this->_jaar, $this->_periode ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$data[$row['invoer_id']] = $row;
+		}
+		
+		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Vergoedingen voor werknemer ophalen voor facturatie
+	 *
+	 */
+	public function getZzpVergoedingenRijen()
+	{
+		//nu bedragen er bij halen
+		$sql = "SELECT invoer_vergoedingen.invoer_id, invoer_vergoedingen.werknemer_id, invoer_vergoedingen.zzp_id, invoer_vergoedingen.bedrag, invoer_vergoedingen.doorbelasten, invoer_vergoedingen.project_id,
+       					inleners_vergoedingen.vergoeding_type, inleners_vergoedingen.uitkeren_werknemer, inleners_vergoedingen.doorbelasten AS doorbelasten_default,
+       					vergoedingen.naam, vergoedingen.belast
+				FROM invoer_vergoedingen
+				LEFT JOIN zzp_vergoedingen ON zzp_vergoedingen.id = invoer_vergoedingen.werknemer_vergoeding_id
+				LEFT JOIN inleners_vergoedingen ON inleners_vergoedingen.inlener_vergoeding_id = zzp_vergoedingen.inlener_vergoeding_id
+				LEFT JOIN vergoedingen ON vergoedingen.vergoeding_id = inleners_vergoedingen.vergoeding_id
+				WHERE invoer_vergoedingen.factuur_id IS NULL AND inleners_vergoedingen.deleted = 0 AND invoer_vergoedingen.uitzender_id = ? AND invoer_vergoedingen.inlener_id = ?
+				  AND invoer_vergoedingen.zzp_id = ? AND invoer_vergoedingen.tijdvak = ? AND invoer_vergoedingen.jaar = ? AND invoer_vergoedingen.periode = ?";
 		
 		$query = $this->db_user->query( $sql, array( $this->_uitzender_id, $this->_inlener_id, $this->_werknemer_id, $this->_tijdvak, $this->_jaar, $this->_periode ) );
 		
@@ -273,6 +319,81 @@ class InvoerVergoedingen extends Invoer
 		
 		return $beschikbare_vergoedingen;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Vergoedingen voor werknemer ophalen
+	 *
+	 */
+	public function getZzpVergoedingen()
+	{
+		//welke vergoedingen zijn er voor werknemer
+		$vergoedingengroup = new VergoedingGroup();
+		$beschikbare_vergoedingen = $vergoedingengroup->inlener( $this->_inlener_id )->zzp( $this->_zzp_id )->vergoedingenZzp();
+		
+		//nu bedragen er bij halen
+		$sql = "SELECT invoer_vergoedingen.*, inleners_factoren.factor_laag AS factor
+				FROM invoer_vergoedingen
+				LEFT JOIN inleners_factoren ON invoer_vergoedingen.inlener_id = inleners_factoren.inlener_id
+				WHERE inleners_factoren.deleted = 0 AND inleners_factoren.default_factor = 1 AND invoer_vergoedingen.uitzender_id = ? AND invoer_vergoedingen.inlener_id = ?
+				  AND invoer_vergoedingen.zzp_id = ? AND invoer_vergoedingen.tijdvak = ? AND invoer_vergoedingen.jaar = ? AND invoer_vergoedingen.periode = ?";
+		
+		$query = $this->db_user->query( $sql, array( $this->_uitzender_id, $this->_inlener_id, $this->_zzp_id, $this->_tijdvak, $this->_jaar, $this->_periode ) );
+		
+		$invoer = array();
+		
+		if( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+				$invoer[$row['werknemer_vergoeding_id']] = $row;
+		}
+		
+		//controleren of alles nog klopt
+		foreach( $beschikbare_vergoedingen as $id => &$vergoeding )
+		{
+			//copy
+			$vergoeding['doorbelasten_setting'] = $vergoeding['doorbelasten'];
+			
+			//invoer ID instellen als deze bestaat
+			$invoer_id = $invoer[$id]['invoer_id'] ?? NULL;
+			$vergoeding['invoer_id'] = $invoer_id;
+			
+			//variabele vergoeding alleen toevoegen aan array
+			if( $vergoeding['vergoeding_type'] == 'variabel' )
+			{
+				//record bestaat
+				if( $invoer_id !== NULL )
+				{
+					$vergoeding['bedrag'] = $invoer[$id]['bedrag'];
+					$vergoeding['doorbelasten'] = $invoer[$id]['doorbelasten'];
+					$vergoeding['factor'] = $invoer[$id]['factor'];
+				}
+				//niet gevonden, bedrag op 0
+				else
+				{
+					$vergoeding['bedrag'] = 0;
+				}
+			}
+			
+			//vaste vergoedingen uitrekenen
+			if( $vergoeding['vergoeding_type'] == 'vast' )
+			{
+				$vergoeding['bedrag'] = $this->_calcVasteVergoeding( $invoer_id, $vergoeding );
+				
+				//record bestaat
+				if( isset($invoer[$id]) )
+				{
+					$vergoeding['factor'] = $invoer[$id]['factor'];
+					$vergoeding['doorbelasten'] = $invoer[$id]['doorbelasten'];
+				}
+			}
+			
+		}
+		
+		return $beschikbare_vergoedingen;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *

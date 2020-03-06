@@ -4,6 +4,7 @@ use models\documenten\Document;
 use models\documenten\DocumentFactory;
 use models\documenten\Template;
 use models\documenten\TemplateGroup;
+use models\facturatie\FacturenGroup;
 use models\forms\Formbuilder;
 use models\instellingen\Minimumloon;
 use models\instellingen\Feestdagen;
@@ -38,6 +39,10 @@ class Overzicht extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
+		$facturengroep = new FacturenGroup();
+		$facturen = $facturengroep->facturenMatrix();
+		
+		$this->smarty->assign( 'facturen', $facturen );
 		
 		$this->smarty->display('facturatie/overzicht.tpl');
 	}

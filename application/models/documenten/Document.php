@@ -73,7 +73,28 @@ class Document extends Connector {
 		
 		return true;
 	}
-	
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * in en uit archief
+	 *
+	 */
+	public function delete()
+	{
+		$this->db_user->query( "UPDATE documenten SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE deleted = 0 AND werknemer_id = ? AND document_id = ?",
+			array( $this->user->user_id, $this->_werknemer_id, $this->_document_id ) );
+		
+		if( $this->db_user->affected_rows() > 0 )
+		{
+			//oevrige velden meenemen
+			$this->db_user->query( "UPDATE werknemers_inleners SET document_id = NULL WHERE document_id = $this->_document_id" );
+			
+			return true;
+		}
+		
+		return false;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -166,6 +187,16 @@ class Document extends Connector {
 		$this->_document_id = intval( $document_id );
 		$this->_load();
 		$this->_loadHandtekeningen();
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get document ID
+	 * @return int
+	 */
+	public function documentID()
+	{
+		return $this->_document_id;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -461,7 +492,7 @@ class Document extends Connector {
 	 * Set werknemer
 	 * @return object
 	 */
-	public function setWerknemerID( $werknemer_id )
+	public function setWerknemerID( $werknemer_id ) :Document
 	{
 		$this->_werknemer_id = intval( $werknemer_id );
 		$this->_setWerknemerInfo();
@@ -474,7 +505,7 @@ class Document extends Connector {
 	 * Set werknemer
 	 * @return object
 	 */
-	public function setZzpID( $zzp_id )
+	public function setZzpID( $zzp_id )  :Document
 	{
 		$this->_zzp_id = intval( $zzp_id );
 		$this->_setZzpInfo();
@@ -489,9 +520,10 @@ class Document extends Connector {
 	 */
 	public function _setWerknemerInfo()
 	{
-		$sql = "SELECT werknemers_gegevens.*
+		$sql = "SELECT werknemers_gegevens.*, werknemers_dienstverband_duur.fase
 				FROM werknemers_gegevens
-				WHERE werknemers_gegevens.deleted = 0 AND werknemer_id = $this->_werknemer_id";
+				LEFT JOIN werknemers_dienstverband_duur ON werknemers_gegevens.werknemer_id = werknemers_dienstverband_duur.werknemer_id
+				WHERE werknemers_gegevens.deleted = 0 AND werknemers_dienstverband_duur.deleted = 0 AND werknemers_gegevens.werknemer_id = $this->_werknemer_id";
 		
 		$query = $this->db_user->query( $sql );
 		
@@ -522,7 +554,7 @@ class Document extends Connector {
 	 * Set inlener
 	 * @return object
 	 */
-	public function setInlenerID( $inlener_id )
+	public function setInlenerID( $inlener_id ) :Document
 	{
 		$this->_inlener_id = intval( $inlener_id );
 		$this->_setInlenerInfo();
@@ -562,7 +594,7 @@ class Document extends Connector {
 	 * Set uitzender
 	 * @return object
 	 */
-	public function setUitzenderID( $uitzender_id )
+	public function setUitzenderID( $uitzender_id ) :Document
 	{
 		$this->_uitzender_id = intval( $uitzender_id );
 		$this->_setUitzenderInfo();

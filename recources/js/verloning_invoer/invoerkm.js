@@ -33,7 +33,7 @@ let invoerkm = {
 			invoerkm.copyGewerkteDagen();
 		});
 		
-		//gewerkte dagen van uren kopieren
+		//alle kilometers weggooien
 		$(document).on('click', '[data-vi-action="clear"]', function(){
 			invoerkm.clearAll();
 		});
@@ -86,6 +86,7 @@ let invoerkm = {
 	addkmInvoerRow(obj){
 		$tr = $(obj).closest('tr').clone();
 		$($tr).insertAfter($(obj).closest('tr'));
+		//datum op 1e dag van periode zetten
 		invoerkm.resetKmTr($tr);
 	},
 	
@@ -214,6 +215,7 @@ let invoerkm = {
 		data.kmrow.locatie_naar = $tr.find('[name="locatie_naar"]').val();
 		data.kmrow.doorbelasten = $tr.find('[name="doorbelasten"] option:selected').val();
 		data.kmrow.opmerking_tekst = $tr.find('[name="opmerking_tekst"]').val();
+		data.kmrow.project_id = $tr.find('[name="project_id"]').val();
 		
 		//confirm delete
 		/*
@@ -257,7 +259,8 @@ let invoerkm = {
 					if( json.status == 'set' ){
 						$tr.data('id', json.row.invoer_id);
 						//lege regel invoegen
-						$(	tplKmInvoerTr.replace(/\{(.+?)\}/g, '') ).prependTo( $tabel.find('.table-vi-km-body') ).hide().show(500);
+						$( tplKmInvoerTr.replace(/\{(.+?)\}/g, '') ).prependTo( $tabel.find('.table-vi-km-body') ).hide().show(500);
+						
 					}
 					
 					invoerkm.setStatus( $tr, 'success' );
@@ -315,19 +318,29 @@ let invoerkm = {
 		$tabel = $('.table-vi-km').show();
 		$tabel.find('tbody').html('');
 		
+		//project select opbouwen
+		let htmlProjecten = invoer.getprojectSelect( json );
+		
+		
 		//altijd extra lege regel weergeven
-		$tabel.find('tbody').append(tplKmInvoerTr.replace(/\{(.+?)\}/g, ''));
+		let trEmpty = tplKmInvoerTr.replace('{select_projecten}', htmlProjecten);
+		trEmpty = trEmpty.replace(/\{(.+?)\}/g, '');
+		
+		$tr = $tabel.find('tbody').append( trEmpty );
 		
 		//is er data?
 		if( typeof json.invoer.km != 'undefined' && json.invoer.km != null){
 			
 			for( let row of Object.values(json.invoer.km) ){
+				
 				//lege rij aanmaken
 				let htmlTr = replaceVars(tplKmInvoerTr, row);
+				htmlTr = htmlTr.replace('{select_projecten}', htmlProjecten);
 				
 				//goed zetten van select
 				$row = $(htmlTr).appendTo($tabel.find('.table-vi-km-body'));
-				$row.find('select').val(row.doorbelasten);
+				$row.find('[name="doorbelasten"]').val(row.doorbelasten);
+				$row.find('[name="project_id"]').val(row.project_id);
 				
 				invoerkm.setStatus($row, 'success');
 			}
@@ -343,6 +356,7 @@ let invoerkm = {
 	bind()
 	{
 		//datumpicker
+		/*
 		var startDate = new Date(invoer.data.info.periode_start);
 		var endDate = new Date(invoer.data.info.periode_einde);
 		
@@ -354,7 +368,7 @@ let invoerkm = {
 			today:false,
 			min:startDate,
 			max:endDate
-		});
+		});*/
 		
 		//autocomplete
 		bing.bind();

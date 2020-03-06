@@ -1,12 +1,12 @@
 <table style="margin-left: 15px; width: 100%">
 	<tr>
 		<td style="font-size: 40px; color:#002E65">
-			{if !isset($type) || $type == 'verkoop'} FACTUUR {/if}
+			{if !isset($type) || $type == 'verkoop' || $type == 'zzp'} FACTUUR {/if}
 			{if $type == 'kosten'} KOSTENOVERZICHT {/if}
 		</td>
 		<td rowspan="2" style="text-align: right; padding-right: 25px; padding-top: 6px;">
 
-            {if $type == 'verkoop'}
+            {if $type == 'verkoop' || $type == 'zzp'}
 			<table style="font-size: 12px;">
 				<tr>
 					<td class="relatie">bedrijfsnaam</td>
@@ -89,7 +89,7 @@
             {foreach $regels as $r}
 
                 {* start regel met naam *}
-                {if $r.row_start != NULL}
+                {if $r.row_start != NULL && $type != 'zzp'}
 					<tr>
 						<td style="padding-top: 5px;">
 							<b>{$r.omschrijving}</b>
@@ -99,7 +99,7 @@
 
                 {* regels met invoer *}
                 {if $r.row_start == NULL && $r.row_end == NULL}
-	                {if ($type == 'verkoop' && $r.doorbelasten_aan != 'uitzender') || $type == 'kosten'}
+	                {if ($type == 'verkoop' && $r.doorbelasten_aan != 'uitzender') || $type == 'kosten'  || ($type == 'zzp' && $r.uitkeren_werknemer == 1)}
 					<tr>
 						<td style="padding-left: 18px">{$r.omschrijving}</td>
 						<td class="text-right">
@@ -111,6 +111,7 @@
 						<td class="text-right">
 							{if $type == 'verkoop'}&euro; {$r.verkooptarief|number_format:2:',':'.'} {/if}
 							{if $type == 'kosten'}&euro; {$r.bruto_uurloon|number_format:2:',':'.'} {/if}
+							{if $type == 'zzp'}&euro; {$r.bruto_uurloon|number_format:2:',':'.'} {/if}
 						</td>
 						<td class="text-right">
 							{* uren bij verkoop altijd factor 1 *}
@@ -123,10 +124,12 @@
 						<td class="text-right">
                             {if $type == 'verkoop'}100%{/if}
                             {if $type == 'kosten'}{$r.percentage|number_format:2:',':'.'}%{/if}
+                            {if $type == 'zzp'}100%{/if}
 						</td>
 						<td class="text-right">
                             {if $type == 'verkoop'}&euro; {$r.subtotaal_verkoop|number_format:2:',':'.'} {/if}
                             {if $type == 'kosten'}&euro; {$r.subtotaal_kosten|number_format:2:',':'.'} {/if}
+                            {if $type == 'zzp'}&euro; {$r.subtotaal_kosten|number_format:2:',':'.'} {/if}
 						</td>
 					</tr>
                     {/if}
@@ -156,6 +159,7 @@
 			<td class="text-right">&euro;
                 {if $type == 'verkoop'}{$factuur.bedrag_excl|number_format:2:',':'.'}{/if}
                 {if $type == 'kosten'}{$factuur.kosten_excl|number_format:2:',':'.'}{/if}
+                {if $type == 'zzp'}{$factuur.bedrag_excl|number_format:2:',':'.'}{/if}
 			</td>
 		</tr>
 		<tr class="totaal">
@@ -167,6 +171,7 @@
 					&euro;
 					{if $type == 'verkoop'}{$factuur.bedrag_btw|number_format:2:',':'.'}{/if}
 					{if $type == 'kosten'}{$factuur.kosten_btw|number_format:2:',':'.'}{/if}
+					{if $type == 'zzp'}{$factuur.bedrag_btw|number_format:2:',':'.'}{/if}
                 {/if}
 
 			</td>
@@ -177,6 +182,7 @@
 				&euro;
                 {if $type == 'verkoop'}{$factuur.bedrag_incl|number_format:2:',':'.'}{/if}
                 {if $type == 'kosten'}{$factuur.kosten_incl|number_format:2:',':'.'}{/if}
+                {if $type == 'zzp'}{$factuur.bedrag_incl|number_format:2:',':'.'}{/if}
 			</td>
 		</tr>
 
@@ -195,4 +201,4 @@
 			{$cessie_tekst}
 		</div>
 	{/if}
-	{/if}
+{/if}

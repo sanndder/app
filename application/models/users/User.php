@@ -477,7 +477,7 @@ class User extends Connector
 			$return['email'] = $data['email'];
 			$return['bedrijfsnaam'] = $data['bedrijfsnaam'];
 			$return['naam'] = $data['voornaam'];
-			if( $data['voornaam'] != '' )
+			if( $data['tussenvoegsel'] != '' )
 				$return['naam'] .= ' ' . $data['tussenvoegsel'];
 			$return['naam'] .= ' ' . $data['achternaam'];
 			
@@ -486,6 +486,23 @@ class User extends Connector
 				$return['naam'] = '';
 		}
 		
+		if($_GET['user_type'] == 'werknemer' )
+		{
+			$sql = "SELECT werknemers_gegevens.*
+					FROM werknemers_gegevens
+					WHERE werknemers_gegevens.deleted = 0 AND werknemers_gegevens.werknemer_id = ".intval(($_GET['id']) . " LIMIT 1" );
+			
+			$query = $this->db_user->query( $sql );
+			$data = $query->row_array();
+			
+			$return['werknemer_id'] = $data['werknemer_id'];
+			$return['email'] = $data['email'];
+			$return['naam'] = $data['voornaam'];
+			if( $data['tussenvoegsel'] != '' )
+				$return['naam'] .= ' ' . $data['tussenvoegsel'];
+			$return['naam'] .= ' ' . $data['achternaam'];
+			$return['bedrijfsnaam'] = $return['naam'];
+		}
 		
 		return $return;
 	}
@@ -550,10 +567,22 @@ class User extends Connector
 					$insert_account['inlener_id'] = intval($_POST['id']);
 				}
 				
+				if( $_POST['user_type'] == 'werknemer' )
+				{
+					$insert_account['user_type'] = 'werknemer';
+					$insert_account['werknemer_id'] = intval($_POST['id']);
+				}
+				
 				$this->db_admin->insert( 'users_accounts', $insert_account );
 				
 				$this->_load();
-				$this->sendWelkomsEmail();
+				
+				//welkom voor werknemers
+				if( $_POST['user_type'] == 'werknemer' )
+					$this->sendWelkomsEmailWerknemer();
+				else
+					//welkom voor de rest
+					$this->sendWelkomsEmail();
 			}
 			else
 			{
@@ -646,6 +675,7 @@ class User extends Connector
 		$email->send();
 	}
 	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * welkoms email sturen naar nieuwe user
@@ -677,6 +707,41 @@ class User extends Connector
 		$email->delay( 0 );
 		$email->send();
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * welkoms email sturen naar nieuwe werknemer
+	 *
+	 * @return boolean
+	 */
+	public function sendWelkomsEmailWerknemer()
+	{
+		$link = "https://www.devisonline.nl/usermanagement/newuser?wid=".$this->werkgever->wid()."&wg_hash=".$this->werkgever->hash() . "&user=" . $this->_new_key;
+		
+		$email = new Email();
+		
+		$to['email'] = $this->_email;
+		$to['name'] = $this->_naam;
+		
+		$email->to( $to );
+		$email->setSubject('Account Abering Uitzend B.V.');
+		$email->setTitel('Welkom bij Abering Uitzend B.V.');
+		$email->setBody('Er is een account voor u aangemaakt in <b>Devis Online</b>, de online portal van Abering Uitzend B.V.. In deze email vind u alles wat u nodig heeft om uw account te activeren.
+						<br /><br />
+						<b>Gebruikersnaam: </b>'.$this->_email.'
+						<br /><br />
+						<a href="'.$link.'">
+						'.$link.'</a>
+						<br /><br />
+						Gebruikt de bovenstaande link om uw wachtwoord aan te maken en uw account te activeren. Deze link verloopt over 5 dagen.
+						<br /><br />
+						Met uw online account kunt u al uw gegevens inzien, loonstroken downloaden, zich ziekmelden en uw instellingen aanpassen.
+						<br /><br />Wanneer u vragen heeft kunt u contact met ons opnemen.<br /><br />Met vriendelijke groet,<br />Abering Uitzend B.V.');
+		$email->useHtmlTemplate( 'default' );
+		$email->delay( 0 );
+		$email->send();
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

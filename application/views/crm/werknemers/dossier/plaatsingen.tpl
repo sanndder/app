@@ -31,7 +31,7 @@
             {/if}
 
 			<div class="row">
-				<div class="col-xl-12 col-xxl-10">
+				<div class="col-xl-12 col-xxl-12">
 
 					<!-- Basic card -->
 					<div class="card">
@@ -266,7 +266,7 @@
 													</td>
 												</tr>
 												<tr>
-													<td colspan="8" style="border-top:0; padding-bottom: 25px;">
+													<td colspan="5" style="border-top:0; padding-bottom: 25px;">
 
 														{if isset($p.urentypes) && is_array($p.urentypes) && count($p.urentypes) > 0}
 														<table>
@@ -279,7 +279,7 @@
 																</tr>
 															</thead>
 															{foreach $p.urentypes as $u}
-															<tr data-id="{$u.id} class="{if !$u.urentype_active} text-grey-200{/if}">
+															<tr data-id="{$u.id}" class="{if !$u.urentype_active} text-grey-200{/if}">
 																<td class="p-1 pt-2">
                                                                     {if $u.default_urentype != 1}
 																	<div class="form-check">
@@ -305,6 +305,19 @@
                                                             {/foreach}
 														</table>
                                                         {/if}
+
+													</td>
+													<td colspan="3" style="vertical-align: top; border-top:0; padding-bottom: 25px; padding-top: 35px">
+
+														{if $p.document_id === NULL}
+															<a class="btn btn-primary btn-sm" href="crm/werknemers/dossier/plaatsingen/{$p.werknemer_id}/?uitzendbevestiging={$p.plaatsing_id}">
+																<i class="icon-file-plus mr-1"></i> Uitzendbevestiging maken
+															</a>
+														{else}
+															<a target="_blank" href="documenten/pdf/view/{$p.document_id}" class="font-weight-semibold mt-3">
+																<img src="recources/img/icons/pdf.svg" style="height: 25px"> Uitzendbevestiging bekijken
+															</a>
+														{/if}
 
 													</td>
 												</tr>

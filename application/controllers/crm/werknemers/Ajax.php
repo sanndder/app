@@ -28,14 +28,14 @@ class Ajax extends MY_Controller
 
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// factor voor plaatsing wijzigen
+	// verkooptarief wijzigen
 	//-----------------------------------------------------------------------------------------------------------------
 	public function setverkooptarief()
 	{
 		$urentype = new Urentypes();
 		$urentype->setWerknemerUrentypeID( $_POST['id'] );
 		
-		if( $urentype->setVerkooptariefWerknemer( $_POST['tarief'] ))
+		if( $urentype->setVerkooptarief( $_POST['tarief'] ))
 			$response = array( 'status' => 'success' );
 		else
 			$response = array( 'status' => 'error' );

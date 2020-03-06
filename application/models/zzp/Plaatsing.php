@@ -11,7 +11,7 @@ if (!defined('BASEPATH'))
 
 
 /*
- * Werknemer class
+ * Plaatsing ZZP'er class
  *
  *
  *
@@ -23,6 +23,7 @@ class Plaatsing extends Connector
 	 * @var int
 	 */
 	private $_plaatsing_id;
+	private $_zzp_id;
 	private $_error;
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -54,7 +55,7 @@ class Plaatsing extends Connector
 	 */
 	public function details() :?array
 	{
-		$query = $this->db_user->query( "SELECT * FROM werknemers_inleners WHERE plaatsing_id = $this->_plaatsing_id" );
+		$query = $this->db_user->query( "SELECT * FROM zzp_inleners WHERE plaatsing_id = $this->_plaatsing_id" );
 		return DBhelper::toRow( $query, 'NULL' );
 		
 	}
@@ -68,15 +69,27 @@ class Plaatsing extends Connector
 		$plaatsing = $this->details();
 		
 		//plaatsing weghalen
-		$this->db_user->query( "UPDATE werknemers_inleners SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " WHERE deleted = 0 AND plaatsing_id = $this->_plaatsing_id" );
+		$this->db_user->query( "UPDATE zzp_inleners SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . " WHERE deleted = 0 AND plaatsing_id = $this->_plaatsing_id" );
 		
-		//urentypes weghalen bij werknemer
+		//urentypes weghalen bij zzp'er
 		if( $this->db_user->affected_rows() > 0 )
 		{
 			$urentypes = new Urentypes();
-			$urentypes->deleteUrentypesWerknemerForInlener( $plaatsing['werknemer_id'], $plaatsing['inlener_id'] );
+			$urentypes->deleteUrentypesZzpForInlener( $plaatsing['zzp_id'], $plaatsing['inlener_id'] );
 		}
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set ZZP ID
+	 *
+	 */
+	public function zzpId( $id )
+	{
+		$this->_zzp_id = intval($id);
+	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -86,33 +99,24 @@ class Plaatsing extends Connector
 	public function add( $data )
 	{
 		//gen dubbele plaatsing
-		$query = $this->db_user->query( "SELECT plaatsing_id FROM werknemers_inleners WHERE werknemer_id = ? AND inlener_id = ? AND deleted = 0", array( intval($data['werknemer_id']), intval($data['inlener_id']) ) );
+		$query = $this->db_user->query( "SELECT plaatsing_id FROM zzp_inleners WHERE zzp_id = ? AND inlener_id = ? AND deleted = 0", array( $this->_zzp_id, intval($data['inlener_id']) ) );
 		if( $query->num_rows() > 0 )
 		{
-			$this->_error[] = 'Werknemer is al geplaatst bij inlener';
+			$this->_error[] = "ZZP'er is al geplaatst bij inlener";
 			return false;
 		}
 		
-		$input['werknemer_id'] = $data['werknemer_id'];
-		$input['inlener_id'] = $data['inlener_id'];
-		$input['cao_id_intern'] = $data['cao_id'];
-		$input['loontabel_id_intern'] = $data['loontabel_id'];
-		$input['job_id_intern'] = $data['job_id'];
-		$input['schaal'] = $data['schaal_id'] ?? null;
-		$input['periodiek'] = $data['periodiek_id'] ?? null;
-		$input['bruto_loon'] = prepareAmountForDatabase($data['brutoloon']);
+		$input['zzp_id'] = $this->_zzp_id;
+		$input['inlener_id'] = intval($data['inlener_id']);
 		$input['start_plaatsing'] = reverseDate($data['start_plaatsing']);
 		
-		$this->db_user->insert( 'werknemers_inleners', $input );
-		
-		//bruto uurloon naar de standaard tabel
-		
-		
+		$this->db_user->insert( 'zzp_inleners', $input );
+
 		//als het gelukt is dan uretypes koppelen
 		if( $this->db_user->insert_id() > 0 )
 		{
 			$urentypes = new Urentypes();
-			$urentypes->addUrentypesWerknemerForInlener($this->db_user->insert_id(), $input['werknemer_id'], $input['inlener_id'] );
+			$urentypes->addUrentypesZzpForInlener($this->db_user->insert_id(), $this->_zzp_id, $data['inlener_id'] );
 		}
 	}
 	

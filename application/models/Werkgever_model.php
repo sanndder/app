@@ -329,9 +329,6 @@ class Werkgever_model extends MY_Model
 		//array naar ander format
 		$input = formatPostArray($_POST, 'set');
 
-		//show($id);
-		//show($input);
-
 		$validator = new Validator();
 		$validator->table( 'werkgever_bankrekeningen' )->input( $input[$id] )->run();
 
@@ -541,6 +538,11 @@ class Werkgever_model extends MY_Model
 		
 		$query = $this->db_user->query("SELECT * FROM werkgever_bedrijfsgegevens WHERE deleted = 0 AND entiteit_id = $this->_entiteit_id ORDER BY id DESC LIMIT 1");
 		$this->_bedrijfsgegevens[$this->_entiteit_id] = DBhelper::toRow( $query, 'NULL' );
+		
+		//IBAN erbij, TODO default aanmaken voor factuur
+		$bankrekeningen = $this->bankrekeningen();
+		$iban = current($bankrekeningen);
+		$this->_bedrijfsgegevens[$this->_entiteit_id]['iban'] = $iban['iban'];
 		
 		return $this->_bedrijfsgegevens[$this->_entiteit_id];
 	}

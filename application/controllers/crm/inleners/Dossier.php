@@ -80,6 +80,20 @@ class Dossier extends MY_Controller
 			if( $inlener->contactpersoon_complete != 1 ) redirect($this->config->item('base_url') . 'crm/inleners/dossier/contactpersonen/' . $inlener_id ,'location');
 			if( $inlener->cao_complete != 1 ) redirect($this->config->item('base_url') . 'crm/inleners/dossier/cao/' . $inlener_id ,'location');
 		}
+		
+		//acties
+		if( isset($_GET['action']) )
+		{
+			switch( $_GET['action'] )
+			{
+				case 'archief':
+					$inlener->setArchief( true );
+					break;
+				case 'uitarchief':
+					$inlener->setArchief( false );
+					break;
+			}
+		}
 
 		//show($inleners);
 		
@@ -411,7 +425,52 @@ class Dossier extends MY_Controller
 		$this->smarty->assign( 'caos_inlener', $CAOgroup->inlener( $inlener_id ) );
 		$this->smarty->display('crm/inleners/dossier/cao_wizard.tpl');
 	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// notities pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function projecten( $inlener_id = NULL )
+	{
+		//init inlener object
+		$inlener = new Inlener( $inlener_id );
+		
+		//add
+		if( isset($_POST['set']) )
+		{
+			if( $inlener->addProject() )
+				$this->smarty->assign('msg', msg('success', 'Project toegevoegd' ));
+			else
+			{
+				//msg bij fout
+				$this->smarty->assign( 'msg', msg( 'warning', $inlener->errors() ) );
+				$this->smarty->assign('input', $_POST );
+			}
+		}
+		
+		//del
+		if( isset($_GET['del']) )
+		{
+			if( $inlener->delProject( $_GET['del'] ) )
+			{
+				$this->session->set_flashdata('msg', 'Project is verwijderd' );
+				redirect( $this->config->item( 'base_url' ) . 'crm/inleners/dossier/projecten/' . $inlener_id, 'location' );
+			}
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Project kon niet worden verwijderd' ) );
+		}
+		
+		//msg
+		if( $this->session->flashdata('msg') !== NULL )
+			$this->smarty->assign( 'msg', msg( 'success', $this->session->flashdata('msg') ) );
+		
+		$this->smarty->assign('projecten', $inlener->projecten());
+		$this->smarty->assign('inlener', $inlener);
+		$this->smarty->display('crm/inleners/dossier/projecten.tpl');
+	}
 
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// Verloning instellingen
 	//-----------------------------------------------------------------------------------------------------------------
@@ -519,18 +578,21 @@ class Dossier extends MY_Controller
 			$this->smarty->assign('msg', msg('warning', $errors ));
 		}
 		
-		$urenmatrix = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
-		$werknemervergoedingen = $vergoedinggroup->inlener( $inlener_id )->werknemersEnVergoedingen();
 
 		$this->smarty->assign( 'uitzender', $uitzender->bedrijfsgegevens() );
 		$this->smarty->assign( 'factoren_uitzender', $uitzender->factoren() );
 		$this->smarty->assign( 'urentypes', $urentypes->getAll() );
 		$this->smarty->assign( 'vergoedingen', $vergoedinggroup->all() );
 		$this->smarty->assign( 'factoren', $inlener->factoren() );
-		$this->smarty->assign( 'matrix', $urenmatrix );
-		$this->smarty->assign( 'werknemervergoedingen', $werknemervergoedingen );
 		$this->smarty->assign( 'caos', $CAOgroup->all() );
 		$this->smarty->assign( 'caos_inlener', $caos_inlener );
+		
+		if( $this->user->werkgever_type == 'uitzenden' )
+		{
+			$urenmatrix = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
+			$this->smarty->assign( 'matrix', $urenmatrix );
+			$this->smarty->assign( 'werknemervergoedingen', $vergoedinggroup->inlener( $inlener_id )->werknemersEnVergoedingen() );
+		}
 		
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->display('crm/inleners/dossier/verloninginstellingen.tpl');

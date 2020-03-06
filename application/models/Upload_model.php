@@ -22,8 +22,8 @@ class Upload_model extends MY_Model
 	private $_file_path = NULL; //path after upload
 	private $_file_ext = NULL; //extentions after upload
 
-	private $_field = ''; //welk veld is key
-	private $_id = ''; //id voor table
+	private $_field = NULL; //welk veld is key
+	private $_id = NULL; //id voor table
 	
 	private $_allowed_file_types = '*'; //allowed file types
 
@@ -214,7 +214,7 @@ class Upload_model extends MY_Model
 	/*
 	 * de te uploaden files in de database opslaan
 	 *
-	 * @return void
+	 * @return ?int
 	 */
 	function dataToDatabase( $delete_old_entries = false )
 	{
@@ -227,13 +227,19 @@ class Upload_model extends MY_Model
 			$this->db_user->query($sql);
 		}
 
-		$insert[$this->_field] = $this->_id;
+		if( $this->_field !== NULL )
+			$insert[$this->_field] = $this->_id;
+		
 		$insert['file_dir'] = $this->_dir;
 		$insert['file_name'] = $this->_file_name;
+		$insert['file_name_display'] = $this->_file_name_display;
 		$insert['file_size'] = filesize($this->_file_path);
 		$insert['user_id'] = $this->user->user_id;
 
 		$this->db_user->insert( $this->_table, $insert);
+		
+		if( $this->db_user->insert_id() > 0 )
+		return $this->db_user->insert_id();
 
 	}
 

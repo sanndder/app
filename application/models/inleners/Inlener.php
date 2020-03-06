@@ -45,6 +45,8 @@ class Inlener extends Connector
 	public $factuurgegevens_complete = NULL;
 	public $bedrijfsgegevens_complete = NULL;
 	public $cao_complete = NULL;
+	
+	public $factuur_per_project = 0;
 
 	public $next = array();
 	public $prev = array();
@@ -318,9 +320,10 @@ class Inlener extends Connector
 	public function getStatus()
 	{
 		//status opahlen en basis gegevens
-		$sql = "SELECT * FROM inleners_status
+		$sql = "SELECT inleners_status.*,inleners_bedrijfsgegevens.*, inleners_factuurgegevens.factuur_per_project FROM inleners_status
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
-				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.inlener_id = $this->inlener_id
+				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = inleners_status.inlener_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.inlener_id = $this->inlener_id AND inleners_factuurgegevens.deleted = 0
 				LIMIT 1";
 
 		$query = $this->db_user->query($sql);
@@ -338,6 +341,7 @@ class Inlener extends Connector
 		$this->contactpersoon_complete = $this->_status['contactpersoon_complete'];
 		$this->emailadressen_complete = $this->_status['emailadressen_complete'];
 		$this->cao_complete = $this->_status['cao_complete'];
+		$this->factuur_per_project = $this->_status['factuur_per_project'];
 
 		//set public vars
 		$this->bedrijfsnaam = $this->_status['bedrijfsnaam'];
@@ -824,6 +828,7 @@ class Inlener extends Connector
 			//update status wanneer nodig
 			if( $this->complete == 0 )
 				$this->_updateStatus($method . '_complete');
+			
 		}
 		//fouten aanwezig
 		else
@@ -834,7 +839,10 @@ class Inlener extends Connector
 		//eventueel uitzender_id mee teruggeven voor eerste aanmelding
 		if( $this->_uitzender_id_new !== NULL )
 			$input['uitzender_id'] = $this->_uitzender_id_new;
-
+		
+		//status herladen
+		$this->getStatus();
+		
 		return $input;
 	}
 
@@ -987,6 +995,92 @@ class Inlener extends Connector
 		$input = $this->_set('inleners_factuurgegevens', 'factuurgegevens');
 		return $input;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * projecten toevoegen
+	 *
+	 */
+	public function _validateProject( $data ) :array
+	{
+		$data['omschrijving'] = trim($data['omschrijving']);
+		
+		if( strlen($data['omschrijving']) < 3 )
+			$this->_error['omschrijving'] = 'Project omschrijving is te kort';
+		
+		if( strlen($data['omschrijving']) > 120 )
+			$this->_error['omschrijving'] = 'Project omschrijving is te lang, maximaal 120 tekens';
+		
+		//dubbele entries
+		$sql = "SELECT project_id FROM inleners_projecten WHERE omschrijving = ? AND inlener_id = ? AND deleted = 0";
+		$query = $this->db_user->query( $sql, array($data['omschrijving'], $this->inlener_id) );
+		
+		if( $query->num_rows() > 0 )
+			$this->_error['omschrijving'] = 'Project met deze omschrijving bestaat al';
+		
+		return $data;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * projecten toevoegen
+	 *
+	 */
+	public function addProject() :bool
+	{
+		$insert = $this->_validateProject( $_POST );
+		unset($insert['set']);
+		
+		if( $this->errors() !== false )
+			return false;
+		
+		//project id
+		$query = $this->db_user->query( "SELECT MAX(project_id) AS project_id FROM inleners_projecten WHERE inlener_id = $this->inlener_id" );
+		$data = $query->row_array();
+		
+		$insert['inlener_id'] = $this->inlener_id;
+		$insert['user_id'] = $this->user->user_id;
+		$insert['project_id'] = $data['project_id'] + 1;
+		
+		$this->db_user->insert( 'inleners_projecten', $insert );
+		
+		if( $this->db_user->insert_id() > 0 )
+			return true;
+		
+		return false;
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * project verwijderen
+	 *
+	 */
+	public function delProject( $id ) :bool
+	{
+		$this->db_user->query( "UPDATE inleners_projecten SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE id = ? AND inlener_id = ? AND deleted = 0", array( $this->user->user_id, intval($id), $this->inlener_id ) );
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		
+		return false;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * projecten van inlener ophalen
+	 *
+	 */
+	public function projecten() :?array
+	{
+		if( $this->factuur_per_project == 0 )
+			return NULL;
+
+		$query = $this->db_user->query( "SELECT * FROM inleners_projecten WHERE inlener_id = ? AND deleted = 0 ORDER BY omschrijving", array($this->inlener_id) );
+		return DBhelper::toArray( $query, 'id', 'NULL' );
+	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -1064,6 +1158,7 @@ class Inlener extends Connector
 
 		return $this->_error;
 	}
+	
 }
 
 

@@ -99,31 +99,36 @@
                                     {/if}
 
 									<!-- Admin -->
-                                    {if isset($formdata.admin)}
-                                        {assign "field" "admin"}
-										<div class="form-group row">
-											<label class="font-weight-bold col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}*:</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+                                    {if $smarty.get.user_type != 'werknemer'}
+                                        {if isset($formdata.admin)}
+                                            {assign "field" "admin"}
+											<div class="form-group row">
+												<label class="font-weight-bold col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}*:</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
 
-                                                {foreach $formdata.$field.radio.options as $option}
-													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-														<label class="form-check-label">
-														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
-															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value != '' && $formdata.$field.value == $option@key}checked=""{/if} required>
-														</span>
-                                                            {$option}
-														</label>
-													</div>
-                                                {/foreach}
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
+																<span class="{if $formdata.$field.value == $option@key}checked{/if}">
+																	<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value != '' && $formdata.$field.value == $option@key}checked=""{/if} required>
+																</span>
+                                                                {$option}
+															</label>
+														</div>
+                                                    {/foreach}
 
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">
                                                     {foreach $formdata.$field.error as $e}{$e}<br/>{/foreach}
 													</span>
-                                                {/if}
+                                                    {/if}
+												</div>
 											</div>
-										</div>
+                                        {/if}
+	                                {else}
+	                                   <input type="hidden" name="admin" value="0" />
                                     {/if}
+
 
 									<button type="submit" name="set" class="btn btn-success">
 										<i class="icon-add mr-1"></i>Toevoegen

@@ -13,7 +13,7 @@
     "iban": {
       "label": "IBAN",
       "rules": {
-        "required": true,
+        "required": false,
         "minlength": 10,
         "maxlength": 100,
         "removespaces": true,
@@ -107,6 +107,19 @@
     },
     "factuur_per_medewerker": {
       "label": "Factuur per medewerker splitsen",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "factuur_per_project": {
+      "label": "Factuur per project splitsen",
       "rules": {
         "required": true
       },

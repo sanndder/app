@@ -36,6 +36,11 @@ class Email extends Connector {
 	 * @var int
 	 */
 	private $_body = NULL;
+	
+	/*
+	 * @var array
+	 */
+	private $_attachments = NULL;
 
 	/*
 	 * @var boolean
@@ -139,6 +144,30 @@ class Email extends Connector {
 		else
 			$this->_titel = $titel;
 		
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Body instellen
+	 * TODO fout afhandeling
+	 * @return void
+	 */
+	public function setAttechment( $table = NULL, $id = NULL, $file = NULL, $file_name_display = NULL )
+	{
+		$attachment['file_table'] = $table;
+		$attachment['file_id'] = $file[$id];
+		$attachment['file_dir'] = $file['file_dir'];
+		$attachment['file_name'] = $file['file_name'];
+		
+		if( $file_name_display !== NULL )
+			$attachment['file_name_display'] = $file_name_display;
+		elseif( isset($file['file_name_display']) && $file['file_name_display'] !== NULL  )
+			$attachment['file_name_display'] = $file['file_name_display'];
+		else
+			$attachment['file_name_display'] = $file['file_name'];
+		
+		$this->_attachments[] = $attachment;
 	}
 	
 	
@@ -284,11 +313,22 @@ class Email extends Connector {
 				$dabase->insert( 'emails_recipients', $insert_to );
 			}
 			
+			//attachments erbij
+			if( $this->_attachments !== NULL )
+			{
+				foreach( $this->_attachments as $attachment )
+				{
+					$attachment['email_id'] = $this->_email_id;
+					$dabase->insert( 'emails_attachments', $attachment );
+				}
+			}
+			
 			if( isset($this->db_user) )
 				$this->_log( 'email aangemaakt' );
 		}
 		
 		//ook gelijk verzenden?
+		
 		if($this->_delay == 0 )
 			$this->_sendEmail();
 	}
@@ -329,6 +369,18 @@ class Email extends Connector {
 			$this->_mail->AddAddress( $to['email'] );
 		
 		$this->_mail->addBCC('sander@aberinghr.nl', 'Sander Meijering');
+		
+		//attachments erbij
+		if( $this->_attachments !== NULL )
+		{
+			foreach( $this->_attachments as $attachment )
+			{
+				$file_path =  UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $attachment['file_dir'] . '/' . $attachment['file_name'];
+				if( file_exists($file_path) && !is_dir($file_path))
+					$this->_mail->addAttachment($file_path, $attachment['file_name_display']);
+			}
+		}
+		
 		
 		if( ENVIRONMENT == 'development' )
 		{

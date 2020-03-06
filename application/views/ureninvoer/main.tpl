@@ -8,6 +8,9 @@
 {block "content"}
 	<script src="recources/js/textFit.js"></script>
 	<script src="recources/js/config.js?{$time}"></script>
+	<script>
+		let werkgever = '{$werkgever_type}';
+	</script>
 	<script src="template/global_assets/js/plugins/extensions/jquery_ui/full.min.js"></script>
 	<script src="recources/js/api/bing.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/templates.js?{$time}"></script>
@@ -193,7 +196,7 @@
 
 							<div class="card-header bg-white pb-0 pt-sm-0 pr-sm-0 pl-2 header-elements-inline justify-content-start">
 								<h6 class="card-title mr-3" style="font-size:14px; margin-bottom: -10px;">
-									<div class="fit-text vi-title-name">Selecteer een werknemer</div>
+									<div class="fit-text vi-title-name">Selecteer een {$_werknemer}</div>
 								</h6>
 								<div class="header-elements">
 									<ul class="nav nav-tabs nav-tabs-bottom nav-tabs-primary mt-2" style="margin-bottom: -1px">
@@ -270,10 +273,12 @@
 										<div class="tab-pane tab-pane-sub fade" id="sub-kilometers">
 
 											<div class="vi-km-buttons mt-2 mb-2">
+												{*
 												<button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 btn-sm" data-vi-action="copyGewerkteDagen">
 													<i class="icon-calendar2 mr-1"></i>
 													Gewerkte dagen kopiëren
 												</button>
+												*}
 												<button type="button" class="btn alpha-warning text-warning-800 btn-icon ml-2 btn-sm" data-vi-action="clear">
 													<i class="icon-trash mr-1"></i>
 													Invoer wissen
@@ -284,10 +289,10 @@
 
 												<thead>
 													<tr>
-														<th style="width: 85px" class="pl-2">Datum</th>
 														<th style="width: 35px">Kilometers</th>
 														<th>Opmerking</th>
 														<th>Doorbelasten</th>
+														<th>Project</th>
 														<th></th>
 														<th style="width: 150px;"></th>
 													</tr>

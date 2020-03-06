@@ -67,7 +67,6 @@
 									</div><!-- /row -->
 								</div>
 
-
 								<div>
 									{if $uitzender->archief == 0}
 									<a style="width: 200px" href="crm/uitzenders/dossier/overzicht/{$uitzender->uitzender_id}?action=archief" class="btn btn-light">

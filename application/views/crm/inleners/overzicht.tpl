@@ -259,6 +259,9 @@
 		<!-- /content area -->
 	</div>
 	<!-- /main content -->
+
+
+    {if $user_type == 'werkgever'}
 	<div class="sidebar sidebar-light sidebar-main d-none d-xxl-block sidebar-sections sidebar-expand-lg align-self-start">
 
 		<!-- Sidebar content -->
@@ -292,4 +295,5 @@
 		<!-- /sidebar content -->
 
 	</div>
+	{/if}
 {/block}

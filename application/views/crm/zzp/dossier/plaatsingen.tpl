@@ -6,8 +6,7 @@
 
 {block "content"}
 	<script src="recources/js/config.js?{$time}"></script>
-	<script src="recources/js/cao/cao.js?{$time}"></script>
-	<script src="recources/js/werknemer/plaatsing.js?{$time}"></script>
+	<script src="recources/js/zzp/plaatsing.js?{$time}"></script>
     {include file='crm/zzp/dossier/_sidebar.tpl' active='plaatsingen'}
 
 
@@ -48,7 +47,7 @@
 										<table>
 											<tr>
 												<td class="pr-2" style="width: 500px">
-													<select required name="uitzender_id" class="form-control select-search" {if count($plaatsingen) > 0 } disabled {/if}>
+													<select required name="uitzender_id" class="form-control select-search" {if isset($plaatsingen) && count($plaatsingen) > 0 } disabled {/if}>
 														<option value="">Selecteer een uitzender</option>
                                                         {if $uitzenders !== NULL}
                                                             {foreach $uitzenders as $u}
@@ -58,7 +57,7 @@
 													</select>
 												</td>
 												<td>
-													<button type="submit" name="set" value="set_uitzender" class="btn btn-outline-success btn-sm" {if count($plaatsingen) > 0 } disabled {/if}>
+													<button type="submit" name="set" value="set_uitzender" class="btn btn-outline-success btn-sm" {if  isset($plaatsingen) && count($plaatsingen) > 0 } disabled {/if}>
 														<i class="icon-check mr-1"></i>Wijzigen
 													</button>
 												</td>
@@ -77,13 +76,9 @@
 								<!--------------------------------------------- Nieuwe Plaatsing ------------------------------------------------->
 								<form id="plaatsing" method="post" action="">
 
-									<input type="hidden" name="zzp_id" value="{$zzp->zzp_id}"/>
-
 									<fieldset>
 										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Plaatsingen toevoegen</legend>
 									</fieldset>
-
-									<div class="alert alert-plaatsing alert-warning alert-styled-left alert-arrow-left" style="display: none"></div>
 
                                     {* inlener selecteren *}
 									<div class="row">
@@ -98,141 +93,117 @@
                                                     {/foreach}
                                                 {/if}
 											</select>
+
 										</div>
 									</div>
 
-                                    {* CAO selecteren *}
-									<div class="row mt-3" style="display: none">
-										<div class="col-xl-2 pt-1">CAO</div>
+                                    {* start plaasting *}
+									<div class="row mt-3">
+										<div class="col-xl-2 pt-1">Start plaatsing</div>
 										<div class="col-xl-6">
 
-											<span class="no-cao" style="display: none"><i class="icon-exclamation"></i> <i>Koppel de inlener eerst aan een CAO</i></span>
-
-											<div class="cao-wrapper">
-												<select required name="cao_id" class="form-control select-no-search">
-													<option value="">Selecteer een CAO</option>
-												</select>
-											</div>
-										</div>
-									</div>
-
-                                    {* Loontabel selecteren *}
-									<div class="row mt-3" style="display: none">
-										<div class="col-xl-2 pt-1">Loontabel</div>
-										<div class="col-xl-6">
-
-											<select required name="tabel_id" class="form-control select-no-search">
-												<option value="">Selecteer een loontabel</option>
-											</select>
+											<input autocomplete="off" required style="width: 125px;" class="form-control pickadate-start-plaatsing" type="text" name="start_plaatsing">
 
 										</div>
 									</div>
 
-                                    {* Fucntie selecteren *}
-									<div class="row mt-3" style="display: none">
-										<div class="col-xl-2 pt-1">Functie</div>
-										<div class="col-xl-6">
-
-											<select required name="functie_id" class="form-control select-no-search">
-												<option value="">Selecteer een functie</option>
-											</select>
-
-										</div>
-									</div>
-
-                                    {* Schaal selecteren *}
-									<div class="row mt-3" style="display: none">
-										<div class="col-xl-2 pt-1">Schaal</div>
-										<div class="col-xl-6">
-
-											<select required name="schaal_id" class="form-control select-no-search">
-												<option value="">Selecteer een schaal</option>
-											</select>
-
-										</div>
-									</div>
-
-                                    {* Ervaring selecteren *}
-									<div class="row mt-3" style="display: none">
-										<div class="col-xl-2 pt-1">Ervaring (jaren)</div>
-										<div class="col-xl-6">
-
-											<select required name="periodiek_id" class="form-control select-search">
-												<option value="">Selecteer aantal jaren ervaring</option>
-											</select>
-
-										</div>
-									</div>
-
-                                    {* opslaan *}
-									<div class="row-uurloon" style="display: none">
-
-                                        {* uurloon aanpassen *}
-										<div class="row mt-3">
-											<div class="col-xl-2 pt-1">Uurloon</div>
-											<div class="col-xl-6">
-
-												<input class="form-control" type="text" name="uurloon" value="">
-
-											</div>
-										</div>
-
-                                        {* start plaasting *}
-										<div class="row mt-3">
-											<div class="col-xl-2 pt-1">Start plaatsing</div>
-											<div class="col-xl-6">
-
-												<input class="form-control pickadate-start-plaatsing" type="text" name="start_plaatsing">
-
-											</div>
-										</div>
-
-
-										<div class="row mt-3">
-											<div class="col-xl-2 pt-1">
-												<button type="button" class="btn btn-success" name="add_plaatsing" onclick="plaatsing.add()">
-													<i class="icon-plus-circle2 mr-2"></i>Plaatsing toevoegen
-												</button>
-											</div>
+                                    {* button *}
+									<div class="row mt-3">
+										<div class="col-xl-2 pt-1">
+											<button type="submit" class="btn btn-success" name="set" value="set_plaatsing">
+												<i class="icon-plus-circle2 mr-2"></i>Plaatsing toevoegen
+											</button>
 										</div>
 									</div>
 
 								</form>
 								<!--------------------------------------------- Plaatsing overzicht ------------------------------------------------->
-                                {if count($plaatsingen) > 0 }
-									<fieldset class="mt-4">
+                                {if isset($plaatsingen) && count($plaatsingen) > 0 }
+
+	                                <input type="hidden" name="zzp"_id" value="{$zzp->zzp_id}"/>
+
+	                                <fieldset class="mt-4">
 										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Plaatsingen</legend>
 									</fieldset>
 									<table class="table">
 										<thead>
 											<tr>
 												<th colspan="2">Inlener</th>
-												<th>CAO</th>
-												<th>Loontabel</th>
-												<th>Functie</th>
-												<th>Uurloon</th>
 												<th>Stardatum</th>
+												<th></th>
 												<th></th>
 											</tr>
 										</thead>
 										<tbody>
                                             {foreach $plaatsingen as $p}
-												<tr>
+												<tr style="background-color: #F3F3F3">
 													<td style="width: 25px;">{$p.inlener_id}</td>
 													<td>
-														<a href="{$base_url}/crm/zzp/dossier/overzicht/{$p.inlener_id}">
+														<a href="{$base_url}/crm/inleners/dossier/overzicht/{$p.inlener_id}">
                                                             {$p.inlener}
 														</a>
 													</td>
-													<td>{$p.cao}</td>
-													<td>{$p.loontabel}</td>
-													<td>{$p.functie}</td>
-													<td>€ {$p.bruto_loon|number_format:2:',':'.'}</td>
 													<td>{$p.start_plaatsing|date_format: '%d-%m-%Y'}</td>
 													<td>
 														<a class="text-danger" href="{$base_url}/crm/zzp/dossier/plaatsingen/{$zzp->id}/?delplaatsing={$p.plaatsing_id}" onclick="return confirm('Plaasting verwijderen?')">
 															<i class="icon-trash mr-1"></i>verwijderen
 														</a>
+													</td>
+													<td></td>
+												</tr>
+												<tr>
+													<td colspan="4">
+
+														<!--------------------------------------------- urentypes ------------------------------------------------->
+                                                        {if isset($p.urentypes) && $p.urentypes != NULL}
+															<table>
+																<thead>
+																	<tr>
+																		<th class="p-1 pb-2">Actief</th>
+																		<th class="p-1 pb-2">Urentype</th>
+																		<th class="p-1 pb-2 pl-4"></th>
+																		<th class="p-1 pb-2 pl-3">Verkooptarief</th>
+																		<th class="p-1 pb-2 pl-3">Tarief ZZP'er</th>
+																		<th class="p-1 pb-2 pl-3">Marge</th>
+																	</tr>
+																</thead>
+																<tbody>
+                                                                    {foreach $p.urentypes as $u}
+																		<tr data-id="{$u.id}" class="{if !$u.urentype_active} text-grey-200{/if}">
+																			<td class="p-1 pt-2">
+	                                                                            {if $u.default_urentype != 1}
+																					<div class="form-check">
+																						<label class="form-check-label">
+																							<input data-id="{$u.id}" type="checkbox" class="form-input-styled-info toggle-urentype-active" {if $u.urentype_active} checked{/if}>
+																						</label>
+																						<i class="icon-spinner2 spinner text-primary mr-1" style="display: none; margin-left: -27px">
+																					</div>
+	                                                                            {/if}
+																			</td>
+																			<td style="width: 160px" class="p-1">{$u.label}</td>
+																			<td class="p-1 pl-4 text-right" style="width: 55px;">
+																				<div class="status">
+																					<i class="spinner icon-spinner2" style="display: none"></i>
+																					<i class="icon-check text-green" style="display: none"></i>
+																					<i class="icon-warning2 text-warning" style="display: none"></i>
+																				</div>
+																			</td>
+																			<td class="p-1 pl-3">
+																				<input style="width: 75px" name="" value="{$u.verkooptarief|number_format:2:',':'.'}" type="text" class="form-control text-right update-verkooptarief"/>
+																			</td>
+																			<td class="p-1 pl-3">
+																				<input style="width: 75px" name="" value="{$u.uurtarief|number_format:2:',':'.'}" type="text" class="form-control text-right update-uurtarief"/>
+																			</td>
+																			<td class="p-1 pl-3">
+																				<input style="width: 75px" name="" value="{$u.marge|number_format:2:',':'.'}" type="text" class="form-control text-right update-marge"/>
+																			</td>
+																		</tr>
+
+                                                                    {/foreach}
+																</tbody>
+															</table>
+                                                        {/if}
+
 													</td>
 												</tr>
                                             {/foreach}

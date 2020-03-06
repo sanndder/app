@@ -62,7 +62,6 @@
 								</table>
                             {/if}
 
-                            {if $contract === NULL}
 	                            <!----------------------------------------------------------------------------- Arbeidsovereenkomst -------------------------------------------------------------------------------------->
 	                            <fieldset class="mt-4">
 		                            <legend class="text-uppercase font-size-sm font-weight-bold text-primary">Arbeidsovereenkomst</legend>
@@ -70,7 +69,7 @@
 								<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?contract">
 									<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren
 								</a>
-                            {/if}
+
 						</div>
 
 						<table class="table table-striped text-nowrap datatable-basic no-footer" data-order="[[1,&quot;asc&quot; ]]">
@@ -145,7 +144,7 @@
 															<i class="icon-pencil5"></i> Email digitaal tekenen
 														</a>
 														<div class="dropdown-divider"></div>
-														<a href="javascript:void(0)" class="dropdown-item">
+														<a href="crm/werknemers/dossier/documenten/{$werknemer->werknemer_id}?deldocument={$d.document_id}" class="dropdown-item">
 															<i class="icon-trash"></i> Verwijderen
 														</a>
 													</div>

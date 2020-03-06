@@ -3,6 +3,7 @@
 namespace models\werknemers;
 
 use models\Connector;
+use models\users\UserGroup;
 use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -66,7 +67,16 @@ class WerknemerGroup extends Connector {
 	 */
 	public function count()
 	{
-		$query = $this->db_user->query( "SELECT COUNT(werknemer_id) AS count FROM werknemers_status WHERE complete = 1 AND archief = 0" );
+		$sql = "SELECT COUNT(werknemers_status.werknemer_id) AS count 
+				FROM werknemers_status 
+				LEFT JOIN werknemers_uitzenders ON werknemers_status.werknemer_id = werknemers_uitzenders.werknemer_id
+				WHERE werknemers_uitzenders.deleted = 0 AND werknemers_status.complete = 1 AND werknemers_status.archief = 0 ";
+
+		if( $this->user->user_type == 'uitzender')
+			$sql .= " AND werknemers_uitzenders.uitzender_id = ". $this->uitzender->id;
+
+		$query = $this->db_user->query( $sql );
+
 		$data = DBhelper::toRow( $query );
 		return $data['count'];
 	}
@@ -146,7 +156,26 @@ class WerknemerGroup extends Connector {
 			$row['naam'] = make_name($row);
 			$data[$row['werknemer_id']] = $row;
 		}
-
+		
+		//plaatsingen erbij
+		$sql = "SELECT werknemers_inleners.werknemer_id, werknemers_inleners.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam
+				FROM werknemers_inleners
+    			LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = werknemers_inleners.inlener_id
+				WHERE werknemers_inleners.deleted = 0 AND werknemer_id IN (".array_keys_to_string($data).")";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+				$data[$row['werknemer_id']]['inleners'][$row['inlener_id']] = $row['bedrijfsnaam'];
+		}
+		
+		//kijken of uitzender users heeft
+		$users = UserGroup::listUsertypeID('werknemer', array_keys($data));
+		
+		foreach ( $users as $user )
+			$data[$user]['user'] = 1;
+		
 		return $data;
 	}
 	

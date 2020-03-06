@@ -1,7 +1,7 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Inlener{/block}
 {block "header-icon"}icon-office{/block}
-{block "header-title"}Inlener - {$inlener->bedrijfsnaam}{/block}
+{block "header-title"}Inlener - {$inlener->bedrijfsnaam} {if $inlener->archief == 1} <span style="color:red">(archief)</span> {/if}{/block}
 
 {block "content"}
 
@@ -64,6 +64,19 @@
 									</div><!-- /row -->
 
 								</div>
+
+								<div>
+                                    {if $inlener->archief == 0}
+										<a style="width: 200px" href="crm/inleners/dossier/overzicht/{$inlener->inlener_id}?action=archief" class="btn btn-light">
+											<i class="icon-archive mr-1"></i>Naar archief
+										</a>
+                                    {/if}
+                                    {if $inlener->archief == 1}
+										<a style="width: 200px" href="crm/inleners/dossier/overzicht/{$inlener->inlener_id}?action=uitarchief" class="btn btn-light">
+											<i class="icon-archive mr-1"></i>Uit archief
+										</a>
+                                    {/if}
+								</div>
 							</div>
 
 
@@ -79,7 +92,7 @@
 						</div>
 
 						<div class="card-body">
-							<span><i>Geen fatcuren gevonden</i></span>
+							<span><i>Geen facturen gevonden</i></span>
 						</div>
 
                         {*

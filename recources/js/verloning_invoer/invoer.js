@@ -45,6 +45,7 @@ let invoer = {
 		
 		//van periode veranderen
 		$(document).on('click', '[data-vi-action="setPeriode"]', function(){
+			
 			invoer.setPeriode($(this).data('value'));
 			invoer.setJaar($('.vi-jaar').html());
 			
@@ -52,6 +53,7 @@ let invoer = {
 
 			//data schermen herladen
 			invoer.buildMainTab();
+			invoer.updateVoorbeeldBtn();
 		});
 		
 		//van main tab wisselen
@@ -82,6 +84,10 @@ let invoer = {
 	generateFactuur( obj ){
 		
 		$btn = $(obj);
+		
+		//disable btn
+		$btn.prop('disabled', true);
+		
 		$btn.find('.fa-file-pdf').removeClass('fa-file-pdf');
 		$btn.find('i').addClass('spinner icon-spinner2');
 		
@@ -92,7 +98,53 @@ let invoer = {
 		if( response !== false ){
 			response.done(function(json){
 			
+				if( json.status != 'success' )
+				{
+					msg = '<div style="padding-top:10px">';
+					for( var e of Object.values(json.error) )
+						msg += e + '<br />';
+					
+					msg += '</div>';
+					
+					Swal.fire({
+						type:'warning',
+						title:'Facturen konden niet worden gegenereerd wegens volgende fout(en):',
+						html: msg,
+						showCancelButton: false,
+						width: '800px',
+						confirmButtonClass:'btn btn-warning',
+						confirmButtonText: '<i class="icon-cross2 mr-1"></i>sluiten',
+					});
+					
+				}
+				else
+				{
+					Swal.fire({
+						type:'success',
+						title:'Uw facturen zijn succesvol gegenereerd',
+						showCancelButton: false,
+						confirmButtonClass:'btn btn-success',
+						confirmButtonText: '<i class="icon-checkmark3 mr-1"></i>sluiten',
+					});
+					//reload
+					invoer.buildInvoerSchermen();
+				}
+				
+			}).fail( function(){
+				Swal.fire({
+					type:'warning',
+					title:'Er gaat wat fout bij het genereren van de facturen?',
+					text:'',
+					showCancelButton: false,
+					confirmButtonClass:'btn btn-warning',
+					confirmButtonText: '<i class="icon-cross2 mr-1"></i>sluiten',
+				});
+			}).always(function(){
+				$btn.prop('disabled', false);
+				$btn.find('i').addClass('fa-file-pdf');
+				$btn.find('i').removeClass('spinner icon-spinner2');
 			});
+		
 		}
 	},
 	
@@ -169,6 +221,8 @@ let invoer = {
 	setInlener(inlener_id){
 		//geklikt element
 		$click = $('[data-vi-action="setInlener"][data-id="' + inlener_id + '"]');
+		
+		invoer.updateVoorbeeldBtn();
 		
 		//factuurknoppen weergeven
 		$('.vi-factuur-buttons').show();
@@ -296,7 +350,6 @@ let invoer = {
 					$('.nav-et').show();
 				
 				//ureninvoer laden
-				log(json);
 				if( invoer.invoertab == 'uren' )
 					invoeruren.buildUreninvoer(json);
 				
@@ -335,6 +388,11 @@ let invoer = {
 			invoerbijlages.buildBijlagesTab();
 	},
 	
+	updateVoorbeeldBtn()
+	{
+		$('.voorbeeld').attr('href', 'ureninvoer/ureninvoer/factuur?tijdvak=' + data.tijdvak + '&jaar=' + data.jaar + '&periode=' + data.periode +'&inlener=' + data.inlener_id +'&uitzender=' + data.uitzender_id);
+		
+	},
 	
 	//Uren invoer scherm -> lijst met werknemers laden ------------------------------------------------------------------------------------------------------------------------------
 	buildInvoerTab( werknemer_id = 0 ){
@@ -342,7 +400,7 @@ let invoer = {
 		$titel = $('.vi-title-name').html(tplUreninvoerTabLoadList);
 		$list = $('.vi-list-werknemers').html('');
 		
-		$('.voorbeeld').attr('href', 'ureninvoer/ureninvoer/factuur?tijdvak=' + data.tijdvak + '&jaar=' + data.jaar + '&periode=' + data.periode +'&inlener=' + data.inlener_id +'&uitzender=' + data.uitzender_id);
+		invoer.updateVoorbeeldBtn();
 		
 		//werknemrslijst laden
 		xhr.url = base_url + 'ureninvoer/ajax/listWerknemers';
@@ -360,7 +418,7 @@ let invoer = {
 				else{
 					let html = '';
 					for( let werknemer of Object.values(json.werknemers) ){
-						let element = tplUreninvoerWerknemerLi.replace(/{werknemer_id}/g, werknemer.werknemer_id).replace('{naam}', werknemer.naam).replace('{msg}', werknemer.block_msg);
+						let element = tplUreninvoerWerknemerLi.replace(/{werknemer_id}/g, werknemer.id).replace('{naam}', werknemer.naam).replace('{msg}', werknemer.block_msg);
 						html += element;
 					}
 					$list.append(html);
@@ -373,7 +431,7 @@ let invoer = {
 						invoer.setWerknemer(werknemer_id);
 					else if( Object.values(json.werknemers).length == 1 )
 						//er is slechts 1 werknemer, deze gelijk kiezen
-						invoer.setWerknemer(json.werknemers[0].werknemer_id);
+						invoer.setWerknemer(json.werknemers[0].id);
 					else
 						//invoer opbouwen zonder werknemer
 						invoer.buildInvoerSchermen();
@@ -410,13 +468,27 @@ let invoer = {
 				else{
 					let html = '';
 					for( let werknemer of Object.values(json.werknemers) ){
-						let element = tplTrOverzicht.replace(/{werknemer_id}/g, werknemer.werknemer_id).replace('{naam}', werknemer.naam).replace('{msg}', werknemer.block_msg);
+						let element = tplTrOverzicht.replace(/{werknemer_id}/g, werknemer.id).replace('{naam}', werknemer.naam).replace('{msg}', werknemer.block_msg);
 						html += element;
 					}
 					$('.vi-table-werknemer-overzicht').show().html('').append(html);
 				}
 			});
 		}
+	},
+	
+	//porject select maken
+	getprojectSelect( json )
+	{
+		let htmlProjecten = null;
+		if( json.info.projecten !== null ){
+			htmlProjecten = '<option></option>';
+			for( let project of Object.values(json.info.projecten) ){
+				let option = tplProjectSelect.replace('{id}', project.id).replace('{label}', project.omschrijving);
+				htmlProjecten += option;
+			}
+		}
+		return htmlProjecten;
 	}
 };
 
@@ -429,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	invoervergoedingen.init();
 	invoeret.init();
 	invoerbijlages.init();
-	
+
 	$('#upload-bijlages').fileinput({
 		uploadUrl: 'ureninvoer/ajax/uploadBijlages',
 		theme: "fa",
@@ -452,7 +524,8 @@ document.addEventListener('DOMContentLoaded', function(){
 	if( document.getElementsByClassName('vi-list-inleners').length == 0 )
 		invoer.setInlener( $('.inlener-id').val() );
 	
-	$('.uitzender-id').val(383).trigger('change');
+	//$('.uitzender-id').val(383).trigger('change');
+	//$('.uitzender-id').val(394).trigger('change');
 	
 	/*
 	setTimeout(function(){
@@ -467,25 +540,25 @@ document.addEventListener('DOMContentLoaded', function(){
 	}, 300);*/
 	
 	
-	
+	/*
 	setTimeout(function(){
 		$('[data-vi-action="setInlener"][data-id="24"]').trigger('click');
 		
 		setTimeout(function(){
 			$('[href="#tab-ureninvoer"]').trigger('click');
 			
-			/*setTimeout(function(){
+			setTimeout(function(){
 				$('[data-id="14000"]').trigger('click');
 				
 				setTimeout(function(){
-					$('[href="#sub-uren"]').trigger('click');
+					$('[href="#sub-kilometers"]').trigger('click');
 		
 				}, 300);
 				
-			}, 300);*/
+			}, 300);
 			
 		}, 300);
 		
-	}, 300);
+	}, 300);*/
 	
 });

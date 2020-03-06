@@ -27,33 +27,63 @@ class Ajax extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	// plaatsing voor werknemer toevoegen
+	// evrkooptarief wijzigen
 	//-----------------------------------------------------------------------------------------------------------------
-	public function addplaatsing()
+	public function setverkooptarief()
 	{
-		$response = array( 'status' => 'error' );
+		$urentype = new Urentypes();
+		$urentype->setZzpUrentypeID( $_POST['id'] );
 		
-		$plaatsing = new Plaatsing();
-		$plaatsing->add( $_POST );
-		
-		if( $plaatsing->errors() === false )
+		if( $urentype->setVerkooptarief( $_POST['tarief'] ))
 			$response = array( 'status' => 'success' );
 		else
-			$response['error'] = $plaatsing->errors();
+			$response = array( 'status' => 'error' );
+		
+		echo json_encode( $response );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// uurtarief wijzigen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function setuurtarief()
+	{
+		$urentype = new Urentypes();
+		$urentype->setZzpUrentypeID( $_POST['id'] );
+		
+		if( $urentype->setUurtarief( $_POST['tarief'] ))
+			$response = array( 'status' => 'success' );
+		else
+			$response = array( 'status' => 'error' );
+		
+		echo json_encode( $response );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// marge wijzigen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function setmarge()
+	{
+		$urentype = new Urentypes();
+		$urentype->setZzpUrentypeID( $_POST['id'] );
+		
+		if( $urentype->setMarge( $_POST['tarief'] ))
+			$response = array( 'status' => 'success' );
+		else
+			$response = array( 'status' => 'error' );
 		
 		echo json_encode( $response );
 	}
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	// get contactpersoon JSON
+	// toggle uren type
 	//-----------------------------------------------------------------------------------------------------------------
 	public function toggleurentype()
 	{
 		//init werknemer object
 		$urentypes = new Urentypes();
 		
-		$urentypes->setWerknemerUrentypeID( $_GET['id'] )->setActiveStatus( $_GET['state'] );
+		$urentypes->setZzpUrentypeID( $_GET['id'] )->setActiveStatus( $_GET['state'] );
 		
 		//init response
 		$response = array( 'status' => 'error' );

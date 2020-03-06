@@ -16,6 +16,60 @@
 				<!--------------------------------------------------------------------------- left ------------------------------------------------->
 				<div class="col-md-3">
 
+					<!--------------------------------------------------------------------------- aantallen ------------------------------------------------->
+					<div class="card">
+						<div class="card-body">
+
+                            {* inleners *}
+							<div class="d-flex align-items-center mb-3 mb-sm-0 mt-3">
+								<a href="crm/inleners" class="text-default">
+									<div class="rounded-circle bg-warning-400">
+										<i class="icon-user-tie icon-xl text-white p-2"></i>
+									</div>
+								</a>
+								<a href="crm/inleners" class="text-default">
+									<div class="ml-3">
+										<h5 class="font-weight-semibold mb-0">{$count_inleners}</h5>
+										<span class="text-muted text-uppercase">Inleners</span>
+									</div>
+								</a>
+							</div>
+
+                            {* werknemers of zzp'ers *}
+                            {if $werkgever_type == 'uitzenden'}
+								<div class="d-flex align-items-center mb-3 mb-sm-0 mt-3">
+									<a href="crm/werknemers" class="text-default">
+										<div class="rounded-circle bg-blue">
+											<i class="icon-user icon-xl text-white p-2"></i>
+										</div>
+									</a>
+									<a href="crm/werknemers" class="text-default">
+										<div class="ml-3">
+											<h5 class="font-weight-semibold mb-0">{$count_werknemers}</h5>
+											<span class="text-muted text-uppercase">Werknemers</span>
+										</div>
+									</a>
+								</div>
+                            {/if}
+
+                            {if $werkgever_type == 'bemiddeling'}
+								<div class="d-flex align-items-center mb-3 mb-sm-0 mt-3">
+									<a href="crm/zzp" class="text-default">
+										<div class="rounded-circle bg-blue">
+											<i class="icon-user icon-xl text-white p-2"></i>
+										</div>
+									</a>
+									<a href="crm/zzp" class="text-default">
+										<div class="ml-3">
+											<h5 class="font-weight-semibold mb-0">{$count_zzp}</h5>
+											<span class="text-muted text-uppercase">ZZp'ers</span>
+										</div>
+									</a>
+								</div>
+                            {/if}
+						</div>
+					</div>
+
 					<!----------------- Documenten --------------------->
 					<div class="card">
 						<div class="card-header bg-transparent header-elements-inline">
@@ -197,21 +251,6 @@
 									</li>
                                 {/if}
 							</ul>
-						</div>
-					</div>
-
-					<!----------------- Log  --------------------------->
-					<div class="card">
-						<div class="card-header bg-transparent header-elements-inline">
-							<span class="card-title font-weight-semibold">Laatste gebeurtenissen</span>
-							<div class="header-elements">
-								<div class="list-icons">
-									<a class="list-icons-item" data-action="collapse"></a>
-								</div>
-							</div>
-						</div>
-						<div class="card-body">
-
 						</div>
 					</div>
 

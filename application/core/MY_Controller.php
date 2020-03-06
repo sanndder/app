@@ -56,7 +56,6 @@ class MY_Controller extends CI_Controller
 				$redirect_url = $this->auth->loginOverrideByUsertype( $_GET['loginals'],  $_GET['id'] );
 				redirect( $redirect_url  ,'location' );
 			}
-			
 			//eventueel switchen VOOR de check ivm connect database
 			if( isset($_GET['switchto']) )
 			{
@@ -87,6 +86,18 @@ class MY_Controller extends CI_Controller
 		//always load werkgever
 		$this->load->model('werkgever_model', 'werkgever');
 		
+		//juiste termen aanmaken
+		if( $this->user->werkgever_type == 'uitzenden' )
+		{
+			$this->smarty->assign( '_werknemers' , 'werknemers' );
+			$this->smarty->assign( '_werknemer' , 'werknemer' );
+		}
+		if( $this->user->werkgever_type == 'bemiddeling' )
+		{
+			$this->smarty->assign( '_werknemers' , "ZZP'ers" );
+			$this->smarty->assign( '_werknemer' , "ZZP'er" );
+		}
+		
 		//deze classes niet redirecten
 		$no_redirect[] = 'welkom';
 		$no_redirect[] = 'ajax';
@@ -109,6 +120,13 @@ class MY_Controller extends CI_Controller
 			$this->smarty->assign( 'inlener_id', $this->user->inlener_id );
 			if( $this->inlener->blockAccess() && !in_array( $this->uri->segment(1), $no_redirect) )
 				redirect( $this->config->item( 'base_url' ) . $this->inlener->redirectUrl() ,'location' );
+		}
+		
+		//usertype model laden
+		if( $this->user->user_type == 'werknemer' )
+		{
+			$this->load->model('werknemer_model', 'werknemer');
+			$this->smarty->assign( 'werknemer_id', $this->user->werknemer_id );
 		}
 		
 	}

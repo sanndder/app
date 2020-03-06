@@ -112,6 +112,49 @@ class UrentypesGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * urentypes voor zzp'er
+	 *
+	 */
+	public function urentypesZzp( $zzp_id, $include_not_active = false ) :array
+	{
+		$sql = "SELECT zzp_urentypes.id, inleners_urentypes.doorbelasten_uitzender, inleners_urentypes.label, urentypes.naam, urentypes.percentage, urentypes_categorien.naam AS categorie,zzp_urentypes.verkooptarief,
+     			zzp_urentypes.urentype_active, inleners_urentypes.default_urentype, zzp_urentypes.uurtarief, zzp_urentypes.marge
+				FROM zzp_urentypes
+				LEFT JOIN inleners_urentypes ON inleners_urentypes.inlener_urentype_id = zzp_urentypes.inlener_urentype_id
+				LEFT JOIN urentypes ON inleners_urentypes.urentype_id = urentypes.urentype_id
+				LEFT JOIN urentypes_categorien on urentypes.urentype_categorie_id = urentypes_categorien.urentype_categorie_id
+				WHERE zzp_urentypes.deleted = 0 AND zzp_urentypes.zzp_id = $zzp_id AND inleners_urentypes.inlener_id = $this->_inlener_id
+				";
+		
+		//alleen actief
+		if( !$include_not_active )
+			$sql .= " AND zzp_urentypes.urentype_active = 1 ";
+		
+		$sql .=	"ORDER BY urentypes.urentype_categorie_id, inleners_urentypes.inlener_urentype_id, urentypes.percentage";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return array();
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $row['label'] == '' )
+				$row['label'] = $row['naam'];
+			
+			//zzp mag nooit uurtarief zien
+			if( $this->user->user_type == 'zzp' ) unset($row['verkooptarief']);
+			if( $this->user->user_type == 'zzp' ) unset($row['marge']);
+			
+			$data[$row['id']] = $row;
+		}
+		
+		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * uretypes voor inlener ophalen
 	 *
 	 */
@@ -133,7 +176,7 @@ class UrentypesGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get matrix
+	 * get matrix werknemer
 	 *
 	 */
 	public function getUrentypeWerknemerMatrix()
@@ -162,6 +205,45 @@ class UrentypesGroup extends Connector
 		{
 			$row['werknemer_naam'] = make_name( $row );
 			$urentypes[$row['inlener_urentype_id']]['werknemers'][] = $row;
+		}
+		
+		return $urentypes;
+	}
+	
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get matrix
+	 *
+	 */
+	public function getUrentypeZzpMatrix()
+	{
+		//alle urentypes voor inlener ophalen
+		$urentypes = $this->urentypesInlener();
+		
+		//alle werknemers ophalen
+		$sql = "SELECT zzp_urentypes.id, zzp_urentypes.urentype_active, zzp_urentypes.zzp_id, zzp_urentypes.verkooptarief, zzp_urentypes.urentype_id, zzp_urentypes.plaatsing_id,
+       				   zzp_urentypes.inlener_urentype_id, zzp_bedrijfsgegevens.bedrijfsnaam, zzp_persoonsgegevens.voornaam, zzp_persoonsgegevens.voorletters, zzp_persoonsgegevens.tussenvoegsel
+				FROM zzp_urentypes
+				LEFT JOIN zzp_bedrijfsgegevens ON zzp_urentypes.zzp_id = zzp_bedrijfsgegevens.zzp_id
+				LEFT JOIN zzp_persoonsgegevens ON zzp_urentypes.zzp_id = zzp_persoonsgegevens.zzp_id
+				LEFT JOIN zzp_status ON zzp_urentypes.zzp_id = zzp_status.zzp_id
+				LEFT JOIN zzp_inleners ON (zzp_urentypes.plaatsing_id = zzp_inleners.plaatsing_id  )
+				WHERE zzp_urentypes.inlener_id = $this->_inlener_id AND zzp_bedrijfsgegevens.deleted = 0 AND zzp_persoonsgegevens.deleted = 0 AND zzp_urentypes.deleted = 0 AND zzp_inleners.deleted = 0
+				AND zzp_status.archief = 0
+				ORDER BY achternaam, plaatsing_id
+				";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return $urentypes;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$row['zzp_naam'] = make_name( $row );
+			$urentypes[$row['inlener_urentype_id']]['zzp'][] = $row;
 		}
 		
 		return $urentypes;

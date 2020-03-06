@@ -1,3 +1,12 @@
+let _werknemer = "werknemer";
+let _werknemers = "werknemers";
+
+if( werkgever == 'bemiddeling' )
+{
+	_werknemer = "ZZP'er";
+	_werknemers = "ZZP'ers";
+}
+
 //lege inlener lijst
 let tplInlenersListEmpty = '<li class="nav-item"><a href="javascript:void(0)" class="nav-link vi-list-item"> <span class="font-italic">Geen inleners gevonden</span> </a></li>';
 
@@ -13,7 +22,7 @@ let tplPeriodeList = '<a href="javascript:void(0)" class="dropdown-item" data-va
 
 //overzicht laden
 let tplOverzichtTabLoad = '<div class="p-4 font-italic"><i class="icon-spinner2 spinner mr-1"></i> Overzicht laden...</li></div>';
-let tplOverzichtTabEmpty = '<div class="p-4 font-italic"><i class="icon-exclamation mr-1"></i> Geen werknemers gevonden</li></div>';
+let tplOverzichtTabEmpty = '<div class="p-4 font-italic"><i class="icon-exclamation mr-1"></i> Geen ' + _werknemers + ' gevonden</li></div>';
 
 //overzicht tabel tr
 let tplTrOverzicht = `<tr>
@@ -33,12 +42,14 @@ let tplTrOverzicht = `<tr>
 
 
 //werknemerlijst laden
-let tplUreninvoerTabLoadList = '<i class="icon-spinner2 spinner mr-1"></i> Werknemers laden...';
+let tplUreninvoerTabLoadList = '<i class="icon-spinner2 spinner mr-1"></i> '+_werknemers+' laden...';
 let tplUreninvoerWerknemerLi = '<li class="vi-list-item text-muted" data-id="{werknemer_id}" data-vi-action="setWerknemer"><span>{werknemer_id} -  {naam}</span></li>';
 
 //wait voor alle invoerschermen
 let tplInvoerLoad = '<div class="mt-1 wait-div"><i class="icon-spinner2 spinner mr-1"></i> Invoer laden...</div>';
 
+//select met urentypes
+let tplProjectSelect = '<option value="{id}">{label}</option>';
 
 //select met urentypes
 let tplUrenTypesSelect = '<option value="{id}">{label}</option>';
@@ -55,7 +66,12 @@ let tplUrenInvoerTr = `<tr class="{class}" data-id="{invoer_id}">
 								</select>
 							</td>
 							<td><input autocomplete="off" value="{aantal}" name="aantal" type="text" class="form-control text-right" placeholder="0:00" style="width: 40px" data-vi-action="saveUrenRow"></td>
-							<td><input value="{project_tekst}" name="project_tekst" type="text" class="form-control" data-vi-action="saveUrenRow"></td>
+							<td>
+								<select name="project_id" class="vi-select-project form-control" data-vi-action="saveUrenRow">
+									{select_projecten}
+								</select>
+								<input value="{project_tekst}" name="project_tekst" type="text" class="form-control" data-vi-action="saveUrenRow">
+							</td>
 							<td><input value="{locatie_tekst}" name="locatie_tekst" type="text" class="form-control" data-vi-action="saveUrenRow"></td>
 						</tr>`;
 
@@ -68,11 +84,6 @@ let tplKmInvoerStatusError = '<span class="text-danger"><i class="icon-warning22
 
 //kilometer invoer tabel row
 let tplKmInvoerTr = `<tr data-id="{invoer_id}">
-						<td>
-							<div class="input-group">
-								<input value="{datum}" type="text" class="form-control pickadate-vi-km" name="datum" data-vi-action="saveKmRow" />
-							</div>
-						</td>
 						<td><input value="{aantal}" type="text" class="form-control text-right" name="aantal" data-vi-action="saveKmRow" /></td>
 						<td><input value="{opmerking_tekst}" type="text" class="form-control" name="opmerking_tekst" data-vi-action="saveKmRow" /></td>
 						<td>
@@ -80,6 +91,11 @@ let tplKmInvoerTr = `<tr data-id="{invoer_id}">
 								<option></option>
 								<option value="inlener">Inlener</option>
 								<option value="uitzender">Uitzender</option>
+							</select>
+						</td>
+						<td>
+							<select name="project_id" class="vi-select-project form-control" data-vi-action="saveKmRow">
+								{select_projecten}
 							</select>
 						</td>
 						<td class="td-actions pt-1">

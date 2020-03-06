@@ -1,6 +1,7 @@
 <?php
 
 use models\documenten\DocumentGroup;
+use models\facturatie\FacturenGroup;
 use models\forms\Formbuilder;
 use models\inleners\InlenerGroup;
 use models\uitzenders\Uitzender;
@@ -404,7 +405,31 @@ class Dossier extends MY_Controller
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
 		$this->checkaccess($uitzender);
+		
+		//verwijderen
+		if( isset($_GET['del']) )
+		{
+			$factuur = new \models\facturatie\Factuur( $_GET['del'] );
+			$factuur->delete();
+		}
+		
+		//emailen
+		if( isset($_GET['email']) )
+		{
+			$factuur = new \models\facturatie\Factuur( $_GET['email'] );
+			if( $factuur->email() )
+				redirect( $this->config->item( 'base_url' ) . '/crm/uitzenders/dossier/facturen/' . $uitzender_id . '?send' ,'location' );
+		}
+		
+		if( isset($_GET['send']) )
+			$this->smarty->assign('msg', msg('success', 'Factuur is verstuurd'));
+		
+		$facturengroep = new FacturenGroup();
+		$facturen = $facturengroep->setUitzender( $uitzender_id )->facturenMatrix();
 
+		$this->smarty->assign( 'facturen', $facturen );
+		$this->smarty->assign( 'jaren', $facturengroep->jarenArray() );
+		
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/facturen.tpl');
 	}

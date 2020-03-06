@@ -62,9 +62,15 @@ class InvoerKm extends Invoer
 			$row['opmerking_tekst'] = NULL;
 		
 		//afronden
-		$row['aantal'] = ceil( $row['aantal'] );
+		$row['aantal'] = round( $row['aantal'],2 );
 		$row['invoer_id'] = intval( $row['invoer_id'] );
-		$row['datum'] = reverseDate( $row['datum'] );
+		
+		if( intval($row['project_id']) > 0 )
+			$row['project_id'] = intval($row['project_id']);
+		else
+			$row['project_id'] = NULL;
+		
+		//$row['datum'] = reverseDate( $row['datum'] );
 		
 		return $row;
 	}
@@ -88,6 +94,9 @@ class InvoerKm extends Invoer
 	 */
 	public function setRow( $row ): ?array
 	{
+		$tijdvakinfo = $this->tijdvakinfo();
+		$row['datum'] = $tijdvakinfo['periode_start'];
+		
 		$set = $this->_validateInput( $row );
 		$set['aantal_snelste'] = $set['aantal'];
 		
@@ -109,6 +118,7 @@ class InvoerKm extends Invoer
 			$oude_entry = $this->getRow( $set['invoer_id'] );
 			
 			$this->db_user->where( 'invoer_id', $set['invoer_id'] );
+			$this->db_user->where( 'factuur_id', NULL );
 			$this->db_user->where( 'werknemer_id', $this->_werknemer_id );
 			$this->db_user->update( 'invoer_kilometers', $set );
 			
@@ -127,8 +137,19 @@ class InvoerKm extends Invoer
 	 */
 	public function clearAll(): bool
 	{
-		$sql = "DELETE FROM invoer_kilometers WHERE werknemer_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?";
-		$this->db_user->query( $sql, array( $this->_werknemer_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		if( $this->user->werkgever_type == 'uitzenden' )
+		{
+			$sql = "DELETE FROM invoer_kilometers WHERE factuur_id IS NULL AND werknemer_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?";
+			$this->db_user->query( $sql, array( $this->_werknemer_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+			
+		}
+		
+		if( $this->user->werkgever_type == 'bemiddeling' )
+		{
+			$sql = "DELETE FROM invoer_kilometers WHERE factuur_id IS NULL AND zzp_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?";
+			$this->db_user->query( $sql, array( $this->_zzp_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+			
+		}
 		
 		if( $this->db_user->affected_rows() != -1 )
 		{
@@ -148,7 +169,7 @@ class InvoerKm extends Invoer
 	public function delRow( $row ): bool
 	{
 		$oude_entry = $this->getRow( $row['invoer_id'] );
-		$this->db_user->query( "DELETE FROM invoer_kilometers WHERE invoer_id = ? AND werknemer_id = ?", array( $row['invoer_id'], $this->_werknemer_id) );
+		$this->db_user->query( "DELETE FROM invoer_kilometers WHERE factuur_id IS NULL AND invoer_id = ? AND werknemer_id = ?", array( $row['invoer_id'], $this->_werknemer_id) );
 		
 		if( $this->db_user->affected_rows() != -1 )
 		{
@@ -212,6 +233,37 @@ class InvoerKm extends Invoer
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
+	 * alle kilometers voor werknemer voor facturatie ophalen
+	 *
+	 */
+	public function getZzpKilometerRijen()
+	{
+		$sql = "SELECT invoer_id, aantal, datum, project_id, project_tekst, locatie_tekst, opmerking_tekst, doorbelasten, locatie_van, locatie_naar
+				FROM invoer_kilometers WHERE invoer_kilometers.factuur_id IS NULL AND zzp_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?
+				ORDER BY datum";
+		
+		$query = $this->db_user->query( $sql, array( $this->_zzp_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $row['project_tekst'] === NULL ) $row['project_tekst'] = '';
+			if( $row['locatie_tekst'] === NULL ) $row['locatie_tekst'] = '';
+			if( $row['opmerking_tekst'] === NULL ) $row['opmerking_tekst'] = '';
+			
+			$row['datum'] = reverseDate($row['datum']);
+			
+			$data[] = $row;
+		}
+		
+		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
 	 * alle kilometers voor werknemer ophalen
 	 *
 	 */
@@ -222,6 +274,37 @@ class InvoerKm extends Invoer
 				ORDER BY datum";
 		
 		$query = $this->db_user->query( $sql, array( $this->_werknemer_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $row['project_tekst'] === NULL ) $row['project_tekst'] = '';
+			if( $row['locatie_tekst'] === NULL ) $row['locatie_tekst'] = '';
+			if( $row['opmerking_tekst'] === NULL ) $row['opmerking_tekst'] = '';
+			
+			$row['datum'] = reverseDate($row['datum']);
+			
+			$data[] = $row;
+		}
+		
+		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alle kilometers voor werknemer ophalen
+	 *
+	 */
+	public function getZzpKilometers()
+	{
+		$sql = "SELECT invoer_id, aantal, datum, project_id, project_tekst, locatie_tekst, opmerking_tekst, doorbelasten, locatie_van, locatie_naar
+				FROM invoer_kilometers WHERE zzp_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?
+				ORDER BY datum";
+		
+		$query = $this->db_user->query( $sql, array( $this->_zzp_id, $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
 		
 		if( $query->num_rows() == 0 )
 			return NULL;

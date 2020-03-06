@@ -42,6 +42,18 @@ class Test extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	// kvk api
 	//-----------------------------------------------------------------------------------------------------------------
+	public function export( $werknemer_id )
+	{
+		$export = new \models\verloning\ExportWerknemers();
+		$export->setWerknemer( $werknemer_id );
+		
+		$export->xml();
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// kvk api
+	//-----------------------------------------------------------------------------------------------------------------
 	public function dates()
 	{
 		vshow(Tijdvak::weeknr('2020-01-27'));
@@ -118,8 +130,8 @@ class Test extends MY_Controller {
 	{
 		$_POST['tijdvak'] = 'w';
 		$_POST['jaar'] = '2020';
-		$_POST['periode'] = '6';
-		$_POST['uitzender_id'] = '383';
+		$_POST['periode'] = '7';
+		$_POST['uitzender_id'] = '393';
 		$_POST['inlener_id'] = $inlener_id;
 		
 		//tijdvak uit post data
@@ -138,6 +150,15 @@ class Test extends MY_Controller {
 		
 		show( $factuurFactory->errors() );
 		vshow( $factuurFactory->errors() );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// connect to creditsafe
+	//-----------------------------------------------------------------------------------------------------------------
+	public function rebuild($factuur_id)
+	{
+		$factuurFactory = new FactuurFactory();
+		$factuurFactory->rebuildPdf($factuur_id);
 	}
 	
 	

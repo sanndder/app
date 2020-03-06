@@ -65,6 +65,10 @@ class File extends Connector {
 		if( is_dir($this->_file_path) )
 			$this->_error[] = 'Path is een map, geen bestand';
 		
+		//stop
+		if( $this->_error !== NULL )
+			return $this;
+		
 		//set file info
 		$this->_setInfo();
 

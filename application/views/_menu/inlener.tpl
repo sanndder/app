@@ -31,7 +31,7 @@
 			</li>
 
 			<li class="nav-item">
-				<a href="facturenoverzicht/uitzender" class="navbar-nav-link">
+				<a href="facturenoverzicht/inlener" class="navbar-nav-link">
 					<i class="mi-euro-symbol mr-2" style="font-weight: bold"></i>
 					Facturen
 				</a>

@@ -4,6 +4,7 @@ use models\documenten\DocumentFactory;
 use models\documenten\IDbewijs;
 use models\documenten\Template;
 use models\forms\Formbuilder;
+use models\inleners\InlenerGroup;
 use models\zzp\ZzpGroup;
 use models\uitzenders\UitzenderGroup;
 use models\utils\Carbagecollector;
@@ -165,7 +166,6 @@ class Dossier extends MY_Controller
 		//historische data ophalen
 		//$log = new History();
 		//$data = $log->table( 'inlener_bedrijfsgegevens')->index( array('zzp_id' => 3 ) )->data();
-		//show($data);
 		
 		//load the formbuilder
 		$formbuidler = new Formbuilder();
@@ -202,7 +202,6 @@ class Dossier extends MY_Controller
 		$formdata['uitzender_id']['value'] = $zzp->uitzenderID();
 		
 		$this->smarty->assign('formdata', $formdata);
-		//show($zzp);
 		
 		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign('zzp', $zzp);
@@ -264,6 +263,7 @@ class Dossier extends MY_Controller
 		
 		$this->smarty->assign('zzp', $zzp);
 
+		$this->smarty->assign('uittreksel', $zzp->uittreksel() );
 		$this->smarty->assign('id_voorkant', $idbewijs->url( 'voorkant' ));
 		$this->smarty->assign('id_achterkant', $idbewijs->url( 'achterkant' ));
 		$this->smarty->assign('vervaldatum', $idbewijs->vervaldatum() );
@@ -277,13 +277,26 @@ class Dossier extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
+	// uittreksel kvk downloaden
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uittrekselkvk( $zzp_id = NULL )
+	{
+		//init zzp object
+		$zzp = new Zzp( $zzp_id );
+		
+		$uittreksel = $zzp->uittreksel( 'download' );
+	}
+	
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
 	// plaatsingen pagina
 	//-----------------------------------------------------------------------------------------------------------------
 	public function plaatsingen( $zzp_id = NULL )
 	{
 		//init werknemer object
 		$zzp = new Zzp( $zzp_id );
-		$zzpGroup = new ZzpGroup();
+		$inlenerGroup = new InlenerGroup();
 		$plaatsingGroup = new PlaatsingGroup();
 		
 		//Uitzender wijzigen
@@ -299,9 +312,17 @@ class Dossier extends MY_Controller
 					else
 						$this->smarty->assign( 'msg', msg( 'warning', $zzp->errors() ) );
 					break;
+				case 'set_plaatsing':
+					$plaatsing = new Plaatsing();
+					$plaatsing->zzpId($zzp_id);
+					$plaatsing->add( $_POST );
+					if( $plaatsing->errors() !== false )
+						$this->smarty->assign( 'msg', msg( 'warning', $plaatsing->errors() ) );
+					
+					break;
 			}
 		}
-		
+
 		//plaatsing verwijderen
 		if( isset($_GET['delplaatsing']) )
 		{
@@ -309,13 +330,13 @@ class Dossier extends MY_Controller
 			$plaatsing->delete();
 		}
 		
-		$zzps = $zzpGroup->uitzender( $zzp->uitzenderID() )->all();
+		$inleners = $inlenerGroup->uitzender( $zzp->uitzenderID() )->all();
 
 		//$this->smarty->assign('plaatsingen', $plaatsingen );
 		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
-		$this->smarty->assign('inleners', $zzps );
+		$this->smarty->assign('inleners', $inleners );
 		$this->smarty->assign('zzp', $zzp);
-		$this->smarty->assign('plaatsingen', $plaatsingGroup->werknemer($zzp_id)->all() );
+		$this->smarty->assign('plaatsingen', $plaatsingGroup->zzp($zzp_id)->all() );
 		$this->smarty->assign('zzp_uitzender', $zzp->uitzender());
 		$this->smarty->display('crm/zzp/dossier/plaatsingen.tpl');
 	}
@@ -360,12 +381,8 @@ class Dossier extends MY_Controller
 			$errors = false; //no errors
 		}
 		
-		
-		//show($factuurgegevens);
 		$formdata = $formbuidler->table( 'zzp_factuurgegevens' )->data( $factuurgegevens )->errors( $errors )->build();
 		$this->smarty->assign('formdata', $formdata);
-		
-		//show($formdata);
 		
 		$this->smarty->assign('zzp', $zzp);
 		$this->smarty->display('crm/zzp/dossier/factuurgegevens.tpl');

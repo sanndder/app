@@ -17,6 +17,8 @@ class DocumentGroup extends Connector {
 	private $_inlener_id = NULL;
 	private $_uitzender_id = NULL;
 	
+	private $_flags = 0;
+	
 	private $_deleted = 0;
 	
 	
@@ -66,10 +68,11 @@ class DocumentGroup extends Connector {
 		return $this;
 	}
 	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * met verwijderde items
-	 * @return object
+	 * @return ?array
 	 */
 	public function get()
 	{
@@ -92,6 +95,62 @@ class DocumentGroup extends Connector {
 		return DBhelper::toArray( $query, 'document_id');
 	}
 	
+	
+	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * wat is de status van de arbeidscontracten
+	 *
+	 */
+	public function arbeidscontracten() :?array
+	{
+		$sql = "SELECT werknemers_status.werknemer_id, werknemers_gegevens.achternaam, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam, werknemers_gegevens.tussenvoegsel,
+				documenten.document_id, documenten.send, documenten.send_on, documenten.signed, documenten.signed_on,
+       			documenten_templates_settings.template_name, documenten_templates_settings.fase
+				FROM werknemers_status
+				LEFT JOIN werknemers_gegevens ON werknemers_status.werknemer_id = werknemers_gegevens.werknemer_id
+				LEFT JOIN documenten ON documenten.werknemer_id = werknemers_status.werknemer_id
+				LEFT JOIN documenten_templates_settings ON documenten.template_id = documenten_templates_settings.template_id
+				WHERE werknemers_status.archief = 0 AND werknemers_status.complete = 1 AND documenten.deleted = 0
+				AND documenten_templates_settings.arbeidsovereenkomst = 1 AND documenten_templates_settings.deleted = 0 AND werknemers_gegevens.deleted = 0
+				ORDER BY werknemers_gegevens.achternaam";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		//reset
+		$this->_flags = 0;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$row['naam'] = make_name($row);
+			$data[$row['werknemer_id']] = $row;
+			
+			if( $row['send'] == 0 )
+			{
+				$this->_flags++;
+			}
+			else
+			{
+				if( $row['signed'] == 0 )
+					$this->_flags++;
+			}
+		}
+		
+		return $data;
+	}
+	
+	
+	/**---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * zijn er issues
+	 *
+	 */
+	public function flags() :int
+	{
+		return $this->_flags;
+	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

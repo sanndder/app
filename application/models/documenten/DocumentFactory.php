@@ -34,6 +34,9 @@ class DocumentFactory extends Connector {
 		
 		//juiste document starten
 		switch ( $documentType ) {
+			case 'uitzendbevestiging':
+				$document = new DocumentUitzendbevestiging( $templateObject );
+				break;
 			default:
 				$document = new DocumentDefault( $templateObject );
 				break;

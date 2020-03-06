@@ -3,6 +3,8 @@
 namespace models\facturatie;
 
 use models\Connector;
+use models\email\Email;
+use models\file\Pdf;
 use models\forms\Validator;
 use models\inleners\Inlener;
 use models\pdf\PdfFactuur;
@@ -25,7 +27,7 @@ if (!defined('BASEPATH'))exit('No direct script access allowed');
 
 class Factuur extends Connector
 {
-	protected $_tijdvak = NULL;
+	protected $_factuur_id = NULL;
 	protected $_jaar = NULL;
 	protected $_periode = NULL;
 	
@@ -38,6 +40,8 @@ class Factuur extends Connector
 	protected $_periode_einde = NULL;
 	protected $_periode_dagen = NULL;
 	
+	protected $_kosten = false;
+	
 	protected $_error = NULL;
 	
 	
@@ -45,11 +49,104 @@ class Factuur extends Connector
 	/*
 	 * constructor
 	 */
-	public function __construct()
+	public function __construct( $factuur_id = NULL  )
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
+		
+		if( $factuur_id !== NULL )
+			$this->setFactuurID( $factuur_id );
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * factuur ID
+	 *
+	 */
+	public function setFactuurID( $factuur_id )
+	{
+		$this->_factuur_id = intval($factuur_id);
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * details
+	 *
+	 */
+	public function details()
+	{
+		$query = $this->db_user->query( "SELECT * FROM facturen WHERE factuur_id = $this->_factuur_id AND deleted = 0 AND concept = 0" );
+		return DBhelper::toRow( $query, 'NULL' );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * delete
+	 * kosten en marge ook verwijderen
+	 * invoer restten
+	 * TODO beperkingen inbouwen (tijd user)
+	 * TODO transaction van maken
+	 */
+	public function delete()
+	{
+		$this->db_user->query( "UPDATE facturen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE (factuur_id = $this->_factuur_id OR parent_id = $this->_factuur_id) AND  deleted = 0", array( $this->user->user_id ) );
+		$this->db_user->query( "UPDATE facturen_kostenoverzicht SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE factuur_id = $this->_factuur_id AND  deleted = 0", array( $this->user->user_id ) );
+		$this->db_user->query( "UPDATE invoer_uren SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id");
+		$this->db_user->query( "UPDATE invoer_kilometers SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id");
+		$this->db_user->query( "UPDATE invoer_vergoedingen SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id");
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * factuur naar inlener sturen
+	 *
+	 */
+	public function email()
+	{
+		$factuur = $this->details();
+		
+		$email = new Email();
+		
+		$inlener = new Inlener( $factuur['inlener_id'] );
+		$emailadressen = $inlener->emailadressen();
+		
+		$emailadressen['facturatie'] = ($emailadressen['facturatie'] === NULL ) ? $emailadressen['standaard'] : $emailadressen['facturatie'];
+		
+		
+		$to['email'] = $emailadressen['facturatie'];
+		$to['name'] = $inlener->bedrijfsnaam;
+		
+		if( $to['email'] == '' )
+			return false;
+		
+		$email->to( $to );
+		
+		//cc naar factris
+		if( ENVIRONMENT != 'development')
+			$email->to( ['email' => 'facturen@factris.com', 'name' => 'Factris' ] );
+		
+		$email->setSubject('Nieuwe factuur');
+		$email->setTitel('Nieuwe factuur voor ' . $inlener->bedrijfsnaam);
+		$email->setAttechment( 'facturen', 'factuur_id', $factuur, 'factuur_' . $factuur['factuur_nr'] . '.pdf' );
+		$email->setBody('Er staat een nieuwe factuur voor u klaar. U vind de factuur als bijlage bij de email en in uw portal.
+						<br /><br />
+						<table>
+						<tr><th style="padding-right: 20px; text-align: right">Factuur nr</th><th style="text-align: right">Bedrag Incl BTW</th></tr>
+						<tr><td style="padding-right: 20px; text-align: right">'.$factuur['factuur_nr'].'</td><td style="text-align: right">€ '.number_format($factuur['bedrag_incl'],2,',','.').'</td></tr>
+						</table>
+						<br /><br />
+						Met vriendelijke groet,<br />' . $this->werkgever->bedrijfsnaam());
+		$email->useHtmlTemplate( 'default' );
+		$email->delay( 0 );
+		
+		$email->send();
+		
+		return true;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -120,88 +217,51 @@ class Factuur extends Connector
 		$this->_zzp_id = intval($zzp_id);
 	}
 
-	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Tijdvak info instellen
-	 * TODO: controle op periodes
-	 * @return void
-	 */
-	public function setTijdvak( $data )
-	{
-		if( isset($data['tijdvak']) ) $this->_tijdvak = $data['tijdvak'];
-		if( isset($data['periode']) ) $this->_periode = intval($data['periode']);
-		if( isset($data['jaar']) ) $this->_jaar = intval($data['jaar']);
-		
-		$tijdvak = new Tijdvak( $this->_tijdvak, $this->_jaar, $this->_periode  );
-		
-		$this->_periode_start = $tijdvak->startDatum();
-		$this->_periode_einde = $tijdvak->eindDatum();
-		$this->_periode_dagen = $tijdvak->dagen();
-	}
-
-
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * tijdvak info voro kopieren
+	 * details kosten ophalen
+	 *
 	 */
-	public function tijdvakinfo()
+	public function kostendetails()
 	{
-		$array['tijdvak'] = $this->_tijdvak;
-		$array['jaar'] = $this->_jaar;
-		$array['periode'] = $this->_periode;
-		
-		return $array;
+		$query = $this->db_user->query( "SELECT * FROM facturen_kostenoverzicht WHERE factuur_id = $this->_factuur_id AND deleted = 0" );
+		return DBhelper::toRow( $query, 'NULL' );
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * get start
+	 *  set kosten klaar om te downloaden
+	 *
 	 */
-	public function getPeriodeStart()
+	public function kosten() :Factuur
 	{
-		return $this->_periode_start;
+		$this->_kosten = true;
+		return $this;
 	}
 	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * get einde
-	 */
-	public function getPeriodeEinde()
-	{
-		return $this->_periode_einde;
-	}
-
-
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Verkoopfactuur maken
-	 * @return bool
+	 * pdf bekijken
+	 *
 	 */
-	public function verkoop()
+	public function view()
 	{
+		if( $this->_kosten )
+		{
+			$details = $this->kostendetails();
+		}
+		else
+		{
+			$details = $this->details();
+		}
 		
-		$inlener = new Inlener( $this->_inlener_id );
-		$uitzender = new Uitzender( $this->_uitzender_id );
-		
-		$pdf = new PdfFactuurUren();
-		
-		$pdf->setTijdvak( array( 'tijdvak' => $this->_tijdvak, 'jaar' => $this->_jaar, 'periode' => $this->_periode) );
-		
-		$pdf->setInlener( $inlener );
-		$pdf->setUitzender( $uitzender );
-		$pdf->setRelatie('inlener');
-		$pdf->setFactuurdatum();
-		
-		$pdf->setUrenInput();
-		
-		$pdf->setFooter()->setHeader()->setBody()->preview();
-		
-		
+		$pdf = new Pdf( $details );
+		$pdf->inline();
 		
 	}
+	
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

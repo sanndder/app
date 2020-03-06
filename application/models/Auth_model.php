@@ -207,6 +207,16 @@ class Auth_model extends CI_Model
 			$url = 'dashboard/inlener';
 		}
 		
+		if( $user_type == 'werknemer' )
+		{
+			$sql = "SELECT users_accounts.*, users.username, users.naam
+					FROM users_accounts
+					LEFT JOIN users ON users.user_id = users_accounts.user_id
+					WHERE werknemer_id = ? AND werkgever_id = ? AND admin = 0 AND users.deleted = 0 LIMIT 1";
+			
+			$url = 'dashboard/werknemer';
+		}
+
 		$query = $this->db_admin->query( $sql, array($id, $_SESSION['logindata']['werkgever_id']) );
 		$user = $query->row_array();
 		
@@ -226,7 +236,7 @@ class Auth_model extends CI_Model
 		if( $user['user_type'] == 'zzp' ) $session['logindata']['override']['zzp_id'] =  $user['zzp_id'];
 		
 		$this->session->set_userdata( $session );
-		
+
 		return $url;
 	}
 

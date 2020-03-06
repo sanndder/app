@@ -2,6 +2,7 @@
 
 use models\inleners\InlenerGroup;
 use models\inleners\Kredietaanvraag;
+use models\uitzenders\UitzenderGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -47,8 +48,8 @@ class Kredietlimiet extends MY_Controller
 				$this->smarty->assign( 'msg', msg( 'warning', $errors ) );
 			}
 		}
-
 		
+		$this->smarty->assign('uitzenders', UitzenderGroup::list() );
 		$this->smarty->display('crm/inleners/kredietlimiet.tpl');
 	}
 

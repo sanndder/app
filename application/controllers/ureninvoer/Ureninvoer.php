@@ -1,6 +1,7 @@
 <?php
 
 use models\facturatie\Factuur;
+use models\facturatie\FactuurFactory;
 use models\file\File;
 use models\pdf\PdfFactuurDefault;
 use models\uitzenders\UitzenderGroup;
@@ -51,14 +52,29 @@ class Ureninvoer extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function factuur()
 	{
-		$factuur = new Factuur();
-		$factuur->setTijdvak( array( 'tijdvak' => $_GET['tijdvak'], 'jaar' => $_GET['jaar'], 'periode' => $_GET['periode']) );
-		$factuur->setInlener( $_GET['inlener'] );
-		$factuur->setUitzender( $_GET['uitzender'] );
+		//tijdvak uit post data
+		$tijdvak = [ 'tijdvak' => $_GET['tijdvak'], 'jaar' => $_GET['jaar'], 'periode' => $_GET['periode'] ];
 		
-		$factuur->verkoop();
+		//schoon beginnen
+		//FactuurFactory::clear();
 		
+		$factuurFactory = new FactuurFactory();
+		$factuurFactory->setTijdvak( $tijdvak );
+		$factuurFactory->setInlener( $_GET['inlener'] );
+		$factuurFactory->setUitzender( $_GET['uitzender'] );
+		$factuurFactory->preview();
 		
+		//alle benodigde gegevens zijn ingesteld, nu aan het werk
+		$factuurFactory->run();
+		
+		$errors = $factuurFactory->errors();
+		if( $errors !== false )
+		{
+			foreach( $errors as $e )
+			{
+				echo $e . '<br />';
+			}
+		}
 	}
 	
 	

@@ -64,18 +64,26 @@
                     {/if}
 
 
-                    {if $zzp->complete == 1 }
-						<!-- li Notities -->
+                    {if $zzp->complete == 1 && $user_type == 'werkgever' }
+
+	                    <!-- li plaatsingen -->
+	                    <li class="nav-item">
+		                    <a href="crm/zzp/dossier/plaatsingen/{$zzp->zzp_id}" class="nav-link {if $active == 'plaatsingen'}active{/if}">
+			                    <i class="far fa-handshake mr-2"></i>Plaatsingen
+		                    </a>
+	                    </li>
+
+	                    <!-- li Documenten -->
+	                    <li class="nav-item">
+		                    <a href="crm/zzp/dossier/documenten/{$zzp->zzp_id}" class="nav-link {if $active == 'documenten'}active{/if}">
+			                    <i class="icon-file-text2 mr-2"></i>Documenten
+		                    </a>
+	                    </li>
+
+	                    <!-- li Notities -->
 						<li class="nav-item">
 							<a href="crm/zzp/dossier/notities/{$zzp->zzp_id}" class="nav-link {if $active == 'notities'}active{/if}">
 								<i class="icon-pencil mr-2"></i>Notities
-							</a>
-						</li>
-
-						<!-- li Documenten -->
-						<li class="nav-item">
-							<a href="crm/zzp/dossier/documenten/{$zzp->zzp_id}" class="nav-link {if $active == 'documenten'}active{/if}">
-								<i class="icon-file-text2 mr-2"></i>Documenten
 							</a>
 						</li>
 
@@ -164,14 +172,14 @@
 
 					<!-- li Factuurgegevens, andere volgorde wanneer nieuwe aanmelding -->
 					<li class="nav-item {if $zzp->complete != 1}order-4{/if}">
-						<a {if $zzp->persoonsgegevens_complete != NULL}href="crm/zzp/dossier/factuurgegevens/{$zzp->zzp_id}"{/if} class="nav-link {if $zzp->persoonsgegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'factuurgegevens'}active{/if}">
+						<a {if $zzp->documenten_complete != NULL}href="crm/zzp/dossier/factuurgegevens/{$zzp->zzp_id}"{/if} class="nav-link {if $zzp->documenten_complete == NULL}nav-link-disabled{/if} {if $active == 'factuurgegevens'}active{/if}">
                             {* afwijkende icons voor nieuwe aanmelding *}
                             {if $zzp->factuurgegevens_complete == NULL}
 								<i class="icon-checkbox-unchecked2 mr-2"></i>
                             {else}
                                 {if $zzp->complete == 0}
-                                    {if $zzp->bedrijfsgegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
-                                    {if $zzp->bedrijfsgegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
+                                    {if $zzp->factuurgegevens_complete == 0}<i class="icon-pencil7 mr-2"></i>{/if}
+                                    {if $zzp->factuurgegevens_complete == 1}<i class="icon-checkbox-checked mr-2"></i>{/if}
                                 {else}
                                     {* standaard icon *}
 									<i class="icon-cog mr-2"></i>

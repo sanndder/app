@@ -71,6 +71,8 @@ class Kredietaanvraag extends Connector {
 		{
 			if( isset($this->uitzender->id) )
 				$insert['uitzender_id'] = $this->uitzender->id;
+			else
+				$insert['uitzender_id'] = $input['uitzender_id'];
 			
 			$insert['kredietlimiet_gewenst'] = intval(prepareAmountForDatabase($input['kredietlimiet']));
 			$insert['kredietlimiet_toegekend'] = intval(prepareAmountForDatabase($input['kredietlimiet']));

@@ -76,6 +76,23 @@ class Users extends MY_Controller {
 		$this->smarty->display('instellingen/users/view.tpl');
 	}
 	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// details gebruiker
+	//-----------------------------------------------------------------------------------------------------------------
+	public function edit( $user_id )
+	{
+		//load the formbuilder
+		$formbuidler = new Formbuilder();
+		
+		//init
+		$user = new User( $user_id );
+
+		$this->smarty->assign('user', $user->data() );
+		$this->smarty->display('instellingen/users/edit.tpl');
+	}
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// Nieuwe gebruiker
 	//-----------------------------------------------------------------------------------------------------------------

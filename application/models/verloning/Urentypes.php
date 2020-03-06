@@ -31,6 +31,7 @@ class Urentypes extends Connector
 	 * @var int
 	 */
 	private $_werknemer_urentype_id = NULL;
+	private $_zzp_urentype_id = NULL;
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -70,21 +71,94 @@ class Urentypes extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * werknemer urentype id
+	 */
+	public function setZzpUrentypeID( $id ) :Urentypes
+	{
+		$this->_zzp_urentype_id = intval( $id );
+		return $this;
+	}
+
+
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * Verkooptarief updaten
 	 *
 	 */
-	public function setVerkooptariefWerknemer( $tarief )
+	public function setVerkooptarief( $tarief )
 	{
+	
 		$update['verkooptarief'] = prepareAmountForDatabase($tarief);
-		$this->db_user->where( 'id', $this->_werknemer_urentype_id );
 		
-		$this->db_user->update( 'werknemers_urentypes', $update );
+		//werknemer
+		if( $this->_werknemer_urentype_id != NULL )
+		{
+			$this->db_user->where( 'id', $this->_werknemer_urentype_id );
+			$this->db_user->update( 'werknemers_urentypes', $update );
+		}
+		
+		//zzp
+		if( $this->_zzp_urentype_id != NULL )
+		{
+			$this->db_user->where( 'id', $this->_zzp_urentype_id );
+			$this->db_user->update( 'zzp_urentypes', $update );
+		}
 		
 		if( $this->db_user->affected_rows() != -1 )
 			return true;
 		
 		return false;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Uurtarief zzp'er updaten
+	 *
+	 */
+	public function setUurtarief( $tarief )
+	{
+		
+		$update['uurtarief'] = prepareAmountForDatabase($tarief);
+		
+		//zzp
+		if( $this->_zzp_urentype_id != NULL )
+		{
+			$this->db_user->where( 'id', $this->_zzp_urentype_id );
+			$this->db_user->update( 'zzp_urentypes', $update );
+		}
+		
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		
+		return false;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * marge zzp'er updaten
+	 *
+	 */
+	public function setMarge( $tarief )
+	{
+		
+		$update['marge'] = prepareAmountForDatabase($tarief);
+		
+		//zzp
+		if( $this->_zzp_urentype_id != NULL )
+		{
+			$this->db_user->where( 'id', $this->_zzp_urentype_id );
+			$this->db_user->update( 'zzp_urentypes', $update );
+		}
+		
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		
+		return false;
+	}
+
 	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -137,8 +211,19 @@ class Urentypes extends Connector
 		else
 			$update['urentype_active'] = 0;
 		
-		$this->db_user->where( 'id', $this->_werknemer_urentype_id );
-		$this->db_user->update( 'werknemers_urentypes', $update );
+		//werknemer
+		if( $this->_werknemer_urentype_id != NULL )
+		{
+			$this->db_user->where( 'id', $this->_werknemer_urentype_id );
+			$this->db_user->update( 'werknemers_urentypes', $update );
+		}
+		
+		//zzp'er
+		if( $this->_zzp_urentype_id != NULL )
+		{
+			$this->db_user->where( 'id', $this->_zzp_urentype_id );
+			$this->db_user->update( 'zzp_urentypes', $update );
+		}
 		
 		if( $this->db_user->affected_rows() != 1 )
 			$this->_error[] = 'Database error';
@@ -388,12 +473,22 @@ class Urentypes extends Connector
 		$sql = "UPDATE werknemers_urentypes SET deleted = 1, deleted_on = NOW(), deleted_by = ?	WHERE werknemer_id = ? AND inlener_id = ? AND deleted = 0";
 		$this->db_user->query( $sql, array($this->user->user_id, $werknemer_id, $inlener_id) );
 	}
-
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * urentypes weghalen bij inlener voor bepaalde zzp'er
+	 *
+	 */
+	public function deleteUrentypesZzpForInlener( $zzp_id, $inlener_id )
+	{
+		$sql = "UPDATE zzp_urentypes SET deleted = 1, deleted_on = NOW(), deleted_by = ?WHERE zzp_id = ? AND inlener_id = ? AND deleted = 0";
+		$this->db_user->query( $sql, array($this->user->user_id, $zzp_id, $inlener_id) );
+	}
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * Add urentypes bij nieuwe koppeling
+	 * Add urentypes bij nieuwe koppeling werknemer
 	 *
 	 */
 	public function addUrentypesWerknemerForInlener( $plaatsing_id, $werknemer_id, $inlener_id )
@@ -420,6 +515,44 @@ class Urentypes extends Connector
 			$this->db_user->insert_batch( 'werknemers_urentypes', $insert_batch );
 		}
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Add urentypes bij nieuwe koppeling werknemer
+	 *
+	 */
+	public function addUrentypesZzpForInlener( $plaatsing_id, $zzp_id, $inlener_id )
+	{
+		$urentypesgroup = new UrentypesGroup();
+		$urentypes = $urentypesgroup->inlener( $inlener_id )->getUrentypeZzpMatrix();
+		
+		if( !isset($urentypes) || !is_array($urentypes) || count($urentypes) == 0 )
+			return NULL;
+		
+		foreach( $urentypes as $urentype )
+		{
+			unset($insert);
+			$insert['urentype_active'] = 1;
+			$insert['inlener_id'] = $inlener_id;
+			$insert['zzp_id'] = $zzp_id;
+			$insert['inlener_urentype_id'] = $urentype['inlener_urentype_id'];
+			$insert['urentype_id'] = $urentype['urentype_id'];
+			$insert['plaatsing_id'] = $plaatsing_id;
+			$insert['verkooptarief'] = $urentype['standaard_verkooptarief'];
+			$insert['marge'] = 1.25;
+			
+			$insert_batch[] = $insert;
+		}
+		
+		if( isset($insert_batch) )
+		{
+			$this->db_user->insert_batch( 'zzp_urentypes', $insert_batch );
+		}
+	}
+
+	
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
