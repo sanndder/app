@@ -46,7 +46,7 @@ class Upload_model extends MY_Model
 	/*
 	 * Locatie van bestand teruggeven
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function getFilePath()
 	{
@@ -208,6 +208,7 @@ class Upload_model extends MY_Model
 			return false;
 		}
 
+		return true;
 	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

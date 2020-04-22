@@ -1,6 +1,6 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Werknemer{/block}
-{block "header-icon"}icon-office{/block}
+{block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 {assign "uploader" "true"}
 {assign "datamask" "true"}

@@ -687,6 +687,12 @@ if (!function_exists('show'))
 			echo "</pre>";
 			echo "</div>";
 		}
+		if( isset($_GET['backtrace']) )
+		{
+			echo "<pre>";
+			print_r(debug_backtrace());
+			echo "</pre>";
+		}
 	}
 }
 

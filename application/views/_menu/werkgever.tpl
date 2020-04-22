@@ -49,6 +49,30 @@
 				</div>
 			</li>
 
+			<li class="nav-item dropdown">
+				<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+					<i class="icon-list mr-2"></i>
+					Overzichten {*<span class="badge badge-pill badge-warning ml-2" style="position: relative">3</span>*}
+				</a>
+
+				<div class="dropdown-menu">
+					{*
+					<a href="overzichten/hollandzorg/index" class="dropdown-item d-flex justify-content-between">
+						<div><i class="fas fa-briefcase-medical mr-2"></i>Hollandzorg</div>
+						<span class="badge badge-pill badge-warning" style="position: relative;">3</span>
+					</a>*}
+					<a href="overzichten/facturen/index" class="dropdown-item d-flex justify-content-between">
+						<div><i class="mi-euro-symbol mr-2"></i>Facturen</div>
+					</a>
+					<a href="overzichten/snelstart/index" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-books mr-2"></i>Snelstart</div>
+					</a>
+					<a href="overzichten/omzet/index" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-chart mr-2"></i>Omzet & Kosten</div>
+					</a>
+				</div>
+			</li>
+
 			<li class="nav-item">
 				<a href="facturatie/overzicht" class="navbar-nav-link">
 					<i class="mi-euro-symbol mr-2" style="font-weight: bold"></i>
@@ -91,6 +115,9 @@
 					<div class="dropdown-menu">
 						<a href="verloning/loonstroken/uploaden" class="dropdown-item">
 							<i class="icon-coin-euro"></i>Loonstroken uploaden
+						</a>
+						<a href="verloning/reserveringen/uploaden" class="dropdown-item">
+							<i class="icon-upload"></i>Reserveringen uploaden
 						</a>
 					</div>
 				</li>

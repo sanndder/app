@@ -172,14 +172,14 @@ class Dossier extends MY_Controller
 		}
 		
 		//krediet rapport ophalen
-		$creditsafe = new CreditSafe();
-		$rapport = $creditsafe->companyReport( $bedrijfsgegevens['kvknr'] );
+		//$creditsafe = new CreditSafe();
+		//$rapport = $creditsafe->companyReport( $bedrijfsgegevens['kvknr'] );
 		
 		
 		//TODO: grafiek maken van gebruikt krediet
 		
-		$this->smarty->assign('rapport', $rapport);
-		$this->smarty->assign('rapport_datum', $creditsafe->reportDate() );
+		//$this->smarty->assign('rapport', $rapport);
+		//$this->smarty->assign('rapport_datum', $creditsafe->reportDate() );
 		$this->smarty->assign('kredietgegevens', $kredietgegevens);
 		$this->smarty->assign('kredietaanvragen', $kredietaanvragen);
 		$this->smarty->assign('kredietaanvraag_id', $kredietaanvraag_id);

@@ -1,6 +1,6 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Werknemer{/block}
-{block "header-icon"}icon-office{/block}
+{block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 
 {block "content"}
@@ -124,30 +124,43 @@
 
 									<legend class="text-uppercase font-size-sm font-weight-bold">Pensioen instellingen</legend>
 
-									<div class="form-check">
-										<label class="form-check-label">
+
+									<div class="row">
+										<div class="col-md-2">
+
+											<div class="form-check">
+												<label class="form-check-label">
 											<span class="checked">
 												<input value="0" type="radio" class="form-input-styled" name="stipp" checked="">
 											</span>
-											Geen pensioen
-										</label>
-									</div>
-									<div class="form-check">
-										<label class="form-check-label">
+													Geen pensioen
+												</label>
+											</div>
+											<div class="form-check">
+												<label class="form-check-label">
 											<span>
-												<input value="basis" type="radio" class="form-input-styled" name="stipp">
+												<input value="basis" {if isset($pensioen) && $pensioen.stipp == 'basis'} checked{/if} type="radio" class="form-input-styled" name="stipp">
 											</span>
-											Stipp Basis
-										</label>
-									</div>
-									<div class="form-check">
-										<label class="form-check-label">
+													Stipp Basis
+												</label>
+											</div>
+											<div class="form-check">
+												<label class="form-check-label">
 											<span>
-												<input value="plus" type="radio" class="form-input-styled" name="stipp">
+												<input value="plus" {if isset($pensioen) && $pensioen.stipp == 'plus'} checked{/if} type="radio" class="form-input-styled" name="stipp">
 											</span>
-											Stipp Plus
-										</label>
-									</div>
+													Stipp Plus
+												</label>
+											</div>
+
+										</div><!-- /col -->
+										<div class="col-md-2">
+											<button type="submit" name="set_pensioen" class="btn btn-success">
+												<i class="icon-checkmark2 mr-1"></i>Pensioen opslaan
+											</button>
+										</div><!-- /col -->
+									</div><!-- /row -->
+
 
 
 								</fieldset>

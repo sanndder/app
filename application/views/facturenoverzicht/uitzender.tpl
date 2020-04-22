@@ -32,15 +32,13 @@
 									<th style="width: 25px;">Jaar</th>
 									<th style="width: 25px;">Periode</th>
 									<th>Inlener</th>
-									<th style="width: 120px">Factuur nr</th>
-									<th style="width: 120px">Incl (€)</th>
-									<th>Verkoop</th>
-									<th style="width: 120px">Incl (€)</th>
-									<th>Kosten</th>
-									<th style="width: 120px">Factuur nr</th>
-									<th style="width: 120px">Incl (€)</th>
-									<th>Marge</th>
+									<th style="width: 120px" class="text-right">Factuur nr</th>
+									<th style="width: 120px" class="text-right">Verkoop (€)</th>
+									<th style="width: 120px" class="text-right">Kosten (€)</th>
+									<th style="width: 120px" class="text-right">Factuur nr</th>
+									<th style="width: 120px" class="text-right">Marge (€)</th>
 									<th style="width: 25px"></th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -48,7 +46,7 @@
 									<tr>
 										<td>{$f.verkoop.jaar}</td>
 										<td>{$f.verkoop.periode}</td>
-										<td>
+										<td style="width: 1px; white-space: nowrap;">
                                             {$f.verkoop.bedrijfsnaam}
                                             {if $f.verkoop.project != NULL}
 												- {$f.verkoop.project}
@@ -58,30 +56,21 @@
                                             {$f.verkoop.factuur_nr}
 										</td>
 										<td class="text-right">
-											€ {$f.verkoop.bedrag_incl|number_format:2:',':'.'}
-										</td>
-										<td>
 											<a target="_blank" href="facturatie/factuur/view/{$f.verkoop.factuur_id}">
-												factuur_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+												€ {$f.verkoop.bedrag_incl|number_format:2:',':'.'}
 											</a>
 										</td>
 										<td class="text-right">
-											€ {$f.verkoop.kosten_incl|number_format:2:',':'.'}
-										</td>
-										<td>
 											<a target="_blank" href="facturatie/factuur/viewkosten/{$f.verkoop.factuur_id}">
-												kostenoverzicht_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+												€ {$f.verkoop.kosten_incl|number_format:2:',':'.'}
 											</a>
 										</td>
 										<td class="text-right">
                                             {$f.marge.factuur_nr}
 										</td>
 										<td class="text-right">
-											€ {$f.marge.bedrag_incl|number_format:2:',':'.'}
-										</td>
-										<td>
 											<a target="_blank" href="facturatie/factuur/view/{$f.marge.factuur_id}">
-												margefactuur_{$f.verkoop.jaar}_{$f.verkoop.periode}.pdf
+												€ {$f.marge.bedrag_incl|number_format:2:',':'.'}
 											</a>
 										</td>
 										<td>
@@ -103,6 +92,7 @@
 												</li>
 											</ul>
 										</td>
+										<td></td>
 									</tr>
                                 {/foreach}
 							</tbody>

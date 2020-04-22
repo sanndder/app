@@ -68,6 +68,37 @@
 						</div>
 					</div>
 
+
+					<!----------------- Reserveringen --------------------->
+					<div class="card">
+						<div class="card-header bg-transparent header-elements-inline">
+							<span class="card-title font-weight-bold font-size-sm text-primary text-uppercase">Reserveringen per {if isset($stand.datum)}{$stand.datum|date_format: '%d-%m-%Y'}{/if}</span>
+						</div>
+
+						<div class="card-body">
+
+							<table>
+								<tr>
+									<td class="pr-5">Vakantiegeld</td>
+									<td class="text-right">€ {if isset($stand.vakantiegeld)}{$stand.vakantiegeld|number_format:2:',':'.'}{else}0,00{/if}</td>
+								</tr>
+								<tr>
+									<td class="pr-5">Vakantieuren F12</td>
+									<td class="text-right">€ {if isset($stand.vakantieuren_F12)}{$stand.vakantieuren_F12|number_format:2:',':'.'}{else}0,00{/if}</td>
+								</tr>
+								<tr>
+									<td class="pr-5">Feestdagen</td>
+									<td class="text-right">€ {if isset($stand.feestdagen)}{$stand.feestdagen|number_format:2:',':'.'}{else}0,00{/if}</td>
+								</tr>
+								<tr>
+									<td class="pr-5">Kort verzuim</td>
+									<td class="text-right">€ {if isset($stand.kort_verzuim)}{$stand.kort_verzuim|number_format:2:',':'.'}{else}0,00{/if}</td>
+								</tr>
+							</table>
+
+						</div>
+					</div>
+
 				</div>
 
 

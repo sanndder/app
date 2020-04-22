@@ -1,6 +1,6 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Werknemer{/block}
-{block "header-icon"}icon-office{/block}
+{block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 {assign "uploader" "true"}
 
@@ -128,7 +128,7 @@
 									<div class="form-check">
 										<label class="form-check-label">
 											<span>
-												<input value="basis" type="radio" class="form-input-styled" name="stipp">
+												<input value="basis" {if isset($pensioen) && $pensioen.stipp == 'basis'} checked{/if} type="radio" class="form-input-styled" name="stipp">
 											</span>
 											Stipp Basis
 										</label>
@@ -136,7 +136,7 @@
 									<div class="form-check">
 										<label class="form-check-label">
 											<span>
-												<input value="plus" type="radio" class="form-input-styled" name="stipp">
+												<input value="plus" {if isset($pensioen) && $pensioen.stipp == 'plus'} checked{/if} type="radio" class="form-input-styled" name="stipp">
 											</span>
 											Stipp Plus
 										</label>

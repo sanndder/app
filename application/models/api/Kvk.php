@@ -58,7 +58,31 @@ class Kvk extends Connector
 		}
 		return $result;
 	}
+
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 *
+	 *
+	 */
+	public function companyAddress()
+	{
+		$data = $this->fetchCompanyData();
+
+		if( isset($data['addresses'][0]) )
+		{
+			$info['name'] = $data['tradeNames']['businessName'];
+			$info['address']['street'] = $data['addresses'][0]['street'];
+			$info['address']['city'] = $data['addresses'][0]['city'];
+			$info['address']['postCode'] = $data['addresses'][0]['postalCode'];
+			$info['address']['houseNo'] = $data['addresses'][0]['houseNumber'];
+			
+			return $info;
+		}
+		
+		$this->_error[] = 'Adresgegevens niet gevonden';
+		return false;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

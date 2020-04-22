@@ -47,6 +47,21 @@ class PdfFactuurVerkoopUren extends PdfFactuur {
 		return $this;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * wel of niet factoring
+	 * @return object
+	 */
+	public function setFactoring( $val = 1 ) :PdfFactuurVerkoopUren
+	{
+		if( $val == 1 )
+			$this->smarty->assign( 'factoring', true);
+		else
+			$this->smarty->assign( 'factoring', false);
+		
+		return $this;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

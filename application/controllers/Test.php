@@ -7,6 +7,7 @@ use models\cao\CAOGroup;
 use models\documenten\IDbewijs;
 use models\email\Email;
 use models\facturatie\FactuurFactory;
+use models\file\Excel;
 use models\file\File;
 use models\file\Img;
 use models\file\Pdf;
@@ -37,6 +38,22 @@ class Test extends MY_Controller {
 		
 		//show( $this->user->user_type );
 		
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// kvk api
+	//-----------------------------------------------------------------------------------------------------------------
+	public function excel()
+	{
+		$excel = new Excel();
+		
+		$excel->file( 'userf1les_o7dm6/werkgever_dir_1/verloning/reserveringen/xls_0633853001583914047_MtJ4UiAK.xls' );
+		$excel->read();
+		
+		if( $excel->errors() !== false )
+			show($excel->errors());
+		
+		show($excel->array());
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -170,7 +187,6 @@ class Test extends MY_Controller {
 		$pdf = new PdfFactuurDefault();
 		$pdf->setHeader()->setFooter()->setBody()->preview();
 		
-		die();
 		$this->smarty->display('test/pdf.tpl');
 	}
 	

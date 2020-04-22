@@ -185,6 +185,25 @@ class Connector
 		
 		return false;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * DELETE all entries
+	 *
+	 */
+	public function delete_all( string $table ) :bool
+	{
+		$sql = "UPDATE $table
+				SET deleted = 1, deleted_on = NOW(), deleted_by = " . $this->user->user_id . "
+				WHERE deleted = 0";
+		
+		$this->db_user->query($sql);
+		
+		if( $this->db_user->affected_rows() > 0 )
+			return true;
+		
+		return false;
+	}
 }
 
 

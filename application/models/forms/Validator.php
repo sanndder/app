@@ -174,6 +174,7 @@ class Validator extends Json
 	 */
 	private function _validateInput()
 	{
+		
 		foreach ($this->_input as $field => $val)
 		{
 			//copy for cleaner code
@@ -294,6 +295,7 @@ class Validator extends Json
 
 
 		}
+		
 	}
 
 

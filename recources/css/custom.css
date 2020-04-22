@@ -79,3 +79,23 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
 }
 
 .row-light-plus input{ margin-bottom: 8px;}
+
+/* fatcuren overzicht */
+
+.table-factuurdetails td{ padding: 4px 15px 4px 0}
+
+.table-facturen-overzicht tr:hover td{cursor: pointer; background-color: #EEE }
+.table-facturen-overzicht tr.tr-focus{ background-color: #EEE !important;}
+
+.table-facturen-overzicht tr.tr-focus .td-selected:after {
+    content: "";
+    position: relative;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    display: block;
+    border-left: 20px solid #666;
+    border-bottom: 20px solid transparent;
+    border-top: 20px solid transparent;
+}

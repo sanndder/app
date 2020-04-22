@@ -296,17 +296,25 @@ class Uitzender extends Connector
 	}
 
 
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Korting per inlener ophalen
+	 */
+	public function factuurKorting()
+	{
+		$query = $this->db_user->query( "SELECT * FROM uitzenders_korting WHERE uitzender_id = ? AND deleted = 0", array( $this->uitzender_id ) );
+		return DBhelper::toArray( $query, 'inlener_id', 'NULL' );
+	}
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * get contactpersonen
 	 */
 	public function contactpersonen()
 	{
-		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id ORDER BY achternaam ASC, voorletters ASC";
-		$query = $this->db_user->query($sql);
-
-		$data = DBhelper::toArray( $query, 'contact_id', 'NULL' );
-		return $data;
+		$query = $this->db_user->query( "SELECT * FROM uitzenders_contactpersonen WHERE deleted = 0 AND uitzender_id = $this->uitzender_id ORDER BY achternaam ASC, voorletters ASC" );
+		return DBhelper::toArray( $query, 'contact_id', 'NULL' );
 	}
 	
 

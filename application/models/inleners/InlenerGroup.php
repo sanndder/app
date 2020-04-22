@@ -116,12 +116,13 @@ class InlenerGroup extends Connector {
 		$data = array();
 
 		//start query
-		$sql = "SELECT inleners_bedrijfsgegevens.*, inleners_status.*, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender, uitzenders_bedrijfsgegevens.uitzender_id
+		$sql = "SELECT inleners_bedrijfsgegevens.*, inleners_status.*, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender, uitzenders_bedrijfsgegevens.uitzender_id, inleners_factuurgegevens.factoring
 				FROM inleners_status
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
+				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = inleners_status.inlener_id
 				LEFT JOIN inleners_uitzenders ON inleners_status.inlener_id = inleners_uitzenders.inlener_id
 				LEFT JOIN uitzenders_bedrijfsgegevens ON inleners_uitzenders.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
-				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_uitzenders.deleted = 0 AND uitzenders_bedrijfsgegevens.deleted = 0";
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_uitzenders.deleted = 0 AND uitzenders_bedrijfsgegevens.deleted = 0 AND inleners_factuurgegevens.deleted = 0";
 		
 		//beveiligen
 		if( $this->user->user_type == 'uitzender' )
@@ -180,6 +181,32 @@ class InlenerGroup extends Connector {
 	}
 	
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * List van uitzenders
+	 */
+	static function list()
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$sql = "SELECT inleners_bedrijfsgegevens.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam
+				FROM inleners_status
+				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.archief = 0
+				ORDER BY inleners_bedrijfsgegevens.bedrijfsnaam";
+		
+		$query = $db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+			$data[$row['inlener_id']] = $row['bedrijfsnaam'];
+		
+		return $data;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -219,7 +246,7 @@ class InlenerGroup extends Connector {
 		// TODO naar document group met juiste template ID
 		if( $this->user->werkgever_type == 'uitzenden' )
 			$sql = "SELECT inlener_id, document_id FROM documenten WHERE signed_file_name_display IS NOT NULL AND inlener_id IN (".array_keys_to_string($data).") AND deleted = 0 AND file_name_display = 'overeenkomst_van_opdracht.pdf'";
-		if( $this->user->werkgever_type == 'uitzenden' )
+		if( $this->user->werkgever_type == 'bemiddeling' )
 			$sql = "SELECT inlener_id, document_id FROM documenten WHERE signed_file_name_display IS NOT NULL AND inlener_id IN (".array_keys_to_string($data).") AND deleted = 0 AND file_name_display = 'overeenkomst_inlener.pdf'";
 		
 		
@@ -324,6 +351,24 @@ class InlenerGroup extends Connector {
 		}
 
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * lijst voro snelstart
+	 */
+	public function snelstartExport()
+	{
+		$sql = "SELECT inleners_status.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_factuurgegevens.termijn
+				FROM inleners_status
+				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
+				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = inleners_status.inlener_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_factuurgegevens.deleted = 0 AND archief = 0 AND complete = 1";
+		
+		$query = $this->db_user->query( $sql );
+		
+		return DBhelper::toArray( $query, 'inlener_id', 'NULL' );
+	}
+
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

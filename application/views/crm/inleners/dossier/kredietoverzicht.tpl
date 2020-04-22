@@ -84,7 +84,7 @@
 													<h6 class="mt-0">Rapport Creditsafe</h6>
 												</td>
 											</tr>
-                                            {if $rapport === NULL}
+                                            {if !isset($rapport) || $rapport === NULL}
 												<tr>
 													<td class="pt-1" colspan="3"><i>Geen rapportgegevens gevonden</i>
 													</td>
@@ -144,8 +144,10 @@
                                                                 {if $k.krediet_afgewezen == 1}
 																	€ 0
                                                                 {else}
-                                                                    {if $rapport.companySummary.creditRating.creditLimit.value < $k.kredietlimiet_toegekend}
-                                                                        {$k.kredietlimiet_toegekend = $rapport.companySummary.creditRating.creditLimit.value}
+	                                                                {if isset($rapport)}
+	                                                                    {if $rapport.companySummary.creditRating.creditLimit.value < $k.kredietlimiet_toegekend}
+	                                                                        {$k.kredietlimiet_toegekend = $rapport.companySummary.creditRating.creditLimit.value}
+	                                                                    {/if}
                                                                     {/if}
 	                                                                {* input alleen bij nog niet af- of toegewezen *}
 	                                                                {if $k.krediet_afgewezen === NULL}

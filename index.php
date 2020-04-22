@@ -57,11 +57,19 @@
 //goede timezone
 date_default_timezone_set('Europe/Amsterdam');
 
+//voor CLI
+if( !isset($_SERVER['HTTP_HOST']) )
+	$_SERVER['HTTP_HOST'] = '185.62.209.36';
+
+if( !isset($_SERVER['QUERY_STRING']) )
+	$_SERVER['QUERY_STRING'] = '';
+
 //alleen lokaal op development
 if( $_SERVER['HTTP_HOST'] != '192.168.1.2' && $_SERVER['HTTP_HOST'] != '127.0.0.1' && $_SERVER['HTTP_HOST'] != '82.74.254.28')
 	define('ENVIRONMENT', 'production');
 else
 	define('ENVIRONMENT', 'development');
+
 
 //define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 

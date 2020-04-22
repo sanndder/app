@@ -180,6 +180,9 @@ class VergoedingGroup extends Connector
 	public function addVergoedingenWerknemerForInlener( $plaatsing_id, $werknemer_id, $inlener_id )
 	{
 		$vergoedingen = $this->inlener( $inlener_id )->vergoedingenInlener();
+
+		if( $vergoedingen === NULL )
+			return NULL;
 		
 		foreach( $vergoedingen as $vergoeding )
 		{

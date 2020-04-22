@@ -170,7 +170,7 @@
       "rules": {
         "required": true,
         "minlength": 1,
-        "maxlength": 5
+        "maxlength": 8
       }
     },
     "huisnummer_toevoeging": {
@@ -178,7 +178,7 @@
       "rules": {
         "required": false,
         "minlength": 1,
-        "maxlength": 4
+        "maxlength": 8
       }
     },
     "postcode": {

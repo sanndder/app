@@ -36,13 +36,16 @@ class Ajax extends MY_Controller
 	{
 		header( 'Content-Type: application/json' );
 		
+		$kvk = new Kvk( $kvknr );
+		$info = $kvk->companyAddress();
+		/*
 		$creditsafe = new CreditSafe();
 		$info = $creditsafe->searchCompany( $kvknr );
-		
-		if( $creditsafe->errors() !== false )
+		*/
+		if( $kvk->errors() !== false )
 		{
 			$response['status'] = 'error';
-			$response['error'] = $creditsafe->errors();
+			$response['error'] = $kvk->errors();
 		}
 		else
 		{

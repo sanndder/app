@@ -32,3 +32,4 @@ td.relatie-info{
 
 .grekening{font-size: 11px; font-style: italic; padding-right: 28px; padding-top: 10px; text-align: right}
 .cessie_tekst{font-size: 10px; font-style: italic; position: absolute; bottom: 75px; padding: 0 15px;}
+.iban{ font-size: 12px; font-weight: bold; background-color: yellow}

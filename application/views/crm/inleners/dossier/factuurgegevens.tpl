@@ -234,6 +234,35 @@
                                     {/if}
 
 
+									<!-- g_rekening -->
+                                    {if isset($formdata.factoring)}
+                                        {assign "field" "factoring"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:
+											</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+
+                                                {foreach $formdata.$field.radio.options as $option}
+													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+														<label class="form-check-label">
+														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
+															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
+														</span>
+                                                            {$option}
+														</label>
+													</div>
+                                                {/foreach}
+
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
+													<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+
+
 									<!-- Factuur emailen -->
                                     {if isset($formdata.factuur_emailen)}
                                         {assign "field" "factuur_emailen"}

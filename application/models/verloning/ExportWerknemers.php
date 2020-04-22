@@ -116,6 +116,7 @@ class ExportWerknemers extends Connector
 		$algemeen->addChild('Sofinummer', $werknemer['bsn']);
 		$algemeen->addChild('NummerInkomstenverhouding', '01');
 		$algemeen->addChild('Geslacht', strtoupper($werknemer['geslacht']));
+		$algemeen->addChild('GeboorteDatum', reverseDate($werknemer['gb_datum']));
 		
 		$algemeen->addChild('Nationaliteit', $werknemer['nationaltieit_id']);
 		

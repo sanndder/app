@@ -1,4 +1,4 @@
-{
+ {
   "remove": [
     "set",
     "id",
@@ -79,6 +79,19 @@
         }
       }
     },
+    "factoring": {
+      "label": "Factoring",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
     "g_rekening": {
       "label": "G-rekening gebruiken",
       "rules": {
@@ -101,6 +114,7 @@
       },
       "list": {
         "options": {
+          "25": "25",
           "30": "30"
         }
       }

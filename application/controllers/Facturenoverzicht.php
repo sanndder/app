@@ -29,7 +29,6 @@ class Facturenoverzicht extends MY_Controller {
 	public function inlener()
 	{
 		
-		
 		$facturengroep = new FacturenGroup();
 		$facturen = $facturengroep->setInlener( $this->inlener->id )->facturenMatrix();
 		
@@ -43,9 +42,6 @@ class Facturenoverzicht extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function uitzender()
 	{
-		
-		
-		
 		$facturengroep = new FacturenGroup();
 		$facturen = $facturengroep->setUitzender( $this->uitzender->uitzender_id )->facturenMatrix();
 		

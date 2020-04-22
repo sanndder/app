@@ -202,7 +202,27 @@ class UitzenderGroup extends Connector {
 		}
 
 	}
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * lijst voor snelstart
+	 */
+	public function snelstartExport()
+	{
+		$sql = "SELECT uitzenders_status.uitzender_id, uitzenders_bedrijfsgegevens.bedrijfsnaam
+				FROM uitzenders_status
+				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_bedrijfsgegevens.uitzender_id = uitzenders_status.uitzender_id
+				WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND archief = 0 AND complete = 1";
+		
+		$query = $this->db_user->query( $sql );
+		
+		return DBhelper::toArray( $query, 'uitzender_id', 'NULL' );
+	}
+	
+	
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors

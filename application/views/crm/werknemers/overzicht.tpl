@@ -1,6 +1,6 @@
 {extends file='../../layout.tpl'}
 {block "title"}Werknemers{/block}
-{block "header-icon"}icon-office{/block}
+{block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemers{/block}
 {assign "datatable" "true"}
 

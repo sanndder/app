@@ -77,7 +77,7 @@
 									</td>
 									<td class="table-inbox-time" style="width: auto">
 										{if $folder == ''}{$email.created_on|date_format:'%R'}{/if}
-										{if $folder == 'send'}{$email.send_on|date_format:'%d-%m-%Y'}{/if}
+										{if $folder == 'send'}{$email.send_on|date_format:'%d-%m-%Y %R:%S'}{/if}
 									</td>
 								</tr>
 							{/foreach}

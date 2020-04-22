@@ -7,12 +7,16 @@ use models\documenten\IDbewijs;
 use models\documenten\Template;
 use models\forms\Formbuilder;
 use models\inleners\InlenerGroup;
+use models\pdf\PdfAanmelding;
+use models\pdf\PdfUrenbriefje;
 use models\uitzenders\UitzenderGroup;
 use models\utils\Carbagecollector;
 use models\utils\Codering;
 use models\utils\VisitsLogger;
+use models\verloning\Invoer;
 use models\verloning\LoonstrokenGroup;
 use models\verloning\Loonstrook;
+use models\verloning\UrenbriefjesGroup;
 use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingGroup;
 use models\werknemers\Werknemer;
@@ -165,7 +169,25 @@ class Dossier extends MY_Controller
 		$this->smarty->display( 'crm/werknemers/dossier/gegevens.tpl' );
 	}
 	
-	
+	//-----------------------------------------------------------------------------------------------------------------
+	// documenten pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function aanmelding( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$pdf = new PdfAanmelding();
+		
+		$pdf->setFooter();
+		$pdf->setHeader();
+		
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$pdf->setBody( $werknemer  );
+		
+		$pdf->preview();
+	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// documenten pagina
@@ -276,7 +298,7 @@ class Dossier extends MY_Controller
 		$document = new Document( $document_id );
 		
 		$details = $document->details();
-		show($details);
+		//show($details);
 		$this->smarty->assign( 'document_details', $details );
 		$this->smarty->assign( 'werknemer', $werknemer );
 		$this->smarty->display( 'crm/werknemers/dossier/documentdetails.tpl' );
@@ -348,7 +370,9 @@ class Dossier extends MY_Controller
 	{
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
+		$reserveringen = new \models\verloning\Reserveringen();
 		
+		$this->smarty->assign( 'stand', $reserveringen->werknemer( $werknemer_id )->stand() );
 		$this->smarty->assign( 'werknemer', $werknemer );
 		$this->smarty->display( 'crm/werknemers/dossier/reserveringen.tpl' );
 	}
@@ -361,8 +385,12 @@ class Dossier extends MY_Controller
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
+		$urenbriefjesGroup = new UrenbriefjesGroup();
+		$urenbriefjes = $urenbriefjesGroup->werknemer($werknemer_id)->all();
+		
+		$this->smarty->assign( 'urenbriefjes', $urenbriefjes );
 		$this->smarty->assign( 'werknemer', $werknemer );
-		$this->smarty->display( 'crm/werknemers/dossier/ziekmeldingen.tpl' );
+		$this->smarty->display( 'crm/werknemers/dossier/urenbriefjes.tpl' );
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -432,6 +460,7 @@ class Dossier extends MY_Controller
 		{
 			$werknemer->setDefaultCao( $_POST['default_cao'] );
 			$werknemer->setStartDienstverband( $_POST['indienst'] );
+			$werknemer->setPensioen( $_POST['stipp'] );
 			
 			if( $werknemer->errors() !== false )
 				$this->smarty->assign( 'errors', $werknemer->errors() );
@@ -443,7 +472,15 @@ class Dossier extends MY_Controller
 			
 		}
 		
-		//CAO anapassen
+		//Pensioen aanpassen
+		if( isset( $_POST['set_pensioen'] ) )
+		{
+			$werknemer->setPensioen( $_POST['stipp'] );
+			if( $werknemer->errors() !== false )
+				$this->smarty->assign( 'errors', $werknemer->errors() );
+		}
+		
+		//CAO aanpassen
 		if( isset( $_POST['set_cao'] ) )
 		{
 			$werknemer->setDefaultCao( $_POST['default_cao'] );
@@ -451,6 +488,7 @@ class Dossier extends MY_Controller
 				$this->smarty->assign( 'errors', $werknemer->errors() );
 		}
 		
+		$this->smarty->assign( 'pensioen', $werknemer->pensioen() );
 		$this->smarty->assign( 'default_cao', $werknemer->defaultCao() );
 		$this->smarty->assign( 'indienst', $werknemer->startDienstverband() );
 		$this->smarty->assign( 'werknemer', $werknemer );

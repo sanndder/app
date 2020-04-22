@@ -5,6 +5,7 @@ namespace models\verloning;
 use models\Connector;
 use models\forms\Validator;
 use models\inleners\Inlener;
+use models\inleners\InlenerGroup;
 use models\users\UserGroup;
 use models\utils\DBhelper;
 use models\utils\Tijdvak;
@@ -329,8 +330,6 @@ class Invoer extends Connector
 		return true;
 	}
 
-
-
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * projecten voor inlener
@@ -341,6 +340,45 @@ class Invoer extends Connector
 		$inlener = new Inlener( $this->_inlener_id);
 		return $inlener->projecten();
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Haal alle invoer op voor het urenbriefje
+	 *
+	 */
+	public function invoerUrenbriefje()
+	{
+		$tijdvak = new Tijdvak( $this->_tijdvak, $this->_jaar, $this->_periode );
+		$sql = "SELECT DISTINCT inlener_id FROM invoer_uren WHERE werknemer_id = $this->_werknemer_id AND datum >= '". $tijdvak->startDatum()."' AND datum <= '". $tijdvak->eindDatum() ."'";
+		$query = $this->db_user->query( $sql );
+		
+		$inleners = InlenerGroup::list();
+		foreach( $query->result_array() as $row )
+		{
+			$this->_inlener_id = $row['inlener_id'];
+			
+			$invoerUren = new InvoerUren( $this );
+			$invoerKm = new InvoerKm( $this );
+			$invoervergoedingen = new InvoerVergoedingen( $this );
+			
+			$invoerUren->setWerknemer( $this->_werknemer_id );
+			$invoerKm->setWerknemer( $this->_werknemer_id );
+			
+			//urenmatrix
+			$array[$this->_inlener_id]['inlener'] = $inleners[$this->_inlener_id];
+			$array[$this->_inlener_id]['uren'] = $invoerUren->urenMatrix();
+			
+			//kilometers
+			$array[$this->_inlener_id]['km'] = $invoerKm->getWerknemerKilometers();
+			
+			$urentypesGroup = new UrentypesGroup();
+			$array[$this->_inlener_id]['urentypes'] = $urentypesGroup->inlener( $this->_inlener_id )->urentypesWerknemer( $this->_werknemer_id );
+		}
+
+		return $array;
+	}
+	
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

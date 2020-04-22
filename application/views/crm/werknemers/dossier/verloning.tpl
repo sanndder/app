@@ -1,6 +1,6 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Werknemer{/block}
-{block "header-icon"}icon-office{/block}
+{block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 
 {block "content"}
@@ -98,6 +98,56 @@
 												</div>
 											</div>
 										</div>
+
+	                                    <div class="row mt-2">
+		                                    <label class="col-md-3">Feestdagen direct uitkeren</label>
+
+		                                    <div class="col-md-8">
+
+			                                    <div class="form-check form-check-inline">
+				                                    <label class="form-check-label">
+													<span class="checked">
+														<input value="1" type="radio" class="form-input-styled" name="feestdagen_direct" required {if isset($verloning.feestdagen_direct) && $verloning.feestdagen_direct == 1} checked{/if}>
+													</span>
+					                                    Ja
+				                                    </label>
+			                                    </div>
+			                                    <div class="form-check form-check-inline">
+				                                    <label class="form-check-label">
+												<span>
+													<input value="0" type="radio" class="form-input-styled" name="feestdagen_direct" {if (isset($verloning.feestdagen_direct) && $verloning.feestdagen_direct == 0 ) || $verloning.vakantiegeld_direct == NULL} checked{/if}>
+												</span>
+					                                    Nee
+				                                    </label>
+			                                    </div>
+		                                    </div>
+	                                    </div>
+
+	                                    <div class="row row-light-plus">
+		                                    <label class="col-md-3">Kort verzuim direct uitkeren</label>
+
+		                                    <div class="col-md-8">
+
+			                                    <div class="form-check form-check-inline">
+				                                    <label class="form-check-label">
+													<span class="checked">
+														<input value="1" type="radio" class="form-input-styled" name="kortverzuim_direct" required {if isset($verloning.kortverzuim_direct) && $verloning.kortverzuim_direct == 1} checked{/if}>
+													</span>
+					                                    Ja
+				                                    </label>
+			                                    </div>
+			                                    <div class="form-check form-check-inline">
+				                                    <label class="form-check-label">
+												<span>
+													<input value="0" type="radio" class="form-input-styled" name="kortverzuim_direct" {if (isset($verloning.kortverzuim_direct) && $verloning.kortverzuim_direct == 0 ) || $verloning.vakantiegeld_direct == NULL} checked{/if}>
+												</span>
+					                                    Nee
+				                                    </label>
+			                                    </div>
+		                                    </div>
+	                                    </div>
+
+
 										<div class="row mt-2">
 											<label class="col-md-3">Wettelijke vakantieuren direct uitkeren</label>
 

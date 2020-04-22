@@ -6,7 +6,7 @@ use models\users\User;
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * Account en userbeheer
+ * Teken document
  */
 
 class Sign extends MY_Controller {

@@ -94,9 +94,11 @@ class Dashboard extends MY_Controller {
 		$werknemer = new Werknemer( $this->werknemer->werknemer_id );
 		
 		$loonstrokengroup = new LoonstrokenGroup();
+		$reserveringen = new \models\verloning\Reserveringen();
 		
 		//show($werknemer->gegevens());
 		$this->smarty->assign('werknemer', $werknemer->gegevens() );
+		$this->smarty->assign( 'stand', $reserveringen->werknemer( $this->werknemer->werknemer_id )->stand() );
 		$this->smarty->assign( 'loonstroken', $loonstrokengroup->werknemer( $this->werknemer->werknemer_id )->all() );
 		$this->smarty->display('dashboard/werknemer.tpl');
 	}

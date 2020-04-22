@@ -45,7 +45,7 @@ class MY_Controller extends CI_Controller
 		$logout = false; if( isset($_GET['logout']) )$logout = true;
 		
 		//controllers die benaderd mogen worden zonder login
-		$no_login = array('aanmelden', 'crm', 'usermanagement', 'sign', 'documenten');
+		$no_login = array('aanmelden', 'crm', 'usermanagement', 'sign', 'documenten', 'cronjobs');
 		
 		//validate user, wanneer ingelogd dan nooit no-access
 		if( !in_array($this->uri->segment(1),$no_login) || isset($_SESSION['logindata']['main']) )
@@ -56,6 +56,7 @@ class MY_Controller extends CI_Controller
 				$redirect_url = $this->auth->loginOverrideByUsertype( $_GET['loginals'],  $_GET['id'] );
 				redirect( $redirect_url  ,'location' );
 			}
+			
 			//eventueel switchen VOOR de check ivm connect database
 			if( isset($_GET['switchto']) )
 			{
@@ -71,9 +72,10 @@ class MY_Controller extends CI_Controller
 			$this->auth->check( $logout );
 		}
 		else
-			$this->auth->validate_nologin();
-		
-		
+		{
+			if( $this->uri->segment(1) != 'cronjobs' )
+				$this->auth->validate_nologin();
+		}
 		//init user
 		$this->load->model('user_model', 'user');
 		$this->smarty->assign( 'account_id' , $this->user->account_id );
@@ -103,6 +105,7 @@ class MY_Controller extends CI_Controller
 		$no_redirect[] = 'ajax';
 		$no_redirect[] = 'documenten';
 		$no_redirect[] = 'sign';
+		$no_redirect[] = 'cronjobs';
 		
 		//usertype model laden
 		if( $this->user->user_type == 'uitzender' )

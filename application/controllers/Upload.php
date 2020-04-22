@@ -1,11 +1,13 @@
 <?php
 
+use models\documenten\Document;
 use models\documenten\IDbewijs;
 use models\file\File;
 use models\file\Img;
 use models\file\Pdf;
 use models\utils\Carbagecollector;
 use models\verloning\LoonstrokenZip;
+use models\verloning\ReserveringenExcel;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -25,11 +27,78 @@ class Upload extends MY_Controller {
 
 		//$this->load->model('test2_model', 'test2');
 		$this->load->model('upload_model', 'uploadfiles');
+		
+	}
 
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// upload ondertekend document
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uploadondertekening( $document_id = NULL )
+	{
+		$document = new Document( $document_id );
+		$details = $document->details();
+		
+		if( $details === NULL )
+			$result['error'][] = 'Document niet gevonden';
+		else
+		{
+			
+			$this->load->model( 'upload_model', 'uploadfiles' );
+			$this->uploadfiles->setUploadDir( $details['file_dir'] );
+			$this->uploadfiles->setAllowedFileTypes( 'pdf|PDF' );
+			$this->uploadfiles->setPrefix();
+			$this->uploadfiles->uploadfiles();
+			
+			if( $this->uploadfiles->errors() === false )
+			{
+			
+				$document->uploadSignedFile( $this->uploadfiles->getFileArray() );
+				
+				$result = [];
+				
+			} else
+				$result['error'] = $this->uploadfiles->errors();
+			
+			header( 'Content-Type: application/json' ); // set json response headers
+			echo json_encode( $result );
+			die();
+		}
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	// upload handtekening uitzender
+	// upload excel met stand reserveringen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uploadreserveringen()
+	{
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'verloning/reserveringen' );
+		$this->uploadfiles->setAllowedFileTypes( 'xls|XLS|xlsx|XLSX' );
+		$this->uploadfiles->setPrefix( 'xls_' );
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			//get file path
+			$path = $this->uploadfiles->getFilePath();
+			
+			$reserveringenExcel = new ReserveringenExcel( $path );
+			$reserveringenExcel->setType( $_POST['type'] );
+			$reserveringenExcel->extractData();
+			$result = [];
+			
+		}
+		else
+			$result['error'] = $this->uploadfiles->errors();
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+		die();
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// upload zip met loonstroken
 	//-----------------------------------------------------------------------------------------------------------------
 	public function uploadloonstroken()
 	{

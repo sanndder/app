@@ -46,7 +46,6 @@ class Valid
 	 */
 	static function factor( $input )
 	{
-		show($input);
 		if( empty( $input ) )
 			return false;
 		

@@ -193,6 +193,7 @@
 						<tr>
 							<th></th>
 							<th style="width: 75px;">ID</th>
+							<th style="width: 5px;" class="p-0 m-0"></th>
 							<th>Bedrijfsnaam</th>
 							<th>Uitzender</th>
 							<th class="text-center">Actions</th>
@@ -204,7 +205,12 @@
 								<tr style="{if $i.complete == 0}background-color: #EEE;{/if}{if $i.archief == 1}color: #F44336;{/if}">
 									<td>{$i.complete}</td>
 									<td>{$i.inlener_id}</td>
-									<td>
+									<td class="m-0 p-0">
+										{if isset($i.factoring) && $i.factoring == 0}
+											<i class="icon-coin-euro mr-1 p-0 text-danger"></i>
+										{/if}
+									</td>
+									<td class="pl-0">
                                         {* moet er een badge voor? *}
 										{if $i.complete == 0}
 											{if isset($i.krediet)}
@@ -239,8 +245,10 @@
 										{if $ENV == 'development'}
 											<a href="{$base_url}/crm/inleners?del={$i.inlener_id}"><i class="icon-trash font-size-sm"></i></a>
                                         {/if}
+                                        {if $user_type == 'werkgever'}
                                         {if isset($i.user)}
 											<a href="{$base_url}/dashboard/inlener?loginals=inlener&id={$i.inlener_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
+                                        {/if}
                                         {/if}
                                         {if $i.complete == 0}
 											<a href="{$base_url}/crm/inleners?action=archief&inlener_id={$i.inlener_id}" class="ml-2"> archief</a>

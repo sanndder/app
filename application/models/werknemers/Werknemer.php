@@ -64,6 +64,24 @@ class Werknemer extends Connector
 
 	}
 
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Set ID
+	 */
+	public function akkoordLoonheffing()
+	{
+		$sql = "SELECT signed_on FROM documenten WHERE file_dir = 'documenten/arbeidsovereenkomst' AND deleted = 0 AND signed = 1 AND werknemer_id = $this->werknemer_id ";
+		$query = $this->db_user->query($sql);
+
+		if ($query->num_rows() == 0)
+		{
+			return NULL;
+		}
+
+		$data = $query->row_array();
+		return $data['signed_on'];
+	}
+
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -131,9 +149,15 @@ class Werknemer extends Connector
 		$sql = "SELECT werknemers_gegevens.*, werknemers_status.*
 				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_gegevens.werknemer_id = werknemers_status.werknemer_id
+				LEFT JOIN werknemers_uitzenders ON werknemers_uitzenders.werknemer_id = werknemers_status.werknemer_id
 				WHERE werknemers_gegevens.deleted = 0 AND werknemers_status.werknemer_id = $this->werknemer_id
-				LIMIT 1";
-
+				";
+		
+		if( $this->user->user_type == 'uitzender' )
+			$sql .= " AND werknemers_uitzenders.uitzender_id = ".$this->uitzender->id." AND werknemers_uitzenders.deleted = 0";
+		
+		$sql .= " LIMIT 1";
+		
 		$query = $this->db_user->query($sql);
 
 		//bij leeg alles wel aanmaken
@@ -169,11 +193,19 @@ class Werknemer extends Connector
 		$sql = "SELECT werknemers_status.werknemer_id, werknemers_gegevens.achternaam, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam, werknemers_gegevens.tussenvoegsel
 				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_status.werknemer_id = werknemers_gegevens.werknemer_id
+				LEFT JOIN werknemers_uitzenders ON werknemers_uitzenders.werknemer_id = werknemers_status.werknemer_id
 				WHERE (
-						werknemers_status.werknemer_id = IFNULL((SELECT min(werknemers_status.werknemer_id) FROM werknemers_status WHERE werknemers_status.werknemer_id > $this->werknemer_id AND werknemers_status.archief = 0 AND werknemers_status.complete = 1),0)
-						OR werknemers_status.werknemer_id = IFNULL((SELECT max(werknemers_status.werknemer_id) FROM werknemers_status WHERE werknemers_status.werknemer_id < $this->werknemer_id AND werknemers_status.archief = 0 AND werknemers_status.complete = 1),0)
+						werknemers_status.werknemer_id = IFNULL((SELECT min(werknemers_status.werknemer_id) FROM werknemers_status
+																	WHERE werknemers_status.werknemer_id > $this->werknemer_id
+																	  AND werknemers_status.archief = 0 AND werknemers_status.complete = 1),0)
+						OR werknemers_status.werknemer_id = IFNULL((SELECT max(werknemers_status.werknemer_id) FROM werknemers_status
+																	WHERE werknemers_status.werknemer_id < $this->werknemer_id
+																	  AND werknemers_status.archief = 0 AND werknemers_status.complete = 1),0)
 					  )
 				";
+		
+		if( $this->user->user_type == 'uitzender' )
+			$sql .= " AND werknemers_uitzenders.uitzender_id = ".$this->uitzender->id." ";
 
 		$query = $this->db_user->query($sql);
 		if ($query->num_rows() > 0)
@@ -302,7 +334,7 @@ class Werknemer extends Connector
 			return false;
 		}
 		
-		//max aan 1 uitzender
+		//oude entry weggooien
 		$this->db_user->query( "UPDATE werknemers_dienstverband_cao SET deleted = 1,  deleted_by = ".$this->user->user_id." WHERE deleted = 0 AND werknemer_id = $this->werknemer_id" );
 		
 		$insert['werknemer_id'] = $this->werknemer_id;
@@ -313,8 +345,39 @@ class Werknemer extends Connector
 		
 		return true;
 	}
-
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * start algemene dienstverband, geen fase start
+	 *
+	 * @return string
+	 */
+	public function pensioen() :?array
+	{
+		return $this->select_row( 'werknemers_pensioen', array( 'werknemer_id' => $this->werknemer_id ));
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * pensioen TODO: uitbreiden
+	 *
+	 * @return string
+	 */
+	public function setPensioen( $stipp ) :?bool
+	{
+		//oude entry weggooien
+		$this->db_user->query( "UPDATE werknemers_pensioen SET deleted = 1,  deleted_by = ".$this->user->user_id." WHERE deleted = 0 AND werknemer_id = $this->werknemer_id" );
+		
+		$insert['werknemer_id'] = $this->werknemer_id;
+		$insert['user_id'] = $this->user->user_id;
+		$insert['stipp'] = $stipp;
+		
+		$this->db_user->insert( 'werknemers_pensioen', $insert );
+		
+		return true;
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -654,6 +717,8 @@ class Werknemer extends Connector
 		{
 			$insert['inhouden_zorgverzekering'] = intval( $_POST['inhouden_zorgverzekering'] );
 			$insert['vakantiegeld_direct'] = intval( $_POST['vakantiegeld_direct'] );
+			$insert['feestdagen_direct'] = intval( $_POST['feestdagen_direct'] );
+			$insert['kortverzuim_direct'] = intval( $_POST['kortverzuim_direct'] );
 			$insert['vakantieuren_wettelijk_direct'] = intval( $_POST['vakantieuren_wettelijk_direct'] );
 			$insert['vakantieuren_bovenwettelijk_direct'] = intval( $_POST['vakantieuren_bovenwettelijk_direct'] );
 			$insert['aantal_vakantiedagen_wettelijk'] = intval( $_POST['aantal_vakantiedagen_wettelijk'] );

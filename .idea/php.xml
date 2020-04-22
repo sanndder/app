@@ -23,6 +23,11 @@
       <path value="$PROJECT_DIR$/application/vendor/guzzlehttp/psr7" />
       <path value="$PROJECT_DIR$/application/vendor/guzzlehttp/guzzle" />
       <path value="$PROJECT_DIR$/application/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/application/vendor/mpdf/mpdf - kopie" />
+      <path value="$PROJECT_DIR$/application/vendor/phpoffice/phpspreadsheet" />
+      <path value="$PROJECT_DIR$/application/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/application/vendor/markbaker/complex" />
+      <path value="$PROJECT_DIR$/application/vendor/markbaker/matrix" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3" />

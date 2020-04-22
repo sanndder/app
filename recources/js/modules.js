@@ -311,7 +311,7 @@ var Datepickers = function() {
         $(".pickadate-start-plaatsing").prop('readonly', false);
         
         var curDate = new Date();
-        curDate.setDate(curDate.getDate() - 14);
+        curDate.setDate(curDate.getDate() - 28);
         var futDate = new Date();
         futDate.setDate(futDate.getDate() + 28);
  

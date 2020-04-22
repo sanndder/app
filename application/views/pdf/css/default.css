@@ -4,6 +4,12 @@ p{margin-bottom: 6px; margin-top: 6px;}
 .container{ padding:0 70px 0 35px; font-size: 8pt;}
 table{ font-size: 8pt;}
 
+table.urenbriefje td{ font-size: 10pt;}
+
+table.aanmelding{border-collapse: collapse}
+table.aanmelding td{ padding-top: 9px; padding-bottom: 9px; border-bottom:1px solid #333}
+
+
 .footer{
     font-size: 9pt;
 }

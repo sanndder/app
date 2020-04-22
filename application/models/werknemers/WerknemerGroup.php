@@ -16,7 +16,12 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  *
  */
 class WerknemerGroup extends Connector {
-
+	
+	/*
+	 * @var array met werknemer ID's
+	 */
+	private $_werknemer_ids = array();
+	
 	/*
 	 * @var array
 	 */
@@ -60,6 +65,20 @@ class WerknemerGroup extends Connector {
 		
 		return $data;
 	}
+
+
+
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * welke ID's naar array
+	 *
+	 */
+	public function setWerknemers( array $ids ) :WerknemerGroup
+	{
+		$this->_werknemer_ids = array_keys($ids);
+		return $this;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -80,8 +99,28 @@ class WerknemerGroup extends Connector {
 		$data = DBhelper::toRow( $query );
 		return $data['count'];
 	}
-	
-	
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * welke stipp versie
+	 */
+	public function pensioen() :array
+	{
+		$pensioen = array();
+		
+		if(count($this->_werknemer_ids) > 0 )
+		{
+			$query = $this->db_user->query( "SELECT werknemer_id, stipp FROM werknemers_pensioen WHERE deleted = 0 AND werknemer_id IN (" . implode( ',', $this->_werknemer_ids ) . ")" );
+			
+			foreach( $query->result_array() as $row )
+			{
+				$pensioen[$row['werknemer_id']]['stipp'] = $row['stipp'];
+			}
+		}
+		return $pensioen;
+	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

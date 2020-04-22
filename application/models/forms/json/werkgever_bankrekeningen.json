@@ -23,7 +23,7 @@
         "required": true,
         "minlength": 10,
         "maxlength": 100,
-        "removespaces": true,
+        "removespaces": false,
         "removechars": "-,.,_",
         "type": "iban"
       }

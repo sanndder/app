@@ -154,6 +154,29 @@
 			5232BX 's-Hertogenbosch
 		</div><!-- /col -->
 	</div><!-- /row -->
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			Factris: NL14 INGB 0007 8661 77
+		</div><!-- /col -->
+	</div><!-- /row -->
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			Uitzenden: NL49 INGB 0007 2918 89
+		</div><!-- /col -->
+	</div><!-- /row -->
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			G-rekening:  NL 93 INGB 0990 3336 20
+		</div><!-- /col -->
+	</div><!-- /row -->
+	<div class="row ml-2">
+		<div class="col-md-12 pl-2 pt-2">
+			Bemiddeling: NL41INGB 0006 4341 65
+		</div><!-- /col -->
+	</div><!-- /row -->
+
+
+
 
 </div>
 {/if}

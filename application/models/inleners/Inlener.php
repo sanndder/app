@@ -638,8 +638,8 @@ class Inlener extends Connector
 			return false;
 		
 		//standaard
-		$insert['factor_hoog'] = 1.7;
-		$insert['factor_laag'] = 1.45;
+		$insert['factor_hoog'] = 1.73;
+		$insert['factor_laag'] = 1.50;
 		
 		//factoren van uitzender ophalen
 		if( $this->uitzenderID() !== NULL )
@@ -774,6 +774,7 @@ class Inlener extends Connector
 		$validator = new Validator();
 		$validator->table($table)->input($_POST)->run();
 		$input = $validator->data();
+
 
 		//juitse paramter meegeven
 		if ($where !== NULL)
@@ -947,7 +948,7 @@ class Inlener extends Connector
 		$input = $this->_set('inleners_factoren', 'factoren', array('factor_id' => $factor_id) );
 
 		//$input = $this->_set('inleners_factoren', 'factoren');
-		//return $input;
+		return $input;
 	}
 
 	
@@ -969,6 +970,7 @@ class Inlener extends Connector
 	 */
 	public function setBedrijfsgegevens()
 	{
+		show(1);
 		$input = $this->_set('inleners_bedrijfsgegevens', 'bedrijfsgegevens');
 		return $input;
 	}

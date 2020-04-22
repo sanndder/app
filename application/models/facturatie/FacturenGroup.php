@@ -176,11 +176,12 @@ class FacturenGroup extends Connector
 	public function facturenMatrix() :?array
 	{
 		//verkoop facturen
-		$sql = "SELECT facturen.*, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_projecten.omschrijving AS project
+		$sql = "SELECT facturen.*, inleners_factuurgegevens.factoring, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_projecten.omschrijving AS project, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,  DATEDIFF(facturen.verval_datum,facturen.factuur_datum) AS betaaltermijn
 				FROM facturen
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = facturen.inlener_id
 				LEFT JOIN inleners_projecten ON inleners_projecten.id = facturen.project_id
-				WHERE inleners_bedrijfsgegevens.deleted = 0 AND facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0 ";
+				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = facturen.inlener_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_factuurgegevens.deleted = 0 AND facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0 AND facturen.voldaan = 0";
 				
 		if( $this->_uitzender_id != NULL )
 			$sql .= " AND facturen.uitzender_id = $this->_uitzender_id ";

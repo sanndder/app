@@ -1,6 +1,6 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Werknemer{/block}
-{block "header-icon"}icon-office{/block}
+{block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 {assign "datatable" "true"}
 
@@ -37,38 +37,45 @@
 						<div class="card-body">
 
                             {if $user_type == 'werkgever'}
-							<!----------------------------------------------------------------------------- ID bewijs -------------------------------------------------------------------------------------->
-							<fieldset class="">
-								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">ID bewijs</legend>
-							</fieldset>
-
+								<!----------------------------------------------------------------------------- ID bewijs -------------------------------------------------------------------------------------->
+								<fieldset class="">
+									<legend class="text-uppercase font-size-sm font-weight-bold text-primary">ID bewijs</legend>
+								</fieldset>
 								<table>
 									<tr>
 										<td>Voorkant</td>
 										<td>
-	                                        {if $id_achterkant != NULL}
+                                            {if $id_achterkant != NULL}
 												<a href="{$id_voorkant}" target="_blank">id_voorkant.jpg</a>
-	                                        {/if}
+                                            {/if}
 										</td>
 									</tr>
 									<tr>
 										<td class="pr-4 pt-2">Achterkant</td>
 										<td class="pr-4 pt-2">
-	                                        {if $id_achterkant != NULL}
+                                            {if $id_achterkant != NULL}
 												<a href="{$id_achterkant}" target="_blank">id_achterkant.jpg</a>
-	                                        {/if}
+                                            {/if}
 										</td>
 									</tr>
 								</table>
                             {/if}
 
-	                            <!----------------------------------------------------------------------------- Arbeidsovereenkomst -------------------------------------------------------------------------------------->
-	                            <fieldset class="mt-4">
-		                            <legend class="text-uppercase font-size-sm font-weight-bold text-primary">Arbeidsovereenkomst</legend>
-	                            </fieldset>
-								<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?contract">
-									<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren
-								</a>
+							<!----------------------------------------------------------------------------- Arbeidsovereenkomst -------------------------------------------------------------------------------------->
+							<fieldset class="mt-4">
+								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Aanmelding &  Opgave gegevens loonheffing</legend>
+							</fieldset>
+							<a href="{$base_url}/crm/werknemers/dossier/aanmelding/{$werknemer->id}" target="_blank">
+								<i class="icon-file-plus mr-2"></i>Aanmelding_en_loonheffing.pdf
+							</a>
+
+							<!----------------------------------------------------------------------------- Arbeidsovereenkomst -------------------------------------------------------------------------------------->
+							<fieldset class="mt-4">
+								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Arbeidsovereenkomst</legend>
+							</fieldset>
+							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?contract">
+								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren
+							</a>
 
 						</div>
 
@@ -113,10 +120,13 @@
 										</td>
 										<td class="align-text-top">
                                             {if $d.signed == 1}
-												<i class="icon-check"></i> {$d.signed_on|date_format: '%d-%m-%Y om %R:%S'}
+												<i class="icon-check"></i>
+                                                {$d.signed_on|date_format: '%d-%m-%Y om %R:%S'}
                                             {else}
                                                 {if $d.send == 1}
-													<span class="text-muted"><i class="icon-hour-glass2"></i> wachten op ondertekening....</span>
+													<span class="text-muted">
+														<i class="icon-hour-glass2"></i> wachten op ondertekening....
+													</span>
                                                 {/if}
                                             {/if}
 										</td>
@@ -135,11 +145,11 @@
 														<a href="documenten/pdf/download/{$d.document_id}" class="dropdown-item">
 															<i class="icon-download"></i> Downloaden
 														</a>
-														{*
+                                                        {*
 														<a href="javascript:void(0)" class="dropdown-item">
 															<i class="icon-envelop3"></i> Emailen
 														</a>
-	                                                     *}
+														 *}
 														<a href="crm/werknemers/dossier/documenten/{$werknemer->werknemer_id}?sendforsign={$d.document_id}" class="dropdown-item">
 															<i class="icon-pencil5"></i> Email digitaal tekenen
 														</a>

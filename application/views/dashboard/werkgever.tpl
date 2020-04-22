@@ -454,15 +454,15 @@
 
 									<div class="media-body">
 										<div class="font-weight-semibold">
-											<a href="{$base_url}/recources/docs/grekening.pdf" target="_blank">
-												bankverklaring grekening
+											<a href="{$base_url}/recources/docs/g-rekening.pdf" target="_blank">
+												verklaring g-rekening
 											</a>
 										</div>
 									</div>
 
 									<div class="ml-3">
 										<div class="list-icons">
-											<a href="{$base_url}/recources/docs/grekening.pdf"
+											<a href="{$base_url}/recources/docs/g-rekening.pdf"
 											   class="list-icons-item"
 											   target="_blank">
 												<i class="icon-download"></i></a>

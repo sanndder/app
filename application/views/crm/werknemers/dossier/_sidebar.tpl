@@ -127,6 +127,7 @@
 							</a>
 						</li>
                         {if  $user_type == 'werkgever'}
+
 							<!-- li loonbeslagen -->
 							<li class="nav-item">
 								<a href="crm/werknemers/dossier/loonbeslagen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'loonbeslagen'}active{/if}">
@@ -135,14 +136,16 @@
 							</li>
 							<!-- Header Instellingen -->
 							<li class="nav-item-header">Instellingen</li>
-							<!-- li Algemene instellingen -->
+
+
+	                        <!-- li Algemene instellingen
 							<li class="nav-item {if $werknemer->complete != 1}order-1{/if}">
 								<a href="crm/werknemers/dossier/algemeneinstellingen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'algemeneinstellingen'}active{/if}">
                                     {* standaard icon *}
 									<i class="icon-cog mr-2"></i>
 									Algemene instellingen
 								</a>
-							</li>
+							</li>-->
                         {/if}
                     {/if}
 

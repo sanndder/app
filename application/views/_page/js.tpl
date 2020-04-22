@@ -20,7 +20,7 @@
 <!-- /theme JS files -->
 
 <!-- Theme JS files -->
-<script src="recources/js/modules.js"></script>
+<script src="recources/js/modules.js?{$time}"></script>
 <!-- /theme JS files -->
 
 <!-- vue js -->

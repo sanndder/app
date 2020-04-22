@@ -1,0 +1,3 @@
+SELECT log1.*, (log2.microtime - log1.microtime) AS duration
+FROM `facturen_sessies_log` AS log1
+LEFT JOIN facturen_sessies_log AS log2 ON log1.id+1 = log2.id

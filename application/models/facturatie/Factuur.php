@@ -76,9 +76,71 @@ class Factuur extends Connector
 	 */
 	public function details()
 	{
-		$query = $this->db_user->query( "SELECT * FROM facturen WHERE factuur_id = $this->_factuur_id AND deleted = 0 AND concept = 0" );
-		return DBhelper::toRow( $query, 'NULL' );
+		$query = $this->db_user->query( "SELECT *, DATEDIFF(verval_datum,factuur_datum) AS betaaltermijn FROM facturen WHERE factuur_id = $this->_factuur_id AND deleted = 0 AND concept = 0" );
+		$details = DBhelper::toRow( $query, 'NULL' );
+		
+		if( $details !== NULL )
+		{
+			$details['bedrag_vrij'] = $details['bedrag_incl'] - $details['bedrag_grekening'];
+		}
+		
+		return $details;
 	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * betaling toevoegen
+	 *
+	 */
+	public function addBetaling($data)
+	{
+		$insert['factuur_id'] = $this->_factuur_id;
+		$insert['type'] = $data['type'];
+		$insert['user_id'] = $this->user->user_id;
+		$insert['betaald_op'] = reverseDate($data['datum']);
+		$insert['bedrag'] = prepareAmountForDatabase($data['bedrag']);
+		
+		$this->db_user->insert( 'facturen_betalingen', $insert );
+		
+		$this->_updateBedragenNaBetaling();
+		
+		return true;
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * betalingen
+	 *
+	 */
+	public function _updateBedragenNaBetaling()
+	{
+		$query = $this->db_user->query( "SELECT SUM(bedrag) AS betaald FROM facturen_betalingen WHERE factuur_id = $this->_factuur_id AND deleted = 0 ORDER BY betaald_op DESC" );
+		$data = DBhelper::toRow( $query, 'NULL');
+		
+		if( $data !== NULL )
+		{
+			$this->db_user->query( "UPDATE facturen SET bedrag_openstaand = bedrag_incl - ".$data['betaald']." WHERE $this->_factuur_id LIMIT 1" );
+		}
+		
+		$sql = "UPDATE facturen SET voldaan = 1 WHERE bedrag_openstaand = 0";
+		$query = $this->db_user->query( $sql );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * betalingen
+	 *
+	 */
+	public function betalingen()
+	{
+		$query = $this->db_user->query( "SELECT * FROM facturen_betalingen WHERE factuur_id = $this->_factuur_id AND deleted = 0 ORDER BY betaald_op DESC" );
+		return DBhelper::toArray( $query, 'id', 'NULL' );
+	}
+	
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -96,6 +158,7 @@ class Factuur extends Connector
 		$this->db_user->query( "UPDATE invoer_uren SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id");
 		$this->db_user->query( "UPDATE invoer_kilometers SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id");
 		$this->db_user->query( "UPDATE invoer_vergoedingen SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id");
+		$this->db_user->query( "UPDATE facturen_correcties SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id");
 	}
 
 
@@ -112,6 +175,7 @@ class Factuur extends Connector
 		
 		$inlener = new Inlener( $factuur['inlener_id'] );
 		$emailadressen = $inlener->emailadressen();
+		$factuurgegevens = $inlener->factuurgegevens();
 		
 		$emailadressen['facturatie'] = ($emailadressen['facturatie'] === NULL ) ? $emailadressen['standaard'] : $emailadressen['facturatie'];
 		
@@ -126,7 +190,10 @@ class Factuur extends Connector
 		
 		//cc naar factris
 		if( ENVIRONMENT != 'development')
-			$email->to( ['email' => 'facturen@factris.com', 'name' => 'Factris' ] );
+		{
+			if( $factuurgegevens['factoring'] == 1 )
+				$email->to( [ 'email' => 'facturen@factris.com', 'name' => 'Factris' ] );
+		}
 		
 		$email->setSubject('Nieuwe factuur');
 		$email->setTitel('Nieuwe factuur voor ' . $inlener->bedrijfsnaam);
@@ -144,9 +211,49 @@ class Factuur extends Connector
 		
 		$email->send();
 		
+		$this->setSend();
+		
 		return true;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set send
+	 *
+	 * @return bool
+	 */
+	public function setSend()
+	{
+		$update['send_on'] = date('Y-m-d H:i:s');
+		$this->db_user->where( 'factuur_id', $this->_factuur_id);
+		$this->db_user->update( 'facturen', $update );
+		
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		
+		return false;
+	}
+
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set uplaoded to factoring
+	 *
+	 * @return bool
+	 */
+	public function setUploaded()
+	{
+		$update['to_factoring_on'] = date('Y-m-d H:i:s');
+		$this->db_user->where( 'factuur_id', $this->_factuur_id);
+		$this->db_user->update( 'facturen', $update );
+		
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		
+		return false;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

@@ -53,7 +53,7 @@ class Overzicht extends MY_Controller
 		// alle gewone inleners ophalen
 		$inlenergroup = new InlenerGroup();
 		$inleners = $inlenergroup->all( $_GET );
-		
+
 		//combineren
 		$inleners = $inleners + $kredietaanvragen;
 

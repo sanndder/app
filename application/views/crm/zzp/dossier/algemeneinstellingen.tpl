@@ -1,5 +1,5 @@
 {extends file='../../../layout.tpl'}
-{block "title"}Werknemer{/block}
+{block "title"}ZZP'er{/block}
 {block "header-icon"}icon-office{/block}
 {block "header-title"}Werknemer - {$zzp->naam}{/block}
 {assign "uploader" "true"}

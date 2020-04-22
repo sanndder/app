@@ -6,7 +6,12 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/guzzle" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/promises" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/markbaker/complex" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/markbaker/matrix" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/mpdf/mpdf - kopie" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/phpoffice/phpspreadsheet" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/psr/simple-cache" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/ralouphie/getallheaders" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdf" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdi-fpdf" />

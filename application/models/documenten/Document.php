@@ -253,6 +253,36 @@ class Document extends Connector {
 	{
 		return $this->_data['owner'];
 	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * document uploaden als ondertekening
+	 * @return bool
+	 */
+	public function uploadSignedFile( $file_info )
+	{
+		
+		//rename
+		$old_file = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $file_info['file_dir'] . '/' . $file_info['file_name'];
+		
+		$new_name = str_replace('.pdf', '_signed.pdf', $this->_data['file_name']);
+		$new_file = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/' . $this->_data['file_dir'] . '/' . $new_name;
+		
+		if( rename( $old_file, $new_file) )
+		{
+			$update['signed'] = 1;
+			$update['signed_on'] = date('Y-m-d H:i:s');
+			$update['signed_file_dir'] = $this->_data['file_dir'];
+			$update['signed_file_name'] = $new_name;
+			$update['signed_file_name_display'] = $new_name;
+			
+			//update file
+			$this->db_user->where( 'document_id', $this->_document_id );
+			$this->db_user->update( 'documenten', $update );
+		}
+	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -402,8 +432,12 @@ class Document extends Connector {
 			if( $this->user->user_type == 'werkgever' )
 				return true;
 			
+			//TODO welke uitzend?
+			if( $this->user->user_type == 'uitzender' )
+				return true;
+			
 			if( $this->user->user_type == 'inlener' )
-				return  false;
+				return false;
 		}
 		
 		//failsafe

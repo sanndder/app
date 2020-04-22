@@ -326,7 +326,17 @@ class Ajax extends MY_Controller
 			$array['tijdvak'] = 'w';
 			$array['titel'] = 'week';
 			$array['jaren'] = array( 2020 );
-			$array['periodes'] = array(  7 => '07' , 8 => '08', 9=> '09');
+			//$array['periodes'] = array(  9=> '09', 10=> '10', 11 => '11' , 12 => '12');
+			
+			$week = date( 'W' )-1;
+			$array['periodes'] = array(
+				$week-5 => sprintf("%02d", $week-5),
+				$week-4 => sprintf("%02d", $week-4),
+				$week-3 => sprintf("%02d", $week-3),
+				$week-2 => sprintf("%02d", $week-2),
+				$week-1 => sprintf("%02d", $week-1),
+				$week => sprintf("%02d", $week),
+			);
 		}
 		
 		if( $factuurgegevens['frequentie'] == '4w')
@@ -342,7 +352,7 @@ class Ajax extends MY_Controller
 			$array['tijdvak'] = 'm';
 			$array['titel'] = 'maand';
 			$array['jaren'] = array( 2020 );
-			$array['periodes'] = array( 1 => 'januari', 2 => 'februari' );
+			$array['periodes'] = array( 1 => 'januari', 2 => 'febrguari' );
 		}
 		
 		echo json_encode( $array );
