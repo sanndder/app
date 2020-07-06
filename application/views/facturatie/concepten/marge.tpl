@@ -195,7 +195,7 @@
 										</tr>
 										<tr>
 											<td colspan="3" class="pt-3">
-												<i>Een negatief bedrag betekend dat de uitzender geld ontvangt, een positief bedrag betekend marge terugbetalen.</i>
+												<i>Een <b>negatief</b> bedrag betekend dat de uitzender geld ontvangt, een positief bedrag betekend marge terugbetalen.</i>
 											</td>
 										</tr>
 									</tfoot>
