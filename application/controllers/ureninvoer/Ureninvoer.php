@@ -58,6 +58,9 @@ class Ureninvoer extends MY_Controller
 		//schoon beginnen
 		//FactuurFactory::clear();
 		
+		if( $this->user->user_type == 'uitzender')
+			$_GET['uitzender'] = $this->uitzender->id;
+		
 		$factuurFactory = new FactuurFactory();
 		$factuurFactory->setTijdvak( $tijdvak );
 		$factuurFactory->setInlener( $_GET['inlener'] );

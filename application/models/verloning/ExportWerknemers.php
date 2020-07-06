@@ -104,7 +104,7 @@ class ExportWerknemers extends Connector
 			$buitenland_adres->addChild('HuisnummerToevoeging', $werknemer['huisnummer_toevoeging']);
 			$buitenland_adres->addChild('Postcode', $werknemer['postcode']);
 			$buitenland_adres->addChild('Woonplaats', $werknemer['plaats']);
-			$buitenland_adres->addChild('Woonland', 'DE');
+			$buitenland_adres->addChild('Woonland', Codering::landcodeFromId($werknemer['woonland_id']));
 		}
 		
 		$naw->addChild('Telefoonnummer', $werknemer['telefoon']);
@@ -124,8 +124,179 @@ class ExportWerknemers extends Connector
 		$tijdvak->addChild('ArbeidsduurPerWeek', 0);
 		$tijdvak->addChild('VastLoonOvereengekomenPer', 'U');
 		
+		//-------------------------------- dienstverband --------------------------------------------------------------
+		$sql = "SELECT * FROM werknemers_dienstverband_duur WHERE werknemer_id = $this->_werknemer_id AND deleted = 0";
+		$query = $this->db_user->query( $sql );
+		$dienstverband = $query->row_array();
+		
+		$algemeen->addChild('StartDienstverband', reverseDate($dienstverband['indienst']));
+		
+		//-------------------------------- cao --------------------------------------------------------------
+		$sql = "SELECT * FROM werknemers_dienstverband_cao WHERE werknemer_id = $this->_werknemer_id AND deleted = 0";
+		$query = $this->db_user->query( $sql );
+		$dienstverbandcao = $query->row_array();
+		
+		$pensioen = $w->addChild('Heffingen');
+		
+		//rechten systeem voor bouw pensioen
+		if( $dienstverbandcao['default_cao'] == 'NBBU')
+		{
+			$rechten = $w->addChild('WerknemerRechtenSysteem');
+			$rechten->addChild('Deelnemer', 'N');
+			
+			$heffing = $pensioen->addChild('Heffing');
+			$heffing->addChild('KodeHeffing', 'E003AP01');
+			$heffing->addChild('HeffingToepassen', 'N');
+			
+			$heffing = $pensioen->addChild('Heffing');
+			$heffing->addChild('KodeHeffing', 'E003OO01');
+			$heffing->addChild('HeffingToepassen', 'N');
+			
+			$heffing = $pensioen->addChild('Heffing');
+			$heffing->addChild('KodeHeffing', 'E003OO02');
+			$heffing->addChild('HeffingToepassen', 'N');
+			
+			$heffing = $pensioen->addChild('Heffing');
+			$heffing->addChild('KodeHeffing', 'EPAWW');
+			$heffing->addChild('HeffingToepassen', 'N');
+		}
+		
+		//-------------------------------- verlonings instellingen --------------------------------------------------------------
+		$sql = "SELECT * FROM werknemers_pensioen WHERE werknemer_id = $this->_werknemer_id AND deleted = 0";
+		$query = $this->db_user->query( $sql );
+		
+		$stipp_basis = 'N';
+		$stipp_plus = 'N';
+		
+		if( $query->num_rows() > 0 )
+		{
+			$pensioenInstellingen = $query->row_array();
+			if( $pensioenInstellingen['stipp'] == 'basis' )
+				$stipp_basis = 'J';
+			if( $pensioenInstellingen['stipp'] == 'plus' )
+				$stipp_plus = 'J';
+			
+		}
+		
+		$heffing = $pensioen->addChild('Heffing');
+		$heffing->addChild('KodeHeffing', 'E026STIPLU');
+		$heffing->addChild('HeffingToepassen', $stipp_basis);
+		
+		$heffing = $pensioen->addChild('Heffing');
+		$heffing->addChild('KodeHeffing', 'E026STIPPL');
+		$heffing->addChild('HeffingToepassen', $stipp_plus);
+		
+		
+		//-------------------------------- verlonings instellingen --------------------------------------------------------------
+		$sql = "SELECT * FROM werknemers_verloning_instellingen WHERE werknemer_id = $this->_werknemer_id AND deleted = 0";
+		$query = $this->db_user->query( $sql );
+		$verloningsInstellingen = $query->row_array();
+		
+		if( $verloningsInstellingen['inhouden_zorgverzekering'] == 1 )
+		{
+			$inhoudingen = $w->addChild( 'Inhoudingen' );
+			$inhoudingen->addChild( 'Code', 'Hollandzorg' );
+			$inhoudingen->addChild( 'Bedrag', 24.85 );
+		}
+		
+		if( $verloningsInstellingen['vakantiegeld_direct'] == 1 )
+		{
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'vakantiegeld inst. direct');
+			$reserveringen->addChild('PercentageReservering', 8.33);
+			unset($reserveringen);
+			
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'vakantiegeld inst.');
+			$reserveringen->addChild('PercentageReservering', 0);
+			unset($reserveringen);
+		}
+		
+		if( $verloningsInstellingen['feestdagen_direct'] == 1 )
+		{
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'feestdagen inst. direct');
+			$reserveringen->addChild('PercentageReservering', 3.04);
+			unset($reserveringen);
+			
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'feestdagen inst.');
+			$reserveringen->addChild('PercentageReservering', 0);
+			unset($reserveringen);
+		}
+		
+		if( $verloningsInstellingen['kortverzuim_direct'] == 1 )
+		{
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'kortverzuim inst. direct');
+			$reserveringen->addChild('PercentageReservering', 0.6);
+			unset($reserveringen);
+			
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'kortverzuim inst.');
+			$reserveringen->addChild('PercentageReservering', 0);
+			unset($reserveringen);
+		}
+		
+		if( $verloningsInstellingen['vakantieuren_bovenwettelijk_direct'] == 1 )
+		{
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'Vakantieuren inst. direct');
+			$reserveringen->addChild('PercentageReservering', 2.17 );
+			unset($reserveringen);
+			
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'Vakantieuren inst.');
+			$reserveringen->addChild('PercentageReservering', 8.7 );
+			unset($reserveringen);
+		}
+		
+		//atv perc
+		$atv_percentage = $verloningsInstellingen['aantal_atv_dagen'] * 0.435;
+		
+		if( $verloningsInstellingen['atv_direct'] == 1 )
+		{
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'Atv inst. direct');
+			$reserveringen->addChild('PercentageReservering', $atv_percentage );
+			unset($reserveringen);
+			
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'Atv inst.');
+			$reserveringen->addChild('PercentageReservering', 0 );
+			unset($reserveringen);
+		}
+		else
+		{
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'Atv inst. direct');
+			$reserveringen->addChild('PercentageReservering', 0 );
+			unset($reserveringen);
+			
+			$reserveringen = $w->addChild('WerknemerReserveringen');
+			$reserveringen->addChild('Code', 'Atv inst.');
+			$reserveringen->addChild('PercentageReservering', $atv_percentage );
+			unset($reserveringen);
+		}
+		
+		//-------------------------------- bruto uurloon en funcie --------------------------------------------------------------
+		$sql = "SELECT * FROM werknemers_inleners WHERE werknemer_id = $this->_werknemer_id AND deleted = 0";
+		$query = $this->db_user->query( $sql );
+		$plaatsing = $query->row_array();
+		
+		$tijdvak->addChild('Uurloon', $plaatsing['bruto_loon']);
+		
+		$FiscusUwv = $w->addChild('FiscusUwv');
+		$FiscusUwv->addChild('CaoCodeCBS', '633');
+		$FiscusUwv->addChild('AardArbeidsverhouding', '11');
+		$FiscusUwv->addChild('FaseIndelingFenZ', '17');
+		
+		//loonheffing
+		$loonheffing = $w->addChild('WerknemerLoonheffing');
+		$loonheffing->addChild('FiscaalJaarloon', $plaatsing['bruto_loon'] * 1900 );
+
 		header('Content-type: text/xml');
-		header('Content-Disposition: attachment; filename="text.xml"');
+		header('Content-Disposition: attachment; filename="export '.$this->_werknemer_id.'.xml"');
 		echo $xml->asXML();
 	}
 	

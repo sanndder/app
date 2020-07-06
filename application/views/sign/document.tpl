@@ -31,7 +31,7 @@
 
 							{if $document.signed == 0}
 							<button type="button" onclick="modalSignDocumentExternal( {$document.document_id} )" class="btn btn-sm btn-success mt-3 mr-3 btn-sign" style="width: 180px">
-								<i class="icon-pencil5 mr-2"></i>document tekenen
+								<i class="icon-eye mr-2"></i>document openen
 							</button>
                             {/if}
 

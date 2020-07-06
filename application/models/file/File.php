@@ -248,9 +248,9 @@ class File extends Connector {
 	 * Force download
 	 * @return void
 	 */
-	public function inline()
+	public function inline( $filename = NULL )
 	{
-		$this->_download('inline');
+		$this->_download('inline', $filename );
 	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -258,7 +258,7 @@ class File extends Connector {
 	 * Force download
 	 * @return void
 	 */
-	private function _download( $method = 'attachment' )
+	private function _download( $method = 'attachment', $filename = NULL )
 	{
 		//debug prevent readfile
 		if( isset($_GET['debug']) )
@@ -284,7 +284,11 @@ class File extends Connector {
 			die('Mime type unknown, cloud not download file');
 
 		//downloaden
-		header("Content-disposition: $method; filename=\"$this->_file_name_display\"");
+		if( $filename === NULL )
+			header("Content-disposition: $method; filename=\"$this->_file_name_display\"");
+		else
+			header("Content-disposition: $method; filename=\"$filename\"");
+		
 		header("Content-type:" . $mime_type);
 
 		//prevent caching

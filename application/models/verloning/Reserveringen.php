@@ -26,13 +26,11 @@ class Reserveringen extends Connector
 	/*
 	 * constructor
 	 */
-	public function __construct( $path = NULL)
+	public function __construct()
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
 		
-		if( $path !== NULL )
-			$this->setPath( $path );
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

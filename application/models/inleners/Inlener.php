@@ -67,7 +67,20 @@ class Inlener extends Connector
 		$this->getStatus();
 
 	}
-
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Set ID
+	 */
+	static function bedrijfsnaam( $inlener_id ) :?string
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$query = $db_user->query( "SELECT bedrijfsnaam FROM inleners_bedrijfsgegevens WHERE deleted = 0 AND inlener_id = ".intval($inlener_id)." LIMIT 1" );
+		return DBhelper::toRow( $query, 'NULL', 'bedrijfsnaam');
+	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -323,7 +336,7 @@ class Inlener extends Connector
 		$sql = "SELECT inleners_status.*,inleners_bedrijfsgegevens.*, inleners_factuurgegevens.factuur_per_project FROM inleners_status
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
 				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = inleners_status.inlener_id
-				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.inlener_id = $this->inlener_id AND inleners_factuurgegevens.deleted = 0
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.inlener_id = $this->inlener_id AND (inleners_factuurgegevens.deleted = 0 OR inleners_factuurgegevens.deleted IS NULL)
 				LIMIT 1";
 
 		$query = $this->db_user->query($sql);
@@ -970,7 +983,6 @@ class Inlener extends Connector
 	 */
 	public function setBedrijfsgegevens()
 	{
-		show(1);
 		$input = $this->_set('inleners_bedrijfsgegevens', 'bedrijfsgegevens');
 		return $input;
 	}

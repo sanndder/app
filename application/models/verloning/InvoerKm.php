@@ -65,7 +65,7 @@ class InvoerKm extends Invoer
 		$row['aantal'] = round( $row['aantal'],2 );
 		$row['invoer_id'] = intval( $row['invoer_id'] );
 		
-		if( intval($row['project_id']) > 0 )
+		if( is_numeric($row['project_id']))
 			$row['project_id'] = intval($row['project_id']);
 		else
 			$row['project_id'] = NULL;
@@ -207,7 +207,7 @@ class InvoerKm extends Invoer
 	 */
 	public function getWerknemerKilometerRijen()
 	{
-		$sql = "SELECT invoer_id, aantal, datum, project_id, project_tekst, locatie_tekst, opmerking_tekst, doorbelasten, locatie_van, locatie_naar
+		$sql = "SELECT invoer_id, aantal, datum, project_id, project_tekst, locatie_tekst, opmerking_tekst, doorbelasten, locatie_van, locatie_naar, uitkeren
 				FROM invoer_kilometers WHERE invoer_kilometers.factuur_id IS NULL AND werknemer_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?
 				ORDER BY datum";
 		
@@ -269,7 +269,7 @@ class InvoerKm extends Invoer
 	 */
 	public function getWerknemerKilometers()
 	{
-		$sql = "SELECT invoer_id, aantal, datum, project_id, project_tekst, locatie_tekst, opmerking_tekst, doorbelasten, locatie_van, locatie_naar
+		$sql = "SELECT invoer_id, aantal, datum, project_id, project_tekst, locatie_tekst, opmerking_tekst, doorbelasten, locatie_van, locatie_naar, uitkeren
 				FROM invoer_kilometers WHERE werknemer_id = ? AND inlener_id = ? AND datum >= ? AND datum <= ?
 				ORDER BY datum";
 		

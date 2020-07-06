@@ -3,6 +3,7 @@
 {block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemers{/block}
 {assign "datatable" "true"}
+{assign "select2" "true"}
 
 {block "content"}
 
@@ -66,10 +67,24 @@
 				<div class="card-body">
 
 					<form action="" method="get">
+
+						<div class="form-group form-group-feedback form-group-feedback-left">
+
+							<select name="uitzender_id" class="form-control select-search">
+								<option value="">Alle Uitzenders</option>
+                                {if $uitzenders !== NULL}
+                                    {foreach $uitzenders as $u}
+										<option {if isset($smarty.get.uitzender_id) && $smarty.get.uitzender_id == $u@key}selected{/if} value="{$u@key}">{$u@key} - {$u}</option>
+                                    {/foreach}
+                                {/if}
+							</select>
+
+						</div>
+
 						<div class="form-group form-group-feedback form-group-feedback-left">
 							<input name="q1" value="{if isset($smarty.get.q1)}{$smarty.get.q1}{/if}" type="search" class="form-control" placeholder="ID of achternaam">
 							<div class="form-control-feedback">
-								<i class="icon-office text-muted"></i>
+								<i class="icon-user text-muted"></i>
 							</div>
 						</div>
 

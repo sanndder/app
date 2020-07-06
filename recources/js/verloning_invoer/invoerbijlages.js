@@ -62,6 +62,11 @@ let invoerbijlages = {
 			invoerbijlages.delSelectedBijlages();
 		});
 		
+		//update project
+		$(document).on('change', '[data-vi-action="setBijlageProject"]', function(){
+			invoerbijlages.setBijlageProject(this);
+		});
+		
 	},
 	
 	buildBijlagesTab(){
@@ -149,6 +154,36 @@ let invoerbijlages = {
 		}
 	},
 	
+	// update vergoeding doorbelasten ------------------------------------------------------------------------------------------------------------------------------
+	setBijlageProject( obj ){
+		$select = $(obj);
+		$tr = $select.closest('tr');
+		
+		//wait gif naar voren
+		$select.hide();
+		$( '<span class="wait">' + tplKmInvoerStatusSave + '</span>').insertAfter( $select );
+		
+		data.file_id = $tr.data('id');
+		data.project_id = $select.find('option:selected').val();
+		
+		//naar database
+		xhr.url = base_url + 'ureninvoer/ajax/saveBijlageProject';
+		xhr.data = data;
+		
+		var response = xhr.call( true );
+		if( response !== false ){
+			response.done(function(json){
+				//er gata iets mis
+				if( json.status == 'error' ){
+					alert('Wijziging kon niet worden opgeslagen');
+				}
+				
+				$select.show();
+				$tr.find('.wait').remove();
+			});
+		}
+	},
+	
 	//-- load files ----------------------------------------------------------------------------------------------------------------------------
 	loadFiles(){
 		
@@ -163,13 +198,29 @@ let invoerbijlages = {
 				
 				if( Object.values(json.files).length > 0 ){
 					
+					//project select opbouwen
+					let htmlProjecten = invoer.getprojectSelect( json );
+					
 					$('.table-vi-bijlages-empty').hide();
 					$('.table-vi-bijlages-container').show();
 					
 					for( let file of Object.values(json.files) ){
 						let htmlTr = replaceVars(tplBijlageTr, file);
+						htmlTr = htmlTr.replace('{select_projecten}', htmlProjecten);
+						
 						$row = $(htmlTr).appendTo($tabel.find('tbody'));
+						
+						$row.find('[name="project_id"]').val(file.project_id);
 					}
+					
+					//projecten verbergen indien nodig
+					if( json.info.projecten === null )
+					{
+						$tabel.find('.th-project').hide();
+						$tabel.find('.td-projecten').hide();
+					}
+					
+					
 				}
 				
 			});

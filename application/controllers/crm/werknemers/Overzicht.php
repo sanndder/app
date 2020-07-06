@@ -1,5 +1,6 @@
 <?php
 
+use models\uitzenders\UitzenderGroup;
 use models\utils\VisitsLogger;
 use models\werknemers\Werknemer;
 use models\werknemers\WerknemerGroup;
@@ -41,7 +42,8 @@ class Overzicht extends MY_Controller
 		}
 
 		//show($werknemers);
-
+		
+		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign('werknemers', $werknemers);
 		$this->smarty->assign('last_visits', $log->getLastCRMVisits('werknemer') );
 		$this->smarty->display('crm/werknemers/overzicht.tpl');

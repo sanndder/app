@@ -73,7 +73,7 @@ class InvoerUren extends Invoer
 		$row['datum'] = reverseDate( $row['datum'] );
 		$row['uren_type_id_werknemer'] = $row['urentype_id'];
 		
-		if( intval($row['project_id']) > 0 )
+		if( is_numeric($row['project_id']))
 			$row['project_id'] = intval($row['project_id']);
 		else
 			$row['project_id'] = NULL;
@@ -229,6 +229,33 @@ class InvoerUren extends Invoer
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
+	 * samenvatting ophalen voor overzicht
+	 *
+	 */
+	public function getWerknemerUrenSamenvatting()
+	{
+		$urenRows = $this->getWerknemerUrenRijen();
+		$uren = NULL;
+		
+		if( $urenRows === NULL )
+			return $uren;
+		
+		foreach( $urenRows as $row )
+		{
+			$label = $row['label'];
+			
+			if( !isset($uren[$label]) )
+				$uren[$label] = 0;
+			
+			$uren[$label] += $row['aantal'];
+		}
+		
+		return $uren;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
 	 * alle uren voor werknemer ophalen voor ajax invoer
 	 *
 	 */
@@ -346,8 +373,12 @@ class InvoerUren extends Invoer
 				$row['label'] = $row['naam'];
 			
 			$data[$row['invoer_id']] = $row;
-		}
-		
+		}/*
+		if( $this->_werknemer_id == 20017 )
+		{
+			show( $data );
+			die();
+		}*/
 		return $data;
 	}
 	

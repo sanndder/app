@@ -55,7 +55,43 @@ class PlaatsingGroup extends Connector
 		$this->_inlener_id = intval($inlener_id);
 		return $this;
 	}
-	
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get all
+	 * @return array
+	 */
+	public function uurlonen() :array
+	{
+		$sql = "SELECT werknemers_inleners.bruto_loon
+				FROM werknemers_inleners
+				WHERE werknemers_inleners.deleted = 0";
+		
+		//alleen voor 1 werknemer toestaan
+		if( $this->_werknemer_id == NULL )
+		{
+			$this->_error[] = 'Stel werknemer ID in';
+			return null;
+		}
+		
+		//voor werknemer
+		if( $this->_werknemer_id !== NULL )
+			$sql .= " AND werknemers_inleners.werknemer_id = $this->_werknemer_id ";
+		
+		//sort
+		$sql .= " ORDER BY werknemers_inleners.bruto_loon ASC";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return null;
+
+		foreach( $query->result_array() as $row )
+			$lonen[] = $row['bruto_loon'];
+
+		return $lonen;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

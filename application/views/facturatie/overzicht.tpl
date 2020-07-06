@@ -33,7 +33,7 @@
 				<div class="card-body">
 					<div class="row">
 						<div class="col">
-							<a href="facturatie/concepten/afgesprokenwerk" class="btn bg-teal-400 btn-block btn-float">
+							<a href="facturatie/concepten/marge" class="btn bg-teal-400 btn-block btn-float">
 								<i class="icon-file-plus icon-2x"></i>
 								<span>Factuur</span>
 							</a>

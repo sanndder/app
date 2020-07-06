@@ -88,7 +88,7 @@ class InvoerVergoedingen extends Invoer
 	public function getVergoeding( $invoer_id )
 	{
 		$query = $this->db_user->query( "SELECT * FROM invoer_vergoedingen WHERE invoer_id = ?", array($invoer_id ));
-		return DBhelper::toRow($query,' NULL');
+		return DBhelper::toRow($query, 'NULL');
 	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -117,6 +117,34 @@ class InvoerVergoedingen extends Invoer
 		return true;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * doorbelasten opslaan
+	 *
+	 */
+	public function setProject( $invoer_id, $project_id )
+	{
+		if( !is_numeric($project_id))
+			return false;
+		
+		$old_entry = $this->getVergoeding($invoer_id);
+		
+		$update['project_id'] = $project_id;
+		$this->db_user->where( 'invoer_id', $invoer_id );
+		$this->db_user->where( 'werknemer_id', $this->_werknemer_id );
+		$this->db_user->where( 'tijdvak', $this->_tijdvak );
+		$this->db_user->where( 'jaar', $this->_jaar );
+		$this->db_user->where( 'periode', $this->_periode );
+		
+		$this->db_user->update( 'invoer_vergoedingen', $update );
+		
+		$this->_logVergoedingActie( 'update', $old_entry );
+		
+		return true;
+	}
+
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -208,9 +236,12 @@ class InvoerVergoedingen extends Invoer
 		
 		foreach( $query->result_array() as $row )
 		{
+			if( $row['belast'] == 0 )
+				$row['factor'] = 1;
+			
 			$data[$row['invoer_id']] = $row;
 		}
-		
+
 		return $data;
 	}
 	
@@ -284,6 +315,9 @@ class InvoerVergoedingen extends Invoer
 			//invoer ID instellen als deze bestaat
 			$invoer_id = $invoer[$id]['invoer_id'] ?? NULL;
 			$vergoeding['invoer_id'] = $invoer_id;
+			
+			if(isset($invoer[$id]['project_id']))
+				$vergoeding['project_id'] = $invoer[$id]['project_id'];
 			
 			//variabele vergoeding alleen toevoegen aan array
 			if( $vergoeding['vergoeding_type'] == 'variabel' )
@@ -407,7 +441,7 @@ class InvoerVergoedingen extends Invoer
 			return 0;
 		
 		//uren optellen
-		$totaal_uren = $this->_sumUren();
+		$totaal_uren = $this->_sumUren( $vergoeding['telling_uren'], $vergoeding['telling_overuren'], $vergoeding['telling_reisuren']);
 		
 		// nul mag gelijk terug
 		if( $totaal_uren == 0 )
@@ -416,7 +450,7 @@ class InvoerVergoedingen extends Invoer
 		//update of insert
 		if( $invoer_id !== NULL )
 		{
-			$update['bedrag'] = round( $vergoeding['bedrag_per_uur'] * $totaal_uren );
+			$update['bedrag'] = round( ($vergoeding['bedrag_per_uur'] * $totaal_uren), 2 );
 			$this->db_user->where( 'invoer_id', $invoer_id );
 			$this->db_user->update( 'invoer_vergoedingen', $update );
 			
@@ -453,13 +487,19 @@ class InvoerVergoedingen extends Invoer
 	 * 3: reisuren
 	 *
 	 */
-	private function _sumUren()
+	private function _sumUren( $uren = 0, $overuren = 0, $reisuren = 0 )
 	{
 		$aantal = 0;
-		
+
 		foreach( $this->_uren as $row )
 		{
-			if( $row['urentype_categorie_id'] == 1)
+			if( $uren == 1 && $row['urentype_categorie_id'] == 1)
+				$aantal += $row['decimaal'];
+			
+			if( $overuren == 1 && $row['urentype_categorie_id'] == 2)
+				$aantal += $row['decimaal'];
+			
+			if( $reisuren == 1 && $row['urentype_categorie_id'] == 3)
 				$aantal += $row['decimaal'];
 		}
 		

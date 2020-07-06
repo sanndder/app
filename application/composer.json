@@ -1,19 +1,27 @@
 {
-    "require": {
-        "mpdf/mpdf": "^8.0",
-        "claviska/simpleimage": "^3.3",
-        "ext-json": "*",
-        "setasign/fpdi": "^2.2",
-        "setasign/fpdi-fpdf": "^2.0",
-        "setasign/fpdi-tcpdf": "^2.0",
-        "setasign/fpdi-tfpdf": "^2.1",
-        "fpdf/fpdf": "^1.81",
-        "guzzlehttp/guzzle": "^6.5",
-        "ext-curl": "*",
-        "ext-gd": "*",
-       "ext-fileinfo": "*",
-       "ext-simplexml": "*",
-       "ext-zip": "*",
-        "phpoffice/phpspreadsheet": "^1.11"
-    }
+   "require": {
+      "mpdf/mpdf": "^8.0",
+      "claviska/simpleimage": "^3.3",
+      "ext-json": "*",
+      "setasign/fpdi": "^2.2",
+      "setasign/fpdi-fpdf": "^2.0",
+      "setasign/fpdi-tcpdf": "^2.0",
+      "setasign/fpdi-tfpdf": "^2.1",
+      "setasign/fpdi_pdf-parser": "2.0.4",
+      "fpdf/fpdf": "^1.81",
+      "guzzlehttp/guzzle": "^6.5",
+      "ext-curl": "*",
+      "ext-gd": "*",
+      "ext-fileinfo": "*",
+      "ext-simplexml": "*",
+      "ext-zip": "*",
+      "phpoffice/phpspreadsheet": "^1.11",
+      "smalot/pdfparser": "*"
+   },
+   "repositories": [
+      {
+         "type": "composer",
+         "url": "https://www.setasign.com/downloads/"
+      }
+   ]
 }

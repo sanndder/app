@@ -42,7 +42,7 @@ let tplTrOverzicht = `<tr>
 
 
 //werknemerlijst laden
-let tplUreninvoerTabLoadList = '<i class="icon-spinner2 spinner mr-1"></i> '+_werknemers+' laden...';
+let tplUreninvoerTabLoadList = '<i class="icon-spinner2 spinner mr-1"></i> ' + _werknemers + ' laden...';
 let tplUreninvoerWerknemerLi = '<li class="vi-list-item text-muted" data-id="{werknemer_id}" data-vi-action="setWerknemer"><span>{werknemer_id} -  {naam}</span></li>';
 
 //wait voor alle invoerschermen
@@ -93,10 +93,26 @@ let tplKmInvoerTr = `<tr data-id="{invoer_id}">
 								<option value="uitzender">Uitzender</option>
 							</select>
 						</td>
-						<td>
+						<td class="td-projecten">
 							<select name="project_id" class="vi-select-project form-control" data-vi-action="saveKmRow">
 								{select_projecten}
 							</select>
+						</td>
+						<td class="td-uitkeren">
+							<div class="form-check form-check-inline ml-2">
+								<label class="form-check-label mr-2">
+									<span class="checked">
+										<input value="1" type="radio" class="form-input-styled vi-uitkeren-ckecked" name="uitkeren[{invoer_id}]" data-vi-action="saveKmRow" checked>
+									</span>
+									<span style="margin: 7px 0 0 3px">Ja</span>
+								</label>
+								<label class="form-check-label">
+									<span>
+										<input value="0" type="radio" class="form-input-styled vi-uitkeren-unckecked" name="uitkeren[{invoer_id}]" data-vi-action="saveKmRow">
+									</span>
+									<span style="margin: 7px 0 0 3px">Nee</span>
+								</label>
+							</div>
 						</td>
 						<td class="td-actions pt-1">
 						</td>
@@ -109,10 +125,15 @@ let tplVergoedingVastTr = `<tr data-id="{invoer_id}">
 								<td class="td-euro">€</td>
 								<td style="width: 75px;" class="td-input">{bedrag}</td>
 								<td>
-									<select class="form-control" data-vi-action="setVergoedingDoorbelasten">
+									<select name="doorbelasten"  class="form-control" data-vi-action="setVergoedingDoorbelasten">
 										<option class="keuze">Maak een keuze</option>
 										<option value="inlener">Inlener</option>
 										<option value="uitzender">Uitzender</option>
+									</select>
+								</td>
+								<td>
+									<select name="project_id" class="vi-select-project form-control" data-vi-action="setVergoedingProject">
+										{select_projecten}
 									</select>
 								</td>
 							</tr>`;
@@ -124,10 +145,15 @@ let tplVergoedingVariabelTr = `<tr data-id="{invoer_id}" data-werknemer-vergoedi
 									<input data-vi-action="setVergoedingBedrag" style="width: 75px;" type="text" class="form-control" value="{bedrag}">
 								</td>
 								<td>
-									<select class="form-control" data-vi-action="setVergoedingDoorbelasten">
+									<select name="doorbelasten" class="form-control" data-vi-action="setVergoedingDoorbelasten">
 										<option class="keuze">Maak een keuze</option>
 										<option value="inlener">Inlener</option>
 										<option value="uitzender">Uitzender</option>
+									</select>
+								</td>
+								<td>
+									<select name="project_id" class="vi-select-project form-control" data-vi-action="setVergoedingProject">
+										{select_projecten}
 									</select>
 								</td>
 							</tr>`;
@@ -138,9 +164,34 @@ let tplBijlageTr = `<tr data-id="{file_id}">
 						<td class="pr-3"> <i class="icon-radio-unchecked text-grey-200"></i></td>
 						<td><img class="file-icon" src="recources/img/icons/{icon}"/></td>
 						<td><a href="ureninvoer/bijlage/{file_id}" target="_blank">{file_name_display}</a></td>
-						<td>{project_naam}</td>
+						<td class="td-projecten">
+							<select name="project_id" class="vi-select-project form-control" data-vi-action="setBijlageProject">
+								{select_projecten}
+							</select>
+						</td>
 						<td class="text-right">{file_size}</td>
 						<td>{timestamp}</td>
 						<td>{user}</td>
 						<td><span class="text-warning" style="font-size: 11px; cursor:pointer;" data-vi-action="delBijlage"> <i class="icon-trash mr-1"></i>verwijderen</span></td>
 						</tr>`;
+
+
+//template voor aangenomenwerk
+let tplAangenomenwerkLegend = ` <fieldset class="mb-4"  data-id="{project_id}">
+									<legend class="text-primary text-uppercase font-size-sm font-weight-bold mb-1">{project}</legend>
+									<table class="vi-aangenomenwerk-regels">
+										<thead><tr><th>Omschrijving</th><th>Bedrag (€)</th><th></th></tr></thead>
+										<tbody></tbody>
+								</fieldset>`;
+
+let tplAangenomenwerkInvoerTr = `<tr data-id="{invoer_id}">
+									<td class="td-omschrijving">
+										<input name="omschrijving" type="text" class="form-control" value="{omschrijving}">
+									</td>
+									<td class="td-bedrag">
+										<input name="bedrag" type="text" class="form-control text-right" value="{bedrag}">
+									</td>
+									<td>
+										<button type="button" class="btn btn-success btn-sm" data-vi-action="setAangenomenwerkProjectData"><i class="icon-checkmark2 mr-1"></i></button>
+									</td>
+								</tr>`;

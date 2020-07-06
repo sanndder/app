@@ -6,9 +6,11 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/guzzle" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/promises" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/maennchen/zipstream-php" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/markbaker/complex" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/markbaker/matrix" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/mpdf/mpdf - kopie" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/myclabs/php-enum" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/phpoffice/phpspreadsheet" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/psr/http-message" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/psr/simple-cache" />
@@ -17,7 +19,12 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdi-fpdf" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdi-tcpdf" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdi-tfpdf" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/fpdi_pdf-parser" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/setasign/tfpdf" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/smalot/pdfparser" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/polyfill-intl-idn" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/polyfill-mbstring" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/polyfill-php72" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/tecnickcom/tcpdf" />
       <excludeFolder url="file://$MODULE_DIR$/application/views/_compile" />
       <excludeFolder url="file://$MODULE_DIR$/userf1les_o7dm6" />

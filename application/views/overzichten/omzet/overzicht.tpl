@@ -34,6 +34,9 @@
 							dataLabels: {
 								enabled: false
 							},
+							tooltip:{
+								shared:true,
+							},
 							series: [],
 							title: {
 								text: 'Omzet & Kosten 2020',
@@ -42,9 +45,21 @@
 								text: 'Gegevens laden...'
 							},
 							stroke: {
-								width: [3, 3, 3],
+								width: [3, 3, 3, 3],
 								curve: 'straight'
 							},
+
+							fill: {
+								opacity: [1, 1, 1,0.25],
+								gradient: {
+									inverseColors: false,
+									shade: 'light',
+									type: "vertical",
+									opacityFrom: 0.85,
+									opacityTo: 0.55,
+									stops: [0, 100, 100, 100]
+								}
+							}
 						};
 
 						var chart = new ApexCharts(document.querySelector("#chart"), options);
@@ -54,13 +69,23 @@
 
 						$.getJSON(url, function(response) {
 							chart.updateSeries([{
-								name: 'Omzet',
-								data: response.omzet
+								name: 'Omzet uitzenden',
+								data: response.omzetuitzenden
+							},
+							{
+								name: 'Loonkosten',
+								data: response.loonkosten
+							},
+							{
+								name: 'Winst',
+								data: response.winst
 							},
 								{
-									name: 'Kosten',
-									data: response.kosten
-								}])
+									name: 'Winst Cummelatief',
+									data: response.winstcum,
+									type: 'area'
+								}
+							])
 						});
 
 

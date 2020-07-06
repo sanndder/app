@@ -95,6 +95,40 @@ class Upload extends MY_Controller {
 		echo json_encode($result);
 		die();
 	}
+
+
+
+	//-----------------------------------------------------------------------------------------------------------------
+	// factorings pdf's
+	//-----------------------------------------------------------------------------------------------------------------
+	public function factoringsbestanden()
+	{
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'factoring/facturen' );
+		$this->uploadfiles->setAllowedFileTypes( 'pdf|PDF' );
+		$this->uploadfiles->setDatabaseTable( 'factoring_facturen' );
+		$this->uploadfiles->setPrefix( 'factris_' );
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			//save to database
+			$file_id = $this->uploadfiles->dataToDatabase();
+			
+			$file_array = $this->uploadfiles->getFileArray();
+			
+			/*$preview[] = 'http://via.placeholder.com/150';
+			$config[] = array('url' => '/test', 'caption' => 'test.jpg', 'key' => 101, 'size' => 100);
+			$result = [ 'initialPreview' => $preview,'initialPreviewConfig' => $config, 'initialPreviewAsData' => true];*/
+			$result = [];
+		}
+		else
+			$result['error'] = $this->uploadfiles->errors();
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+		die();
+	}
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------

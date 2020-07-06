@@ -18,9 +18,13 @@ class OmzetGroup extends Connector
 {
 	protected $_error = NULL;
 	
+	private $_omzetuitzenden = NULL;
+	private $_loonkosten = NULL;
+	private $_winst = NULL;
+	private $_winstCum = NULL;
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
+	 * /*
 	 * constructor
 	 */
 	public function __construct()
@@ -29,17 +33,16 @@ class OmzetGroup extends Connector
 		parent::__construct();
 	}
 	
-	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * omzet ophalen
 	 *
 	 */
-	public function omzet() :?array
+	public function omzetverkoop(): ?array
 	{
 		$sql = "SELECT periode, SUM(bedrag_excl) AS omzet FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 GROUP BY periode ORDER BY periode";
 		$query = $this->db_user->query( $sql );
-
+		
 		if( $query->num_rows() == 0 )
 			return NULL;
 		
@@ -48,7 +51,7 @@ class OmzetGroup extends Connector
 			$arr['x'] = $row['periode'];
 			$arr['y'] = $row['omzet'];
 			
-			$data[] = $arr;
+			$data[$row['periode']] = $arr;
 		}
 		
 		return $data;
@@ -56,14 +59,14 @@ class OmzetGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
-	 * kosten ophalen
+	 * omzet van alleen uitzenden (kostenoverzichten)
 	 *
 	 */
-	public function kosten() :?array
+	public function omzetuitzenden(): ?array
 	{
 		$sql = "SELECT periode, SUM(kosten_excl) AS kosten FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 GROUP BY periode ORDER BY periode";
 		$query = $this->db_user->query( $sql );
-
+		
 		if( $query->num_rows() == 0 )
 			return NULL;
 		
@@ -72,13 +75,80 @@ class OmzetGroup extends Connector
 			$arr['x'] = $row['periode'];
 			$arr['y'] = $row['kosten'];
 			
-			$data[] = $arr;
+			$data[$row['periode']] = $arr;
 		}
 		
+		$this->_omzetuitzenden = $data;
+		return $data;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * loonkosten
+	 *
+	 */
+	public function loonkosten(): ?array
+	{
+		$sql = "SELECT * FROM overzicht_loonkosten ORDER BY periode";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$arr['x'] = $row['periode'];
+			$arr['y'] = $row['kosten'];
+			
+			$data[$row['periode']] = $arr;
+		}
+		$this->_loonkosten = $data;
 		return $data;
 	}
 	
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * winst
+	 *
+	 */
+	public function winst(): ?array
+	{
+		if( $this->_omzetuitzenden === NULL )
+			return NULL;
+		
+		$winstTotaal = 0;
+		
+		foreach( $this->_omzetuitzenden as $periode => $arr )
+		{
+			$this->_winst[$periode]['x'] = $periode;
+			$this->_winst[$periode]['y'] = 0;
+			
+			$this->_winstCum[$periode]['x'] = $periode;
+			$this->_winstCum[$periode]['y'] = $winstTotaal;
+			
+			if( isset($this->_loonkosten[$periode]) )
+			{
+				$this->_winst[$periode]['y'] = round( $arr['y'] - $this->_loonkosten[$periode]['y'], 2 );
+				$this->_winstCum[$periode]['y'] += round($this->_winst[$periode]['y']);
+			}
+			
+			$winstTotaal = $this->_winstCum[$periode]['y'];
+		}
+		
+		return $this->_winst;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * winst
+	 *
+	 */
+	public function winstCum(): ?array
+	{
+		return $this->_winstCum;
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *

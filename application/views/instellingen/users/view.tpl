@@ -69,6 +69,9 @@
 	                                    {else}
                                             {$user.new_key_expires|date_format: '%d-%m-%Y om %R:%S'}
                                         {/if}
+										<a href="instellingen/werkgever/users/view/{$user.user_id}?resend">
+											Opnieuw sturen
+										</a>
 									</td>
 								</tr>
 							</table>

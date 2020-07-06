@@ -12,16 +12,18 @@
 		let werkgever = '{$werkgever_type}';
 	</script>
 	<script src="template/global_assets/js/plugins/extensions/jquery_ui/full.min.js"></script>
+	<script src="recources/plugins/jquery.ba-throttle-debounce.js"></script>
 	<script src="recources/js/api/bing.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/templates.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoer.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoeruren.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoerkm.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoervergoedingen.js?{$time}"></script>
+	<script src="recources/js/verloning_invoer/invoerreserveringen.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoeret.js?{$time}"></script>
 	<script src="recources/js/verloning_invoer/invoerbijlages.js?{$time}"></script>
+	<script src="recources/js/verloning_invoer/invoeraangenomenwerk.js?{$time}"></script>
 	<link href="recources/css/verloning_input.css?{$time}" rel="stylesheet" type="text/css">
-
 	<!-- Main sidebar -->
 	<div class="sidebar sidebar-light sidebar-main sidebar-wide sidebar-expand-md align-self-start">
 
@@ -163,6 +165,11 @@
 								<i class="icon-menu7 mr-1"></i> Overzicht
 							</a>
 						</li>
+						<li class="nav-item vi-tab-aangenomenwerk" style="display:none;">
+							<a href="#tab-aangenomenwerk" class="tab-main nav-link" data-toggle="tab">
+								<i class="icon-hammer-wrench mr-1"></i> Aangenomen werk
+							</a>
+						</li>
 						<li class="nav-item">
 							<a href="#tab-ureninvoer" class="tab-main nav-link" data-toggle="tab">
 								<i class="far fa-clock mr-1"></i> Ureninvoer
@@ -189,6 +196,55 @@
 							<table class="vi-table-werknemer-overzicht mt-2">
 
 							</table>
+						</div>
+
+                        {****** ureninvoer *****************************************************}
+						<div class="tab-pane tab-pane-main fade p-3" id="tab-aangenomenwerk">
+
+							<div class="row">
+								<div class="col-md-12 col-xxl-6 vi-aangenomenwerk-body pt-2">
+
+									{*
+									<table>
+										<tr>
+											<td class="text-primary text-uppercase font-size-sm font-weight-bold pr-2">Project:</td>
+											<td>
+												<input type="text" class="form-control vi-input-project" style="width: 250px;">
+											</td>
+											<td class="pl-5">
+												<div class="form-check">
+													<label class="form-check-label">
+														<input name="actief" value="1" type="checkbox" class="form-input-styled-info vi-input-no-project">
+														Geen project meegeven
+													</label>
+												</div>
+											</td>
+										</tr>
+									</table>*}
+{*
+									<fieldset class="mb-3">
+										<legend class="text-primary text-uppercase font-size-sm font-weight-bold">Dienstverband</legend>
+										<table class="vi-aangenomenwerk-regels">
+											<thead>
+												<tr>
+													<th>Omschrijving</th>
+													<th>Bedrag (€)</th>
+												</tr>
+											</thead>
+											<tr>
+												<td class="td-omschrijving">
+													<input name="omschrijving" type="text" class="form-control" value="">
+												</td>
+												<td class="td-bedrag">
+													<input name="bedrag" type="text" class="form-control" value="">
+												</td>
+											</tr>
+										</table>
+									</fieldset>*}
+
+								</div>
+							</div>
+
 						</div>
 
                         {****** ureninvoer *****************************************************}
@@ -273,7 +329,7 @@
 										<div class="tab-pane tab-pane-sub fade" id="sub-kilometers">
 
 											<div class="vi-km-buttons mt-2 mb-2">
-												{*
+                                                {*
 												<button type="button" class="btn alpha-primary text-primary-800 btn-icon ml-2 btn-sm" data-vi-action="copyGewerkteDagen">
 													<i class="icon-calendar2 mr-1"></i>
 													Gewerkte dagen kopiëren
@@ -292,7 +348,8 @@
 														<th style="width: 35px">Kilometers</th>
 														<th>Opmerking</th>
 														<th>Doorbelasten</th>
-														<th>Project</th>
+														<th class="th-project">Project</th>
+														<th>Uitkeren werknemer</th>
 														<th></th>
 														<th style="width: 150px;"></th>
 													</tr>
@@ -314,6 +371,7 @@
 													<tr>
 														<th colspan="3">Vaste vergoedingen</th>
 														<th>Doorbelasten</th>
+														<th class="th-project">Project</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -325,6 +383,7 @@
 													<tr>
 														<th colspan="3">Variabele vergoedingen</th>
 														<th>Doorbelasten</th>
+														<th class="th-project">Project</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -343,7 +402,7 @@
 													<tr>
 														<td class="font-size-base" style="padding-right: 25px;">Vergoeding huisvesting</td>
 														<td class="d-flex flex-row-reverse">
-															<input style="width: 80px" type="text" class="form-control text-right" name="vergoeding-huisvesting" />
+															<input style="width: 80px" type="text" class="form-control text-right" name="vergoeding-huisvesting"/>
 															<div style="font-size: 15px" class="pr-1 pt-1">€</div>
 														</td>
 													</tr>
@@ -352,9 +411,9 @@
 														<td class="d-flex">
 															<select class="form-control" name="vergoeding-levensstandaard">
 																<option></option>
-																{foreach $cola as $c}
+                                                                {foreach $cola as $c}
 																	<option value="{$c.bedrag}">{$c.land} - € {$c.bedrag|number_format:2:',':'.'}</option>
-																{/foreach}
+                                                                {/foreach}
 															</select>
 														</td>
 													</tr>
@@ -367,6 +426,21 @@
 															€ <span class="vi-et-max"></span>
 														</td>
 													</tr>
+													<tr>
+														<td colspan="2" style="height: 15px"></td>
+													</tr>
+													<tr {if $user_type != 'werkgever'}style="display: none" {/if}>
+														<td class="font-size-base" style="padding-right: 25px;">Totaal vergoeding</td>
+														<td class="text-right" style="font-size: 15px">
+															€ <span class="vi-et-totaal"></span>
+														</td>
+													</tr>
+													<tr>
+														<td class="font-size-base" style="padding-right: 25px;">81% uitruil</td>
+														<td class="text-right" style="font-size: 15px">
+															€ <span class="vi-et-uitruil"></span>
+														</td>
+													</tr>
 												</tbody>
 											</table>
 
@@ -374,7 +448,87 @@
 
                                         {****** Invoer: reserveringen *****************************************************}
 										<div class="tab-pane tab-pane-sub fade" id="sub-reserveringen">
-											<i>Geen reserveringen in systeem</i>
+
+											<h6 class="text-primary">Rekenhulp</h6>
+											<table class="mt-2 vi-input vi-table-rekenhulp">
+												<thead>
+													<tr>
+														<th class="pr-2">Uurloon</th>
+														<th class="pr-2">x</th>
+														<th class="pr-2">Uren</th>
+														<th class="pr-2">=</th>
+														<th class="pr-2">Bedrag</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>
+															<select class="form-control input-uurloon" style="width: 80px">
+
+															</select>
+														</td>
+														<td>x</td>
+														<td>
+															<input type="text" class="form-control text-right pr-1 input-uren" style="width: 65px">
+														</td>
+														<td>=</td>
+														<td>
+															<input type="text" class="form-control text-right pr-1 output-bedrag" readonly style="width: 65px">
+														</td>
+													</tr>
+												</tbody>
+											</table>
+
+											<h6 class="text-primary mt-4">Opvragen reserveringen</h6>
+											<table class="mt-2 vi-input vi-table-reserveringen">
+												<thead>
+													<tr>
+														<td></td>
+														<th class="pr-3">Huidige stand</th>
+														<th class="pr-3">Opgevraagd</th>
+														<th class="pr-3" style="display: none">Nieuwe stand</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr class="r-vakantiegeld" data-type="vakantiegeld">
+														<td>Vakantiegeld</td>
+														<td class="td-stand text-right pr-3">€ <span>0,00</span></td>
+														<td class="pr-3 text-right">
+															<input type="text" class="td-vraag form-control text-right" style="width: 60px; display: inline-block" value="0,00">
+														</td>
+														<td class="td-nieuw text-right pr-3" style="display: none">€
+															<span>0,00</span></td>
+													</tr>
+													<tr class="r-vakantieuren_F12" data-type="vakantieuren_F12">
+														<td>Vakantieuren Fase A</td>
+														<td class="td-stand text-right pr-3">€ <span>0,00</span></td>
+														<td class="pr-3 text-right">
+															<input type="text" class="td-vraag form-control text-right" style="width: 60px; display: inline-block" value="0,00">
+														</td>
+														<td class="td-nieuw text-right pr-3" style="display: none">€
+															<span>0,00</span></td>
+													</tr>
+													<tr class="r-kort_verzuim" data-type="kort_verzuim">
+														<td>Kort Verzuim</td>
+														<td class="td-stand text-right pr-3">€ <span>0,00</span></td>
+														<td class="pr-3 text-right">
+															<input type="text" class="td-vraag form-control text-right" style="width: 60px; display: inline-block" value="0,00">
+														</td>
+														<td class="td-nieuw text-right pr-3" style="display: none">€
+															<span>0,00</span></td>
+													</tr>
+													<tr class="r-feestdagen" data-type="feestdagen">
+														<td>Feestdagen</td>
+														<td class="td-stand text-right pr-3">€ <span>0,00</span></td>
+														<td class="pr-3 text-right">
+															<input type="text" class="td-vraag form-control text-right" style="width: 60px; display: inline-block" value="0,00">
+														</td>
+														<td class="td-nieuw text-right pr-3" style="display: none">€
+															<span>0,00</span></td>
+													</tr>
+												</tbody>
+											</table>
+
 										</div>
 
                                         {****** Invoer: inhoudingen *****************************************************}
@@ -422,7 +576,7 @@
 													</th>
 													<th style="width: 35px"></th>
 													<th>Bestand</th>
-													<th>Project</th>
+													<th class="th-project">Project</th>
 													<th>Grootte</th>
 													<th>Geupload op</th>
 													<th>Geupload door</th>

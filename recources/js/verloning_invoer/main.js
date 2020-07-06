@@ -488,7 +488,7 @@ let invoer = {
 document.addEventListener('DOMContentLoaded', function(){
 	
 	invoer.init();
-	
+
 	//wanneer user uitzender, gelijk inleners laden
 	if( document.getElementsByClassName('uitzender-id').length == 0 )
 		invoer.getInleners();

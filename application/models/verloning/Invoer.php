@@ -98,7 +98,7 @@ class Invoer extends Connector
 	/*
 	 * werknemer ID
 	 *
-	 * @return void
+	 * @return object
 	 */
 	public function setWerknemer( $werknemer_id )
 	{
@@ -109,7 +109,7 @@ class Invoer extends Connector
 	/*
 	 * zzp ID
 	 *
-	 * @return void
+	 * @return object
 	 */
 	public function setZZP( $zzp_id )
 	{
@@ -228,6 +228,14 @@ class Invoer extends Connector
 		//eerst werknemerlijst ophalen, KEY IS NIET WERKNEMER ID omdat json anders verkeerd sorteerd
 		$werknemers = $this->listWerknemers();
 		
+		foreach( $werknemers as &$werknemer )
+		{
+			$invoerUren = new InvoerUren( $this );
+			$invoerUren->setWerknemer( $werknemer['id'] );
+		
+			$werknemer['samenvatting']['uren'] = $invoerUren->getWerknemerUrenSamenvatting();
+		}
+		
 		return $werknemers;
 	}
 	
@@ -329,6 +337,27 @@ class Invoer extends Connector
 		
 		return true;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * project bij bijlage opslaan
+	 *
+	 */
+	public function setBijlageProject( $file_id, $project_id )
+	{
+		if( !is_numeric($project_id))
+			return false;
+				
+		$update['project_id'] = $project_id;
+		$this->db_user->where( 'file_id', $file_id );
+		$this->db_user->where( 'tijdvak', $this->_tijdvak );
+		$this->db_user->where( 'jaar', $this->_jaar );
+		$this->db_user->where( 'periode', $this->_periode );
+		
+		$this->db_user->update( 'invoer_bijlages', $update );
+		
+		return true;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -340,6 +369,63 @@ class Invoer extends Connector
 		$inlener = new Inlener( $this->_inlener_id);
 		return $inlener->projecten();
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * actieve projecten voor invoer
+	 *
+	 */
+	public function getActieveProjecten()
+	{
+		$actieve_projecten = [];
+		
+		$tijdvak = new Tijdvak( $this->_tijdvak, $this->_jaar, $this->_periode );
+		
+		//voor uren
+		$sql = "SELECT project_id FROM invoer_uren WHERE inlener_id = $this->_inlener_id AND uitzender_id =  $this->_uitzender_id AND datum >= '". $tijdvak->startDatum()."' AND datum <= '". $tijdvak->eindDatum() ."' AND factuur_id IS NULL";
+		$query = $this->db_user->query( $sql );
+
+		if ( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+				$actieve_projecten[$row['project_id']] = $row['project_id'];
+		}
+
+		//voor kilometers
+		$sql = "SELECT project_id FROM invoer_kilometers WHERE inlener_id = $this->_inlener_id AND uitzender_id =  $this->_uitzender_id AND datum >= '". $tijdvak->startDatum()."' AND datum <= '". $tijdvak->eindDatum() ."'";
+		$query = $this->db_user->query( $sql );
+		
+		if ( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+				$actieve_projecten[$row['project_id']] = $row['project_id'];
+		}
+
+		//voor vergoedingen
+		$sql = "SELECT project_id FROM invoer_vergoedingen WHERE inlener_id = $this->_inlener_id AND uitzender_id =  $this->_uitzender_id AND tijdvak = '$this->_tijdvak' AND jaar = $this->_jaar AND periode = $this->_periode";
+		$query = $this->db_user->query( $sql );
+		
+		if ( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+				$actieve_projecten[$row['project_id']] = $row['project_id'];
+		}
+		
+		if( count($actieve_projecten) == 0)
+			return NULL;
+		
+		$projecten = $this->getProjecten();
+		
+		foreach( $projecten as $project_id => $arr )
+		{
+			if( !array_key_exists($project_id,$actieve_projecten))
+				unset($projecten[$project_id]);
+		}
+		
+		return $projecten;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

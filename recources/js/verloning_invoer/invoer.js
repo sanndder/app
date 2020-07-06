@@ -13,11 +13,13 @@ let invoer = {
 		
 		//defautl tab
 		this.tab = 'overzicht';
+		this.werknemers = null;
 		this.invoertab = 'uren';
 		this.data = {};
 		
 		//events binden
 		this.events();
+		
 	},
 	
 	//-- events aan dom binden ----------------------------------------------------------------------------------------------------------------------------
@@ -163,8 +165,8 @@ let invoer = {
 	},
 	
 	//-- tijdvak setter ----------------------------------------------------------------------------------------------------------------------------
-	getTijdvakVoorInlener(){
-		xhr.url = base_url + 'ureninvoer/ajax/listTijdvakInlener';
+	getInlenerInfo(){
+		xhr.url = base_url + 'ureninvoer/ajax/getInlenerInfo';
 		xhr.data = data;
 		return response = xhr.call();
 	},
@@ -193,6 +195,9 @@ let invoer = {
 	
 	//-- werknemer ID instellen in invoer tab----------------------------------------------------------------------------------------------------------------------------
 	setWerknemer(werknemer_id){
+		
+		//reset
+		invoer.resetInvoerSchermen();
 		
 		//naar data
 		data.werknemer_id = werknemer_id;
@@ -224,6 +229,9 @@ let invoer = {
 		
 		invoer.updateVoorbeeldBtn();
 		
+		//reset alles
+		invoer.resetInvoerSchermen();
+		
 		//factuurknoppen weergeven
 		$('.vi-factuur-buttons').show();
 		
@@ -244,17 +252,24 @@ let invoer = {
 		$click.addClass('vi-list-item-active').append('<span class="badge ml-auto p-0"><i class="icon-spinner2 spinner mr-0 p-0"></i></span>');
 		
 		//set tijdvak select
-		response = invoer.getTijdvakVoorInlener();
+		response = invoer.getInlenerInfo();
 		if( response !== false ){
 			response.done(function(json){
 				//altijd update om periodes eventueel periodes uit te sluiten
 				invoer.updateTijdvakDropdowns(json);
+				
+				//bij aangenomenwerk tab tonen
+				if( json.aangenomenwerk == 1 )
+					$('.vi-tab-aangenomenwerk').show();
+				else
+					$('.vi-tab-aangenomenwerk').hide();
 			});
 		}
 	},
 	
 	//-- tab wissel zonder klik ----------------------------------------------------------------------------------------------------------------------------
 	tabWissel(tab){
+		
 		$('.vi-tabs a').removeClass('active');
 		$('[href="#tab-' + tab + '"]').addClass('active');
 		
@@ -318,6 +333,21 @@ let invoer = {
 	},
 	
 	//invoerschermen opbouwen en vullen met beschibare data ------------------------------------------------------------------------------------------------------------------------------
+	resetInvoerSchermen(){
+		log('reset');
+		$('.table-vi-uren tbody').html('');
+		$('.table-vi-uren').hide();
+		$('.table-vi-km tbody').find('tbody').html('');
+		$('.table-vi-km').hide();
+		
+		$('.vi-vergoedingen-vast').hide().find('tbody').html('');
+		$('.vi-vergoedingen-variabel').hide().find('tbody').html('');
+		
+		$('.vi-table-et').find('[name="vergoeding-huisvesting"]').val('');
+		$('.vi-table-et').find('[name="vergoeding-levensstandaard"]').val('');
+	},
+	
+	//invoerschermen opbouwen en vullen met beschibare data ------------------------------------------------------------------------------------------------------------------------------
 	buildInvoerSchermen(){
 		//niet laden wanneer werknemer nog niet geselecteerd is
 		if( typeof data.werknemer_id == 'undefined' || data.werknemer_id == 0) return;
@@ -357,9 +387,13 @@ let invoer = {
 				if( invoer.invoertab == 'kilometers' )
 					invoerkm.buildKmInvoer(json);
 				
-				//invoer invoer laden
+				//invoer vergoedingen laden
 				if( invoer.invoertab == 'vergoedingen' )
 					invoervergoedingen.buildVergoedingenInvoer(json);
+				
+				//invoer reserveringen laden
+				if( invoer.invoertab == 'reserveringen' )
+					invoerreserveringen.buildReserveringenInvoer(json);
 				
 				//ET invoer laden
 				if( invoer.invoertab == 'et' )
@@ -378,6 +412,10 @@ let invoer = {
 		//overzicht laden
 		if( invoer.tab == 'overzicht' )
 			invoer.buildOverzichtTab();
+		
+		//informatie aangenomen werk
+		if( invoer.tab == 'aangenomenwerk' )
+			invoeraangenomenwerk.buildAangenomenwerkTab();
 
 		//ureninvoer laden
 		if( invoer.tab == 'ureninvoer' )
@@ -413,9 +451,18 @@ let invoer = {
 				
 				//leeg
 				if( Object.values(json.werknemers) == 0 )
+				{
 					$titel.html(tplOverzichtTabEmpty);
+					
+					//invoer tabs verbergen
+					$('.vi-tab-content .card-header').hide();
+				}
 				//niet leeg
 				else{
+					
+					//invoer tabs tonen
+					$('.vi-tab-content .card-header').show();
+					
 					let html = '';
 					for( let werknemer of Object.values(json.werknemers) ){
 						let element = tplUreninvoerWerknemerLi.replace(/{werknemer_id}/g, werknemer.id).replace('{naam}', werknemer.naam).replace('{msg}', werknemer.block_msg);
@@ -477,17 +524,20 @@ let invoer = {
 		}
 	},
 	
-	//porject select maken
+	//project select maken
 	getprojectSelect( json )
 	{
 		let htmlProjecten = null;
 		if( json.info.projecten !== null ){
 			htmlProjecten = '<option></option>';
+			//geen project moet appart geselecteerd worden
+			htmlProjecten += '<option value="0">-- Geen project --</option>';
 			for( let project of Object.values(json.info.projecten) ){
 				let option = tplProjectSelect.replace('{id}', project.id).replace('{label}', project.omschrijving);
 				htmlProjecten += option;
 			}
 		}
+		
 		return htmlProjecten;
 	}
 };
@@ -499,8 +549,10 @@ document.addEventListener('DOMContentLoaded', function(){
 	invoeruren.init();
 	invoerkm.init();
 	invoervergoedingen.init();
+	invoerreserveringen.init();
 	invoeret.init();
 	invoerbijlages.init();
+	invoeraangenomenwerk.init();
 
 	$('#upload-bijlages').fileinput({
 		uploadUrl: 'ureninvoer/ajax/uploadBijlages',
@@ -524,10 +576,10 @@ document.addEventListener('DOMContentLoaded', function(){
 	if( document.getElementsByClassName('vi-list-inleners').length == 0 )
 		invoer.setInlener( $('.inlener-id').val() );
 	
-	//$('.uitzender-id').val(383).trigger('change');
-	//$('.uitzender-id').val(394).trigger('change');
+	//$('.uitzender-id').val(101).trigger('change');
+	//$('.uitzender-id').val(103).trigger('change');
 	
-	/*
+		/*
 	setTimeout(function(){
 		$('[data-vi-action="setInlener"][data-id="24"]').trigger('click');
 		
@@ -542,19 +594,18 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	/*
 	setTimeout(function(){
-		$('[data-vi-action="setInlener"][data-id="24"]').trigger('click');
+		$('[data-vi-action="setInlener"][data-id="3029"]').trigger('click');
 		
 		setTimeout(function(){
-			$('[href="#tab-ureninvoer"]').trigger('click');
-			
+			$('[href="#tab-aangenomenwerk"]').trigger('click');
+			/*
 			setTimeout(function(){
-				$('[data-id="14000"]').trigger('click');
+				$('[data-id="20037"]').trigger('click');
 				
-				setTimeout(function(){
+				/*setTimeout(function(){
 					$('[href="#sub-kilometers"]').trigger('click');
 		
 				}, 300);
-				
 			}, 300);
 			
 		}, 300);

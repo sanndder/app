@@ -85,7 +85,6 @@ class KredietaanvraagGroup extends Connector {
 		else
 			$sql .= " krediet_afgewezen IS NULL  AND inleners_kredietaanvragen.deleted = 0 ";
 		
-		
 			
 		$query = $this->db_user->query( $sql );
 		

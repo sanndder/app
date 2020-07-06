@@ -35,7 +35,7 @@ class Ajax extends MY_Controller
 	public function creditinfo( $kvknr )
 	{
 		header( 'Content-Type: application/json' );
-		
+
 		$kvk = new Kvk( $kvknr );
 		$info = $kvk->companyAddress();
 		/*

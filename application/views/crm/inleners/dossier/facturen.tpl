@@ -16,7 +16,7 @@
 		<!-- Content area -->
 		<div class="content">
 
-{*
+
 			<div class="row">
 				<div class="col-xl-12">
 
@@ -32,48 +32,65 @@
 						</div>
 
 						<div class="bg-light">
-							<ul class="nav nav-tabs nav-tabs-bottom mb-0">
-								<li class="nav-item">
-									<a href="#card-toolbar-tab1" class="nav-link active show" data-toggle="tab">
-										2019
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#card-toolbar-tab2" class="nav-link" data-toggle="tab">
-										2018
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#card-toolbar-tab2" class="nav-link" data-toggle="tab">
-										2017
-									</a>
-								</li>
-							</ul>
+                            {if $jaren != NULL}
+								<ul class="nav nav-tabs nav-tabs-bottom mb-0">
+                                    {foreach $jaren as $j }
+										<li class="nav-item">
+											<a href="#card-toolbar-tab-{$j}" class="nav-link active show" data-toggle="tab">
+                                                {$j}
+											</a>
+										</li>
+                                    {/foreach}
+								</ul>
+                            {/if}
 						</div>
 
-						<div class="card-body tab-content">
-							<div class="tab-pane fade show active" id="card-toolbar-tab1">
-								This is the first card tab content
-							</div>
+						<div class="card-body tab-content p-0">
+							<div class="tab-pane fade show active" id="card-toolbar-tab-">
 
-							<div class="tab-pane fade" id="card-toolbar-tab2">
-								This is the second card tab content
-							</div>
+								<table class="table table-striped table-hover">
+									<thead>
+										<tr>
+											<th style="width: 25px;">Jaar</th>
+											<th style="width: 25px;">Periode</th>
+											<th style="width: 100px" class="text-right">Factuur nr</th>
+											<th style="width: 120px" class="text-right">Bedrag (€)</th>
+											<th style="width: 25px"></th>
+											<th></th>
+										</tr>
+									</thead>
+                                    {if $facturen != NULL}
+										<tbody>
+                                            {foreach $facturen as $f}
+												<tr>
+													<td>{$f.jaar}</td>
+													<td>{$f.periode}</td>
+													<td class="text-right">
+                                                        {$f.factuur_nr}
+													</td>
+													<td class="text-right">
+														<a target="_blank" href="facturatie/factuur/view/{$f.factuur_id}">
+															€ {$f.bedrag_incl|number_format:2:',':'.'}
+														</a>
+													</td>
+													<td>
+														
+													</td>
+													<td></td>
+												</tr>
+                                            {/foreach}
+										</tbody>
+                                    {/if}
+								</table>
 
-							<div class="tab-pane fade" id="card-tab3">
-								This is the third card tab content
-							</div>
 
-							<div class="tab-pane fade" id="card-tab4">
-								This is the fourth card tab content
 							</div>
 						</div>
 					</div>
-					<!-- /default tabs -->
 
 				</div><!-- /col -->
 			</div><!-- /row -->
-*}
+
 
 		</div><!-- /content area -->
 	</div>

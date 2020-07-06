@@ -38,8 +38,11 @@ class Omzet extends MY_Controller
 	{
 		$omzetGroup = new OmzetGroup();
 		
-		$data['omzet'] = array_values($omzetGroup->omzet());
-		$data['kosten'] = array_values($omzetGroup->kosten());
+		//$data['omzet'] = array_values($omzetGroup->omzetverkoop());
+		$data['omzetuitzenden'] = array_values($omzetGroup->omzetuitzenden());
+		$data['loonkosten'] = array_values($omzetGroup->loonkosten());
+		$data['winst'] = array_values($omzetGroup->winst());
+		$data['winstcum'] = array_values($omzetGroup->winstCum());
 		
 		header('Content-Type: application/json');
 

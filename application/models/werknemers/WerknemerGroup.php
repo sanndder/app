@@ -147,6 +147,10 @@ class WerknemerGroup extends Connector {
 				";
 		
 		//beveiligen
+		if( $this->user->user_type == 'external' )
+			die('Geen toegand');
+		
+		//beveiligen
 		if( $this->user->user_type == 'uitzender' )
 			$sql .= " AND werknemers_uitzenders.uitzender_id = ".$this->uitzender->id." ";
 		
@@ -165,12 +169,18 @@ class WerknemerGroup extends Connector {
 		if( !isset($param['actief']) && !isset($param['archief']) )
 			$sql .= " AND werknemers_status.archief = 0";
 
-		//zoeken, q1 is voor ID en bedrijfsnaam, q2 is voor overig
+		//zoeken, q1 is voor ID en naam, q2 is voor overig
 		if( isset($param['q1']) && $param['q1'] != '' )
-			$sql .= " AND (werknemers_gegevens.bedrijfsnaam LIKE '%". addslashes($_GET['q1'])."%' OR werknemers_status.werknemer_id LIKE '%". addslashes($_GET['q1'])."%' ) ";
+			$sql .= " AND (werknemers_gegevens.achternaam LIKE '%". addslashes($_GET['q1'])."%' OR werknemers_gegevens.voornaam LIKE '%". addslashes($_GET['q1'])."%' OR  werknemers_status.werknemer_id LIKE '%". addslashes($_GET['q1'])."%' ) ";
+		
+		//zoeken, q1 is voor ID en naam, q2 is voor overig
+		if( isset($param['q2']) && $param['q2'] != '' )
+			$sql .= " AND (werknemers_gegevens.bsn LIKE '%". addslashes($_GET['q2'])."%' OR werknemers_gegevens.mobiel LIKE '%". addslashes($_GET['q2'])."%'
+			 OR  werknemers_gegevens.iban LIKE '%". addslashes($_GET['q2'])."%' OR werknemers_gegevens.telefoon LIKE '%". addslashes($_GET['q2'])."%' OR werknemers_gegevens.email LIKE '%". addslashes($_GET['q2'])."%' ) ";
+		
 		
 		//specifieke uitzender?
-		if( isset($param['uitzender_id']) )
+		if( isset($param['uitzender_id']) && $param['uitzender_id'] != '' )
 			$sql .= " AND werknemers_uitzenders.uitzender_id = ".intval($param['uitzender_id'])." ";
 
 		//specifieke inlener?

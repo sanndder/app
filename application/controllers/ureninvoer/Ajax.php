@@ -5,11 +5,14 @@ use models\facturatie\FactuurFactory;
 use models\inleners\Inlener;
 use models\inleners\InlenerGroup;
 use models\verloning\Invoer;
+use models\verloning\InvoerAangenomenwerk;
 use models\verloning\InvoerET;
 use models\verloning\InvoerKm;
+use models\verloning\InvoerReserveringen;
 use models\verloning\InvoerUren;
 use models\verloning\InvoerVergoedingen;
 use models\verloning\UrentypesGroup;
+use models\werknemers\PlaatsingGroup;
 use models\werknemers\Werknemer;
 use models\zzp\Zzp;
 
@@ -101,6 +104,7 @@ class Ajax extends MY_Controller
 		$invoerUren = new InvoerUren( $this->invoer );
 		$invoerKm = new InvoerKm( $this->invoer );
 		$invoervergoedingen = new InvoerVergoedingen( $this->invoer );
+		$invoerReserveringen = new InvoerReserveringen( $this->invoer );
 		
 		//uiztenden
 		if( $this->user->werkgever_type == 'uitzenden' )
@@ -108,6 +112,7 @@ class Ajax extends MY_Controller
 			$invoerUren->setWerknemer( $_POST['werknemer_id'] );
 			$invoerKm->setWerknemer( $_POST['werknemer_id'] );
 			$invoervergoedingen->setWerknemer( $_POST['werknemer_id'] );
+			$invoerReserveringen->setWerknemer( $_POST['werknemer_id'] );
 			
 			$invoerET = new InvoerET( $this->invoer );
 			$invoerET->setWerknemer( $_POST['werknemer_id'] );
@@ -134,6 +139,15 @@ class Ajax extends MY_Controller
 			
 			$array['info']['et_regeling'] = $werknemer->deelnemer_etregeling;
 			$array['info']['et']['max'] = $invoerET->maxUitruil();
+			
+			//reserveringen
+			$array['invoer']['reserveringen']['opgevraagd'] = $invoerReserveringen->getOpgevraagdeReserveringen();
+			$array['invoer']['reserveringen']['stand'] = $invoerReserveringen->getStandReserveringen();
+			
+			//uurlonen
+			$plaatsingGroup = new PlaatsingGroup();
+			$array['info']['uurlonen'] = $plaatsingGroup->werknemer( $_POST['werknemer_id'] )->uurlonen();
+			
 		}
 		
 		//bemiddeling
@@ -165,6 +179,51 @@ class Ajax extends MY_Controller
 		
 		echo json_encode( $array );
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// project bij afgesprokenwerk opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveAangenomenwerkProject()
+	{
+		$invoerAangenomenWerk = new InvoerAangenomenwerk( $this->invoer );
+		$invoerAangenomenWerk->setProject($_POST);
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// project data bij afgesprokenwerk opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveAangenomenwerkProjectData()
+	{
+		$invoerAangenomenWerk = new InvoerAangenomenwerk( $this->invoer );
+		
+		$array['invoer_id'] = $invoerAangenomenWerk->setProjectData( $_POST['invoer_id'], $_POST['project_id'], $_POST['omschrijving'], $_POST['bedrag'] );
+		
+		echo json_encode( $array );
+	}
+
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// project bij afgesprokenwerk opslaan
+	// TODO: zonder splitsen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function getAangenomenwerkData()
+	{
+		$inlener = new Inlener( $_POST['inlener_id'] );
+		$factuurgegevens = $inlener->factuurgegevens();
+		
+		$invoerAangenomenWerk = new InvoerAangenomenwerk( $this->invoer );
+		
+		if( $factuurgegevens['factuur_per_project'] == 1 )
+		{
+			$projecten = $this->invoer->getActieveProjecten();
+			$array = $invoerAangenomenWerk->getDataForProjecten( $projecten );
+		}
+		
+		echo json_encode( $array );
+		
+	}
+
 
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -215,6 +274,25 @@ class Ajax extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
+	// vergoeding project opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveVergoedingProject()
+	{
+		$invoerVergoedingen = new InvoerVergoedingen( $this->invoer );
+		
+		if( $this->user->werkgever_type == 'uitzenden' ) $invoerVergoedingen->setWerknemer( $_POST['werknemer_id'] );
+		if( $this->user->werkgever_type == 'bemiddeling' ) $invoerVergoedingen->setZZP( $_POST['werknemer_id'] );
+		
+		//save
+		if( $invoerVergoedingen->setProject( $_POST['invoer_id'], $_POST['project_id'] ) )
+			$array['status'] = 'success';
+		else
+			$array['status'] = 'error';
+		
+		echo json_encode( $array );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
 	// vergoeding bedrag opslaan
 	//-----------------------------------------------------------------------------------------------------------------
 	public function saveEtHuisvesting()
@@ -247,8 +325,28 @@ class Ajax extends MY_Controller
 		
 		echo json_encode( $array );
 	}
-
-
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// reservering bedrag opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveReservering()
+	{
+		$invoerReserveringen = new InvoerReserveringen( $this->invoer );
+		$invoerReserveringen->setWerknemer( $_POST['werknemer_id'] );
+		$invoerReserveringen->setType( $_POST['reserveringType'] )->setBedrag( $_POST['bedrag'] );
+		
+		//save
+		if( $invoerReserveringen->errors() !== false )
+		{
+			$array['status'] = 'error';
+			$array['error'] = $invoerReserveringen->errors();
+		}
+		else
+			$array['status'] = 'success';
+		
+		echo json_encode( $array );
+	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// vergoeding bedrag opslaan
@@ -316,7 +414,7 @@ class Ajax extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// Haal voor de uitzender de juiste tijdvakken op
 	//-----------------------------------------------------------------------------------------------------------------
-	public function listTijdvakInlener()
+	public function getInlenerInfo()
 	{
 		$inlener = new Inlener( $_POST['inlener_id'] );
 		$factuurgegevens = $inlener->factuurgegevens();
@@ -344,7 +442,7 @@ class Ajax extends MY_Controller
 			$array['tijdvak'] = '4w';
 			$array['titel'] = 'periode';
 			$array['jaren'] = array( 2020 );
-			$array['periodes'] = array( 1 => '01', 2=> '02');
+			$array['periodes'] = array( 3 => '03', 4 => '04', 5 => '05', 6 => '06');
 		}
 		
 		if( $factuurgegevens['frequentie'] == 'm')
@@ -352,8 +450,12 @@ class Ajax extends MY_Controller
 			$array['tijdvak'] = 'm';
 			$array['titel'] = 'maand';
 			$array['jaren'] = array( 2020 );
-			$array['periodes'] = array( 1 => 'januari', 2 => 'febrguari' );
+			$array['periodes'] = array( 4 => 'april', 5 => 'mei' );
 		}
+		
+		//niet standaard alles teruggeven
+		$array['aangenomenwerk'] = $factuurgegevens['afgesproken_werk'];
+		$array['factuur_per_project'] = $factuurgegevens['factuur_per_project'];
 		
 		echo json_encode( $array );
 	}
@@ -426,7 +528,7 @@ class Ajax extends MY_Controller
 	public function getBijlages()
 	{
 		$result['files'] = $this->invoer->getBijlages();
-		
+		$result['info']['projecten'] = $this->invoer->getProjecten();
 		echo json_encode($result);
 	}
 	
@@ -442,7 +544,20 @@ class Ajax extends MY_Controller
 		
 		echo json_encode($result);
 	}
-
-
-
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// bijlage project opslaan
+	//-----------------------------------------------------------------------------------------------------------------
+	public function saveBijlageProject()
+	{
+		//save
+		if( $this->invoer->setBijlageProject( $_POST['file_id'], $_POST['project_id'] ) )
+			$array['status'] = 'success';
+		else
+			$array['status'] = 'error';
+		
+		echo json_encode( $array );
+	}
+	
 }

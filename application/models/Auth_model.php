@@ -308,7 +308,7 @@ class Auth_model extends CI_Model
 			$this->logout( $user_id, $sid, 'user action');
 		
 		//TODO: move to other class
-		//$sql = "UPDATE werkgevers SET db_password = AES_ENCRYPT('0&2Bhzy4', UNHEX(SHA2('".DB_SECRET."',512))) WHERE werkgever_id = 3"; //_d00zRj0 for simple-internet-solutions
+		//$sql = "UPDATE werkgevers SET db_password = AES_ENCRYPT('182Kdh?i', UNHEX(SHA2('".DB_SECRET."',512))) WHERE werkgever_id = 6"; //_d00zRj0 for simple-internet-solutions
 		//$query = $this->db_admin->query($sql);
 		//show($sql);
 		//die();

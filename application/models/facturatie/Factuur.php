@@ -28,6 +28,7 @@ if (!defined('BASEPATH'))exit('No direct script access allowed');
 class Factuur extends Connector
 {
 	protected $_factuur_id = NULL;
+	protected $_factuur_nr = NULL;
 	protected $_jaar = NULL;
 	protected $_periode = NULL;
 	
@@ -71,6 +72,36 @@ class Factuur extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * factuur ID
+	 *
+	 */
+	public function factuurID()
+	{
+		return $this->_factuur_id;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * factuur nr
+	 *
+	 */
+	public function setFactuurNr( $factuur_nr )
+	{
+		$this->_factuur_nr = intval($factuur_nr);
+		
+		$query = $this->db_user->query( "SELECT factuur_id FROM facturen WHERE factuur_nr = $this->_factuur_nr LIMIT 1" );
+		$factuur = DBhelper::toRow( $query, 'NULL' );
+		
+		if( $factuur === NULL )
+			return NULL;
+		
+		$this->setFactuurID( $factuur['factuur_id'] );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * details
 	 *
 	 */
@@ -78,11 +109,9 @@ class Factuur extends Connector
 	{
 		$query = $this->db_user->query( "SELECT *, DATEDIFF(verval_datum,factuur_datum) AS betaaltermijn FROM facturen WHERE factuur_id = $this->_factuur_id AND deleted = 0 AND concept = 0" );
 		$details = DBhelper::toRow( $query, 'NULL' );
-		
+	
 		if( $details !== NULL )
-		{
 			$details['bedrag_vrij'] = $details['bedrag_incl'] - $details['bedrag_grekening'];
-		}
 		
 		return $details;
 	}
@@ -102,6 +131,9 @@ class Factuur extends Connector
 		$insert['betaald_op'] = reverseDate($data['datum']);
 		$insert['bedrag'] = prepareAmountForDatabase($data['bedrag']);
 		
+		if( isset($data['factor_factuur_regel_id']) )
+			$insert['factor_factuur_regel_id'] = $data['factor_factuur_regel_id'];
+			
 		$this->db_user->insert( 'facturen_betalingen', $insert );
 		
 		$this->_updateBedragenNaBetaling();
@@ -365,8 +397,14 @@ class Factuur extends Connector
 		}
 		
 		$pdf = new Pdf( $details );
-		$pdf->inline();
 		
+		$filename = NULL;
+
+		if( isset($details['inlener_id']) && $details['inlener_id'] !== NULL )
+			$filename = $details['jaar'] . '_' . $details['periode'] . '_' . Inlener::bedrijfsnaam( $details['inlener_id'] ) . '.pdf';
+		
+		
+		$pdf->inline( $filename );
 	}
 	
 	

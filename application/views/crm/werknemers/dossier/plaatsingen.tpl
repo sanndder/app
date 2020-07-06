@@ -291,7 +291,7 @@
 																	{/if}
 																</td>
 																<td style="width: 160px" class="p-1">{$u.label}</td>
-																<td class="p-1 pl-4 text-right" style="width: 55px;">
+																<td class="p-1 pl-4 text-right td-status-tarief" style="width: 55px;">
 																	<div class="status">
 																		<i class="spinner icon-spinner2" style="display: none"></i>
 																		<i class="icon-check text-green" style="display: none"></i>

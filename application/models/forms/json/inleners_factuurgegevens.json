@@ -115,7 +115,8 @@
       "list": {
         "options": {
           "25": "25",
-          "30": "30"
+          "30": "30",
+          "35": "35"
         }
       }
     },
@@ -160,6 +161,19 @@
     },
     "bijlages_invoegen": {
       "label": "Bijlages automatisch invoegen",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "verkoop_kosten_gelijk": {
+      "label": "Verkoopfactuur gelijk aan kosten",
       "rules": {
         "required": true
       },

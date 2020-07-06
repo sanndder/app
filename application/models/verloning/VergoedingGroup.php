@@ -115,7 +115,8 @@ class VergoedingGroup extends Connector
 	public function vergoedingenWerknemer()
 	{
 		$sql = "SELECT werknemers_vergoedingen.id, inleners_vergoedingen.vergoeding_type, werknemers_vergoedingen.inlener_id, inleners_vergoedingen.bedrag_per_uur, inleners_vergoedingen.doorbelasten, inleners_vergoedingen.uitkeren_werknemer, inleners_vergoedingen.label
-   				, vergoedingen.naam, vergoedingen.belast
+   				,vergoedingen.naam, vergoedingen.belast, inleners_vergoedingen.telling_uren, inleners_vergoedingen.telling_overuren, inleners_vergoedingen.telling_reisuren,
+       			werknemers_vergoedingen.bedrag_per_uur AS w_bedrag_per_uur, werknemers_vergoedingen.telling_uren AS w_telling_uren, werknemers_vergoedingen.telling_overuren AS w_telling_overuren, werknemers_vergoedingen.telling_reisuren AS w_telling_reisuren
 				FROM werknemers_vergoedingen
 				LEFT JOIN inleners_vergoedingen ON inleners_vergoedingen.inlener_vergoeding_id = werknemers_vergoedingen.inlener_vergoeding_id
 				LEFT JOIN vergoedingen ON inleners_vergoedingen.vergoeding_id = vergoedingen.vergoeding_id
@@ -125,8 +126,25 @@ class VergoedingGroup extends Connector
 		
 		$query = $this->db_user->query( $sql );
 		
-		return DBhelper::toArray( $query, 'id', 'array' );
+		$data = DBhelper::toArray( $query, 'id', 'array' );
 		
+		if( $data === NULL )
+			return $data;
+		
+		//werknemer instellingen gaan boven inlener instellingen
+		foreach( $data as &$vergoeding )
+		{
+			if( $vergoeding['w_bedrag_per_uur'] !== NULL )
+				$vergoeding['bedrag_per_uur'] = $vergoeding['w_bedrag_per_uur'];
+			if( $vergoeding['w_telling_uren'] !== NULL )
+				$vergoeding['telling_uren'] = $vergoeding['w_telling_uren'];
+			if( $vergoeding['w_telling_overuren'] !== NULL )
+				$vergoeding['telling_overuren'] = $vergoeding['w_telling_overuren'];
+			if( $vergoeding['w_telling_reisuren'] !== NULL )
+				$vergoeding['telling_reisuren'] = $vergoeding['w_telling_reisuren'];
+		}
+		
+		return $data;
 	}
 	
 	

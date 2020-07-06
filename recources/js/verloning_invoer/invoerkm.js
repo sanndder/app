@@ -50,7 +50,6 @@ let invoerkm = {
 		$(document).on("autocompleteselect", '[data-bing="location"]', function(e, item){
 			//kleine vertraging om select de kans te geven te vullen
 			obj = this;
-			log('ja');
 			setTimeout(function(){invoerkm.getDistance(obj);}, 150);
 		});
 		
@@ -205,12 +204,15 @@ let invoerkm = {
 	saveKmRow(obj){
 		//get element
 		let $tr = $(obj).closest('tr');
+		let $table = $('.table-vi-km-body');
+		
 		
 		data.kmrow = {};
 		
 		data.kmrow.invoer_id = $tr.data('id');
 		data.kmrow.datum = $tr.find('[name="datum"]').val();
 		data.kmrow.aantal = $tr.find('[name="aantal"]').val();
+		data.kmrow.uitkeren = $tr.find('[name="uitkeren['+data.kmrow.invoer_id+']"]:checked').val();
 		data.kmrow.locatie_van = $tr.find('[name="locatie_van"]').val();
 		data.kmrow.locatie_naar = $tr.find('[name="locatie_naar"]').val();
 		data.kmrow.doorbelasten = $tr.find('[name="doorbelasten"] option:selected').val();
@@ -258,8 +260,14 @@ let invoerkm = {
 					//set row id
 					if( json.status == 'set' ){
 						$tr.data('id', json.row.invoer_id);
-						//lege regel invoegen
-						$( tplKmInvoerTr.replace(/\{(.+?)\}/g, '') ).prependTo( $tabel.find('.table-vi-km-body') ).hide().show(500);
+						
+						//uitkeren select ook id meegeven
+						$tr.find('[name="uitkeren[]"]').attr('name', 'uitkeren['+json.row.invoer_id+']');
+						
+						//lege regel invoegen, wanneer die er niet meer is
+						$firstTr = $table.find('tr').first();
+						if( $firstTr.find('[name="aantal"]').val().length > 0 )
+							$( tplKmInvoerTr.replace(/\{(.+?)\}/g, '') ).prependTo( $tabel.find('.table-vi-km-body') ).hide().show(500);
 						
 					}
 					
@@ -321,7 +329,6 @@ let invoerkm = {
 		//project select opbouwen
 		let htmlProjecten = invoer.getprojectSelect( json );
 		
-		
 		//altijd extra lege regel weergeven
 		let trEmpty = tplKmInvoerTr.replace('{select_projecten}', htmlProjecten);
 		trEmpty = trEmpty.replace(/\{(.+?)\}/g, '');
@@ -335,6 +342,7 @@ let invoerkm = {
 				
 				//lege rij aanmaken
 				let htmlTr = replaceVars(tplKmInvoerTr, row);
+				htmlTr = htmlTr.replace(/{invoer_id}/g, row.invoer_id);
 				htmlTr = htmlTr.replace('{select_projecten}', htmlProjecten);
 				
 				//goed zetten van select
@@ -342,7 +350,21 @@ let invoerkm = {
 				$row.find('[name="doorbelasten"]').val(row.doorbelasten);
 				$row.find('[name="project_id"]').val(row.project_id);
 				
+				//uitkeren select
+				if( row.uitkeren == 1)
+					$row.find('.vi-uitkeren-ckecked').prop('checked',true);
+				else
+					$row.find('.vi-uitkeren-unckecked').prop('checked',true);
+				
 				invoerkm.setStatus($row, 'success');
+				
+				//projecten verbergen indien nodig
+				if( json.info.projecten === null )
+				{
+					$tabel.find('.th-project').hide();
+					$tabel.find('.td-projecten').hide();
+				}
+				
 			}
 			
 		}

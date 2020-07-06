@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'claviska' => array($vendorDir . '/claviska/simpleimage/src'),
+    'Smalot\\PdfParser\\' => array($vendorDir . '/smalot/pdfparser/src'),
 );

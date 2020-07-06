@@ -141,11 +141,11 @@ class UserGroup extends Connector {
 		
 		foreach( $array as &$a )
 		{
-			if( isset($a['user_id']) )
+			if( isset($a['user_id']) && isset($users[$a['user_id']]) )
 				$a['user'] = $users[$a['user_id']];
-			if( isset($a['created_by']) )
+			if( isset($a['created_by']) && isset($users[$a['created_by']]) )
 				$a['user'] = $users[$a['created_by']];
-			if( isset($a['deleted_by']) )
+			if( isset($a['deleted_by']) && isset($users[$a['deleted_by']]) )
 				$a['user'] = $users[$a['deleted_by']];
 		}
 

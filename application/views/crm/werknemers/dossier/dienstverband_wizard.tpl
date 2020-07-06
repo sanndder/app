@@ -4,10 +4,30 @@
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 {assign "uploader" "true"}
 
+{assign "datamask" "true"}
+
 {block "content"}
 
     {include file='crm/werknemers/dossier/_sidebar.tpl' active='algemeneinstellingen'}
 
+	<script>
+		$(function() {
+
+			$('[name="default_cao"]').on('change',function(){
+				if( $(this).val() == 'BOUW-UTA' || $(this).val() == 'BOUW' )
+				{
+					$('.pensioen-stipp').hide();
+					$('.pensioen-bouw').show();
+				}
+				else
+				{
+					$('.pensioen-stipp').show();
+					$('.pensioen-bouw').hide();
+				}
+			});
+		});
+
+	</script>
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	|| Main content
@@ -73,6 +93,8 @@
 										<option value="BOUW-UTA" {if isset($default_cao) && $default_cao == 'BOUW-UTA'} selected{/if}>Bouw Uta</option>
 									</select>
 
+
+
 								</fieldset>
 
 								<!-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -109,7 +131,7 @@
 									</div>
 
 								</fieldset>
-
+                                {/if}
 								<!-------------------------------------------------------------------------------------------------------------------------------------------------
 								|| Pensioen
 								-------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -117,33 +139,46 @@
 
 									<legend class="text-uppercase font-size-sm font-weight-bold">Pensioen instellingen</legend>
 
-									<div class="form-check">
-										<label class="form-check-label">
-											<span class="checked">
-												<input value="0" type="radio" class="form-input-styled" name="stipp" checked="">
-											</span>
-											Geen pensioen
-										</label>
+									<div class="pensioen-stipp" {if isset($default_cao) && ($default_cao == 'BOUW' || $default_cao == 'BOUW-UTA')} style="display: none" {/if}>
+										<div class="form-check">
+											<label class="form-check-label">
+												<span class="checked">
+													<input value="0" type="radio" class="form-input-styled" name="stipp" checked="">
+												</span>
+												Geen pensioen
+											</label>
+										</div>
+										<div class="form-check">
+											<label class="form-check-label">
+												<span>
+													<input value="basis" {if isset($pensioen) && $pensioen.stipp == 'basis'} checked{/if} type="radio" class="form-input-styled" name="stipp">
+												</span>
+												Stipp Basis
+											</label>
+										</div>
+										<div class="form-check">
+											<label class="form-check-label">
+												<span>
+													<input value="plus" {if isset($pensioen) && $pensioen.stipp == 'plus'} checked{/if} type="radio" class="form-input-styled" name="stipp">
+												</span>
+												Stipp Plus
+											</label>
+										</div>
 									</div>
-									<div class="form-check">
-										<label class="form-check-label">
-											<span>
-												<input value="basis" {if isset($pensioen) && $pensioen.stipp == 'basis'} checked{/if} type="radio" class="form-input-styled" name="stipp">
-											</span>
-											Stipp Basis
-										</label>
-									</div>
-									<div class="form-check">
-										<label class="form-check-label">
-											<span>
-												<input value="plus" {if isset($pensioen) && $pensioen.stipp == 'plus'} checked{/if} type="radio" class="form-input-styled" name="stipp">
-											</span>
-											Stipp Plus
-										</label>
+
+									<div class="pensioen-bouw" {if !isset($default_cao) || ($default_cao == 'NBBU')} style="display: none" {/if}>
+										<div class="form-check">
+											<label class="form-check-label">
+												<span class="checked">
+													<input value="1" type="radio" class="form-input-styled" checked="">
+												</span>
+												Bouw pensioen
+											</label>
+										</div>
 									</div>
 
 								</fieldset>
-                                {/if}
+
 
 								<!-- opslaan -->
 								<div class="row mt-4">

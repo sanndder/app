@@ -46,6 +46,19 @@
 				</div>
 			</li>
 
+			<li class="nav-item dropdown">
+				<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+					<i class="icon-users mr-2"></i>
+					Overzichten
+				</a>
+
+				<div class="dropdown-menu">
+					<a href="overzichten/marge" class="dropdown-item">
+						<i class="icon-euro"></i>Marge
+					</a>
+				</div>
+			</li>
+
 			<li class="nav-item">
 				<a href="facturenoverzicht/uitzender" class="navbar-nav-link">
 					<i class="mi-euro-symbol mr-2" style="font-weight: bold"></i>

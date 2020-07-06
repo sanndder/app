@@ -30,7 +30,24 @@ let invoeruren = {
 		$(document).on('change', '[data-vi-action="saveUrenRow"]', function(e){
 			invoeruren.saveUrenRow(this);
 		});
+
+		//volgende regel
+		$(document).on('keypress',function(e) {
+			if(e.which === 13) {
+				invoeruren.enterNextRow();
+			}
+		});
 		
+	},
+
+	// enter naar volgende rij ----------------------------------------------------------------------------------------------------------------------------
+	enterNextRow(){
+		$focused = $(':focus');
+		tdIndex = $focused.closest( 'td' ).index();
+		$tr = $focused.closest('tr');
+		$trNext = $tr.next();
+		$nextTd = $trNext.find('td').eq( tdIndex );
+		$nextTd.find( 'input' ).focus();
 	},
 	
 	// focus row ----------------------------------------------------------------------------------------------------------------------------
@@ -129,9 +146,14 @@ let invoeruren = {
 		
 		//selectbox opbouwen
 		let htmlSelect = '';
+
 		for( let type of Object.values(json.info.urentypes) ){
 			let option = tplUrenTypesSelect.replace('{id}', type.id).replace('{label}', type.label);
-			htmlSelect += option;
+			
+			if( type.default_urentype == 1 )
+				htmlSelect = option + htmlSelect;
+			else
+				htmlSelect += option;
 		}
 		
 		//project select opbouwen
@@ -142,6 +164,7 @@ let invoeruren = {
 		for( let dag of Object.values(json.invoer.uren) ){
 			//lege rij aanmaken
 			let trEmpty = replaceVars(tplUrenInvoerTr, dag);
+			
 			//dropdown erin
 			trEmpty = trEmpty.replace('{select_uren}', htmlSelect);
 			trEmpty = trEmpty.replace('{select_projecten}', htmlProjecten);

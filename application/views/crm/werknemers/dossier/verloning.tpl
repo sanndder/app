@@ -50,174 +50,183 @@
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Instellingen verloning</legend>
 
-                                    {if $user_type == 'werkgever'}
-	                                    <div class="row ">
-		                                    <label class="col-md-3">Inhouden zorgverzekering</label>
+									<div class="row ">
+										<label class="col-md-3">Loonheffingskorting toepassen</label>
 
-		                                    <div class="col-md-8">
+										<div class="col-md-8">
 
-			                                    <div class="form-check form-check-inline">
-				                                    <label class="form-check-label">
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
+													<span class="checked">
+														<input value="1" type="radio" class="form-input-styled" name="loonheffingskorting" required {if (isset($verloning.loonheffingskorting) && $verloning.loonheffingskorting == 1)} checked{/if}>
+													</span>
+													Ja
+												</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
+												<span>
+													<input required value="0" type="radio" class="form-input-styled" name="loonheffingskorting" {if (isset($verloning.loonheffingskorting) && $verloning.loonheffingskorting == 0) || $verloning.inhouden_zorgverzekering == NULL} checked{/if}>
+												</span>
+													Nee
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<div class="row row-light-plus mb-4">
+										<label class="col-md-3 pt-2">Loonheffingskorting vanaf</label>
+
+										<div class="col-md-8">
+
+											<input required data-lpignore="true" autocomplete="off" placeholder="dd-mm-jjjj" data-mask="99-99-9999" style="width: 120px; text-align: right" name="loonheffingskorting_vanaf" value="{if isset($verloning.loonheffingskorting_vanaf)}{$verloning.loonheffingskorting_vanaf|date_format: '%d-%m-%Y'}{/if}{if $verloning.loonheffingskorting_vanaf == NULL}{$indienst|date_format: '%d-%m-%Y'}{/if}" type="text" class="form-control"/>
+
+										</div>
+									</div>
+
+									<div class="row ">
+										<label class="col-md-3">Inhouden zorgverzekering</label>
+
+										<div class="col-md-8">
+
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 													<span class="checked">
 														<input value="1" type="radio" class="form-input-styled" name="inhouden_zorgverzekering" required {if (isset($verloning.inhouden_zorgverzekering) && $verloning.inhouden_zorgverzekering == 1)} checked{/if}>
 													</span>
-					                                    Ja
-				                                    </label>
-			                                    </div>
-			                                    <div class="form-check form-check-inline">
-				                                    <label class="form-check-label">
+													Ja
+												</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 												<span>
 													<input value="0" type="radio" class="form-input-styled" name="inhouden_zorgverzekering" {if (isset($verloning.inhouden_zorgverzekering) && $verloning.inhouden_zorgverzekering == 0) || $verloning.inhouden_zorgverzekering == NULL} checked{/if}>
 												</span>
-					                                    Nee
-				                                    </label>
-			                                    </div>
-		                                    </div>
-	                                    </div>
+													Nee
+												</label>
+											</div>
+										</div>
+									</div>
 
-	                                    <div class="row row-light-plus">
-											<label class="col-md-3">Vakantiegeld direct uitkeren</label>
+									<div class="row row-light-plus">
+										<label class="col-md-3">Vakantiegeld direct uitkeren</label>
 
-											<div class="col-md-8">
+										<div class="col-md-8">
 
-												<div class="form-check form-check-inline">
-													<label class="form-check-label">
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 													<span class="checked">
 														<input value="1" type="radio" class="form-input-styled" name="vakantiegeld_direct" required {if isset($verloning.vakantiegeld_direct) && $verloning.vakantiegeld_direct == 1} checked{/if}>
 													</span>
-														Ja
-													</label>
-												</div>
-												<div class="form-check form-check-inline">
-													<label class="form-check-label">
+													Ja
+												</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 												<span>
 													<input value="0" type="radio" class="form-input-styled" name="vakantiegeld_direct" {if (isset($verloning.vakantiegeld_direct) && $verloning.vakantiegeld_direct == 0 ) || $verloning.vakantiegeld_direct == NULL} checked{/if}>
 												</span>
-														Nee
-													</label>
-												</div>
+													Nee
+												</label>
 											</div>
 										</div>
+									</div>
 
-	                                    <div class="row mt-2">
-		                                    <label class="col-md-3">Feestdagen direct uitkeren</label>
+									<div class="row mt-2">
+										<label class="col-md-3">Feestdagen direct uitkeren</label>
 
-		                                    <div class="col-md-8">
+										<div class="col-md-8">
 
-			                                    <div class="form-check form-check-inline">
-				                                    <label class="form-check-label">
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 													<span class="checked">
 														<input value="1" type="radio" class="form-input-styled" name="feestdagen_direct" required {if isset($verloning.feestdagen_direct) && $verloning.feestdagen_direct == 1} checked{/if}>
 													</span>
-					                                    Ja
-				                                    </label>
-			                                    </div>
-			                                    <div class="form-check form-check-inline">
-				                                    <label class="form-check-label">
+													Ja
+												</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 												<span>
 													<input value="0" type="radio" class="form-input-styled" name="feestdagen_direct" {if (isset($verloning.feestdagen_direct) && $verloning.feestdagen_direct == 0 ) || $verloning.vakantiegeld_direct == NULL} checked{/if}>
 												</span>
-					                                    Nee
-				                                    </label>
-			                                    </div>
-		                                    </div>
-	                                    </div>
+													Nee
+												</label>
+											</div>
+										</div>
+									</div>
 
-	                                    <div class="row row-light-plus">
-		                                    <label class="col-md-3">Kort verzuim direct uitkeren</label>
+									<div class="row row-light-plus">
+										<label class="col-md-3">Kort verzuim direct uitkeren</label>
 
-		                                    <div class="col-md-8">
+										<div class="col-md-8">
 
-			                                    <div class="form-check form-check-inline">
-				                                    <label class="form-check-label">
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 													<span class="checked">
 														<input value="1" type="radio" class="form-input-styled" name="kortverzuim_direct" required {if isset($verloning.kortverzuim_direct) && $verloning.kortverzuim_direct == 1} checked{/if}>
 													</span>
-					                                    Ja
-				                                    </label>
-			                                    </div>
-			                                    <div class="form-check form-check-inline">
-				                                    <label class="form-check-label">
+													Ja
+												</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 												<span>
 													<input value="0" type="radio" class="form-input-styled" name="kortverzuim_direct" {if (isset($verloning.kortverzuim_direct) && $verloning.kortverzuim_direct == 0 ) || $verloning.vakantiegeld_direct == NULL} checked{/if}>
 												</span>
-					                                    Nee
-				                                    </label>
-			                                    </div>
-		                                    </div>
-	                                    </div>
-
-
-										<div class="row mt-2">
-											<label class="col-md-3">Wettelijke vakantieuren direct uitkeren</label>
-
-											<div class="col-md-8">
-
-												<div class="form-check form-check-inline">
-													<label class="form-check-label">
-													<span class="checked">
-														<input value="1" type="radio" class="form-input-styled" name="vakantieuren_wettelijk_direct" required {if isset($verloning.vakantieuren_wettelijk_direct) && $verloning.vakantieuren_wettelijk_direct == 1} checked{/if}>
-													</span>
-														Ja
-													</label>
-												</div>
-												<div class="form-check form-check-inline">
-													<label class="form-check-label">
-												<span>
-													<input value="0" type="radio" class="form-input-styled" name="vakantieuren_wettelijk_direct" {if (isset($verloning.vakantieuren_wettelijk_direct) && $verloning.vakantieuren_wettelijk_direct == 0) || $verloning.vakantieuren_wettelijk_direct == NULL} checked{/if}>
-												</span>
-														Nee
-													</label>
-												</div>
+													Nee
+												</label>
 											</div>
 										</div>
+									</div>
 
-										<div class="row row-light-plus">
-											<label class="col-md-3">Bovenwettelijke vakantieuren direct uitkeren</label>
 
-											<div class="col-md-8">
+									<div class="row pt-2 pb-2">
+										<label class="col-md-3">Bovenwettelijke vakantieuren direct uitkeren</label>
 
-												<div class="form-check form-check-inline">
-													<label class="form-check-label">
+										<div class="col-md-8">
+
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 													<span class="checked">
 														<input value="1" type="radio" class="form-input-styled" name="vakantieuren_bovenwettelijk_direct" required {if isset($verloning.vakantieuren_bovenwettelijk_direct) && $verloning.vakantieuren_bovenwettelijk_direct == 1} checked{/if}>
 													</span>
-														Ja
-													</label>
-												</div>
-												<div class="form-check form-check-inline">
-													<label class="form-check-label">
+													Ja
+												</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<label class="form-check-label">
 												<span>
 													<input value="0" type="radio" class="form-input-styled" name="vakantieuren_bovenwettelijk_direct" {if (isset($verloning.vakantieuren_bovenwettelijk_direct) && $verloning.vakantieuren_bovenwettelijk_direct == 0) || $verloning.vakantieuren_bovenwettelijk_direct == NULL} checked{/if}>
 												</span>
-														Nee
-													</label>
-												</div>
+													Nee
+												</label>
 											</div>
 										</div>
+									</div>
 
-	                                    <div class="row pt-2 pb-2">
-		                                    <label class="col-md-3 pt-2">Aantal wettelijke vakantiedagen</label>
+                                    {if $user_type == 'werkgever'}
+										<div class="row row-light-plus">
+											<label class="col-md-3 pt-2">Aantal wettelijke vakantiedagen</label>
 
-		                                    <div class="col-md-8">
+											<div class="col-md-8">
 
-			                                    <input style="width: 120px; text-align: right" name="aantal_vakantiedagen_wettelijk" value="{if isset($verloning.aantal_vakantiedagen_wettelijk)}{$verloning.aantal_vakantiedagen_wettelijk|number_format:0}{/if}{if $verloning.aantal_vakantiedagen_wettelijk == NULL}20{/if}" type="text" class="form-control"/>
+												<input readonly style="width: 120px; text-align: right" name="aantal_vakantiedagen_wettelijk" value="{if isset($verloning.aantal_vakantiedagen_wettelijk)}{$verloning.aantal_vakantiedagen_wettelijk|number_format:0}{/if}{if $verloning.aantal_vakantiedagen_wettelijk == NULL}20{/if}" type="text" class="form-control"/>
 
-		                                    </div>
-	                                    </div>
+											</div>
+										</div>
+										<div class="row pt-2 pb-1">
+											<label class="col-md-3 pt-2">Aantal bovenwettelijke vakantiedagen</label>
 
-	                                    <div class="row row-light-plus">
-		                                    <label class="col-md-3 pt-2">Aantal bovenwettelijke vakantiedagen</label>
+											<div class="col-md-8">
 
-		                                    <div class="col-md-8">
+												<input data-lpignore="true" style="width: 120px; text-align: right" name="aantal_vakantiedagen_bovenwettelijk" value="{if isset($verloning.aantal_vakantiedagen_bovenwettelijk)}{$verloning.aantal_vakantiedagen_bovenwettelijk|number_format:0}{/if}{if $verloning.aantal_vakantiedagen_bovenwettelijk == NULL}5{/if}" type="text" class="form-control"/>
 
-			                                    <input style="width: 120px; text-align: right" name="aantal_vakantiedagen_bovenwettelijk" value="{if isset($verloning.aantal_vakantiedagen_bovenwettelijk)}{$verloning.aantal_vakantiedagen_bovenwettelijk|number_format:0}{/if}{if $verloning.aantal_vakantiedagen_bovenwettelijk == NULL}5{/if}" type="text" class="form-control"/>
+											</div>
+										</div>
+	                                 {/if}
 
-		                                    </div>
-	                                    </div>
-
-
-										<div class="row mt-2">
+										<div class="row mt-2  row-light-plus">
 											<label class="col-md-3">ATV direct uitkeren</label>
 
 											<div class="col-md-8">
@@ -241,20 +250,20 @@
 											</div>
 										</div>
 
-	                                    <div class="row row-light-plus">
-		                                    <label class="col-md-3 pt-2">Aantal ATV dagen</label>
+                                    {if $user_type == 'werkgever'}
+										<div class="row pt-2 pb-1">
+											<label class="col-md-3 pt-2">Aantal ATV dagen</label>
 
-		                                    <div class="col-md-8">
+											<div class="col-md-8">
 
-			                                    <input style="width: 120px; text-align: right" name="aantal_atv_dagen" value="{if isset($verloning.aantal_atv_dagen)}{$verloning.aantal_atv_dagen|number_format:0}{/if}{if $verloning.aantal_atv_dagen == NULL}0{/if}" type="text" class="form-control"/>
+												<input data-lpignore="true" style="width: 120px; text-align: right" name="aantal_atv_dagen" value="{if isset($verloning.aantal_atv_dagen)}{$verloning.aantal_atv_dagen|number_format:0}{/if}{if $verloning.aantal_atv_dagen == NULL}0{/if}" type="text" class="form-control"/>
 
-		                                    </div>
-	                                    </div>
+											</div>
+										</div>
                                     {/if}
 
 
-
-									<div class="row mt-3">
+									<div class="row mt-3 row-light-plus">
 										<label class="col-md-3">Deelnemer ET-regeling</label>
 
 										<div class="col-md-2">

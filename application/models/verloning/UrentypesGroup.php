@@ -88,7 +88,7 @@ class UrentypesGroup extends Connector
 		if( !$include_not_active )
 			$sql .= " AND werknemers_urentypes.urentype_active = 1 ";
 		
-		$sql .=	"ORDER BY urentypes.urentype_categorie_id, inleners_urentypes.inlener_urentype_id, urentypes.percentage";
+		$sql .=	"ORDER BY inleners_urentypes.default_urentype DESC, urentypes.urentype_categorie_id, inleners_urentypes.inlener_urentype_id, urentypes.percentage";
 		
 		$query = $this->db_user->query( $sql );
 		
@@ -105,7 +105,7 @@ class UrentypesGroup extends Connector
 			
 			$data[$row['id']] = $row;
 		}
-		
+
 		return $data;
 	}
 	

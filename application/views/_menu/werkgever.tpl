@@ -64,6 +64,12 @@
 					<a href="overzichten/facturen/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="mi-euro-symbol mr-2"></i>Facturen</div>
 					</a>
+					<a href="overzichten/banktransacties/index" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-list2 mr-2"></i>Banktransacties</div>
+					</a>
+					<a href="overzichten/factoring/index?aankoop=1&eind=1&compleet=1&incompleet=1" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-cash4 mr-2"></i>Factoring</div>
+					</a>
 					<a href="overzichten/snelstart/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="icon-books mr-2"></i>Snelstart</div>
 					</a>
@@ -113,6 +119,9 @@
 					</a>
 
 					<div class="dropdown-menu">
+						<a href="verloning/export/index" class="dropdown-item">
+							<i class="icon-download"></i>Export
+						</a>
 						<a href="verloning/loonstroken/uploaden" class="dropdown-item">
 							<i class="icon-coin-euro"></i>Loonstroken uploaden
 						</a>

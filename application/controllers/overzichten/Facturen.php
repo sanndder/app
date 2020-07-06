@@ -2,6 +2,8 @@
 
 use models\documenten\Document;
 use models\facturatie\FacturenGroup;
+use models\inleners\InlenerGroup;
+use models\uitzenders\UitzenderGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -28,8 +30,11 @@ class Facturen extends MY_Controller
 	public function index()
 	{
 		$facturengroep = new FacturenGroup();
-		$facturen = $facturengroep->facturenMatrix();
 		
+		$facturen = $facturengroep->filter($_GET)->facturenMatrix();
+		
+		$this->smarty->assign( 'inleners', InlenerGroup::list() );
+		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign( 'facturen', $facturen );
 		
 		$this->smarty->display('overzichten/facturen/overzicht.tpl');
@@ -37,7 +42,7 @@ class Facturen extends MY_Controller
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	// details
+	// AJAX details
 	//-----------------------------------------------------------------------------------------------------------------
 	public function factuurdetails( $factuur_id )
 	{
@@ -58,7 +63,7 @@ class Facturen extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	// upload done
+	// AJAX upload done
 	//-----------------------------------------------------------------------------------------------------------------
 	public function factuuruploaded( $factuur_id )
 	{
@@ -73,7 +78,7 @@ class Facturen extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	// betaling toevoegen
+	// AJAX betaling toevoegen
 	//-----------------------------------------------------------------------------------------------------------------
 	public function addbetaling( $factuur_id )
 	{

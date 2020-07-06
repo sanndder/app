@@ -57,6 +57,28 @@ class Codering extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * code voor een land
+	 *
+	 * @return array | bool
+	 */
+	static function landcodeFromId( $id )
+	{
+		$CI =& get_instance();
+		$db_admin = $CI->auth->db_admin;
+		
+		$sql = "SELECT code FROM list_landen WHERE id = ". intval($id)." LIMIT 1 ";
+		$query = $db_admin->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$data = $query->row_array();
+		
+		return $data['code'];
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * haal nationalititen op
 	 *
 	 * @return array | bool

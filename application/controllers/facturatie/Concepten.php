@@ -1,5 +1,8 @@
 <?php
 
+use models\facturatie\FactuurCorrectie;
+use models\uitzenders\UitzenderGroup;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
@@ -23,14 +26,49 @@ class Concepten extends MY_Controller
 
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Afgesprokenwerkfactuur maken
+	// marge factuur maken
 	//-----------------------------------------------------------------------------------------------------------------
-	public function afgesprokenwerk()
+	public function marge( $factuur_id = NULL )
 	{
+		$concept = new FactuurCorrectie( $factuur_id );
 		
+		//opslaan
+		if( isset($_POST['opslaan']) )
+		{
+			if( $concept->set( $_POST ) )
+			{
+				$this->session->set_flashdata('msg', 'Gegevens zijn opgeslagen' );
+				redirect( $this->config->item( 'base_url' ) . 'facturatie/concepten/marge/' . $concept->ID()  ,'location' );
+			}
+			else
+				$this->smarty->assign( 'msg', msg( 'danger', $concept->errors() ));
+		}
 		
+		//regel verwijderen
+		if( isset($_GET['delregel']) )
+		{
+			if( $concept->deleteRegel( $_GET['delregel'] ) )
+			{
+				$this->session->set_flashdata('msg', 'Regel verwijderd' );
+				redirect( $this->config->item( 'base_url' ) . 'facturatie/concepten/marge/' . $concept->ID()  ,'location' );
+			}
+			else
+				$this->smarty->assign( 'msg', msg( 'danger', $concept->errors() ));
+		}
+
+		$factuur = $concept->details();
+		$regels = $concept->regels();
 		
-		$this->smarty->display('facturatie/concepten/afgesprokenwerk.tpl');
+		//msg
+		if( $this->session->flashdata('msg') !== NULL )
+			$this->smarty->assign( 'msg', msg( 'success', $this->session->flashdata('msg') ) );
+
+		//vshow($regels);
+
+		$this->smarty->assign( 'factuur', $factuur );
+		$this->smarty->assign( 'regels', $regels );
+		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
+		$this->smarty->display('facturatie/concepten/marge.tpl');
 	}
 
 	

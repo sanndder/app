@@ -81,6 +81,18 @@ class PdfFactuur extends PdfBuilder {
 		$this->smarty->assign( 'korting_uitzender', $korting );
 		return $this;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * aangenomenwerk
+	 * @return object
+	 */
+	public function setAangenomenwerk( $val = 0 ) :PdfFactuur
+	{
+		$this->smarty->assign( 'aangenomenwerk', $val );
+		return $this;
+	}
 
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

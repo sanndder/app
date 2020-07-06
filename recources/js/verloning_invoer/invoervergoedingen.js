@@ -17,10 +17,45 @@ let invoervergoedingen = {
 			invoervergoedingen.setVergoedingDoorbelasten( this );
 		});
 		
+		//change project
+		$(document).on('change', '[data-vi-action="setVergoedingProject"]', function(){
+			invoervergoedingen.setVergoedingProject( this );
+		});
+		
 		//change doorbelast
 		$(document).on('blur', '[data-vi-action="setVergoedingBedrag"]', function(){
 			invoervergoedingen.setVergoedingBedrag( this );
 		});
+	},
+	
+	// update vergoeding doorbelasten ------------------------------------------------------------------------------------------------------------------------------
+	setVergoedingProject( obj ){
+		$select = $(obj);
+		$tr = $select.closest('tr');
+		
+		//wait gif naar voren
+		$select.hide();
+		$( '<span class="wait">' + tplKmInvoerStatusSave + '</span>').insertAfter( $select );
+		
+		data.invoer_id = $tr.data('id');
+		data.project_id = $select.find('option:selected').val();
+		
+		//naar database
+		xhr.url = base_url + 'ureninvoer/ajax/saveVergoedingProject';
+		xhr.data = data;
+		
+		var response = xhr.call( true );
+		if( response !== false ){
+			response.done(function(json){
+				//er gata iets mis
+				if( json.status == 'error' ){
+					alert('Wijziging kon niet worden opgeslagen');
+				}
+				
+				$select.show();
+				$tr.find('.wait').remove();
+			});
+		}
 	},
 	
 	// update vergoeding doorbelasten ------------------------------------------------------------------------------------------------------------------------------
@@ -98,6 +133,16 @@ let invoervergoedingen = {
 		
 		$tabel_variabel = $('.vi-vergoedingen-variabel').show();
 		$tabel_variabel.find('tbody').html('');
+		
+		//project select opbouwen
+		let htmlProjecten = invoer.getprojectSelect(json);
+		
+		//geen keuze, dan dropdown verbergen
+		if( json.info.projecten === null )
+		{
+			$tabel_vast.find('.th-project').hide();
+			$tabel_variabel.find('.th-project').hide();
+		}
 
 		//is er data?
 		if( typeof json.invoer.vergoedingen != 'undefined' && json.invoer.vergoedingen != null){
@@ -111,6 +156,9 @@ let invoervergoedingen = {
 					
 					let htmlTr = replaceVars(tplVergoedingVastTr, row);
 					
+					//projecten er in
+					htmlTr = htmlTr.replace('{select_projecten}', htmlProjecten);
+					
 					//goed zetten van select
 					$row = $(htmlTr).appendTo($tabel_vast.find('tbody'));
 					
@@ -123,16 +171,30 @@ let invoervergoedingen = {
 					
 					let htmlTr = replaceVars(tplVergoedingVariabelTr, row);
 					
+					//projecten er in
+					htmlTr = htmlTr.replace('{select_projecten}', htmlProjecten);
+					
 					//goed zetten van select
 					$row = $(htmlTr).appendTo($tabel_variabel.find('tbody'));
 				}
 				
+	
+				
 				//set doorbelasten
-				$row.find('select').val(row.doorbelasten);
+				$row.find('[name="doorbelasten"]').val(row.doorbelasten);
+				
+				//set project
+				$row.find('[name="project_id"]').val(row.project_id);
+				
+				//project verbergen
+				if( json.info.projecten === null )
+				{
+					$row.find('[name="project_id"]').hide();
+				}
 				
 				//bij geen keuze, disable select
 				if( row.doorbelasten_setting != null )
-					$row.find('select').attr('disabled', true );
+					$row.find('[name="doorbelasten"]').attr('disabled', true );
 				
 				//wanneer er gekozen is, "maak een keuze" verwijderen
 				if( $row.find('select option:selected').val() == 'uitzender' || $row.find('select option:selected').val() == 'inlener' )

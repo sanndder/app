@@ -98,6 +98,13 @@ let invoeret = {
 			$tabel.find('[name="vergoeding-levensstandaard"]').val( json.invoer.et.bedrag_levensstandaard );
 			
 			$tabel.find('.vi-et-max').html( parseFloat(json.info.et.max).toFixed(2).replace('.',',') );
+			
+			huis = parseFloat(json.invoer.et.bedrag_huisvesting);
+			levens = parseFloat(json.invoer.et.bedrag_levensstandaard);
+			
+			$tabel.find('.vi-et-totaal').html( parseFloat(levens + huis).toFixed(2).replace('.',',') );
+			$tabel.find('.vi-et-uitruil').html( parseFloat((levens + huis)*0.81).toFixed(2).replace('.',',') );
+			
 		}
 	}
 };

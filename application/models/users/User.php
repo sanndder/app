@@ -507,6 +507,20 @@ class User extends Connector
 		return $return;
 	}
 
+
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Key resetten
+	 * @return  bool
+	 */
+	public function updateNewKey()
+	{
+		$update['new_key_expires'] = date('Y-m-d', strtotime('+60 days'));
+		$this->db_admin->where( 'user_id', $this->user_id );
+		$this->db_admin->update( 'users', $update );
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Nieuwe gebruiker aanmaken
@@ -539,7 +553,7 @@ class User extends Connector
 			
 			$insert['created_by'] = $this->user->user_id;
 			$insert['new_key'] = md5( $input['username'] .time() );
-			$insert['new_key_expires'] = date('Y-m-d', strtotime('+5 days'));
+			$insert['new_key_expires'] = date('Y-m-d', strtotime('+60 days'));
 			
 			$this->db_admin->insert( 'users', $insert );
 			
@@ -596,9 +610,27 @@ class User extends Connector
 		
 		return $input;
 	}
-	
-	
-	
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Opnieuw welkomst mail sturen
+	 *
+	 */
+	public function resendWelkomsmail() :bool
+	{
+		$this->updateNewKey();
+		
+		if( $this->_data['user_type'] == 'werknemer' )
+			$this->sendWelkomsEmailWerknemer();
+		else
+			//welkom voor de rest
+			$this->sendWelkomsEmail();
+		
+		return true;
+	}
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * send reset password

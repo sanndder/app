@@ -42,23 +42,23 @@
     },
     {
         "name": "fpdf/fpdf",
-        "version": "1.81.2",
-        "version_normalized": "1.81.2.0",
+        "version": "1.82.1",
+        "version_normalized": "1.82.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/coreydoughty/Fpdf.git",
-            "reference": "6be5dd7dd0b3077b565ecadb28e7f01f7d2f2185"
+            "reference": "a8eb66ba732813f282a935775bceb72ffd40b15d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/coreydoughty/Fpdf/zipball/6be5dd7dd0b3077b565ecadb28e7f01f7d2f2185",
-            "reference": "6be5dd7dd0b3077b565ecadb28e7f01f7d2f2185",
+            "url": "https://api.github.com/repos/coreydoughty/Fpdf/zipball/a8eb66ba732813f282a935775bceb72ffd40b15d",
+            "reference": "a8eb66ba732813f282a935775bceb72ffd40b15d",
             "shasum": ""
         },
         "require": {
             "php": ">=5.6.0"
         },
-        "time": "2018-10-25T10:38:10+00:00",
+        "time": "2020-02-15T12:05:43+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -86,24 +86,25 @@
     },
     {
         "name": "guzzlehttp/guzzle",
-        "version": "6.5.0",
-        "version_normalized": "6.5.0.0",
+        "version": "6.5.5",
+        "version_normalized": "6.5.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/guzzle.git",
-            "reference": "dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5"
+            "reference": "9d4290de1cfd701f38099ef7e183b64b4b7b0c5e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5",
-            "reference": "dbc2bc3a293ed6b1ae08a3651e2bfd213d19b6a5",
+            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/9d4290de1cfd701f38099ef7e183b64b4b7b0c5e",
+            "reference": "9d4290de1cfd701f38099ef7e183b64b4b7b0c5e",
             "shasum": ""
         },
         "require": {
             "ext-json": "*",
             "guzzlehttp/promises": "^1.0",
             "guzzlehttp/psr7": "^1.6.1",
-            "php": ">=5.5"
+            "php": ">=5.5",
+            "symfony/polyfill-intl-idn": "^1.17.0"
         },
         "require-dev": {
             "ext-curl": "*",
@@ -111,10 +112,9 @@
             "psr/log": "^1.1"
         },
         "suggest": {
-            "ext-intl": "Required for Internationalized Domain Name (IDN) support",
             "psr/log": "Required for using the Log middleware"
         },
-        "time": "2019-12-07T18:20:45+00:00",
+        "time": "2020-06-16T21:01:06+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -336,34 +336,97 @@
         ]
     },
     {
-        "name": "markbaker/complex",
-        "version": "1.4.7",
-        "version_normalized": "1.4.7.0",
+        "name": "maennchen/zipstream-php",
+        "version": "2.1.0",
+        "version_normalized": "2.1.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/MarkBaker/PHPComplex.git",
-            "reference": "1ea674a8308baf547cbcbd30c5fcd6d301b7c000"
+            "url": "https://github.com/maennchen/ZipStream-PHP.git",
+            "reference": "c4c5803cc1f93df3d2448478ef79394a5981cc58"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/MarkBaker/PHPComplex/zipball/1ea674a8308baf547cbcbd30c5fcd6d301b7c000",
-            "reference": "1ea674a8308baf547cbcbd30c5fcd6d301b7c000",
+            "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/c4c5803cc1f93df3d2448478ef79394a5981cc58",
+            "reference": "c4c5803cc1f93df3d2448478ef79394a5981cc58",
+            "shasum": ""
+        },
+        "require": {
+            "myclabs/php-enum": "^1.5",
+            "php": ">= 7.1",
+            "psr/http-message": "^1.0",
+            "symfony/polyfill-mbstring": "^1.0"
+        },
+        "require-dev": {
+            "ext-zip": "*",
+            "guzzlehttp/guzzle": ">= 6.3",
+            "mikey179/vfsstream": "^1.6",
+            "phpunit/phpunit": ">= 7.5"
+        },
+        "time": "2020-05-30T13:11:16+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "ZipStream\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Paul Duncan",
+                "email": "pabs@pablotron.org"
+            },
+            {
+                "name": "Jonatan Männchen",
+                "email": "jonatan@maennchen.ch"
+            },
+            {
+                "name": "Jesse Donat",
+                "email": "donatj@gmail.com"
+            },
+            {
+                "name": "András Kolesár",
+                "email": "kolesar@kolesar.hu"
+            }
+        ],
+        "description": "ZipStream is a library for dynamically streaming dynamic zip files from PHP without writing to the disk at all on the server.",
+        "keywords": [
+            "stream",
+            "zip"
+        ]
+    },
+    {
+        "name": "markbaker/complex",
+        "version": "1.4.8",
+        "version_normalized": "1.4.8.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/MarkBaker/PHPComplex.git",
+            "reference": "8eaa40cceec7bf0518187530b2e63871be661b72"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/MarkBaker/PHPComplex/zipball/8eaa40cceec7bf0518187530b2e63871be661b72",
+            "reference": "8eaa40cceec7bf0518187530b2e63871be661b72",
             "shasum": ""
         },
         "require": {
             "php": "^5.6.0|^7.0.0"
         },
         "require-dev": {
-            "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
-            "phpcompatibility/php-compatibility": "^8.0",
+            "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+            "phpcompatibility/php-compatibility": "^9.0",
             "phpdocumentor/phpdocumentor": "2.*",
             "phploc/phploc": "2.*",
             "phpmd/phpmd": "2.*",
             "phpunit/phpunit": "^4.8.35|^5.4.0",
             "sebastian/phpcpd": "2.*",
-            "squizlabs/php_codesniffer": "^3.3.0"
+            "squizlabs/php_codesniffer": "^3.4.0"
         },
-        "time": "2018-10-13T23:28:42+00:00",
+        "time": "2020-03-11T20:15:49+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -505,17 +568,17 @@
     },
     {
         "name": "mpdf/mpdf",
-        "version": "v8.0.3",
-        "version_normalized": "8.0.3.0",
+        "version": "v8.0.6",
+        "version_normalized": "8.0.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/mpdf/mpdf.git",
-            "reference": "6dd4285aff21f013554ff752046bb44ab1240f5f"
+            "reference": "d27aa93513b915896fa7cb53901d3122e286f811"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/mpdf/mpdf/zipball/6dd4285aff21f013554ff752046bb44ab1240f5f",
-            "reference": "6dd4285aff21f013554ff752046bb44ab1240f5f",
+            "url": "https://api.github.com/repos/mpdf/mpdf/zipball/d27aa93513b915896fa7cb53901d3122e286f811",
+            "reference": "d27aa93513b915896fa7cb53901d3122e286f811",
             "shasum": ""
         },
         "require": {
@@ -523,7 +586,7 @@
             "ext-mbstring": "*",
             "myclabs/deep-copy": "^1.7",
             "paragonie/random_compat": "^1.4|^2.0|9.99.99",
-            "php": "^5.6 || ~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0",
+            "php": "^5.6 || ~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0",
             "psr/log": "^1.0",
             "setasign/fpdi": "^2.1"
         },
@@ -539,7 +602,7 @@
             "ext-xml": "Needed mainly for SVG manipulation",
             "ext-zlib": "Needed for compression of embedded resources, such as fonts"
         },
-        "time": "2019-10-25T17:54:07+00:00",
+        "time": "2020-05-25T09:08:39+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -576,17 +639,17 @@
     },
     {
         "name": "myclabs/deep-copy",
-        "version": "1.9.3",
-        "version_normalized": "1.9.3.0",
+        "version": "1.9.5",
+        "version_normalized": "1.9.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/myclabs/DeepCopy.git",
-            "reference": "007c053ae6f31bba39dfa19a7726f56e9763bbea"
+            "reference": "b2c28789e80a97badd14145fda39b545d83ca3ef"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/007c053ae6f31bba39dfa19a7726f56e9763bbea",
-            "reference": "007c053ae6f31bba39dfa19a7726f56e9763bbea",
+            "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/b2c28789e80a97badd14145fda39b545d83ca3ef",
+            "reference": "b2c28789e80a97badd14145fda39b545d83ca3ef",
             "shasum": ""
         },
         "require": {
@@ -600,7 +663,7 @@
             "doctrine/common": "^2.6",
             "phpunit/phpunit": "^7.1"
         },
-        "time": "2019-08-09T12:45:53+00:00",
+        "time": "2020-01-17T21:11:47+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -622,6 +685,54 @@
             "duplicate",
             "object",
             "object graph"
+        ]
+    },
+    {
+        "name": "myclabs/php-enum",
+        "version": "1.7.6",
+        "version_normalized": "1.7.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/myclabs/php-enum.git",
+            "reference": "5f36467c7a87e20fbdc51e524fd8f9d1de80187c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/myclabs/php-enum/zipball/5f36467c7a87e20fbdc51e524fd8f9d1de80187c",
+            "reference": "5f36467c7a87e20fbdc51e524fd8f9d1de80187c",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "php": ">=7.1"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^7",
+            "squizlabs/php_codesniffer": "1.*",
+            "vimeo/psalm": "^3.8"
+        },
+        "time": "2020-02-14T08:15:52+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "MyCLabs\\Enum\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP Enum contributors",
+                "homepage": "https://github.com/myclabs/php-enum/graphs/contributors"
+            }
+        ],
+        "description": "PHP Enum implementation",
+        "homepage": "http://github.com/myclabs/php-enum",
+        "keywords": [
+            "enum"
         ]
     },
     {
@@ -673,17 +784,17 @@
     },
     {
         "name": "phpoffice/phpspreadsheet",
-        "version": "1.11.0",
-        "version_normalized": "1.11.0.0",
+        "version": "1.13.0",
+        "version_normalized": "1.13.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-            "reference": "c2a205e82f9cf1cc9fab86b79e808d86dd680470"
+            "reference": "21bfb5b3243b8ceb9eda499a4d699fc42c11a9d1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/c2a205e82f9cf1cc9fab86b79e808d86dd680470",
-            "reference": "c2a205e82f9cf1cc9fab86b79e808d86dd680470",
+            "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/21bfb5b3243b8ceb9eda499a4d699fc42c11a9d1",
+            "reference": "21bfb5b3243b8ceb9eda499a4d699fc42c11a9d1",
             "shasum": ""
         },
         "require": {
@@ -700,18 +811,19 @@
             "ext-xmlwriter": "*",
             "ext-zip": "*",
             "ext-zlib": "*",
+            "maennchen/zipstream-php": "^2.0",
             "markbaker/complex": "^1.4",
             "markbaker/matrix": "^1.2",
-            "php": "^7.1",
+            "php": "^7.2",
             "psr/simple-cache": "^1.0"
         },
         "require-dev": {
-            "dompdf/dompdf": "^0.8.3",
+            "dompdf/dompdf": "^0.8.5",
             "friendsofphp/php-cs-fixer": "^2.16",
             "jpgraph/jpgraph": "^4.0",
             "mpdf/mpdf": "^8.0",
             "phpcompatibility/php-compatibility": "^9.3",
-            "phpunit/phpunit": "^7.5",
+            "phpunit/phpunit": "^8.5",
             "squizlabs/php_codesniffer": "^3.5",
             "tecnickcom/tcpdf": "^6.3"
         },
@@ -721,7 +833,7 @@
             "mpdf/mpdf": "Option for rendering PDF with PDF Writer",
             "tecnickcom/tcpdf": "Option for rendering PDF with PDF Writer"
         },
-        "time": "2020-03-02T13:09:03+00:00",
+        "time": "2020-05-31T13:49:28+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -820,23 +932,23 @@
     },
     {
         "name": "psr/log",
-        "version": "1.1.2",
-        "version_normalized": "1.1.2.0",
+        "version": "1.1.3",
+        "version_normalized": "1.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-fig/log.git",
-            "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801"
+            "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-fig/log/zipball/446d54b4cb6bf489fc9d75f55843658e6f25d801",
-            "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801",
+            "url": "https://api.github.com/repos/php-fig/log/zipball/0f73288fd15629204f9d42b7055f72dacbe811fc",
+            "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2019-11-01T11:05:21+00:00",
+        "time": "2020-03-23T09:12:05+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -961,20 +1073,20 @@
     },
     {
         "name": "setasign/fpdf",
-        "version": "1.8.1",
-        "version_normalized": "1.8.1.0",
+        "version": "1.8.2",
+        "version_normalized": "1.8.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Setasign/FPDF.git",
-            "reference": "2c68c9e6c034ac3187d25968790139a73184cdb1"
+            "reference": "d77904018090c17dc9f3ab6e944679a7a47e710a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Setasign/FPDF/zipball/2c68c9e6c034ac3187d25968790139a73184cdb1",
-            "reference": "2c68c9e6c034ac3187d25968790139a73184cdb1",
+            "url": "https://api.github.com/repos/Setasign/FPDF/zipball/d77904018090c17dc9f3ab6e944679a7a47e710a",
+            "reference": "d77904018090c17dc9f3ab6e944679a7a47e710a",
             "shasum": ""
         },
-        "time": "2016-01-01T17:47:15+00:00",
+        "time": "2019-12-08T10:32:10+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -984,7 +1096,7 @@
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "no usage restriction"
+            "MIT"
         ],
         "authors": [
             {
@@ -1002,36 +1114,36 @@
     },
     {
         "name": "setasign/fpdi",
-        "version": "v2.2.0",
-        "version_normalized": "2.2.0.0",
+        "version": "v2.3.3",
+        "version_normalized": "2.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Setasign/FPDI.git",
-            "reference": "3c266002f8044f61b17329f7cd702d44d73f0f7f"
+            "reference": "50c388860a73191e010810ed57dbed795578e867"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Setasign/FPDI/zipball/3c266002f8044f61b17329f7cd702d44d73f0f7f",
-            "reference": "3c266002f8044f61b17329f7cd702d44d73f0f7f",
+            "url": "https://api.github.com/repos/Setasign/FPDI/zipball/50c388860a73191e010810ed57dbed795578e867",
+            "reference": "50c388860a73191e010810ed57dbed795578e867",
             "shasum": ""
         },
         "require": {
             "ext-zlib": "*",
             "php": "^5.6 || ^7.0"
         },
+        "conflict": {
+            "setasign/tfpdf": "<1.31"
+        },
         "require-dev": {
             "phpunit/phpunit": "~5.7",
             "setasign/fpdf": "~1.8",
-            "setasign/tfpdf": "1.25",
+            "setasign/tfpdf": "1.31",
             "tecnickcom/tcpdf": "~6.2"
         },
         "suggest": {
-            "setasign/fpdf": "FPDI will extend this class but as it is also possible to use TCPDF or tFPDF as an alternative. There's no fixed dependency configured.",
-            "setasign/fpdi-fpdf": "Use this package to automatically evaluate dependencies to FPDF.",
-            "setasign/fpdi-tcpdf": "Use this package to automatically evaluate dependencies to TCPDF.",
-            "setasign/fpdi-tfpdf": "Use this package to automatically evaluate dependencies to tFPDF."
+            "setasign/fpdf": "FPDI will extend this class but as it is also possible to use TCPDF or tFPDF as an alternative. There's no fixed dependency configured."
         },
-        "time": "2019-01-30T14:11:19+00:00",
+        "time": "2020-04-28T12:40:35+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1065,24 +1177,24 @@
     },
     {
         "name": "setasign/fpdi-fpdf",
-        "version": "v2.2.0",
-        "version_normalized": "2.2.0.0",
+        "version": "v2.3.0",
+        "version_normalized": "2.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Setasign/FPDI-FPDF.git",
-            "reference": "e4363ac09e1b766b38ebea1c3cbe82b3480a11e9"
+            "reference": "f2fdc44e4d5247a3bb55ed2c2c1396ef05c02357"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Setasign/FPDI-FPDF/zipball/e4363ac09e1b766b38ebea1c3cbe82b3480a11e9",
-            "reference": "e4363ac09e1b766b38ebea1c3cbe82b3480a11e9",
+            "url": "https://api.github.com/repos/Setasign/FPDI-FPDF/zipball/f2fdc44e4d5247a3bb55ed2c2c1396ef05c02357",
+            "reference": "f2fdc44e4d5247a3bb55ed2c2c1396ef05c02357",
             "shasum": ""
         },
         "require": {
-            "setasign/fpdf": "^1.8",
-            "setasign/fpdi": "^2.2"
+            "setasign/fpdf": "^1.8.2",
+            "setasign/fpdi": "^2.3"
         },
-        "time": "2019-01-30T14:38:19+00:00",
+        "time": "2020-02-19T12:21:53+00:00",
         "type": "library",
         "installation-source": "dist",
         "notification-url": "https://packagist.org/downloads/",
@@ -1102,28 +1214,29 @@
             "fpdf",
             "fpdi",
             "pdf"
-        ]
+        ],
+        "abandoned": true
     },
     {
         "name": "setasign/fpdi-tcpdf",
-        "version": "v2.2.0",
-        "version_normalized": "2.2.0.0",
+        "version": "v2.3.0",
+        "version_normalized": "2.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Setasign/FPDI-TCPDF.git",
-            "reference": "95778baea02e5da76acb9f6dc1c946be380a22d8"
+            "reference": "f6711a95cba64db16e1a63e1b6195827a2150c93"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Setasign/FPDI-TCPDF/zipball/95778baea02e5da76acb9f6dc1c946be380a22d8",
-            "reference": "95778baea02e5da76acb9f6dc1c946be380a22d8",
+            "url": "https://api.github.com/repos/Setasign/FPDI-TCPDF/zipball/f6711a95cba64db16e1a63e1b6195827a2150c93",
+            "reference": "f6711a95cba64db16e1a63e1b6195827a2150c93",
             "shasum": ""
         },
         "require": {
-            "setasign/fpdi": "^2.2",
-            "tecnickcom/tcpdf": "^6.2"
+            "setasign/fpdi": "^2.3",
+            "tecnickcom/tcpdf": "^6.3.5"
         },
-        "time": "2019-01-30T14:39:33+00:00",
+        "time": "2020-02-19T11:40:30+00:00",
         "type": "library",
         "installation-source": "dist",
         "notification-url": "https://packagist.org/downloads/",
@@ -1143,28 +1256,29 @@
             "TCPDF",
             "fpdi",
             "pdf"
-        ]
+        ],
+        "abandoned": true
     },
     {
         "name": "setasign/fpdi-tfpdf",
-        "version": "v2.2.0",
-        "version_normalized": "2.2.0.0",
+        "version": "v2.3.0",
+        "version_normalized": "2.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Setasign/FPDI-tFPDF.git",
-            "reference": "2e7d7b9d0aa1462dc89cbba4e33cc1364b920008"
+            "reference": "665c3826bd11071bbbd0f38b4a62830e675cbd27"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Setasign/FPDI-tFPDF/zipball/2e7d7b9d0aa1462dc89cbba4e33cc1364b920008",
-            "reference": "2e7d7b9d0aa1462dc89cbba4e33cc1364b920008",
+            "url": "https://api.github.com/repos/Setasign/FPDI-tFPDF/zipball/665c3826bd11071bbbd0f38b4a62830e675cbd27",
+            "reference": "665c3826bd11071bbbd0f38b4a62830e675cbd27",
             "shasum": ""
         },
         "require": {
-            "setasign/fpdi": "^2.2",
-            "setasign/tfpdf": "^1.25"
+            "setasign/fpdi": "^2.3",
+            "setasign/tfpdf": "1.31"
         },
-        "time": "2019-01-30T14:40:54+00:00",
+        "time": "2020-02-19T10:59:57+00:00",
         "type": "library",
         "installation-source": "dist",
         "notification-url": "https://packagist.org/downloads/",
@@ -1184,24 +1298,53 @@
             "fpdi",
             "pdf",
             "tfpdf"
-        ]
+        ],
+        "abandoned": true
+    },
+    {
+        "name": "setasign/fpdi_pdf-parser",
+        "version": "2.0.4",
+        "version_normalized": "2.0.4.0",
+        "dist": {
+            "type": "zip",
+            "url": "https://www.setasign.com/downloads/2132008/FPDI_PDF-Parser-2.0.4.zip",
+            "reference": null,
+            "shasum": null
+        },
+        "require": {
+            "setasign/fpdi": "^2.0"
+        },
+        "time": "2018-11-06T00:00:00+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "setasign\\FpdiPdfParser\\": "src/"
+            }
+        },
+        "license": [
+            "proprietary"
+        ],
+        "support": {
+            "email": "support@setasign.com"
+        }
     },
     {
         "name": "setasign/tfpdf",
-        "version": "1.25",
-        "version_normalized": "1.25.0.0",
+        "version": "1.31",
+        "version_normalized": "1.31.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Setasign/tFPDF.git",
-            "reference": "f5fa74ebca027c685de70b48ee9212ae30e9f0eb"
+            "reference": "f0ece1cf1bb134b4fdff5eebe2ecb349dbeb00f9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Setasign/tFPDF/zipball/f5fa74ebca027c685de70b48ee9212ae30e9f0eb",
-            "reference": "f5fa74ebca027c685de70b48ee9212ae30e9f0eb",
+            "url": "https://api.github.com/repos/Setasign/tFPDF/zipball/f0ece1cf1bb134b4fdff5eebe2ecb349dbeb00f9",
+            "reference": "f0ece1cf1bb134b4fdff5eebe2ecb349dbeb00f9",
             "shasum": ""
         },
-        "time": "2018-09-05T15:36:21+00:00",
+        "time": "2020-02-19T09:51:17+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1216,16 +1359,20 @@
         ],
         "authors": [
             {
+                "name": "Ian Back"
+            },
+            {
+                "name": "Tycho Veltmeijer",
+                "email": "tfpdf@tychoveltmeijer.nl",
+                "role": "Maintainer"
+            },
+            {
                 "name": "Olivier Plathey",
                 "email": "oliver@fpdf.org",
                 "homepage": "http://fpdf.org/"
-            },
-            {
-                "name": "Ian Back",
-                "email": "ian@bpm1.com"
             }
         ],
-        "description": "This class is a modified version of FPDF that adds UTF-8 support. It is based on FPDF 1.7.",
+        "description": "This class is a modified version of FPDF that adds UTF-8 support. As of version 1.31 it is based on FPDF 1.82. Before it was based on FPDF 1.7.",
         "homepage": "http://fpdf.org/en/script/script92.php",
         "keywords": [
             "fpdf",
@@ -1235,24 +1382,266 @@
         ]
     },
     {
-        "name": "tecnickcom/tcpdf",
-        "version": "6.3.2",
-        "version_normalized": "6.3.2.0",
+        "name": "smalot/pdfparser",
+        "version": "v0.16.0",
+        "version_normalized": "0.16.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/tecnickcom/TCPDF.git",
-            "reference": "9fde7bb9b404b945e7ea88fb7eccd23d9a4e324b"
+            "url": "https://github.com/smalot/pdfparser.git",
+            "reference": "fb0ff390a4fe44f84ee565f304842b30dcde854a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/9fde7bb9b404b945e7ea88fb7eccd23d9a4e324b",
-            "reference": "9fde7bb9b404b945e7ea88fb7eccd23d9a4e324b",
+            "url": "https://api.github.com/repos/smalot/pdfparser/zipball/fb0ff390a4fe44f84ee565f304842b30dcde854a",
+            "reference": "fb0ff390a4fe44f84ee565f304842b30dcde854a",
+            "shasum": ""
+        },
+        "require": {
+            "ext-mbstring": "*",
+            "ext-zlib": "*",
+            "php": ">=5.6"
+        },
+        "require-dev": {
+            "friendsofphp/php-cs-fixer": "^2.16.3",
+            "symfony/phpunit-bridge": "^4.2.3"
+        },
+        "time": "2020-06-08T14:38:20+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Smalot\\PdfParser\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-3.0"
+        ],
+        "authors": [
+            {
+                "name": "Sebastien MALOT",
+                "email": "sebastien@malot.fr"
+            }
+        ],
+        "description": "Pdf parser library. Can read and extract information from pdf file.",
+        "homepage": "http://www.pdfparser.org",
+        "keywords": [
+            "extract",
+            "parse",
+            "parser",
+            "pdf",
+            "text"
+        ]
+    },
+    {
+        "name": "symfony/polyfill-intl-idn",
+        "version": "v1.17.1",
+        "version_normalized": "1.17.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/polyfill-intl-idn.git",
+            "reference": "a57f8161502549a742a63c09f0a604997bf47027"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/a57f8161502549a742a63c09f0a604997bf47027",
+            "reference": "a57f8161502549a742a63c09f0a604997bf47027",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3",
+            "symfony/polyfill-mbstring": "^1.3",
+            "symfony/polyfill-php72": "^1.10"
+        },
+        "suggest": {
+            "ext-intl": "For best performance"
+        },
+        "time": "2020-06-06T08:46:27+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.17-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Polyfill\\Intl\\Idn\\": ""
+            },
+            "files": [
+                "bootstrap.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Laurent Bassin",
+                "email": "laurent@bassin.info"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony polyfill for intl's idn_to_ascii and idn_to_utf8 functions",
+        "homepage": "https://symfony.com",
+        "keywords": [
+            "compatibility",
+            "idn",
+            "intl",
+            "polyfill",
+            "portable",
+            "shim"
+        ]
+    },
+    {
+        "name": "symfony/polyfill-mbstring",
+        "version": "v1.17.1",
+        "version_normalized": "1.17.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/polyfill-mbstring.git",
+            "reference": "7110338d81ce1cbc3e273136e4574663627037a7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7110338d81ce1cbc3e273136e4574663627037a7",
+            "reference": "7110338d81ce1cbc3e273136e4574663627037a7",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "suggest": {
+            "ext-mbstring": "For best performance"
+        },
+        "time": "2020-06-06T08:46:27+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.17-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Polyfill\\Mbstring\\": ""
+            },
+            "files": [
+                "bootstrap.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Nicolas Grekas",
+                "email": "p@tchwork.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony polyfill for the Mbstring extension",
+        "homepage": "https://symfony.com",
+        "keywords": [
+            "compatibility",
+            "mbstring",
+            "polyfill",
+            "portable",
+            "shim"
+        ]
+    },
+    {
+        "name": "symfony/polyfill-php72",
+        "version": "v1.17.0",
+        "version_normalized": "1.17.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/polyfill-php72.git",
+            "reference": "f048e612a3905f34931127360bdd2def19a5e582"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/f048e612a3905f34931127360bdd2def19a5e582",
+            "reference": "f048e612a3905f34931127360bdd2def19a5e582",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "time": "2020-05-12T16:47:27+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.17-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Polyfill\\Php72\\": ""
+            },
+            "files": [
+                "bootstrap.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Nicolas Grekas",
+                "email": "p@tchwork.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony polyfill backporting some PHP 7.2+ features to lower PHP versions",
+        "homepage": "https://symfony.com",
+        "keywords": [
+            "compatibility",
+            "polyfill",
+            "portable",
+            "shim"
+        ]
+    },
+    {
+        "name": "tecnickcom/tcpdf",
+        "version": "6.3.5",
+        "version_normalized": "6.3.5.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/tecnickcom/TCPDF.git",
+            "reference": "19a535eaa7fb1c1cac499109deeb1a7a201b4549"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/19a535eaa7fb1c1cac499109deeb1a7a201b4549",
+            "reference": "19a535eaa7fb1c1cac499109deeb1a7a201b4549",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2019-09-20T09:35:01+00:00",
+        "time": "2020-02-14T14:20:12+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1277,7 +1666,7 @@
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "LGPL-3.0"
+            "LGPL-3.0-only"
         ],
         "authors": [
             {

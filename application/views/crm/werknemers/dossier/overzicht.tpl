@@ -54,8 +54,14 @@
 
 										</div>
 									</div><!-- /row -->
-
 								</div>
+
+								<div class="">
+									<a href="crm/werknemers/dossier/exportwerknemer/{$werknemer->werknemer_id}" target="_blank">
+										<i class="icon-download"></i>
+									</a>
+								</div>
+
 							</div>
 
 

@@ -6,6 +6,7 @@ use Mpdf\Mpdf;
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
 use setasign\Fpdi\PdfReader;
+use Smalot\PdfParser\Parser;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -27,6 +28,7 @@ class Pdf extends File{
 	 */
 	protected $_page_count = NULL;
 	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Init new file from array
@@ -45,6 +47,7 @@ class Pdf extends File{
 		
 		$this->_setInfo();
 	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -267,8 +270,25 @@ class Pdf extends File{
 	{
 		return $this->_page_count;
 	}
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Get one page from the origional and make an object
+	 *
+	 */
+	public function toText()
+	{
+		//bestand uitlezen
+		/*require_once('application/third_party/readpdf/readpdf.php');
+		$content = pdf2text($this->_file_path);
+		return $content;*/
+		
+		$parser = new Parser();
+		$pdffile = $parser->parseFile( $this->_file_path );
+		return $pdffile->getText();
+	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

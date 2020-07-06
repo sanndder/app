@@ -72,6 +72,15 @@ class Users extends MY_Controller {
 				$this->smarty->assign( 'msg', msg( 'warning', 'Wachtwoord kon niet worden ingesteld' ) );
 		}
 		
+		//default
+		if(isset($_GET['resend']))
+		{
+			if( $user->resendWelkomsmail() )
+				redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/users/view/' . $user_id ,'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Welkomsmail kon niet opnieuw worden verstuurd' ) );
+		}
+		
 		$this->smarty->assign('user', $user->data());
 		$this->smarty->display('instellingen/users/view.tpl');
 	}

@@ -61,10 +61,7 @@ class Test extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function export( $werknemer_id )
 	{
-		$export = new \models\verloning\ExportWerknemers();
-		$export->setWerknemer( $werknemer_id );
-		
-		$export->xml();
+	
 	}
 	
 	

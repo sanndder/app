@@ -188,7 +188,7 @@
 
 
 				<!-- table -->
-				<table class="table datatable-basic table-striped table-hover table-xs" data-page-length="15" data-order="[[0,&quot;asc&quot; ],[2,&quot;asc&quot; ]]">
+				<table class="table datatable-basic table-striped table-hover table-xs" data-page-length="15" data-order="[[0,&quot;asc&quot; ],[3,&quot;asc&quot; ]]">
 					<thead class="">
 						<tr>
 							<th></th>

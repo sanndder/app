@@ -34,7 +34,9 @@ class FacturenGroup extends Connector
 	protected $_zzp_id = NULL;
 	
 	protected $_jaren_array = NULL;
-
+	
+	protected $_filter_factoring = 1;
+	protected $_filter_geen_factoring = 1;
 	
 	protected $_error = NULL;
 	
@@ -60,6 +62,31 @@ class FacturenGroup extends Connector
 	public function setUitzender( $uitzender_id ) :FacturenGroup
 	{
 		$this->_uitzender_id = intval($uitzender_id);
+		return $this;
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set filter
+	 *
+	 * @return FacturenGroup
+	 */
+	public function filter( $filter ) :FacturenGroup
+	{
+		if( !isset($filter['factoring']) && isset($filter['geenfactoring']) )
+			$this->_filter_factoring = 0;
+		
+		if( isset($filter['factoring']) && !isset($filter['geenfactoring']) )
+			$this->_filter_geen_factoring = 0;
+		
+		if( isset($filter['inlener_id']) && $filter['inlener_id'] != '' && intval($filter['inlener_id']) > 0 )
+			$this->_inlener_id = intval($filter['inlener_id']);
+		
+		if( isset($filter['uitzender_id']) && $filter['uitzender_id'] != '' && intval($filter['uitzender_id']) > 0 )
+			$this->_uitzender_id = intval($filter['uitzender_id']);
+			
 		return $this;
 	}
 	
@@ -166,7 +193,23 @@ class FacturenGroup extends Connector
 		
 		return $data;
 	}
-	
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alleen verkoopfacturen
+	 */
+	public function facturen() :?array
+	{
+		$sql = "SELECT *, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,  DATEDIFF(facturen.verval_datum,facturen.factuur_datum) AS betaaltermijn
+				FROM facturen
+				WHERE facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0 AND facturen.inlener_id = $this->_inlener_id
+				ORDER BY jaar DESC, periode DESC";
+		
+		$query = $this->db_user->query( $sql );
+		return DBhelper::toArray( $query, 'factuur_id', 'NULL' );
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -188,6 +231,12 @@ class FacturenGroup extends Connector
 		
 		if( $this->_inlener_id != NULL )
 			$sql .= " AND facturen.inlener_id = $this->_inlener_id ";
+		
+		if( $this->_filter_geen_factoring == 1 && $this->_filter_factoring == 0 )
+			$sql .= " AND inleners_factuurgegevens.factoring = 0";
+		
+		if( $this->_filter_geen_factoring == 0 && $this->_filter_factoring == 1 )
+			$sql .= " AND inleners_factuurgegevens.factoring = 1";
 		
 		$sql .= " ORDER BY jaar DESC, periode DESC ";
 		

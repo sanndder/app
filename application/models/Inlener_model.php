@@ -46,13 +46,26 @@ class Inlener_model extends MY_Model
 		//inlener id
 		if( isset( $_SESSION['logindata']['override']['inlener_id'] ) )
 			$this->inlener_id = $_SESSION['logindata']['override']['inlener_id'];
-		else
+		elseif( isset($_SESSION['logindata']['main']['inlener_id']) )
 			$this->inlener_id = $_SESSION['logindata']['main']['inlener_id'];
-
+		else
+			$this->inlener_id = NULL;
+		
 		$this->id = $this->inlener_id;
 	}
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * manual
+	 *
+	 * @return boolean
+	 */
+	public function setID( $id )
+	{
+		$this->id = $id;
+		$this->inlener_id = $id;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

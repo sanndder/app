@@ -86,12 +86,13 @@ let plaatsing = {
 		data.id = $tr.data('id');
 		data.tarief = $input.val();
 		
-		$tr.find('.spinner').show();
-		$tr.find('.icon-warning2').hide();
-		$tr.find('.icon-check').hide();
+		$tdStatus = $tr.find('.td-status-tarief');
+		$tdStatus.find('.spinner').show();
+		$tdStatus.find('.icon-warning2').hide();
+		$tdStatus.find('.icon-check').hide();
 		
 		xhr.url = base_url + 'crm/werknemers/ajax/setverkooptarief';
-		var response = xhr.call();
+		var response = xhr.call( true );
 		if( response !== false ){
 			response.done(function(json){
 				if( json.status != 'success' )
@@ -120,7 +121,7 @@ let plaatsing = {
 		$tr.find('.icon-check').hide();
 
 		xhr.url = base_url + 'crm/werknemers/ajax/setuurloon';
-		var response = xhr.call();
+		var response = xhr.call( true );
 		if( response !== false ){
 			response.done(function(json){
 				if( json.status != 'success' )

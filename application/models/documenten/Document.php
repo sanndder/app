@@ -412,6 +412,13 @@ class Document extends Connector {
 			if( $this->user->user_type == 'werknemer' )
 				return  false;
 			
+			//uitnreiden
+			if( $this->user->user_type == 'uitzender' )
+			{
+				return  true;
+			}
+			
+			
 			//bij uitzender ID checken
 			if( $this->user->user_type == 'inlener' )
 			{
@@ -432,9 +439,15 @@ class Document extends Connector {
 			if( $this->user->user_type == 'werkgever' )
 				return true;
 			
-			//TODO welke uitzend?
+		
 			if( $this->user->user_type == 'uitzender' )
+			{
+				$werknemer = new Werknemer( $this->_data['werknemer_id'] );
+				if(  $this->uitzender->id !=  $werknemer->uitzenderID())
+					return false;
 				return true;
+			}
+			
 			
 			if( $this->user->user_type == 'inlener' )
 				return false;

@@ -13,6 +13,7 @@ use models\uitzenders\Uitzender;
 use models\utils\DBhelper;
 use models\utils\Tijdvak;
 use models\verloning\Invoer;
+use models\verloning\InvoerAangenomenwerk;
 use models\verloning\InvoerKm;
 use models\verloning\InvoerUren;
 use models\verloning\InvoerVergoedingen;
@@ -38,6 +39,7 @@ class FactuurFactory extends Connector
 	
 	private $_inlener_bedrijfsgegevens = NULL;
 	private $_inlener_factuurgegevens = NULL;
+	private $_inlener_projecten = NULL;
 	private $_inlener_werknemers = NULL;
 	private $_werknemers_pensioen = NULL;
 	
@@ -56,6 +58,7 @@ class FactuurFactory extends Connector
 	
 	//array met alles opgeteld en gegroepeerd
 	private $_group_array = NULL;
+	private $_aangenomenwerk_array = NULL;
 	
 	private $_preview = false;
 	
@@ -175,7 +178,6 @@ class FactuurFactory extends Connector
 			$this->_sessieFinish( 'fout bij controleren van invoer' );
 			return false;
 		}
-		
 		// alle data is gereed, nu facturen in database aanmaken
 		if( !$this->_setConceptVerkoopFacturen() )
 		{
@@ -472,7 +474,6 @@ class FactuurFactory extends Connector
 		$this->_sessieLog( 'action', "einde zzp factuur pdf", $factuur['factuur_id'] );
 		
 		return true;
-		die();
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -492,12 +493,17 @@ class FactuurFactory extends Connector
 		
 		if(isset( $this->_uitzender_korting[$this->_inlener_id]))
 			$pdf->setKortingUitzender( $this->_uitzender_korting[$this->_inlener_id] );
+		else
+			$pdf->setKortingUitzender( NULL );
+		
+		//kosten nooit afgesprokenwerk
+		$pdf->setAangenomenwerk( 0 );
 		
 		$pdf->setFooter();
 		$pdf->setHeader();
 		
 		$pdf->setBody( $factuur, $regels );
-		
+
 		$insert['file_dir'] = 'facturen/' . $factuur['jaar'];
 		$insert['file_name'] = $factuur['factuur_id'] . '_kostenoverzicht_' . generateRandomString( 4 ) . '.pdf';
 		
@@ -551,6 +557,24 @@ class FactuurFactory extends Connector
 		$pdf->setFactuurdatum( $factuur['factuur_datum'] );
 		$pdf->setVervaldatum( $factuur['verval_datum'] );
 		
+		//resetten voor splitsen
+		$pdf->setKortingUitzender( NULL );
+		
+		//wanneer verkoop gelijk aan kosten
+		if( isset($this->_inlener_factuurgegevens['verkoop_kosten_gelijk']) &&  $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] == 1 )
+		{
+			if( isset( $this->_uitzender_korting[$this->_inlener_id] ) )
+				$pdf->setKortingUitzender( $this->_uitzender_korting[$this->_inlener_id] );
+			else
+				$pdf->setKortingUitzender( NULL );
+		}
+		
+		//aangenomenwerk
+		if( $this->_inlener_factuurgegevens['afgesproken_werk'] == 1 )
+			$pdf->setAangenomenwerk( 1 );
+		else
+			$pdf->setAangenomenwerk( 0 );
+		
 		//wel of niet naar factoring
 		if( $this->_inlener_factuurgegevens['factoring'] == 1 )
 		{
@@ -602,7 +626,7 @@ class FactuurFactory extends Connector
 		$this->_sessieLog( 'action', "einde verkoopfactuur pdf", $factuur['factuur_id'] );
 		
 		//bijlages invoegen
-		if( !$this->_pdfVerkoopBijlages( $factuur['factuur_id'], $update['file_dir'], $update['file_name'] ) )
+		if( !$this->_pdfVerkoopBijlages( $factuur['factuur_id'], $update['file_dir'], $update['file_name'], $factuur['project_id'] ) )
 			$this->_sessieLog( 'error', 'bijlages invoegen mislukt', $factuur['factuur_id'] );
 		
 		return true;
@@ -611,9 +635,9 @@ class FactuurFactory extends Connector
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * bijlages aan factuur toevoegen
-	 * TODO: splitsen voor project
+	 *
 	 */
-	private function _pdfVerkoopBijlages( $factuur_id, $file_dir, $file_name ): bool
+	private function _pdfVerkoopBijlages( $factuur_id, $file_dir, $file_name, $project_id = NULL ): bool
 	{
 		//log action
 		$this->_sessieLog( 'action', 'bijlages invoegen', $factuur_id );
@@ -626,7 +650,8 @@ class FactuurFactory extends Connector
 		
 		foreach( $bijlages as $bijlage )
 		{
-			$pdf->addFileToPdf( $bijlage['file_dir'], $bijlage['file_name'] );
+			if( $project_id === NULL || $project_id == $bijlage['project_id'] )
+				$pdf->addFileToPdf( $bijlage['file_dir'], $bijlage['file_name'] );
 		}
 		
 		return true;
@@ -695,6 +720,13 @@ class FactuurFactory extends Connector
 	 */
 	private function _groupInvoer(): bool
 	{
+		//juiste aangenomenwerkregels erbij
+		if( $this->_inlener_factuurgegevens['afgesproken_werk'] == 1 )
+		{
+			//groeperen en optellen
+			$this->_groupAangenomenwerkInvoer();
+		}
+		
 		//zijn er uren om op te tellen
 		if( count( $this->_invoer_array['uren'] ) > 0 )
 		{
@@ -756,10 +788,20 @@ class FactuurFactory extends Connector
 			if( NULL === $factuur_id = $this->_insertConceptVerkoopFactuur( $project_id ) )
 				return false;
 			
+		
+			//zijn er aangenomenwerk regels?
+			$aangenomenwerk_array = NULL;
+			if( $this->_inlener_factuurgegevens['afgesproken_werk'] == 1 )
+			{
+				if( $this->_aangenomenwerk_array !== NULL )
+					$aangenomenwerk_array = $this->_aangenomenwerk_array[$project_id];
+				
+				$this->_insertConceptVerkoopFactuurRegelsAangenomenWerk( $factuur_id, $aangenomenwerk_array );
+			}
+			
 			//factuur regels toevoegen
 			foreach( $project_array as $werknemer_id => $werknemer_array )
-				$this->_insertConceptVerkoopFactuurRegels( $factuur_id, $werknemer_id, $werknemer_array );
-			
+				$this->_insertConceptVerkoopFactuurRegels( $factuur_id, $werknemer_id, $werknemer_array, $aangenomenwerk_array );
 			//corrcties
 			$this->_insertCorrecties( $factuur_id );
 			
@@ -778,7 +820,13 @@ class FactuurFactory extends Connector
 	 */
 	private function getFactuurDetails( $factuur_id ): ?array
 	{
-		$query = $this->db_user->query( "SELECT facturen.*, fct.cessie_tekst, fct.iban_factoring FROM facturen LEFT JOIN facturen_cessie_tekst fct ON facturen.factuur_id = fct.factuur_id WHERE facturen.factuur_id = $factuur_id LIMIT 1" );
+		$sql = "SELECT facturen.*, fct.cessie_tekst, fct.iban_factoring, inleners_projecten.omschrijving AS project
+				FROM facturen
+				LEFT JOIN inleners_projecten ON inleners_projecten.id = facturen.project_id
+				LEFT JOIN facturen_cessie_tekst fct ON facturen.factuur_id = fct.factuur_id
+				WHERE facturen.factuur_id = $factuur_id LIMIT 1";
+		
+		$query = $this->db_user->query( $sql );
 		return DBhelper::toRow( $query, 'NULL' );
 	}
 	
@@ -804,7 +852,7 @@ class FactuurFactory extends Connector
 		$this->_sessieLog( 'action', "totaalbedragen uitrekenen", $factuur_id );
 		
 		//regels ophalen
-		$query = $this->db_user->query( "SELECT regel_id, row_start, row_end, subtotaal_verkoop, subtotaal_kosten FROM facturen_regels WHERE factuur_id = $factuur_id AND row_start IS NULL" );
+		$query = $this->db_user->query( "SELECT regel_id, row_afgesprokenwerk, row_start, row_end, subtotaal_verkoop, subtotaal_kosten FROM facturen_regels WHERE factuur_id = $factuur_id AND row_start IS NULL" );
 		
 		//wanneer geen regels gevonden zijn error flaggen, moet nagekeken worden
 		if( $query->num_rows() == 0 )
@@ -819,33 +867,55 @@ class FactuurFactory extends Connector
 		
 		$kosten_totaal = 0;
 		$sub_kosten = 0;
+		$aangenomenwerk = 0;
 		
 		foreach( $query->result_array() as $row )
 		{
-			if( $row['row_end'] !== NULL )
+			//losse regels optellen
+			if( $row['row_afgesprokenwerk'] == 0 )
 			{
-				$sub_totaal += $row['subtotaal_verkoop'];
-				$sub_kosten += $row['subtotaal_kosten'];
+				if( $row['row_end'] !== NULL )
+				{
+					$sub_totaal += $row['subtotaal_verkoop'];
+					$sub_kosten += $row['subtotaal_kosten'];
+				}
+				else
+				{
+					$regel_totaal += $row['subtotaal_verkoop'];
+					$kosten_totaal += $row['subtotaal_kosten'];
+				}
 			}
+			//aangenomenwerk optellen
 			else
 			{
-				$regel_totaal += $row['subtotaal_verkoop'];
-				$kosten_totaal += $row['subtotaal_kosten'];
+				if( $row['row_end'] === NULL )
+					$aangenomenwerk += $row['subtotaal_verkoop'];
 			}
 		}
 		
+		//check for zero
+		if( $sub_totaal == 0 || $kosten_totaal == 0)
+		{
+			$this->_sessieLog( 'error', "Delen door 0", $factuur_id, 1 );
+			return false;
+		}
+		
 		//controleren of bedragen overeenkomen
-		if( abs( ( $regel_totaal - $sub_totaal ) / $sub_totaal ) > PHP_FLOAT_EPSILON )
+		if( abs( ( $regel_totaal - $sub_totaal ) / $sub_totaal ) > 0.00001 )
 		{
 			$this->_sessieLog( 'error', "som regeltotaal en som subtotaal zijn niet aan elkaar gelijk", $factuur_id, 1 );
 			return false;
 		}
 		
-		if( abs( ( $sub_kosten - $kosten_totaal ) / $kosten_totaal ) > PHP_FLOAT_EPSILON )
+		if( abs( ( $sub_kosten - $kosten_totaal ) / $kosten_totaal ) > 0.00001 )
 		{
 			$this->_sessieLog( 'error', "som regelkosten en som kostentotaal zijn niet aan elkaar gelijk", $factuur_id, 1 );
 			return false;
 		}
+		
+		//aangenomenwerk ipv factuurbedrag
+		if( $aangenomenwerk > 0 )
+			$sub_totaal = $aangenomenwerk;
 		
 		//default incl gelijk aan excl
 		$update['bedrag_excl'] = $sub_totaal;
@@ -856,7 +926,15 @@ class FactuurFactory extends Connector
 		{
 			$update['kosten_korting'] = round( $sub_totaal * ( $this->_uitzender_korting[$this->_inlener_id]['korting_percentage'] / 100 ), 2 );
 			$update['kosten_excl'] = $sub_kosten - $update['kosten_korting'];
-		} else
+			
+			//bij kosten gelijk aan evrkoop
+			if( isset($this->_inlener_factuurgegevens['verkoop_kosten_gelijk']) &&  $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] == 1 )
+			{
+				$update['bedrag_korting'] = $update['kosten_korting'];
+				$update['bedrag_excl'] = $update['kosten_excl'];
+			}
+		}
+		else
 		{
 			$update['kosten_korting'] = 0; //default 0
 			$update['kosten_excl'] = $sub_kosten;
@@ -917,13 +995,76 @@ class FactuurFactory extends Connector
 		
 		return false;
 	}
+
+
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * factuur regels aanmaken
 	 * TODO: insert naar apparte functie verplaatsen
 	 */
-	private function _insertConceptVerkoopFactuurRegels( $factuur_id, $werknemer_id, $werknemer_array ): bool
+	private function _insertConceptVerkoopFactuurRegelsAangenomenWerk( $factuur_id,  $aangenomenwerk_array ): bool
+	{
+		$insert['factuur_id'] = $factuur_id;
+		
+		//aangenomenwerk voor project
+		if( $aangenomenwerk_array != NULL )
+		{
+			//init
+			$bedrag_aangenomenwerk = 0;
+			foreach( $aangenomenwerk_array['regels'] as $invoer_id => $regel )
+			{
+				//updaten van de tabel
+				$invoer_ids[0] = $invoer_id;
+				
+				$insert['row_afgesprokenwerk'] = 1;
+				$insert['row_afgesprokenwerk'] = 1;
+				$insert['omschrijving'] = $regel['omschrijving'];
+				$insert['invoer_ids'] = json_encode( $invoer_id );
+				
+				//regeltotaal uitrekenen
+				$bedrag_aangenomenwerk += $regel['bedrag'];
+				$insert['subtotaal_verkoop'] = $regel['bedrag'];
+				
+				$this->db_user->insert( 'facturen_regels', $insert );
+				
+				//invoer juiste factuur ID meegeven, NIET VOOR VOORBEELD
+				if( !$this->_preview )
+					$this->_updateInvoerMetFactuurIDs( 'invoer_aangenomenwerk_regels', $factuur_id, $invoer_ids );
+				
+				/*
+				if(isset($_GET['debug']))
+				{
+					show($aangenomenwerk_array);
+					die();
+				}*/
+			}
+			
+			//laatste regel
+			unset( $insert );
+			
+			//algemene inserts
+			$insert['factuur_id'] = $factuur_id;
+			$insert['row_afgesprokenwerk'] = 1;
+			
+			$insert['row_end'] = 1;
+			$insert['subtotaal_verkoop'] = $bedrag_aangenomenwerk;
+			$insert['subtotaal_kosten'] = 0;
+			
+			$this->db_user->insert( 'facturen_regels', $insert );
+		}
+		
+		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * factuur regels aanmaken
+	 * TODO: insert naar apparte functie verplaatsen
+	 */
+	private function _insertConceptVerkoopFactuurRegels( $factuur_id, $werknemer_id, $werknemer_array, $aangenomenwerk_array ): bool
 	{
 		//log regels
 		$this->_sessieLog( 'action', "regels voor factuur ($werknemer_id)", $factuur_id );
@@ -931,6 +1072,7 @@ class FactuurFactory extends Connector
 		//reset telling
 		$werknemer_bedrag_verkoop = 0;
 		$werknemer_bedrag_kosten = 0;
+		$bedrag_aangenomenwerk = NULL;
 		
 		//algemene inserts
 		$insert['factuur_id'] = $factuur_id;
@@ -942,11 +1084,11 @@ class FactuurFactory extends Connector
 		
 		//eerste regel met alleen de naam
 		$insert['row_start'] = 1;
-		$insert['omschrijving'] = $this->_inlener_werknemers[$werknemer_id]['naam'];
+		$insert['omschrijving'] = $werknemer_id . ' - ' . $this->_inlener_werknemers[$werknemer_id]['naam'];
 		
 		//insert 1e regel
 		$this->db_user->insert( 'facturen_regels', $insert );
-		
+
 		//beginnen met de uren
 		if( isset( $werknemer_array['urengroep'] ) && is_array( $werknemer_array['urengroep'] ) && count( $werknemer_array['urengroep'] ) > 0 )
 		{
@@ -982,13 +1124,24 @@ class FactuurFactory extends Connector
 					$insert['subtotaal_kosten'] = round( ( $insert['uren_decimaal'] * $insert['bruto_uurloon'] * $insert['factor'] * ( $insert['percentage'] / 100 ) ), 2 );
 					$werknemer_bedrag_kosten += $insert['subtotaal_kosten'];
 					
-					//wanneer doorbelasten naar uitzender, dan NIET op de verkoop factuur
-					if( $urengroep['doorbelasten_uitzender'] != 1 )
+					//wanneer verkoop gelijk aan kosten
+					if( isset($this->_inlener_factuurgegevens['verkoop_kosten_gelijk']) &&  $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] == 1 )
 					{
-						$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * 1 * 1 ), 2 );
+						$insert['subtotaal_verkoop'] = $insert['subtotaal_kosten'];
 						$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
-					} else
-						$insert['subtotaal_verkoop'] = 0;
+					}
+					//anders gewone afhandeling
+					else
+					{
+						//wanneer doorbelasten naar uitzender, dan NIET op de verkoop factuur
+						if( $urengroep['doorbelasten_uitzender'] != 1 )
+						{
+							$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * 1 * 1 ), 2 );
+							$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
+						} else
+							$insert['subtotaal_verkoop'] = 0;
+					}
+					
 					
 					$this->db_user->insert( 'facturen_regels', $insert );
 					
@@ -1030,8 +1183,10 @@ class FactuurFactory extends Connector
 		//dan de kilometers
 		if( isset( $werknemer_array['kmgroep'] ) && is_array( $werknemer_array['kmgroep'] ) && count( $werknemer_array['kmgroep'] ) > 0 )
 		{
-			foreach( $werknemer_array['kmgroep'] as $doorbelasten => $kmgroep )
+			foreach( $werknemer_array['kmgroep'] as $doorbelasten => $uitkerenGroep )
 			{
+				foreach( $uitkerenGroep as $uitkeren => $kmgroep )
+				{
 				$insert['row_start'] = NULL;
 				$insert['omschrijving'] = 'kilometergeld';
 				$insert['uren_aantal'] = NULL;
@@ -1040,27 +1195,42 @@ class FactuurFactory extends Connector
 				$insert['factor'] = 1;
 				$insert['bruto_uurloon'] = 0.19;
 				$insert['percentage'] = 100;
-				$insert['uitkeren_werknemer'] = 1;
+				$insert['uitkeren_werknemer'] = $uitkeren;
 				$insert['invoer_ids'] = json_encode( $kmgroep['invoer_ids'] );
 				$insert['doorbelasten_aan'] = $kmgroep['doorbelasten'];
 				
 				//regeltotaal uitrekenen
-				$insert['subtotaal_kosten'] = round( ( $insert['uren_decimaal'] * $insert['bruto_uurloon'] * $insert['factor'] * ( $insert['percentage'] / 100 ) ), 2 );
+				if( $uitkeren == 1 )
+					$insert['subtotaal_kosten'] = round( ( $insert['uren_decimaal'] * $insert['bruto_uurloon'] * $insert['factor'] * ( $insert['percentage'] / 100 ) ), 2 );
+				else
+					$insert['subtotaal_kosten'] = 0;
+				
 				$werknemer_bedrag_kosten += $insert['subtotaal_kosten'];
 				
-				//wanneer doorbelasten naar uitzender, dan NIET op de verkoop factuur
-				if( $insert['doorbelasten_aan'] == 'inlener' )
+				//wanneer verkoop gelijk aan kosten
+				if( isset($this->_inlener_factuurgegevens['verkoop_kosten_gelijk']) &&  $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] == 1 )
 				{
-					$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * 1 * 1 ), 2 );
+					$insert['subtotaal_verkoop'] = $insert['subtotaal_kosten'];
 					$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
-				} else
-					$insert['subtotaal_verkoop'] = 0;
+				}
+				//anders gewone afhandeling
+				else
+				{
+					//wanneer doorbelasten naar uitzender, dan NIET op de verkoop factuur
+					if( $insert['doorbelasten_aan'] == 'inlener' )
+					{
+						$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * 1 * 1 ), 2 );
+						$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
+					} else
+						$insert['subtotaal_verkoop'] = 0;
+				}
 				
 				$this->db_user->insert( 'facturen_regels', $insert );
 				
 				//invoer juiste factuur ID meegeven
 				if( !$this->_preview )
 					$this->_updateInvoerMetFactuurIDs( 'invoer_kilometers', $factuur_id, $kmgroep['invoer_ids'] );
+				}
 			}
 		}
 		
@@ -1081,21 +1251,42 @@ class FactuurFactory extends Connector
 				$insert['invoer_ids'] = $vergoedingengroep['invoer_id'];
 				$insert['doorbelasten_aan'] = $vergoedingengroep['doorbelasten'];
 				
-				//niet uitkeren aan werknemer is geen kosten gemaalt, kan alleen als het doorbelasten aan inlener is
-				if( $insert['uitkeren_werknemer'] == 1 && $insert['doorbelasten_aan'] != 'uitzender' )
-				{
-					$insert['subtotaal_kosten'] = round( ( $insert['uren_decimaal'] * $insert['bruto_uurloon'] * $insert['factor'] * ( $insert['percentage'] / 100 ) ), 2 );
-					$werknemer_bedrag_kosten += $insert['subtotaal_kosten'];
-				} else
-					$insert['subtotaal_kosten'] = 0;
 				
-				//wanneer doorbelasten naar uitzender, dan NIET op de verkoop factuur
-				if( $insert['doorbelasten_aan'] == 'inlener' )
+				//wanneer verkoop gelijk aan kosten
+				if( isset($this->_inlener_factuurgegevens['verkoop_kosten_gelijk']) &&  $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] == 1 )
 				{
-					$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * $insert['factor'] * 1 ), 2 );
+					$insert['subtotaal_kosten'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * $insert['factor'] * 1 ), 2 );
+					$insert['subtotaal_verkoop'] = $insert['subtotaal_kosten'];
 					$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
-				} else
-					$insert['subtotaal_verkoop'] = 0;
+					$werknemer_bedrag_kosten += $insert['subtotaal_kosten'];
+				}
+				//anders gewone afhandeling
+				else
+				{
+					//niet uitkeren aan werknemer = geen kosten gemaakt, kan alleen als het doorbelasten aan inlener is
+					if( $insert['uitkeren_werknemer'] == 0 )
+					{
+						if( $insert['doorbelasten_aan'] == 'inlener' )
+						{
+							$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * $insert['factor'] * 1 ), 2 );
+							$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
+							$insert['subtotaal_kosten'] = 0;
+						}
+					} //wannneer uitkeren aan werknemer, altijd kosten maken
+					else
+					{
+						$insert['subtotaal_kosten'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * $insert['factor'] * 1 ), 2 );
+						$insert['subtotaal_verkoop'] = 0; //eerst op 0, wanneer doorbelasten aan inlener wordt deze overschreven
+						$werknemer_bedrag_kosten += $insert['subtotaal_kosten'];
+					}
+					
+					//wanneer doorbelasten naar inlener, dan ook verkoop aanmaken
+					if( $insert['doorbelasten_aan'] == 'inlener' )
+					{
+						$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * $insert['factor'] * 1 ), 2 );
+						$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
+					}
+				}
 				
 				$this->db_user->insert( 'facturen_regels', $insert );
 				
@@ -1145,9 +1336,15 @@ class FactuurFactory extends Connector
 					
 
 					$insert['subtotaal_kosten'] = $pensioenpremie;
-					$insert['subtotaal_verkoop'] = 0;
+					
+					//wanneer verkoop gelijk aan kosten
+					if( isset($this->_inlener_factuurgegevens['verkoop_kosten_gelijk']) &&  $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] == 1 )
+						$insert['subtotaal_verkoop'] = $pensioenpremie;
+					else
+						$insert['subtotaal_verkoop'] = 0;
 					
 					$werknemer_bedrag_kosten += $insert['subtotaal_kosten'];
+					$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
 
 					$this->db_user->insert( 'facturen_regels', $insert );
 				}
@@ -1196,7 +1393,7 @@ class FactuurFactory extends Connector
 		//eerste regel met alleen de naam
 		$insert['row_start'] = 1;
 		$insert['row_correctie'] = 1;
-		$insert['omschrijving'] = 'Correcties voorgaande facturen';
+		$insert['omschrijving'] = 'Overige kosten';
 		
 		//insert 1e regel
 		$this->db_user->insert( 'facturen_regels', $insert );
@@ -1316,10 +1513,12 @@ class FactuurFactory extends Connector
 		if( $project_id == 0 )
 			$project_id = NULL;
 		
+		
 		$insert['sessie_id'] = $this->_sessie_id;
 		$insert['concept'] = 1;
 		$insert['credit'] = 0;
 		$insert['marge'] = 0;
+		$insert['afgesprokenwerk'] =  $this->_inlener_factuurgegevens['afgesproken_werk'];
 		$insert['tijdvak'] = $this->_tijdvak;
 		$insert['jaar'] = $this->_jaar;
 		$insert['periode'] = $this->_periode;
@@ -1328,7 +1527,7 @@ class FactuurFactory extends Connector
 		$insert['inlener_id'] = $this->_inlener_id;
 		$insert['factuur_datum'] = date( 'Y-m-d' );
 		$insert['verval_datum'] = date( 'Y-m-d', strtotime( ' +' . $this->_setting_termijn . ' days' ) );
-		
+
 		$this->db_user->insert( 'facturen', $insert );
 		
 		if( $this->db_user->insert_id() > 0 )
@@ -1440,6 +1639,7 @@ class FactuurFactory extends Connector
 	 */
 	private function _checkProjecten(): bool
 	{
+		
 		//niet splitsen is niet controleren
 		if( $this->_setting_split_project == 0 )
 			return true;
@@ -1447,23 +1647,68 @@ class FactuurFactory extends Connector
 		//log check
 		$this->_sessieLog( 'action', "projecten controleren" );
 		
-		if( !isset( $this->_group_array[NULL] ) )
+		//bijlages checken
+		$bijlages = $this->invoer->getBijlages();
+		if( $bijlages !== NULL && is_array($bijlages) && count($bijlages) > 0 )
+		{
+			foreach( $bijlages as $bijlage )
+			{
+				if( $bijlage['project_id'] === NULL )
+					$this->_error[] = 'Er zijn bijlages gevonden die niet onder een project vallen';
+				
+			}
+		}
+		
+		//aangenomenwerk checken
+		if( $this->_inlener_factuurgegevens['afgesproken_werk'] == 1 )
+		{
+			if( $this->_setting_split_project == 1 )
+			{
+				$invoeraangenomenwerk = new InvoerAangenomenwerk( $this->invoer );
+				$projecten = $invoeraangenomenwerk->getDataForProjecten( $this->invoer->getActieveProjecten() );
+				
+				foreach( $projecten as $project )
+				{
+					if( count($project['rijen']) == 0 )
+						$this->_error[] = 'Er zijn aangenomenwerk projecten zonder omschrijving en bedrag ('.$project['project'].')';
+					else
+					{
+						foreach( $project['rijen'] as $rij )
+						{
+							if( $rij['omschrijving'] === NULL || strlen($rij['omschrijving']) == 0 )
+								$this->_error[] = 'Er zijn aangenomenwerk projecten zonder omschrijving ('.$project['project'].')';
+							
+							if( $rij['bedrag'] === NULL || strlen($rij['bedrag']) == 0 || $rij['bedrag'] <= 0 )
+								$this->_error[] = 'Er zijn aangenomenwerk projecten met een ongeldig bedrag ('.$project['project'].')';
+						}
+					}
+				}
+			}
+			
+		}
+		
+		//als alles bij een project zit, geen fouten
+		if( !isset( $this->_group_array[NULL] ) && $this->_error === NULL )
 			return true;
 		
-		foreach( $this->_group_array[NULL] as $werknemer_id => $werknemer_array )
+		//foutmelding
+		if( isset( $this->_group_array[NULL] ))
 		{
-			//uren
-			if( isset( $werknemer_array['urengroep'] ) )
-				$this->_error[] = 'Er zijn uren gevonden die niet onder een project vallen bij ' . $this->_inlener_werknemers[$werknemer_id]['naam'] . ' (' . $werknemer_id . ')';
-			
-			//kilometers
-			if( isset( $werknemer_array['kmgroep'] ) )
-				$this->_error[] = 'Er zijn kilometers gevonden die niet onder een project vallen bij ' . $this->_inlener_werknemers[$werknemer_id]['naam'] . ' (' . $werknemer_id . ')';
-			
-			//vergoedingen
-			if( isset( $werknemer_array['vergoedingengroep'] ) )
-				$this->_error[] = 'Er zijn vergoedingen gevonden die niet onder een project vallen bij ' . $this->_inlener_werknemers[$werknemer_id]['naam'] . ' (' . $werknemer_id . ')';
-			
+			foreach( $this->_group_array[NULL] as $werknemer_id => $werknemer_array )
+			{
+				//uren
+				if( isset( $werknemer_array['urengroep'] ) )
+					$this->_error[] = 'Er zijn uren gevonden die niet onder een project vallen bij ' . $this->_inlener_werknemers[$werknemer_id]['naam'] . ' (' . $werknemer_id . ')';
+				
+				//kilometers
+				if( isset( $werknemer_array['kmgroep'] ) )
+					$this->_error[] = 'Er zijn kilometers gevonden die niet onder een project vallen bij ' . $this->_inlener_werknemers[$werknemer_id]['naam'] . ' (' . $werknemer_id . ')';
+				
+				//vergoedingen
+				if( isset( $werknemer_array['vergoedingengroep'] ) )
+					$this->_error[] = 'Er zijn vergoedingen gevonden die niet onder een project vallen bij ' . $this->_inlener_werknemers[$werknemer_id]['naam'] . ' (' . $werknemer_id . ')';
+				
+			}
 		}
 		
 		return false;
@@ -1560,22 +1805,52 @@ class FactuurFactory extends Connector
 				//juiste projec ID, bij splitsen
 				$project_id = ( $this->_setting_split_project == 0 ) ? NULL : $row['project_id'];
 				
+				//niet uitkeren kan alleen bij doorbelasten aan inlener
+				$uitkeren = 1;
+				if( $row['doorbelasten'] == 'inlener' && $row['uitkeren'] == 0 )
+					$uitkeren = 0;
+				
 				//init wanneer nodig
-				if( !isset( $this->_group_array[$project_id][$werknemer_id]['kmgroep'][$row['doorbelasten']] ) )
-					$this->_group_array[$project_id][$werknemer_id]['kmgroep'][$row['doorbelasten']] = array(
+				if( !isset( $this->_group_array[$project_id][$werknemer_id]['kmgroep'][$row['doorbelasten']][$uitkeren] ) )
+					$this->_group_array[$project_id][$werknemer_id]['kmgroep'][$row['doorbelasten']][$uitkeren] = array(
 						'totaal_km' => 0,
 						'factor' => 1,
 						'doorbelasten' => $row['doorbelasten'],
 						'invoer_ids' => array()
 					);
-				
+
 				//rij optellen bij totaal en ID naar array
-				$this->_group_array[$project_id][$werknemer_id]['kmgroep'][$row['doorbelasten']]['totaal_km'] += $row['aantal'];
-				$this->_group_array[$project_id][$werknemer_id]['kmgroep'][$row['doorbelasten']]['invoer_ids'][$row['invoer_id']] = 1;
+				$this->_group_array[$project_id][$werknemer_id]['kmgroep'][$row['doorbelasten']][$uitkeren]['totaal_km'] += $row['aantal'];
+				$this->_group_array[$project_id][$werknemer_id]['kmgroep'][$row['doorbelasten']][$uitkeren]['invoer_ids'][$row['invoer_id']] = 1;
 				
 			}
 		}
 		
+		return true;
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * regels op de factuur groeperen en optellen
+	 * regels project
+	 *
+	 */
+	private function _groupAangenomenwerkInvoer(): bool
+	{
+		$invoeraangenomenwerk = new InvoerAangenomenwerk( $this->invoer );
+		
+		$aangenomenwerk_regels = $invoeraangenomenwerk->getAangenomenwerkRijen();
+		
+		if( $aangenomenwerk_regels === NULL )
+			return false;
+			
+		foreach( $aangenomenwerk_regels as $regel)
+		{
+			$project_id = $regel['project_id'];
+			$this->_aangenomenwerk_array[$project_id]['regels'][] = $regel;
+		}
+
 		return true;
 	}
 	
@@ -1660,7 +1935,7 @@ class FactuurFactory extends Connector
 				}
 			}
 		}
-		
+
 		return true;
 	}
 	
@@ -1763,15 +2038,8 @@ class FactuurFactory extends Connector
 				
 			}
 			
-			
 		}
-		
-		//check of er invoer is, anders foutmelding naar gebruiker
-		if( count( $this->_invoer_array['uren'] ) == 0 && count( $this->_invoer_array['km'] ) == 0 && count( $this->_invoer_array['vergoedingen'] ) == 0 )
-		{
-			$this->_error[] = 'Er is geen ureninvoer gevonden voor deze periode';
-			return false;
-		}
+
 		
 		return true;
 	}
@@ -1885,6 +2153,7 @@ class FactuurFactory extends Connector
 		if( $this->_inlener_factuurgegevens['factuur_per_project'] == 1 )
 		{
 			$this->_setting_split_project = 1;
+			$this->_inlener_projecten = $inlener->projecten();
 			$this->_sessieLog( 'setting', "split_project: 1" );
 		}
 		
@@ -1920,7 +2189,7 @@ class FactuurFactory extends Connector
 	static function clear()
 	{
 		if( ENVIRONMENT != 'development' )
-			die( 'GEEN TOEGANG VOOR DEZE FUNCTiE' );
+			die( 'GEEN TOEGANG VOOR DEZE FUNCTIE' );
 		
 		$CI =& get_instance();
 		$db_user = $CI->db_user;

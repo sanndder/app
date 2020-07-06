@@ -401,15 +401,15 @@ class Werknemer extends Connector
 	public function setStartDienstverband( $datum ) :?bool
 	{
 		$datum = reverseDate($datum);
-		
+
 		//geen dubbele entries
-		if( $datum == $this->startDienstverband() )
+		if( $datum !== NULL && $datum == $this->startDienstverband() )
 			return true;
 		
 		//validate
 		if( !Valid::date($datum) )
 		{
-			$this->_error['indienst'] = 'Ongeldige datum'; //custom key meegeven voor aanmeld wizard
+			$this->_error['indienst'] = 'Ongeldige datum start dienstverband'; //custom key meegeven voor aanmeld wizard
 			return false;
 		}
 		
@@ -713,17 +713,22 @@ class Werknemer extends Connector
 		
 		$insert['werknemer_id'] = $this->werknemer_id;
 		
+		$insert['loonheffingskorting'] = intval( $_POST['loonheffingskorting'] );
+		$insert['loonheffingskorting_vanaf'] = reverseDate( $_POST['loonheffingskorting_vanaf'] );
+		
+		$insert['inhouden_zorgverzekering'] = intval( $_POST['inhouden_zorgverzekering'] );
+		
+		$insert['vakantiegeld_direct'] = intval( $_POST['vakantiegeld_direct'] );
+		$insert['feestdagen_direct'] = intval( $_POST['feestdagen_direct'] );
+		$insert['kortverzuim_direct'] = intval( $_POST['kortverzuim_direct'] );
+		$insert['atv_direct'] = intval( $_POST['atv_direct'] );
+		$insert['vakantieuren_bovenwettelijk_direct'] = intval( $_POST['vakantieuren_bovenwettelijk_direct'] );
+		
 		if( $this->user->user_type == 'werkgever' )
 		{
-			$insert['inhouden_zorgverzekering'] = intval( $_POST['inhouden_zorgverzekering'] );
-			$insert['vakantiegeld_direct'] = intval( $_POST['vakantiegeld_direct'] );
-			$insert['feestdagen_direct'] = intval( $_POST['feestdagen_direct'] );
-			$insert['kortverzuim_direct'] = intval( $_POST['kortverzuim_direct'] );
 			$insert['vakantieuren_wettelijk_direct'] = intval( $_POST['vakantieuren_wettelijk_direct'] );
-			$insert['vakantieuren_bovenwettelijk_direct'] = intval( $_POST['vakantieuren_bovenwettelijk_direct'] );
 			$insert['aantal_vakantiedagen_wettelijk'] = intval( $_POST['aantal_vakantiedagen_wettelijk'] );
 			$insert['aantal_vakantiedagen_bovenwettelijk'] = intval( $_POST['aantal_vakantiedagen_bovenwettelijk'] );
-			$insert['atv_direct'] = intval( $_POST['atv_direct'] );
 			$insert['aantal_atv_dagen'] = intval( $_POST['aantal_atv_dagen'] );
 		}
 		

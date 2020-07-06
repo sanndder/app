@@ -37,8 +37,8 @@ class Dossier extends MY_Controller
 		parent::__construct();
 		
 		//Deze pagina mag alleen bezocht worden door werkgever TODO werknemer beveiliging
-		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' && $this->user->user_type != 'werknemer')
-			forbidden();
+		//if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' && $this->user->user_type != 'werknemer')
+			//forbidden();
 		
 		//method naar smarty
 		$this->smarty->assign( 'method', $this->router->method );
@@ -77,6 +77,17 @@ class Dossier extends MY_Controller
 		$this->smarty->display( 'crm/werknemers/dossier/overzicht.tpl' );
 	}
 	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// exporteer werknemer
+	//-----------------------------------------------------------------------------------------------------------------
+	public function exportwerknemer( $werknemer_id = NULL )
+	{
+		$export = new \models\verloning\ExportWerknemers();
+		$export->setWerknemer( $werknemer_id );
+		
+		$export->xml();
+	}
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -353,6 +364,7 @@ class Dossier extends MY_Controller
 		
 		$inleners = $inlenerGroup->uitzender( $werknemer->uitzenderID() )->all();
 		
+		
 		//$this->smarty->assign('plaatsingen', $plaatsingen );
 		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign( 'inleners', $inleners );
@@ -461,7 +473,7 @@ class Dossier extends MY_Controller
 			$werknemer->setDefaultCao( $_POST['default_cao'] );
 			$werknemer->setStartDienstverband( $_POST['indienst'] );
 			$werknemer->setPensioen( $_POST['stipp'] );
-			
+
 			if( $werknemer->errors() !== false )
 				$this->smarty->assign( 'errors', $werknemer->errors() );
 			else
@@ -469,7 +481,6 @@ class Dossier extends MY_Controller
 				$werknemer->dienstverbandIsSet();
 				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/verloning/' . $werknemer_id, 'location' );
 			}
-			
 		}
 		
 		//Pensioen aanpassen
@@ -530,6 +541,7 @@ class Dossier extends MY_Controller
 		}
 
 		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->assign( 'indienst', $werknemer->startDienstverband() );
 		$this->smarty->assign( 'verloning', $werknemer->verloning() );
 		$this->smarty->display( 'crm/werknemers/dossier/verloning.tpl' );
 	}

@@ -31,7 +31,7 @@ class Kvk extends Connector
 	public function __construct( $kvknr )
 	{
 		parent::__construct();
-		$this->_kvknr = intval( $kvknr );
+		$this->_kvknr = $kvknr;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,7 +79,6 @@ class Kvk extends Connector
 			
 			return $info;
 		}
-		
 		$this->_error[] = 'Adresgegevens niet gevonden';
 		return false;
 	}
@@ -91,13 +90,12 @@ class Kvk extends Connector
 	 */
 	public function fetchCompanyData()
 	{
-		
-		$nr = str_replace(array(' ', '.', '-', ',', ', ','_'), '', trim($this->_kvknr));
-		
+		$nr = str_replace(array(' ', '.', '-', ',', ', ','_'), '', $this->_kvknr);
+
 		if( strlen($nr) != 8 )
 			return false;
-		
-		$api_key = 'l7xxe2047a382bfa474892e419f57e416977';
+
+		$api_key = 'l7xxae8330a06ca9423e8604a7d89fa24650';
 		
 		$ch = curl_init();
 		$url = 'https://api.kvk.nl:443/api/v2/profile/companies';
@@ -110,7 +108,7 @@ class Kvk extends Connector
 		curl_close($ch);
 		
 		$profile = json_decode($response, true);
-		
+
 		if( isset($profile['error']) )
 			return $profile;
 		
@@ -128,6 +126,7 @@ class Kvk extends Connector
 			$profile = json_decode($response, true);
 			
 		}
+		
 		return $profile['data']['items'][0];
 	}
 	
