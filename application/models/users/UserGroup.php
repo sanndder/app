@@ -117,12 +117,19 @@ class UserGroup extends Connector {
 	 * users in array voegen
 	 *
 	 */
-	static function findUserNames( $array = array() )
+	static function findUserNames( $input_array = array() )
 	{
-		if( count($array) == 0 )
+		if( count($input_array) == 0 )
 			return $array;
 		
 		$user_ids = array();
+		
+		//check for multi dimensional
+		$el = current($input_array);
+		if(is_array($el) === false)
+			$array[0] = $input_array;
+		else
+			$array = $input_array;
 		
 		foreach( $array as $a )
 		{
@@ -133,9 +140,8 @@ class UserGroup extends Connector {
 			if( isset($a['deleted_by']) )
 				$user_ids[] = $a['deleted_by'];
 		}
-		
 		if( count($user_ids) == 0)
-			return $array();
+			return $input_array;
 		
 		$users = UserGroup::list( $user_ids );
 		
@@ -148,6 +154,9 @@ class UserGroup extends Connector {
 			if( isset($a['deleted_by']) && isset($users[$a['deleted_by']]) )
 				$a['user'] = $users[$a['deleted_by']];
 		}
+		
+		if(is_array($el) === false)
+			return $array[0];
 
 		return $array;
 	}

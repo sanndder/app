@@ -205,6 +205,7 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function documenten( $werknemer_id = NULL )
 	{
+
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		

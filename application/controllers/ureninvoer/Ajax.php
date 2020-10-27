@@ -440,9 +440,12 @@ class Ajax extends MY_Controller
 		if( $factuurgegevens['frequentie'] == '4w')
 		{
 			$array['tijdvak'] = '4w';
-			$array['titel'] = 'periode';
-			$array['jaren'] = array( 2020 );
-			$array['periodes'] = array( 3 => '03', 4 => '04', 5 => '05', 6 => '06');
+			$array['titel'] = '4 weken';
+			$periode = ceil(date( 'W' )/4);
+			$array['periodes'] = array(
+				$periode-2 => sprintf("%02d", $periode-2),
+				$periode-1 => sprintf("%02d", $periode-1),
+			);
 		}
 		
 		if( $factuurgegevens['frequentie'] == 'm')

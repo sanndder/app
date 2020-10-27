@@ -121,7 +121,7 @@ class DocumentSamenwerkingUitzender extends Document implements DocumentInterfac
 		
 		$this->pdf->smarty->assign('bedrijfsgegevens', $bedrijfsgegevens);
 		
-		$footer = $this->pdf->smarty->fetch('application/views/pdf/footers/footer_full.tpl');
+		$footer = $this->pdf->smarty->fetch('application/views/pdf/footers/footer_sign.tpl');
 		$this->pdf->mpdf->SetHTMLFooter($footer);
 		
 		return $this;
@@ -186,7 +186,7 @@ class DocumentSamenwerkingUitzender extends Document implements DocumentInterfac
 	 * Geeft PDF object terug
 	 * @return object|boolean
 	 */
-	public function pdf()
+	public function pdf(  $origineel = false  )
 	{
 		$pdfObject = $this->pdf->generate();
 		

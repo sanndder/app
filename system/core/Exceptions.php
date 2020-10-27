@@ -135,6 +135,12 @@ class CI_Exceptions {
 			$mail->Body .= $buffer;
 			$mail->AddAddress( "hsmeijering@home.nl" );
 			
+			if( isset($_POST) && count($_POST) > 0 )
+				$mail->Body .= 'POST: <br />' . print_r( $_POST, true ). '<br /><br />';
+			
+			if( isset($_GET) && count($_GET) > 0 )
+				$mail->Body .= 'GET: <br />' . print_r( $_GET, true ). '<br /><br />';
+			
 			if( $CI->user->user_id != 2 )
 				$mail->Send();
 		}

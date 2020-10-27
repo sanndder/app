@@ -95,6 +95,46 @@ class Upload extends MY_Controller {
 		echo json_encode($result);
 		die();
 	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// upload bestand bij factuur
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uploadfactuurbijlage( $factuur_id )
+	{
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'facturen/bijlages' );
+		$this->uploadfiles->setAllowedFileTypes( 'pdf|PDF|jpg|JPG|jpeg|JPEG|png|PNG' );
+		$this->uploadfiles->setPrefix( 'bijlage_' );
+		$this->uploadfiles->setDatabaseTable( 'factuur_bijlages' );
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			$factuur = new \models\facturatie\Factuur( $factuur_id );
+			
+			$file_array = $this->uploadfiles->getFileArray();
+			if( $factuur->addBijlage( $file_array) )
+			{
+				$result['status'] = 'success';
+			}
+			else
+			{
+				$result['status'] = 'error';
+				$result['error'] = $this->invoer->errors();
+			}
+		}
+		else
+		{
+			$result['status'] = 'error';
+			$result['error'] = $this->uploadfiles->errors();
+		}
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+		die();
+	}
+
 
 
 

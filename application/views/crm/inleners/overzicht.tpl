@@ -207,8 +207,11 @@
 									<td>{$i.inlener_id}</td>
 									<td class="m-0 p-0">
 										{if isset($i.factoring) && $i.factoring == 0}
-											<i class="icon-coin-euro mr-1 p-0 text-danger"></i>
+											<i class="icon-coin-euro mr-1 p-0 text-danger pull-left"></i>
 										{/if}
+                                        {if isset($i.factuur_wachtrij) && $i.factuur_wachtrij == 1}
+											<i class="icon-hour-glass mr-1 p-0 text-grey pull-left"></i>
+                                        {/if}
 									</td>
 									<td class="pl-0">
                                         {* moet er een badge voor? *}

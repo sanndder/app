@@ -1,6 +1,7 @@
 <?php
 
 namespace models\documenten;
+use models\file\Pdf;
 use models\pdf\PdfBuilder;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -62,12 +63,12 @@ class DocumentUitzendbevestiging extends Document implements DocumentInterface {
 	 *
 	 * @return object
 	 */
-	public function build( $preview = '' ) :DocumentUitzendbevestiging
+	public function build( $preview = '' )
 	{
 		$this->setHeader();
 		$this->setFooter();
 		$this->setBody();
-		
+
 		return $this;
 	}
 	
@@ -120,7 +121,7 @@ class DocumentUitzendbevestiging extends Document implements DocumentInterface {
 		
 		$this->pdf->smarty->assign('bedrijfsgegevens', $bedrijfsgegevens);
 		
-		$footer = $this->pdf->smarty->fetch('application/views/pdf/footers/footer_full.tpl');
+		$footer = $this->pdf->smarty->fetch('application/views/pdf/footers/footer_sign.tpl');
 		$this->pdf->mpdf->SetHTMLFooter($footer);
 		
 		return $this;
@@ -177,16 +178,16 @@ class DocumentUitzendbevestiging extends Document implements DocumentInterface {
 	public function replacePlaatsingVars() :DocumentUitzendbevestiging
 	{
 		//show( $this->_plaatsing );
-		
-		$this->_html = str_replace( '{{plaatsing.cao}}',  $this->_plaatsing['cao']['cao_name'] , $this->_html );
+
+		$this->_html = str_replace( '{{plaatsing.cao}}', $this->_plaatsing['cao']['cao_name'], $this->_html );
 		
 		foreach( $this->_plaatsing as $field => $value )
 		{
 			if( $field == 'plaatsing_start' )
-				$value = reverseDate($value);
+				$value = reverseDate( $value );
 			
-			if( !is_array($value))
-				$this->_html = str_replace( '{{plaatsing.' .$field .'}}', $value, $this->_html );
+			if( !is_array( $value ) )
+				$this->_html = str_replace( '{{plaatsing.' . $field . '}}', $value, $this->_html );
 		}
 		
 		$urentypes['overuren'] = array();

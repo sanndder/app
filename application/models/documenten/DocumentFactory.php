@@ -31,11 +31,20 @@ class DocumentFactory extends Connector {
 	{
 		//welk type
 		$documentType = $templateObject->categorie();
-		
+
 		//juiste document starten
 		switch ( $documentType ) {
 			case 'uitzendbevestiging':
 				$document = new DocumentUitzendbevestiging( $templateObject );
+				break;
+			case 'inlenersbeloning':
+				$document = new DocumentInlenersbeloning( $templateObject );
+				break;
+			case 'opdrachtovereenkomst':
+				$document = new DocumentOvereenkomstOpdracht( $templateObject );
+				break;
+			case 'arbeidsovereenkomst':
+				$document = new DocumentArbeidsovereenkomst( $templateObject );
 				break;
 			default:
 				$document = new DocumentDefault( $templateObject );

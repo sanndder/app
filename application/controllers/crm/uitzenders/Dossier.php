@@ -285,7 +285,7 @@ class Dossier extends MY_Controller
 
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// Factuurgegevens
+	// Emailadressen
 	//-----------------------------------------------------------------------------------------------------------------
 	public function emailadressen( $uitzender_id = NULL )
 	{
@@ -329,8 +329,51 @@ class Dossier extends MY_Controller
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/emailadressen.tpl');
 	}
-
-
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Factuurgegevens
+	//-----------------------------------------------------------------------------------------------------------------
+	public function systeeminstellingen( $uitzender_id = NULL )
+	{
+		//load the formbuilder
+		$formbuidler = new Formbuilder();
+		
+		//init uitzender object
+		$uitzender = new Uitzender( $uitzender_id );
+		$this->checkaccess($uitzender);
+		
+		//set systeeminstellingen
+		if( isset($_POST['set'] ))
+		{
+			$systeem = $uitzender->setSysteeminstellingen();
+			$errors = $uitzender->errors();
+			
+			//msg
+			if( $errors === false )
+			{
+				//bestaande uiztender melding tonen
+				$this->smarty->assign('msg', msg('success', 'Wijzigingen opgeslagen!'));
+			}
+			else
+				$this->smarty->assign('msg', msg('warning', 'Wijzigingen konden niet worden opgeslagen, controleer uw invoer!'));
+		}
+		else
+		{
+			$systeem =  $uitzender->systeeminstellingen();
+			$errors = false; //no errors
+		}
+		
+		$formdata = $formbuidler->table( 'uitzenders_systeeminstellingen' )->data( $systeem )->errors( $errors )->build();
+		$this->smarty->assign('formdata', $formdata);
+		
+		//show($formdata);
+		
+		$this->smarty->assign('uitzender', $uitzender);
+		$this->smarty->display('crm/uitzenders/dossier/systeeminstellingen.tpl');
+	}
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// documenten pagina
 	//-----------------------------------------------------------------------------------------------------------------

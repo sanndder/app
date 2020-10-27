@@ -208,12 +208,85 @@ class FactuurFactory extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
+	 * Factuur vanuit de database maken
+	 *
+	 */
+	public function runCustom( $factuur_id ): bool
+	{
+		$this->_sessieStart();
+		
+		//details en regels hier ophalen voor hergebruik
+		$factuur = $this->getFactuurDetails( $factuur_id );
+		$factuur_regels = $this->getFactuurRegels( $factuur_id );
+		
+		$this->setTijdvak( $factuur );
+		$this->setInlener( $factuur['inlener_id'] );
+		$this->setUitzender( $factuur['uitzender_id'] );
+		
+		//verkoopfactuur ook sessie meegeven
+		$this->_setVerkoopSessie( $factuur['factuur_id'] );
+		
+		//eerst de verkoopfactuur maken
+		if( !$this->_pdfVerkoop( $factuur, $factuur_regels ) )
+		{
+			$this->_sessieLog( 'error', "verkoop pdf kon niet worden aangemaakt", $factuur_id, 1 );
+			$this->_errorDeleteAll();
+			return false;
+		}
+		
+		//wanneer factuur gelukt is kostenoverzicht maken
+		if( !$this->_pdfKosten( $factuur, $factuur_regels ) )
+		{
+			$this->_sessieLog( 'error', "kosten pdf kon niet worden aangemaakt", $factuur_id, 1 );
+			$this->_errorDeleteAll();
+			return false;
+		}
+		
+		//wanneer beiden gelukt zijn dan de marge factuur maken
+		$marge_id = $this->_setConceptMargeFactuur( $factuur );
+		if( !$this->_pdfMarge( $marge_id ) )
+		{
+			$this->_sessieLog( 'error', "marge pdf kon niet worden aangemaakt", $factuur_id, 1 );
+			$this->_errorDeleteAll();
+			return false;
+		}
+		
+		//alle pdf's zijn gemaakt, van concept af
+		if( !$this->_conceptToFinal() )
+		{
+			$this->_sessieFinish( "fout definitief maken facturen" );
+			return false;
+		}
+		
+		$this->_sessieFinish();
+		return true;
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alle pdf's van de sessie van concept af
+	 *
+	 */
+	private function _setVerkoopSessie( $factuur_id ): void
+	{
+		$this->db_user->query( "UPDATE facturen SET sessie_id = $this->_sessie_id WHERE factuur_id = $factuur_id" );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
 	 * alle pdf's van de sessie van concept af
 	 *
 	 */
 	private function _conceptToFinal(): bool
 	{
-		$this->db_user->query( "UPDATE facturen SET concept = 0 WHERE sessie_id = $this->_sessie_id" );
+		$update['concept'] = 0;
+		
+		$this->db_user->where( 'sessie_id', $this->_sessie_id );
+		$this->db_user->update( 'facturen', $update );
+		
 		if( $this->db_user->affected_rows() > 0 )
 			return true;
 		
@@ -561,7 +634,7 @@ class FactuurFactory extends Connector
 		$pdf->setKortingUitzender( NULL );
 		
 		//wanneer verkoop gelijk aan kosten
-		if( isset($this->_inlener_factuurgegevens['verkoop_kosten_gelijk']) &&  $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] == 1 )
+		if( isset( $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] ) && $this->_inlener_factuurgegevens['verkoop_kosten_gelijk'] == 1 )
 		{
 			if( isset( $this->_uitzender_korting[$this->_inlener_id] ) )
 				$pdf->setKortingUitzender( $this->_uitzender_korting[$this->_inlener_id] );
@@ -626,8 +699,11 @@ class FactuurFactory extends Connector
 		$this->_sessieLog( 'action', "einde verkoopfactuur pdf", $factuur['factuur_id'] );
 		
 		//bijlages invoegen
-		if( !$this->_pdfVerkoopBijlages( $factuur['factuur_id'], $update['file_dir'], $update['file_name'], $factuur['project_id'] ) )
-			$this->_sessieLog( 'error', 'bijlages invoegen mislukt', $factuur['factuur_id'] );
+		if( $factuur['correctie'] != 1 )
+		{
+			if( !$this->_pdfVerkoopBijlages( $factuur['factuur_id'], $update['file_dir'], $update['file_name'], $factuur['project_id'] ) )
+				$this->_sessieLog( 'error', 'bijlages invoegen mislukt', $factuur['factuur_id'] );
+		}
 		
 		return true;
 	}
@@ -644,14 +720,17 @@ class FactuurFactory extends Connector
 		
 		//bijlages ophalen
 		$bijlages = $this->invoer->getBijlages();
-		
+
 		//factuur als pdf
 		$pdf = new Pdf( array( 'file_dir' => $file_dir, 'file_name' => $file_name ) );
 		
 		foreach( $bijlages as $bijlage )
 		{
 			if( $project_id === NULL || $project_id == $bijlage['project_id'] )
-				$pdf->addFileToPdf( $bijlage['file_dir'], $bijlage['file_name'] );
+			{
+				if( $pdf->addFileToPdf( $bijlage['file_dir'], $bijlage['file_name'] ))
+					$this->db_user->query( "UPDATE invoer_bijlages SET factuur_id = $factuur_id WHERE file_id = ".$bijlage['file_id'] ." LIMIT 1" );
+			}
 		}
 		
 		return true;
@@ -748,6 +827,13 @@ class FactuurFactory extends Connector
 			$this->_groupVergoedingenInvoer();
 		}
 		
+		//check
+		if( !is_array( $this->_group_array ) || count( $this->_group_array ) == 0 )
+		{
+			$this->_sessieFinish( 'Group array is leeg' );
+			return false;
+		}
+		
 		return true;
 	}
 	
@@ -787,7 +873,6 @@ class FactuurFactory extends Connector
 			//factuur aanmaken
 			if( NULL === $factuur_id = $this->_insertConceptVerkoopFactuur( $project_id ) )
 				return false;
-			
 		
 			//zijn er aangenomenwerk regels?
 			$aangenomenwerk_array = NULL;
@@ -1486,6 +1571,7 @@ class FactuurFactory extends Connector
 		$insert['uitzender_id'] = $this->_uitzender_id;
 		$insert['inlener_id'] = $this->_inlener_id;
 		$insert['factuur_datum'] = date( 'Y-m-d' );
+		$insert['user_id'] = $this->user->user_id;
 		
 		//Marge altijd met BTW, marge is negatief
 		$insert['bedrag_excl'] = -( $factuur['bedrag_excl'] - $factuur['kosten_excl'] );
@@ -1527,7 +1613,8 @@ class FactuurFactory extends Connector
 		$insert['inlener_id'] = $this->_inlener_id;
 		$insert['factuur_datum'] = date( 'Y-m-d' );
 		$insert['verval_datum'] = date( 'Y-m-d', strtotime( ' +' . $this->_setting_termijn . ' days' ) );
-
+		$insert['user_id'] = $this->user->user_id;
+		
 		$this->db_user->insert( 'facturen', $insert );
 		
 		if( $this->db_user->insert_id() > 0 )

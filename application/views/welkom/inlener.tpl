@@ -3,6 +3,7 @@
 {block "header-icon"}{/block}
 {block "header-title"}{/block}
 {assign "hide_menu" "true"}
+{assign "select2" "true"}
 
 {block "content"}
 
@@ -60,6 +61,77 @@
 
 					</div>
 
+					<!--------------------------------------------------------------------------- Inlenersbeloning ------------------------------------------------->
+					<div class="card">
+
+						<div class="card-body">
+
+							<div class="media">
+								<span style="font-size: 26px" class="mr-3 number number-av"> 2. </span>
+
+								<div class="media-body mt-1">
+									<h4 class="card-title">Inlenersbeloning</h4>
+
+									<table style="margin-top: 25px">
+										<tr>
+											<td class="pr-4 pt-1">CAO</td>
+											<td style="width: 400px">
+												<select name="cao_id" class="form-control select-search">
+													<option value="">Selecteer een CAO</option>
+                                                    {foreach $caos as $cao}
+														<option {if isset($cao_id_selected) && $cao_id_selected == $cao.id} selected{/if} value="{$cao.id}">{$cao.name} (start: {$cao.duration_start|date_format: '%d-%m-%Y'})</option>
+                                                    {/foreach}
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td class="pr-4 pt-1">Branche</td>
+											<td class="pt-2">
+												<input name="branche" value="" type="text" class="form-control" />
+											</td>
+										</tr>
+										<tr>
+											<td class="pr-4 pt-1">Uren werkweek</td>
+											<td class="pt-2">
+												<input name="uren_werkweek" value="" type="text" class="form-control" style="width: 70px" />
+											</td>
+										</tr>
+										<tr>
+											<td class="pr-4 pt-1">Maakt u gebruik van loonschalen</td>
+											<td class="pt-2">
+												<select class="form-control">
+													<option>Niet van toepassing</option>
+													<option>Ja</option>
+													<option>Nee</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td class="pr-4 pt-1">Is er er sprake van ADV/ATV dagen?</td>
+											<td class="pt-2">
+												<select class="form-control">
+													<option></option>
+													<option>Ja</option>
+													<option>Nee</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td class="pr-4 pt-1">Aantal ADV/ATV dagen</td>
+											<td class="pt-2">
+												<input name="atv_dagen" value="" type="text" class="form-control" style="width: 70px" />
+											</td>
+										</tr>
+									</table>
+
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
 					<!--------------------------------------------------------------------------- Te tekenen overeenkomsten ------------------------------------------------->
                     {if isset($document_details)}
                         {foreach $document_details as $d}
@@ -67,14 +139,14 @@
 
 								<div class="card-body">
 
-									<div class="media step-{$d@iteration +1}">
+									<div class="media step-{$d@iteration +2}">
                                         {if !$d.signed}
-											<span style="font-size: 26px" class="mr-3 number"> {$d@iteration +1}.</span>
+											<span style="font-size: 26px" class="mr-3 number"> {$d@iteration +2}.</span>
                                         {/if}
 										<i class="far fa-check-circle  fa-2x mr-3 mt-1" {if !$d.signed}style="display: none;"{/if}></i>
 
                                         {if !$d.signed}
-											<button type="button" onclick="modalSignDocumentWelkom( {$d.document_id}, '{$d@iteration +1}' )" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
+											<button type="button" onclick="modalSignDocumentWelkom( {$d.document_id}, '{$d@iteration +2}' )" class="btn btn-sm btn-success mt-1 mr-3" style="width: 180px">
 												<i class="icon-pencil5 mr-2"></i>overeenkomst tekenen
 											</button>
                                         {/if}

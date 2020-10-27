@@ -54,241 +54,236 @@
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Factuurgegevens</legend>
 
+                                    {if $user_type == 'werkgever' || $inlener->complete == 0}
 
-									<!-- iban -->
-                                    {if isset($formdata.iban)}
-                                        {assign "field" "iban"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
+										<!-- iban -->
+                                        {if isset($formdata.iban)}
+                                            {assign "field" "iban"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+													<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
 											</div>
-										</div>
-                                    {/if}
+                                        {/if}
 
-									<!-- Ter attentie van -->
-                                    {if isset($formdata.tav)}
-                                        {assign "field" "tav"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
+										<!-- Ter attentie van -->
+                                        {if isset($formdata.tav)}
+                                            {assign "field" "tav"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+													<input value="{$formdata.$field.value}" name="{$field}" type="text" class="form-control {if isset($formdata.$field.error)}border-danger{/if}" placeholder="" autocomplete="off">
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
 											</div>
-										</div>
-                                    {/if}
+                                        {/if}
 
-									<!-- Factuur betaaltermijn -->
-                                    {if isset($formdata.termijn)}
-                                        {assign "field" "termijn"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<select name="{$field}" class="form-control" style="width: 150px;">
-                                                    {if !isset($formdata.$field.list.empty)}
-														<option value=""></option>
-                                                    {/if}
-                                                    {if is_array($formdata.$field.list.options)}
-                                                        {assign "options" $formdata.$field.list.options}
-                                                    {else}
-                                                        {assign "options" $list[$formdata.$field.list.options]}
-                                                    {/if}
-                                                    {foreach $options as $option}
-														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+										<!-- Factuur betaaltermijn -->
+                                        {if isset($formdata.termijn)}
+                                            {assign "field" "termijn"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+													<select name="{$field}" class="form-control" style="width: 150px;">
+                                                        {if !isset($formdata.$field.list.empty)}
+															<option value=""></option>
+                                                        {/if}
+                                                        {if is_array($formdata.$field.list.options)}
+                                                            {assign "options" $formdata.$field.list.options}
+                                                        {else}
+                                                            {assign "options" $list[$formdata.$field.list.options]}
+                                                        {/if}
+                                                        {foreach $options as $option}
+															<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+                                                        {/foreach}
+													</select>
+
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
+											</div>
+                                        {/if}
+
+										<!-- Factuur frequentie -->
+                                        {if isset($formdata.frequentie)}
+                                            {assign "field" "frequentie"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+													<input type="hidden" name="{$field}" value="">
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
+														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
+															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
+														</span>
+                                                                {$option}
+															</label>
+														</div>
                                                     {/foreach}
-												</select>
 
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
 											</div>
-										</div>
-                                    {/if}
+                                        {/if}
 
-									<!-- Factuur frequentie -->
-                                    {if isset($formdata.frequentie)}
-                                        {assign "field" "frequentie"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<input type="hidden" name="{$field}" value="">
-                                                {foreach $formdata.$field.radio.options as $option}
-													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-														<label class="form-check-label">
+										<!-- BTW verleggen -->
+                                        {if isset($formdata.btw_verleggen)}
+                                            {assign "field" "btw_verleggen"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
 														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
 															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
 														</span>
-                                                            {$option}
-														</label>
-													</div>
-                                                {/foreach}
-
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
-											</div>
-										</div>
-                                    {/if}
-
-									<!-- BTW verleggen -->
-                                    {if isset($formdata.btw_verleggen)}
-                                        {assign "field" "btw_verleggen"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-
-                                                {foreach $formdata.$field.radio.options as $option}
-													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-														<label class="form-check-label">
-														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
-															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
-														</span>
-                                                            {$option}
-														</label>
-													</div>
-                                                {/foreach}
-
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
-											</div>
-										</div>
-                                    {/if}
-
-									<!-- g_rekening -->
-                                    {if isset($formdata.g_rekening)}
-                                        {assign "field" "g_rekening"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-
-                                                {foreach $formdata.$field.radio.options as $option}
-													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-														<label class="form-check-label">
-														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
-															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
-														</span>
-                                                            {$option}
-														</label>
-													</div>
-                                                {/foreach}
-
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
-											</div>
-										</div>
-                                    {/if}
-
-									<!-- g rekening percentage -->
-                                    {if isset($formdata.g_rekening_percentage)}
-                                        {assign "field" "g_rekening_percentage"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-												<select name="{$field}" class="form-control" style="width: 150px">
-                                                    {if !isset($formdata.$field.list.empty)}
-														<option value=""></option>
-                                                    {/if}
-                                                    {if is_array($formdata.$field.list.options)}
-                                                        {assign "options" $formdata.$field.list.options}
-                                                    {else}
-                                                        {assign "options" $list[$formdata.$field.list.options]}
-                                                    {/if}
-                                                    {foreach $options as $option}
-														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+                                                                {$option}
+															</label>
+														</div>
                                                     {/foreach}
-												</select>
 
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
 											</div>
-										</div>
+                                        {/if}
                                     {/if}
 
+                                    {if $user_type == 'werkgever' || $inlener->complete == 0}
+										<!-- g_rekening -->
+                                        {if isset($formdata.g_rekening)}
+                                            {assign "field" "g_rekening"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
 
-									<!-- g_rekening -->
-                                    {if isset($formdata.factoring)}
-                                        {assign "field" "factoring"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
-
-                                                {foreach $formdata.$field.radio.options as $option}
-													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-														<label class="form-check-label">
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
 														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
 															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
 														</span>
-                                                            {$option}
-														</label>
-													</div>
-                                                {/foreach}
+                                                                {$option}
+															</label>
+														</div>
+                                                    {/foreach}
 
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
 											</div>
-										</div>
-                                    {/if}
+                                        {/if}
+
+										<!-- g rekening percentage -->
+                                        {if isset($formdata.g_rekening_percentage)}
+                                            {assign "field" "g_rekening_percentage"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+													<select name="{$field}" class="form-control" style="width: 150px">
+                                                        {if !isset($formdata.$field.list.empty)}
+															<option value=""></option>
+                                                        {/if}
+                                                        {if is_array($formdata.$field.list.options)}
+                                                            {assign "options" $formdata.$field.list.options}
+                                                        {else}
+                                                            {assign "options" $list[$formdata.$field.list.options]}
+                                                        {/if}
+                                                        {foreach $options as $option}
+															<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+                                                        {/foreach}
+													</select>
+
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
+											</div>
+                                        {/if}
 
 
-									<!-- Factuur emailen -->
-                                    {if isset($formdata.factuur_emailen)}
-                                        {assign "field" "factuur_emailen"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+										<!-- factoring -->
+                                        {if isset($formdata.factoring)}
+                                            {assign "field" "factoring"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
 
-                                                {foreach $formdata.$field.radio.options as $option}
-													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-														<label class="form-check-label">
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
 														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
 															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
 														</span>
-                                                            {$option}
-														</label>
-													</div>
-                                                {/foreach}
+                                                                {$option}
+															</label>
+														</div>
+                                                    {/foreach}
 
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
 											</div>
-										</div>
+                                        {/if}
+
+
+										<!-- Factuur emailen -->
+                                        {if isset($formdata.factuur_emailen)}
+                                            {assign "field" "factuur_emailen"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
+														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
+															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
+														</span>
+                                                                {$option}
+															</label>
+														</div>
+                                                    {/foreach}
+
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
+											</div>
+                                        {/if}
                                     {/if}
 
 									<!--  factuur_per_medewerker -->
@@ -312,12 +307,12 @@
                                                 {/foreach}
 
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
                                                 {/foreach}</span>{/if}
 											</div>
 										</div>
                                     {/if}
+
 
 									<!--  factuur_per_medewerker -->
                                     {if isset($formdata.factuur_per_project)}
@@ -340,16 +335,15 @@
                                                 {/foreach}
 
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
                                                 {/foreach}</span>{/if}
 											</div>
 										</div>
                                     {/if}
 
-									<!--  afgesproken_werk -->
-                                    {if isset($formdata.afgesproken_werk)}
-                                        {assign "field" "afgesproken_werk"}
+									<!--  factuur_wachtrij -->
+                                    {if isset($formdata.factuur_wachtrij)}
+                                        {assign "field" "factuur_wachtrij"}
 										<div class="form-group row">
 											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
 												:
@@ -368,67 +362,94 @@
                                                 {/foreach}
 
                                                 {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
                                                 {/foreach}</span>{/if}
 											</div>
 										</div>
                                     {/if}
 
-									<!-- bijlages_invoegen -->
-                                    {if isset($formdata.bijlages_invoegen)}
-                                        {assign "field" "bijlages_invoegen"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
 
-                                                {foreach $formdata.$field.radio.options as $option}
-													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-														<label class="form-check-label">
+                                    {if $user_type == 'werkgever' || $inlener->complete == 0}
+										<!--  afgesproken_werk -->
+                                        {if isset($formdata.afgesproken_werk)}
+                                            {assign "field" "afgesproken_werk"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
 														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
 															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
 														</span>
-                                                            {$option}
-														</label>
-													</div>
-                                                {/foreach}
+                                                                {$option}
+															</label>
+														</div>
+                                                    {/foreach}
 
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
 											</div>
-										</div>
-                                    {/if}
+                                        {/if}
 
-									<!-- bijlages_invoegen -->
-                                    {if isset($formdata.verkoop_kosten_gelijk)}
-                                        {assign "field" "verkoop_kosten_gelijk"}
-										<div class="form-group row">
-											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-												:
-											</label>
-											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+										<!-- bijlages_invoegen -->
+                                        {if isset($formdata.bijlages_invoegen)}
+                                            {assign "field" "bijlages_invoegen"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
 
-                                                {foreach $formdata.$field.radio.options as $option}
-													<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-														<label class="form-check-label">
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
 														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
 															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
 														</span>
-                                                            {$option}
-														</label>
-													</div>
-                                                {/foreach}
+                                                                {$option}
+															</label>
+														</div>
+                                                    {/foreach}
 
-                                                {if isset($formdata.$field.error)}
-													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
-													<br/>
-                                                {/foreach}</span>{/if}
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
 											</div>
-										</div>
+                                        {/if}
+
+										<!-- bijlages_invoegen -->
+                                        {if isset($formdata.verkoop_kosten_gelijk)}
+                                            {assign "field" "verkoop_kosten_gelijk"}
+											<div class="form-group row">
+												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+													:
+												</label>
+												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+
+                                                    {foreach $formdata.$field.radio.options as $option}
+														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+															<label class="form-check-label">
+														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
+															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
+														</span>
+                                                                {$option}
+															</label>
+														</div>
+                                                    {/foreach}
+
+                                                    {if isset($formdata.$field.error)}
+														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+												</div>
+											</div>
+                                        {/if}
                                     {/if}
 
 								</fieldset>

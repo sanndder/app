@@ -20,6 +20,7 @@ class MY_Controller extends CI_Controller
 
 		//base_url naar smarty
 		$this->smarty->assign( 'time' , time() );
+		$this->smarty->assign( 'now' , date('d-m-Y') );
 		$this->smarty->assign( 'base_url' , BASE_URL );
 		$this->smarty->assign( 'current_url' , current_url() );
 		$this->smarty->assign( 'qs' , $_SERVER['QUERY_STRING'] );
@@ -112,6 +113,7 @@ class MY_Controller extends CI_Controller
 		{
 			$this->load->model('uitzender_model', 'uitzender');
 			$this->smarty->assign( 'uitzender_id', $this->user->uitzender_id );
+			$this->smarty->assign( 'uitzender_sysyteeminstellingen', $this->uitzender->systeeminstellingen );
 			if( $this->uitzender->blockAccess() && !in_array( $this->uri->segment(1), $no_redirect) )
 				redirect( $this->config->item( 'base_url' ) . $this->uitzender->redirectUrl() ,'location' );
 		}

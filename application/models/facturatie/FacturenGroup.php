@@ -13,6 +13,7 @@ use models\users\UserGroup;
 use models\utils\DBhelper;
 use models\utils\Tijdvak;
 use models\werknemers\PlaatsingGroup;
+use Psr\Log\NullLogger;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 
@@ -27,6 +28,8 @@ class FacturenGroup extends Connector
 {
 	protected $_jaar = NULL;
 	protected $_periode = NULL;
+	
+	protected $_get_ids = NULL;
 	
 	protected $_uitzender_id = NULL;
 	protected $_inlener_id = NULL;
@@ -211,6 +214,19 @@ class FacturenGroup extends Connector
 		return DBhelper::toArray( $query, 'factuur_id', 'NULL' );
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * bepaalde fatcuren ophalen
+	 */
+	public function getIDS( $factuur_ids ) :FacturenGroup
+	{
+		if( is_array($factuur_ids) && count($factuur_ids) > 0)
+			$this->_get_ids = $factuur_ids;
+		
+		return $this;
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * alle	facturen, marge en kosten ophalen
@@ -219,7 +235,7 @@ class FacturenGroup extends Connector
 	public function facturenMatrix() :?array
 	{
 		//verkoop facturen
-		$sql = "SELECT facturen.*, inleners_factuurgegevens.factoring, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_projecten.omschrijving AS project, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,  DATEDIFF(facturen.verval_datum,facturen.factuur_datum) AS betaaltermijn
+		$sql = "SELECT facturen.*, inleners_factuurgegevens.factoring, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_bedrijfsgegevens.kvknr, inleners_bedrijfsgegevens.btwnr, inleners_projecten.omschrijving AS project, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,  DATEDIFF(facturen.verval_datum,facturen.factuur_datum) AS betaaltermijn
 				FROM facturen
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = facturen.inlener_id
 				LEFT JOIN inleners_projecten ON inleners_projecten.id = facturen.project_id
@@ -238,7 +254,10 @@ class FacturenGroup extends Connector
 		if( $this->_filter_geen_factoring == 0 && $this->_filter_factoring == 1 )
 			$sql .= " AND inleners_factuurgegevens.factoring = 1";
 		
-		$sql .= " ORDER BY jaar DESC, periode DESC ";
+		if( $this->_get_ids !== NULL )
+			$sql .= " AND facturen.factuur_id IN (".implode(',',$this->_get_ids).")";
+		
+		$sql .= " ORDER BY jaar DESC, periode DESC, to_factoring_on ";
 		
 		$query = $this->db_user->query( $sql );
 		

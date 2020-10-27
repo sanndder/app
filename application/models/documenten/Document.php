@@ -295,8 +295,14 @@ class Document extends Connector {
 		//show($_POST);
 		$pdf = $this->pdf();
 		
-		//handtekening toevoegen, aantal aanwezige meegeven
-		$file_info = $pdf->addSignature( $this->countSignatures() );
+		//arbeidscontract moet anders getekend worden
+		
+		$arbeidsovereenkomst = false;
+		if( $this->_data['categorie'] == 'arbeidsovereenkomst' )
+			$arbeidsovereenkomst = true;
+
+		//handtekening toevoegen, aantal aanwezigen meegeven
+		$file_info = $pdf->addSignature( $this->countSignatures(), $arbeidsovereenkomst );
 		
 		if( file_exists($file_info['signed_file_path']))
 		{
@@ -680,7 +686,7 @@ class Document extends Connector {
 	 *
 	 * @return object
 	 */
-	public function dummy()
+	public function dummy() :Document
 	{
 		$this->_uitzender_info['bedrijfsnaam'] = 'FeelGoodPeople B.V.';
 		$this->_uitzender_info['straat'] = 'Uitzendsingel';
@@ -720,6 +726,21 @@ class Document extends Connector {
 		$this->_werknemer_info['postcode'] = '5589OP';
 		$this->_werknemer_info['plaats'] = 'Apeldoorn';
 		$this->_werknemer_info['iban'] = 'NL87RABO13245678';
+		
+		$this->_plaatsing['start_plaatsing'] = '2020-05-04';
+		$this->_plaatsing['bruto_loon'] = '12,54';
+		$this->_plaatsing['cao']['werksoort'][1]['name'] = 'Standaard uur';
+		$this->_plaatsing['cao']['werksoort'][1]['amount'] = '100.00';
+		$this->_plaatsing['cao']['werksoort'][1]['hour_type'] = 'normaal';
+		$this->_plaatsing['cao']['cao_name'] = 'Afbouw';
+		
+		$this->_inlenersbeloning['cao_ja_nee'] = 'ja';
+		$this->_inlenersbeloning['cao'] = 'Afbouw';
+		$this->_inlenersbeloning['branche'] = 'Bouwtimmeren';
+		$this->_inlenersbeloning['werkweek'] = '37.5';
+		$this->_inlenersbeloning['loonschalen_ja_nee'] = 'ja';
+		$this->_inlenersbeloning['adv_ja_nee'] = 'ja';
+		$this->_inlenersbeloning['adv_uren'] = '10';
 		
 		return $this;
 	}

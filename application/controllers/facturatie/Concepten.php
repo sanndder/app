@@ -1,6 +1,8 @@
 <?php
 
 use models\facturatie\FactuurCorrectie;
+use models\facturatie\FactuurFactory;
+use models\inleners\InlenerGroup;
 use models\uitzenders\UitzenderGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -22,6 +24,16 @@ class Concepten extends MY_Controller
 		//alleen voor werkever
 		if(	$this->user->user_type != 'werkgever' )forbidden();
 		
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// TEMP
+	//-----------------------------------------------------------------------------------------------------------------
+	public function database( $factuur_id = NULL )
+	{
+		$factuur = new FactuurFactory();
+		$factuur->runCustom($factuur_id);
 	}
 
 
@@ -59,6 +71,14 @@ class Concepten extends MY_Controller
 		$factuur = $concept->details();
 		$regels = $concept->regels();
 		
+		
+		//factuur maken
+		if( isset($_POST['genereren']) )
+		{
+			$factuurfactory = new FactuurFactory();
+			$factuurfactory->runCustom( $factuur['factuur_id'] );
+		}
+		
 		//msg
 		if( $this->session->flashdata('msg') !== NULL )
 			$this->smarty->assign( 'msg', msg( 'success', $this->session->flashdata('msg') ) );
@@ -68,6 +88,7 @@ class Concepten extends MY_Controller
 		$this->smarty->assign( 'factuur', $factuur );
 		$this->smarty->assign( 'regels', $regels );
 		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
+		$this->smarty->assign( 'inleners', InlenerGroup::list( $factuur['uitzender_id'] ) );
 		$this->smarty->display('facturatie/concepten/marge.tpl');
 	}
 

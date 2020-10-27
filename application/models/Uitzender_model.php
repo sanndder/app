@@ -25,6 +25,8 @@ class Uitzender_model extends MY_Model
 	public $id = NULL;
 	public $_redirect_url = NULL;
 	
+	public $systeeminstellingen = NULL;
+	
 	//templates van documenten die getekend moeten worden
 	private $_blocked_template_ids = NULL;
 
@@ -52,9 +54,34 @@ class Uitzender_model extends MY_Model
 			$this->uitzender_id = $_SESSION['logindata']['main']['uitzender_id'];
 		
 		$this->id = $this->uitzender_id;
+		
+		//load systeem instellingen
+		$this->_loadSysteeminstellingen();
 	}
 
 
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Systeeminstellingen laden
+	 *
+	 * @return void
+	 */
+	private function _loadSysteeminstellingen()
+	{
+		//default
+		$this->systeeminstellingen = new \stdClass();
+		$this->systeeminstellingen->facturen_wachtrij = 0;
+		
+		$query = $this->db_user->query( "SELECT facturen_wachtrij FROM uitzenders_systeeminstellingen WHERE uitzender_id = ? AND deleted = 0", array($this->id) );
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$data = $query->row_array();
+		
+		$this->systeeminstellingen->facturen_wachtrij = $data['facturen_wachtrij'];
+		
+		return NULL;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

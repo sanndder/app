@@ -37,6 +37,7 @@ class Dashboard extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function werkgever()
 	{
+		
 		$uitzendergroup = new UitzenderGroup();
 		$inlenergroup = new InlenerGroup();
 		$werknemergroup = new WerknemerGroup();
@@ -69,7 +70,7 @@ class Dashboard extends MY_Controller {
 		$inlenergroup = new InlenerGroup();
 		$werknemergroup = new WerknemerGroup();
 		$zzpgroup = new ZzpGroup();
-
+		
 		$this->smarty->assign('count_inleners', $inlenergroup->count());
 		$this->smarty->assign('count_werknemers', $werknemergroup->count());
 		$this->smarty->assign('count_zzp', $zzpgroup->count());

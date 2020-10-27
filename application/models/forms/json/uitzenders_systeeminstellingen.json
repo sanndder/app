@@ -1,0 +1,28 @@
+{
+  "remove": [
+    "set",
+    "id",
+    "user_id",
+    "uitzender_id",
+    "contact_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "facturen_wachtrij": {
+      "label": "Wachtrij voor facturen gebruiken",
+      "rules": {
+        "required": false
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    }
+  }
+}

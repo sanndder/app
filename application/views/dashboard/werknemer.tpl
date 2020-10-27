@@ -99,6 +99,36 @@
 						</div>
 					</div>
 
+					<!----------------- Reserveringen --------------------->
+					<div class="card">
+						<div class="card-header bg-transparent header-elements-inline">
+							<span class="card-title font-weight-bold font-size-sm text-primary text-uppercase">Documenten</span>
+						</div>
+
+						<div class="card-body">
+
+							<table>
+								<tr>
+									<td class="pr-5">
+
+										<div class="d-flex align-items-center">
+											<div class="mr-3">
+												<a href="{$base_url}/recources/docs/Personeelsgids.pdf" target="_blank" class="btn bg-teal-400 btn-icon">
+													<i class="icon-file-empty"></i>
+												</a>
+											</div>
+											<div>
+												<a href="{$base_url}/recources/docs/Personeelsgids.pdf" target="_blank" class="text-default font-weight-semibold letter-icon-title">Personeelsgids</a>
+											</div>
+										</div>
+
+									</td>
+								</tr>
+							</table>
+
+						</div>
+					</div>
+
 				</div>
 
 

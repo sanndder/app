@@ -326,6 +326,17 @@ class Uitzender extends Connector
 	{
 		return $this->select_row( 'uitzenders_emailadressen', array( 'uitzender_id' => $this->uitzender_id ) );
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get emailadressen
+	 */
+	public function systeeminstellingen()
+	{
+		return $this->select_row( 'uitzenders_systeeminstellingen', array( 'uitzender_id' => $this->uitzender_id ) );
+	}
+
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -631,7 +642,17 @@ class Uitzender extends Connector
 		$input = $this->_set('uitzenders_emailadressen', 'emailadressen');
 		return $input;
 	}
-
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Sla systeeminstellingen op na controle
+	 *
+	 */
+	public function setSysteeminstellingen()
+	{
+		$input = $this->_set('uitzenders_systeeminstellingen', 'systeeminstellingen');
+		return $input;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

@@ -59,6 +59,15 @@
 				</div>
 			</li>
 
+			{if $uitzender_sysyteeminstellingen->facturen_wachtrij == 1}
+				<li class="nav-item">
+					<a href="facturenoverzicht/wachtrij" class="navbar-nav-link">
+						<i class="icon-hour-glass mr-2" style="font-weight: bold"></i>
+						Wachtrij
+					</a>
+				</li>
+            {/if}
+
 			<li class="nav-item">
 				<a href="facturenoverzicht/uitzender" class="navbar-nav-link">
 					<i class="mi-euro-symbol mr-2" style="font-weight: bold"></i>

@@ -390,6 +390,7 @@ class Werkgever extends MY_Controller
 		//document aanmaken
 		$document = DocumentFactory::createFromTemplateObject( $template );
 		$document->dummy()->build()->preview();
+		//$document->setInlenerID(3021)->build()->preview();
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------

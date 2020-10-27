@@ -669,13 +669,33 @@ if (!function_exists('splitTimestamp'))
 }
 
 //=====================================================================
+/*** icons toevoegen ***/
+//=====================================================================
+if (!function_exists('get_file_icon'))
+{
+	function get_file_icon($file_ext)
+	{
+		$icon = '';
+
+		if( $file_ext == 'jpg' ) $icon = 'image.jpg';
+		if( $file_ext == 'gif' ) $icon = 'image.jpg';
+		if( $file_ext == 'png' ) $icon = 'image.jpg';
+		if( $file_ext == 'pdf' ) $icon = 'pdf.svg';
+		if( $file_ext == 'xls' ) $icon = 'excel.svg';
+		if( $file_ext == 'xlsx' ) $icon = 'excel.svg';
+
+		return $icon;
+	}
+}
+
+//=====================================================================
 /*** Show array ***/
 //=====================================================================
 if (!function_exists('show'))
 {
 	function show($array = '[leeg]', $name = '', $width = 1250)
 	{
-		if ($_SERVER['REMOTE_ADDR'] == '82.74.254.28' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1)
+		if ($_SERVER['REMOTE_ADDR'] == '82.74.254.28' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1 || $_SERVER['REMOTE_ADDR'] =='46.243.29.50')
 		{
 			echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:" . $width . "px;'>";
 
@@ -687,12 +707,6 @@ if (!function_exists('show'))
 			echo "</pre>";
 			echo "</div>";
 		}
-		if( isset($_GET['backtrace']) )
-		{
-			echo "<pre>";
-			print_r(debug_backtrace());
-			echo "</pre>";
-		}
 	}
 }
 
@@ -700,7 +714,7 @@ if (!function_exists('vshow'))
 {
 	function vshow($array = '[leeg]', $name = '', $width = 1250)
 	{
-		if ($_SERVER['REMOTE_ADDR'] == '82.74.254.28' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1)
+		if ($_SERVER['REMOTE_ADDR'] == '82.74.254.28' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1 || $_SERVER['REMOTE_ADDR'] =='46.243.29.50')
 		{
 			echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:" . $width . "px;'>";
 			

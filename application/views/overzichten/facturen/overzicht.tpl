@@ -117,7 +117,7 @@
 										<button type="submit" name="filter" class="btn btn-success" style="width: 150px">
 											<i class="icon-search4 mr-2"></i>Filter
 										</button>
-										<br />
+										<br/>
 										<a href="overzichten/facturen/index" class="btn btn-danger mt-2" style="width: 150px">
 											<i class="icon-cross mr-2"></i>Wissen
 										</a>
@@ -267,6 +267,9 @@
 							<thead>
 								<tr>
 									<th style="width: 10px"></th>
+									<th style="width: 10px">
+										<i class="icon-file-excel export-factoring"></i>
+									</th>
 									<th style="width: 100px">Status</th>
 									<th style="width: 100px">Vervalt</th>
 									<th style="width: 25px;">Periode</th>
@@ -276,6 +279,7 @@
 									<th style="width: 120px" class="text-right">G-rekening (€)</th>
 									<th style="width: 100px">Factris</th>
 									<th style="width: 100px">Verzonden</th>
+									<th style="width: 10px"></th>
 								</tr>
 							</thead>
                             {if $facturen != NULL}
@@ -283,6 +287,13 @@
                                     {foreach $facturen as $f}
 										<tr data-id="{$f.verkoop.factuur_id}">
 											<td class="td-selected p-0 m-0"></td>
+											<td class="check-factuur">
+                                                {if $f.verkoop.factoring == 1}
+                                                    {if $f.verkoop.to_factoring_on == NULL}
+														<input type="checkbox" name="select-factuur" value="{$f.verkoop.factuur_id}"/>
+                                                    {/if}
+                                                {/if}
+											</td>
 											<td>
                                                 {if $f.verkoop.voldaan == 0}
 													<span class="text-warning font-weight-bold">openstaand</span>
@@ -342,7 +353,11 @@
                                                     {$f.verkoop.send_on|date_format: '%d-%m-%Y'}
                                                 {/if}
 											</td>
-
+											<td class="p-0 m-0">
+												<a href="facturatie/factuur/details/{$f.verkoop.factuur_id}" target="_blank">
+													<i class="icon-file-text2 mr-1"></i> details
+												</a>
+											</td>
 										</tr>
                                     {/foreach}
 								</tbody>

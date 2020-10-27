@@ -119,7 +119,7 @@ class DocumentDefault extends Document implements DocumentInterface {
 		
 		$this->pdf->smarty->assign('bedrijfsgegevens', $bedrijfsgegevens);
 		
-		$footer = $this->pdf->smarty->fetch('application/views/pdf/footers/footer_full.tpl');
+		$footer = $this->pdf->smarty->fetch('application/views/pdf/footers/footer_sign.tpl');
 		$this->pdf->mpdf->SetHTMLFooter($footer);
 		
 		return $this;

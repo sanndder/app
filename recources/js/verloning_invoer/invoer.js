@@ -175,6 +175,7 @@ let invoer = {
 	updateTijdvakDropdowns(json){
 		//set data
 		data.tijdvak = json.tijdvak;
+		
 		//titel aanpassen
 		$('.vi-tijdvak-titel').html(json.titel);
 		

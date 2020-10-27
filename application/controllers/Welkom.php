@@ -1,5 +1,6 @@
 <?php
 
+use models\cao\CAOGroup;
 use models\documenten\Document;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -27,6 +28,9 @@ class Welkom extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function inlener()
 	{
+		$CAOgroup = new CAOGroup();
+		
+		
 		//geen onterechte redirect
 		if( !$this->inlener->blockAccess() )
 			redirect( $this->config->item( 'base_url' ) . 'dashboard/inlener'  ,'location' );
@@ -44,6 +48,12 @@ class Welkom extends MY_Controller {
 			$this->smarty->assign( 'document_details', $document_details );
 		}
 		
+		$caos = $CAOgroup->inlener( $this->inlener->inlener_id );
+		$first_cao = current($caos);
+		$cao_id_selected = $first_cao['cao_id_intern'];
+		
+		$this->smarty->assign( 'caos', $CAOgroup->all() );
+		$this->smarty->assign( 'cao_id_selected', $cao_id_selected );
 		$this->smarty->assign( 'inlener_id', $this->inlener->inlener_id );
 		$this->smarty->assign( 'accepted_av', $this->inlener->acceptedAV() );
 		$this->smarty->display('welkom/inlener.tpl');

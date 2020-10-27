@@ -87,8 +87,16 @@ class Ureninvoer extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function bijlage( $file_id = NULL )
 	{
-		$invoer = new Invoer();
-		$file_array = $invoer->getBijlage( $file_id );
+		if( !isset($_GET['extra']))
+		{
+			$invoer = new Invoer();
+			$file_array = $invoer->getBijlage( $file_id );
+		}
+		else
+		{
+			$factuur = new Factuur();
+			$file_array = $factuur->getBijlageByID( $file_id );
+		}
 		
 		if( $file_array === NULL )
 			die('Geen toegang');

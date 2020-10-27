@@ -726,7 +726,9 @@ class Werknemer extends Connector
 		
 		if( $this->user->user_type == 'werkgever' )
 		{
-			$insert['vakantieuren_wettelijk_direct'] = intval( $_POST['vakantieuren_wettelijk_direct'] );
+			if(isset($_POST['vakantieuren_wettelijk_direct']))
+				$insert['vakantieuren_wettelijk_direct'] = intval( $_POST['vakantieuren_wettelijk_direct'] );
+			
 			$insert['aantal_vakantiedagen_wettelijk'] = intval( $_POST['aantal_vakantiedagen_wettelijk'] );
 			$insert['aantal_vakantiedagen_bovenwettelijk'] = intval( $_POST['aantal_vakantiedagen_bovenwettelijk'] );
 			$insert['aantal_atv_dagen'] = intval( $_POST['aantal_atv_dagen'] );

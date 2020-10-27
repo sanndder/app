@@ -134,7 +134,7 @@
 										<div class="col-xl-2 pt-1">Functie</div>
 										<div class="col-xl-6">
 
-											<select required name="functie_id" class="form-control select-no-search">
+											<select required name="functie_id" class="form-control select-search">
 												<option value="">Selecteer een functie</option>
 											</select>
 

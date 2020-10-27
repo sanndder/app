@@ -36,8 +36,7 @@ class Connector
 	
 	/* @var \Werkgever_model */
 	protected $werkgever = NULL;
-
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * When werkgever_id is know, connect tot database
@@ -61,9 +60,18 @@ class Connector
 	{
 		// Grab the super object
 		$CI =& get_instance();
-
+		
+		//beveiliggen
+		if( !isset($CI->user))
+			return NULL;
+		
 		//copy user
 		$this->user = $CI->user;
+		
+		//beveiliggen
+		if( !isset($CI->werkgever))
+			return NULL;
+		
 		$this->werkgever = $CI->werkgever;
 		if( isset($CI->uitzender))	$this->uitzender = $CI->uitzender;
 		if( isset($CI->inlener))	$this->inlener = $CI->inlener;
@@ -204,6 +212,29 @@ class Connector
 		
 		return false;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Toon errors
+	 * @return array|boolean
+	 */
+	public function errors()
+	{
+		//output for debug
+		if (isset($_GET['debug']))
+		{
+			if ($this->_error === NULL)
+				show('Geen errors');
+			else
+				show($this->_error);
+		}
+		
+		if ($this->_error === NULL)
+			return false;
+		
+		return $this->_error;
+	}
+	
 }
 
 

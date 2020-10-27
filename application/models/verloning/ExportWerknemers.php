@@ -196,7 +196,7 @@ class ExportWerknemers extends Connector
 		{
 			$inhoudingen = $w->addChild( 'Inhoudingen' );
 			$inhoudingen->addChild( 'Code', 'Hollandzorg' );
-			$inhoudingen->addChild( 'Bedrag', 24.85 );
+			$inhoudingen->addChild( 'Bedrag', 24.82 );
 		}
 		
 		if( $verloningsInstellingen['vakantiegeld_direct'] == 1 )

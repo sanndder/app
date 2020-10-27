@@ -4,6 +4,7 @@ namespace models\werknemers;
 
 use models\Connector;
 use models\users\UserGroup;
+use models\utils\Codering;
 use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -105,6 +106,7 @@ class WerknemerGroup extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * welke stipp versie
+	 *
 	 */
 	public function pensioen() :array
 	{
@@ -122,6 +124,40 @@ class WerknemerGroup extends Connector {
 		return $pensioen;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * welke stipp versie
+	 *
+	 */
+	public function zorgverzekering() :?array
+	{
+		$sql = "SELECT werknemers_verloning_instellingen.inhouden_zorgverzekering, werknemers_verloning_instellingen.werknemer_id, werknemers_gegevens.*, werknemers_dienstverband_duur.indienst
+				FROM werknemers_verloning_instellingen
+				LEFT JOIN werknemers_gegevens ON werknemers_gegevens.werknemer_id = werknemers_verloning_instellingen.werknemer_id
+				LEFT JOIN werknemers_dienstverband_duur ON werknemers_dienstverband_duur.werknemer_id = werknemers_verloning_instellingen.werknemer_id
+				WHERE inhouden_zorgverzekering = 1 AND werknemers_verloning_instellingen.deleted = 0
+				";
+		$query = $this->db_user->query( $sql );
+
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$nat = Codering::listNationaliteiten();
+		$land = Codering::listLanden();
+		$codes = Codering::listLandCodes();
+
+		foreach( $query->result_array() as $row )
+		{
+			$row['nationaltieit'] = !is_null($row['nationaltieit_id']) ? $nat[sprintf("%04d", $row['nationaltieit_id'])] : NULL;
+			$row['land'] = !is_null($row['woonland_id']) ? $land[$row['woonland_id']] : NULL;
+			$row['land_code'] =  !is_null($row['woonland_id']) ? $codes[$row['woonland_id']] : NULL;
+			
+			$data[$row['werknemer_id']] = $row;
+		}
+		
+		show($data);
+		return $data;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -175,7 +211,7 @@ class WerknemerGroup extends Connector {
 		
 		//zoeken, q1 is voor ID en naam, q2 is voor overig
 		if( isset($param['q2']) && $param['q2'] != '' )
-			$sql .= " AND (werknemers_gegevens.bsn LIKE '%". addslashes($_GET['q2'])."%' OR werknemers_gegevens.mobiel LIKE '%". addslashes($_GET['q2'])."%'
+			$sql .= " AND (werknemers_gegevens.bsn LIKE '%". addslashes($_GET['q2'])."%' OR werknemers_gegevens.mobiel LIKE '%". addslashes($_GET['q2'])."%' OR werknemers_gegevens.bsn LIKE '%". addslashes($_GET['q2'])."%'
 			 OR  werknemers_gegevens.iban LIKE '%". addslashes($_GET['q2'])."%' OR werknemers_gegevens.telefoon LIKE '%". addslashes($_GET['q2'])."%' OR werknemers_gegevens.email LIKE '%". addslashes($_GET['q2'])."%' ) ";
 		
 		

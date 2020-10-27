@@ -41,6 +41,9 @@ class Factuur extends Connector
 	protected $_periode_einde = NULL;
 	protected $_periode_dagen = NULL;
 	
+	protected $_file_name = NULL;
+	protected $_file_dir = NULL;
+	
 	protected $_kosten = false;
 	
 	protected $_error = NULL;
@@ -80,6 +83,148 @@ class Factuur extends Connector
 		return $this->_factuur_id;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * ID van de bijbehorende marge factuur
+	 *
+	 */
+	public function getMargeFactuurID()
+	{
+		$query = $this->db_user->query( "SELECT factuur_id FROM facturen WHERE parent_id = $this->_factuur_id AND deleted = 0 LIMIT 1" );
+		$factuur = DBhelper::toRow( $query, 'NULL' );
+		
+		if( $factuur === NULL )
+			return NULL;
+		
+		return $factuur['factuur_id'];
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * bijlages uit de invoer
+	 *
+	 */
+	public function getInvoerBijlages()
+	{
+		$sql = "SELECT * FROM invoer_bijlages WHERE factuur_id = $this->_factuur_id AND deleted = 0 ORDER BY file_name_display";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$row['icon'] = get_file_icon( $row['file_ext'] );
+			$row['file_size'] = size($row['file_size']);
+			
+			$data[] = $row;
+		}
+		
+		$data = UserGroup::findUserNames($data);
+		
+		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * bijlages later toegevoegd
+	 *
+	 */
+	public function getExtraBijlages()
+	{
+		$sql = "SELECT * FROM facturen_bijlages WHERE factuur_id = $this->_factuur_id AND deleted = 0 ORDER BY file_name_display";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$row['icon'] = get_file_icon( $row['file_ext'] );
+			$row['file_size'] = size($row['file_size']);
+			
+			$data[] = $row;
+		}
+		
+		$data = UserGroup::findUserNames($data);
+		
+		return $data;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Haal alle bijlages op
+	 * @return ?array
+	 */
+	public function getBijlageByID( ?int $file_id ) :?array
+	{
+		$query = $this->db_user->query( "SELECT * FROM facturen_bijlages WHERE file_id = ? AND deleted = 0 LIMIT 1", array($file_id) );
+		return DBhelper::toRow( $query, 'NULL' );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * geuploade bijlage naar de database
+	 *
+	 */
+	public function addBijlage( array $file_info ) :bool
+	{
+		$insert = $file_info;
+		
+		$insert['factuur_id'] = $this->_factuur_id;
+		$insert['user_id'] = $this->user->id;
+		
+		$this->db_user->insert( 'facturen_bijlages', $insert );
+		
+		if( $this->db_user->insert_id() > 0 )
+		{
+			
+			//factuur als pdf
+			$pdf = new Pdf( array( 'file_dir' => $this->filedir(), 'file_name' => $this->filename() ) );
+			
+			if( !$pdf->addFileToPdf( $file_info['file_dir'], $file_info['file_name'] ))
+			{
+				$this->_error[] = 'PDF koppelen mislukt';
+				return false;
+			}
+			
+			return true;
+		}
+		
+		$this->_error[] = 'Wegschrijven naar database is mislukt';
+		return false;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * filed name
+	 *
+	 */
+	public function filename()
+	{
+		if( $this->_file_name === NULL )
+			$this->details();
+		
+		return $this->_file_name;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * file dir
+	 *
+	 */
+	public function filedir()
+	{
+		if( $this->_file_dir === NULL )
+			$this->details();
+		
+		return $this->_file_dir;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -107,11 +252,22 @@ class Factuur extends Connector
 	 */
 	public function details()
 	{
-		$query = $this->db_user->query( "SELECT *, DATEDIFF(verval_datum,factuur_datum) AS betaaltermijn FROM facturen WHERE factuur_id = $this->_factuur_id AND deleted = 0 AND concept = 0" );
+		$sql = "SELECT facturen.*, DATEDIFF(verval_datum,factuur_datum) AS betaaltermijn, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen, inleners_projecten.omschrijving AS project_label, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener
+				FROM facturen
+				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = facturen.inlener_id
+				LEFT JOIN inleners_projecten ON inleners_projecten.id = facturen.project_id
+				WHERE facturen.factuur_id = $this->_factuur_id AND facturen.deleted = 0 AND facturen.concept = 0 AND inleners_bedrijfsgegevens.deleted = 0";
+		
+		$query = $this->db_user->query( $sql );
 		$details = DBhelper::toRow( $query, 'NULL' );
 	
 		if( $details !== NULL )
 			$details['bedrag_vrij'] = $details['bedrag_incl'] - $details['bedrag_grekening'];
+		
+		$details = UserGroup::findUserNames($details);
+		
+		$this->_file_name = $details['file_name'];
+		$this->_file_dir = $details['file_dir'];
 		
 		return $details;
 	}
@@ -388,13 +544,9 @@ class Factuur extends Connector
 	public function view()
 	{
 		if( $this->_kosten )
-		{
 			$details = $this->kostendetails();
-		}
 		else
-		{
 			$details = $this->details();
-		}
 		
 		$pdf = new Pdf( $details );
 		
@@ -408,7 +560,24 @@ class Factuur extends Connector
 	}
 	
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * pdf downloaden
+	 *
+	 */
+	public function download()
+	{
+		if( $this->_kosten )
+			$details = $this->kostendetails();
+		else
+			$details = $this->details();
 	
+		$pdf = new Pdf( $details );
+		$pdf->download();
+	}
+
+
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Toon errors

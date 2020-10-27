@@ -20,7 +20,7 @@ class Banktransacties extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+		if( $this->user->user_type != 'werkgever' )forbidden();
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------

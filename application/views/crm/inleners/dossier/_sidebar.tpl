@@ -108,28 +108,26 @@
 								<i class="icon-coin-euro mr-2"></i>Facturen
 							</a>
 						</li>
+						<!-- li Werknemers -->
+                        {if $werkgever_type == 'uitzenden'}
+							<li class="nav-item">
+								<a href="crm/inleners/dossier/werknemers/{$inlener->inlener_id}" class="nav-link {if $active == 'werknemers'}active{/if}">
+									<i class="icon-user mr-2"></i>Werknemers
+								</a>
+							</li>
+                        {/if}
 
 						<!-- li Werknemers -->
-	                    {if $werkgever_type == 'uitzenden'}
-						<li class="nav-item">
-							<a href="crm/inleners/dossier/werknemers/{$inlener->inlener_id}" class="nav-link {if $active == 'werknemers'}active{/if}">
-								<i class="icon-user mr-2"></i>Werknemers
-							</a>
-						</li>
-	                    {/if}
-
-	                    <!-- li Werknemers -->
                         {if $werkgever_type == 'bemiddeling'}
-		                    <li class="nav-item">
-			                    <a href="crm/inleners/dossier/zzp/{$inlener->inlener_id}" class="nav-link {if $active == 'zzp'}active{/if}">
-				                    <i class="icon-user mr-2"></i>ZZp'ers
-			                    </a>
-		                    </li>
+							<li class="nav-item">
+								<a href="crm/inleners/dossier/zzp/{$inlener->inlener_id}" class="nav-link {if $active == 'zzp'}active{/if}">
+									<i class="icon-user mr-2"></i>ZZp'ers
+								</a>
+							</li>
                         {/if}
 
 						<!-- Header Instellingen -->
-	                    <li class="nav-item-header">Instellingen</li>
-
+						<li class="nav-item-header">Instellingen</li>
                         {if $user_type == 'werkgever'}
 							<!-- li Algemene instellingen -->
 							<li class="nav-item {if $inlener->complete != 1}order-1{/if}">
@@ -187,29 +185,32 @@
 								Emailadressen
 							</a>
 						</li>
-						<!-- li Factuurgegevens, andere volgorde wanneer nieuwe aanmelding -->
-						<li class="nav-item {if $inlener->complete != 1}order-4{/if}">
-							<a {if $inlener->emailadressen_complete != NULL}href="crm/inleners/dossier/factuurgegevens/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->emailadressen_complete == NULL}nav-link-disabled{/if} {if $active == 'factuurgegevens'}active{/if}">
-                                {* afwijkende icons voor nieuwe aanmelding *}
-                                {if $inlener->factuurgegevens_complete == NULL}
-									<i class="icon-checkbox-unchecked2 mr-2"></i>
-                                {else}
-                                    {if $inlener->complete == 0}
-                                        {if $inlener->bedrijfsgegevens_complete == 0}
-											<i class="icon-pencil7 mr-2"></i>
-                                        {/if}
-                                        {if $inlener->bedrijfsgegevens_complete == 1}
-											<i class="icon-checkbox-checked mr-2"></i>
-                                        {/if}
-                                    {else}
-                                        {* standaard icon *}
-										<i class="icon-cog mr-2"></i>
-                                    {/if}
-                                {/if}
-								Factuurgegevens
-							</a>
-						</li>
+                    {/if}
 
+					<!-- li Factuurgegevens, andere volgorde wanneer nieuwe aanmelding -->
+					<li class="nav-item {if $inlener->complete != 1}order-4{/if}">
+						<a {if $inlener->emailadressen_complete != NULL}href="crm/inleners/dossier/factuurgegevens/{$inlener->inlener_id}"{/if} class="nav-link {if $inlener->emailadressen_complete == NULL}nav-link-disabled{/if} {if $active == 'factuurgegevens'}active{/if}">
+                            {* afwijkende icons voor nieuwe aanmelding *}
+                            {if $inlener->factuurgegevens_complete == NULL}
+								<i class="icon-checkbox-unchecked2 mr-2"></i>
+                            {else}
+                                {if $inlener->complete == 0}
+                                    {if $inlener->bedrijfsgegevens_complete == 0}
+										<i class="icon-pencil7 mr-2"></i>
+                                    {/if}
+                                    {if $inlener->bedrijfsgegevens_complete == 1}
+										<i class="icon-checkbox-checked mr-2"></i>
+                                    {/if}
+                                {else}
+                                    {* standaard icon *}
+									<i class="icon-cog mr-2"></i>
+                                {/if}
+                            {/if}
+							Factuurgegevens
+						</a>
+					</li>
+
+                    {if $user_type == 'werkgever' || $inlener->complete == 0}
                         {if $inlener->complete != 1 && $werkgever_type == 'uitzenden' }
                             {* li CAO alleen bij aanmelden uitzend bv *}
 							<li class="nav-item {if $inlener->complete != 1}order-5{/if}">

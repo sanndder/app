@@ -190,6 +190,16 @@
 							</a>
 						</li>
 
+						<!-- li systeem instellingen -->
+                        {if $uitzender->complete == 1}
+						<li class="nav-item">
+							<a href="crm/uitzenders/dossier/systeeminstellingen/{$uitzender->uitzender_id}" class="nav-link {if $active == 'systeeminstellingen'}active{/if}">
+                                {* standaard icon *}
+								<i class="icon-cog mr-2"></i>
+								Systeeminstellingen
+							</a>
+						</li>
+						{/if}
 
 					</ul>
 				</div>

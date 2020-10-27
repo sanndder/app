@@ -76,6 +76,9 @@
 					<a href="overzichten/omzet/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="icon-chart mr-2"></i>Omzet & Kosten</div>
 					</a>
+					<a href="overzichten/zorgverzekering/" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-folder-plus2 mr-2"></i>Zorgverzekering</div>
+					</a>
 				</div>
 			</li>
 

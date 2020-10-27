@@ -134,6 +134,8 @@ class Invoer extends Connector
 		$this->_periode_start = $tijdvak->startDatum();
 		$this->_periode_einde = $tijdvak->eindDatum();
 		$this->_periode_dagen = $tijdvak->dagen();
+		
+
 	}
 
 
@@ -242,12 +244,11 @@ class Invoer extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
-	 * geuploade bijalge naar de database
+	 * geuploade bijlage naar de database
 	 * 
 	 */
 	public function saveBijlageToDatabase( array $file_info ) :bool
 	{
-
 		$insert = $file_info;
 		
 		$insert['tijdvak'] = $this->_tijdvak;
@@ -260,11 +261,9 @@ class Invoer extends Connector
 		$this->db_user->insert( 'invoer_bijlages', $insert );
 		
 		if( $this->db_user->insert_id() > 0 )
-		{
-			$this->_error[] = 'Wegschrijven naar database is mislukt';
 			return true;
-		}
 		
+		$this->_error[] = 'Wegschrijven naar database is mislukt';
 		return false;
 	}
 	
@@ -284,13 +283,7 @@ class Invoer extends Connector
 		
 		foreach( $query->result_array() as $row )
 		{
-			$row['icon'] = '';
-			if( $row['file_ext'] == 'jpg' ) $row['icon'] = 'image.jpg';
-			if( $row['file_ext'] == 'gif' ) $row['icon'] = 'image.jpg';
-			if( $row['file_ext'] == 'png' ) $row['icon'] = 'image.jpg';
-			if( $row['file_ext'] == 'pdf' ) $row['icon'] = 'pdf.svg';
-			if( $row['file_ext'] == 'xls' ) $row['icon'] = 'excel.svg';
-			if( $row['file_ext'] == 'xlsx' ) $row['icon'] = 'excel.svg';
+			$row['icon'] = get_file_icon( $row['file_ext'] );
 			
 			if( $row['project_id'] == NULL ) $row['project_naam'] = '';
 			$row['file_size'] = size($row['file_size']);

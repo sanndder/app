@@ -116,7 +116,7 @@ class InlenerGroup extends Connector {
 		$data = array();
 
 		//start query
-		$sql = "SELECT inleners_bedrijfsgegevens.*, inleners_status.*, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender, uitzenders_bedrijfsgegevens.uitzender_id, inleners_factuurgegevens.factoring
+		$sql = "SELECT inleners_bedrijfsgegevens.*, inleners_status.*, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender, uitzenders_bedrijfsgegevens.uitzender_id, inleners_factuurgegevens.factoring, inleners_factuurgegevens.factuur_wachtrij
 				FROM inleners_status
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
 				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = inleners_status.inlener_id
@@ -186,7 +186,7 @@ class InlenerGroup extends Connector {
 	/*
 	 * List van uitzenders
 	 */
-	static function list()
+	static function list( $uitzender_id = NULL )
 	{
 		$CI =& get_instance();
 		$db_user = $CI->db_user;
@@ -194,8 +194,13 @@ class InlenerGroup extends Connector {
 		$sql = "SELECT inleners_bedrijfsgegevens.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam
 				FROM inleners_status
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
-				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.archief = 0
-				ORDER BY inleners_bedrijfsgegevens.bedrijfsnaam";
+				LEFT JOIN inleners_uitzenders ON inleners_status.inlener_id = inleners_uitzenders.inlener_id
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.archief = 0";
+		
+		if( $uitzender_id !== NULL )
+			$sql .= " AND inleners_uitzenders.uitzender_id = ". intval($uitzender_id);
+		
+		$sql .= " ORDER BY inleners_bedrijfsgegevens.bedrijfsnaam";
 		
 		$query = $db_user->query( $sql );
 		

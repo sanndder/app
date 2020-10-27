@@ -1,6 +1,8 @@
 <?php
 
 use models\documenten\Document;
+use models\facturatie\FactoringExport;
+use models\facturatie\FactoringExportFactory;
 use models\facturatie\FacturenGroup;
 use models\inleners\InlenerGroup;
 use models\uitzenders\UitzenderGroup;
@@ -20,7 +22,7 @@ class Facturen extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+		if( $this->user->user_type != 'werkgever' )forbidden();
 	}
 	
 	
@@ -63,7 +65,7 @@ class Facturen extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	// AJAX upload done
+	// AJAX upload to factoring done
 	//-----------------------------------------------------------------------------------------------------------------
 	public function factuuruploaded( $factuur_id )
 	{
@@ -91,5 +93,31 @@ class Facturen extends MY_Controller
 		
 		echo json_encode( $response );
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// AJAX betaling toevoegen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function export()
+	{
+		if( !isset($_POST['facturen']) || strlen($_POST['facturen']) == 0 )
+			return false;
+		
+		//explode from comma seperated list
+		$factuur_ids = explode(',', substr( $_POST['facturen'], 0, -1 ));
+		
+		//info van geselecteerde facturen ophalen
+		$facturengroep = new FacturenGroup();
+		$facturen = $facturengroep->getIDS( $factuur_ids )->facturenMatrix();
 
+		$factoringExport = FactoringExportFactory::init( $facturen );
+		if( $factoringExport->exportExcel() )
+		{
+			echo $factoringExport->exportID();
+		}
+		else
+		{
+			echo 'error';
+		}
+		
+	}
 }

@@ -114,6 +114,7 @@
       },
       "list": {
         "options": {
+          "20": "20",
           "25": "25",
           "30": "30",
           "35": "35"
@@ -161,6 +162,19 @@
     },
     "bijlages_invoegen": {
       "label": "Bijlages automatisch invoegen",
+      "rules": {
+        "required": true
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
+    },
+    "factuur_wachtrij": {
+      "label": "Factuur in wachtrij plaatsen",
       "rules": {
         "required": true
       },

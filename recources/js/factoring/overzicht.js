@@ -35,9 +35,25 @@ let factoring = {
 		});
 		
 		//klik op betaling
-		$('[name="factuur_nr"]').on('keyup', function()
+		$('[name="factuur_nr"]').on('keyup', function(e)
 		{
-			factoring.getInlener(this);
+			//zoeken
+			if (e.key !== 'Enter' && e.keyCode !== 13 && e.keyCode !== 38 && e.keyCode !== 40)
+				factoring.getInlener(this);
+			
+			//plus min
+			if( e.keyCode === 38)
+				factoring.adjustAmount( this, 'up' );
+			
+			if( e.keyCode === 40)
+				factoring.adjustAmount( this, 'down' );
+			
+			//enter factuur
+			if (e.key === 'Enter' || e.keyCode === 13) {
+				//parent tr
+				$tr = $(this).closest('tr');
+				$tr.find('[name="addRegel"]').trigger('click');
+			}
 		});
 		
 		//klik op add regel
@@ -51,6 +67,24 @@ let factoring = {
 			factoring.delRegel(this);
 		});
 		
+		
+	},
+	
+	adjustAmount( obj, upDown )
+	{
+		$tr = $(obj).closest('tr');
+		$input = $tr.find('[name="bedrag"]');
+		
+		amount = $input.val();
+		amount = parseFloat(amount);
+		amount = amount * 100;
+		
+		if( upDown == 'up' )
+			amount = amount + 1;
+		if( upDown == 'down' )
+			amount = amount - 1;
+		
+		$input.val( (amount/100).toFixed(2) );
 	},
 	
 	getRegels( new_id = null)

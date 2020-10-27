@@ -29,6 +29,7 @@ class FactoringGroup extends Connector
 	protected $_filter_eind = NULL;
 	protected $_filter_compleet = NULL;
 	protected $_filter_incompleet = NULL;
+	protected $_filter_factuur = NULL;
 	
 	
 	protected $_error = NULL;
@@ -74,6 +75,8 @@ class FactoringGroup extends Connector
 
 		if( isset($param['van']) ) $this->_filter_van = reverseDate($param['van']);
 		if( isset($param['tot']) ) $this->_filter_tot = reverseDate($param['tot']);
+		
+		if( isset($param['factuur']) ) $this->_filter_factuur = $param['factuur'];
 	}
 	
 	
@@ -112,6 +115,9 @@ class FactoringGroup extends Connector
 		
 		if( $this->_filter_omschrijving !== NULL )
 			$sql .= " AND (factoring_facturen_regels.omschrijving LIKE '%".$this->_filter_omschrijving."%' AND factoring_facturen_regels.deleted = 0 ) ";
+		
+		if( $this->_filter_factuur !== NULL )
+			$sql .= " AND (factoring_facturen.file_name_display LIKE '%".$this->_filter_factuur."%' ) ";
 		
 		$sql .= " ORDER BY factoring_facturen.compleet, factoring_facturen.factuur_datum DESC, factoring_facturen.timestamp DESC LIMIT $this->_limit";
 		

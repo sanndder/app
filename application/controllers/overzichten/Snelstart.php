@@ -16,7 +16,7 @@ class Snelstart extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+		if( $this->user->user_type != 'werkgever' )forbidden();
 	}
 	
 	
@@ -51,7 +51,7 @@ class Snelstart extends MY_Controller
 			if( $errors === false )
 			{
 				$this->session->set_flashdata('msg', 'Exportbestand is aangemaakt' );
-					vshow($id);//redirect( $this->config->item( 'base_url' ) . 'overzichten/snelstart/index?export_id=' . $id, 'location' );
+					redirect( $this->config->item( 'base_url' ) . 'overzichten/snelstart/index?export_id=' . $id, 'location' );
 			}
 			else
 				$this->smarty->assign('msg', msg('warning', $errors ));

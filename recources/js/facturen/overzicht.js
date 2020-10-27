@@ -16,7 +16,7 @@ let factuuroverzicht = {
 	{
 		
 		//klik op factuur
-		$('.table-facturen-overzicht td').on('click', function()
+		$('.table-facturen-overzicht td').not('.check-factuur').on('click', function()
 		{
 			factuuroverzicht.factuurDetails(this);
 		});
@@ -33,6 +33,48 @@ let factuuroverzicht = {
 			factuuroverzicht.addBetaling(this);
 		});
 		
+		//export excel voor factoring
+		$('.export-factoring').on('click', function()
+		{
+			factuuroverzicht.exportExcel();
+		});
+	
+	
+		
+	},
+	
+	exportExcel()
+	{
+		var listFactuurIds = '';
+		$('[name="select-factuur"]:checked').each(function(i,e)
+		{
+			listFactuurIds += $(e).val() + ',';
+		});
+		
+		if( listFactuurIds.length > 0 )
+		{
+			//download klaarmaken
+			xhr.url = base_url + 'overzichten/facturen/export/';
+			xhr.data.facturen = listFactuurIds;
+			var response = xhr.call(true);
+			if( response !== false )
+			{
+				response.done(function(json)
+				{
+					
+					if( json.status == 'success' )
+					{
+						$(obj).find('i').addClass('icon-check ').removeClass('spinner icon-spinner3');
+						$('tr[data-id="' + $('.factuur-nr').html() + '"] td').trigger('click');
+					}
+					else
+						alert('Export kon niet worden gemaakt');
+				});
+			}
+		}else
+		{
+			alert('Geen facturen geselecteerd');
+		}
 		
 	},
 	
@@ -91,9 +133,10 @@ let factuuroverzicht = {
 					var yyyy = today.getFullYear();
 					today = dd + '-' + mm + '-' + yyyy;
 					$(obj).closest('td').html(today);
-					
 					$(obj).remove();
-			
+					
+					//checkbox weg
+					$tr.find('.check-factuur input').remove();
 				}
 				else
 					alert('Actie kan niet worden uitgevoerd');

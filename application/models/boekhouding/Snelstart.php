@@ -121,7 +121,6 @@ class Snelstart extends Connector
 		}
 		
 		$excel->setAutoWidth();
-		
 		$excel->inline( $name );
 		
 		//show($relaties);
@@ -171,7 +170,7 @@ class Snelstart extends Connector
 		
 		$sql = "SELECT facturen.factuur_datum, factuur_id, factuur_nr, inlener_id, uitzender_id, bedrag_excl, bedrag_incl, bedrag_btw, marge
 				FROM facturen
-				WHERE facturen.deleted = 0 AND facturen.concept = 0  AND factuur_datum >= '".reverseDate($tm) ."' AND factuur_datum <= '".reverseDate($tm) ."'";
+				WHERE facturen.deleted = 0 AND facturen.concept = 0  AND factuur_nr > 574 AND factuur_datum < '2020-10-01' ";
 				
 		if( $max_id !== NULL )
 			$sql .= " AND factuur_id > $max_id";
@@ -194,7 +193,7 @@ class Snelstart extends Connector
 			$data[] = $row;
 		}
 		
-		
+
 		$excel = new Excel();
 		$excel->writeRow( ['fldDagboek','fldBoekingcode','fldDatum','fldGrootboeknummer','fldDebet','fldCredit','fldOmschrijving','fldRelatiecode','fldFactuurnummer'] );
 		
@@ -208,6 +207,14 @@ class Snelstart extends Connector
 				unset($rij_1);
 				unset($rij_2);
 				
+				$creditdebet = 'debet';
+				
+				if( $factuur['bedrag_excl'] < 0 && $factuur['marge'] == 0 )
+					$creditdebet = 'credit';
+				
+				if( $factuur['bedrag_excl'] > 0 && $factuur['marge'] == 1 )
+					$creditdebet = 'credit';
+					
 				$factuur['bedrag_excl'] = abs($factuur['bedrag_excl']);
 				$factuur['bedrag_btw'] = abs($factuur['bedrag_btw']);
 				$factuur['bedrag_incl'] = abs($factuur['bedrag_incl']);
@@ -215,34 +222,63 @@ class Snelstart extends Connector
 				//verkoop
 				if( $factuur['marge'] == 0 )
 				{
-					$rij_0 = array( $dagboeken['verkoop']['rekening'],  $i, $factuur['factuur_datum'], $dagboeken['verkoop']['rekening'], $factuur['bedrag_incl'], 0, $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
-					
-					//met BTW
-					if( $factuur['bedrag_btw'] != 0 )
+					if( $creditdebet == 'debet')
 					{
-						$rij_1 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['omzet_btw_hoog']['rekening'], 0, $factuur['bedrag_excl'], $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
-						$rij_2 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['btw_afdragen_hoog']['rekening'], 0, $factuur['bedrag_btw'], $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+						$rij_0 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['verkoop']['rekening'], $factuur['bedrag_incl'], 0, $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+						
+						//met BTW
+						if( $factuur['bedrag_btw'] != 0 )
+						{
+							$rij_1 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['omzet_btw_hoog']['rekening'], 0, $factuur['bedrag_excl'], $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+							$rij_2 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['btw_afdragen_hoog']['rekening'], 0, $factuur['bedrag_btw'], $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+						} //btw verlegd
+						else
+						{
+							$rij_1 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['omzet_btw_verlegd']['rekening'], 0, $factuur['bedrag_excl'], $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+						}
 					}
-					//btw verlegd
 					else
 					{
-						$rij_1 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['omzet_btw_verlegd']['rekening'], 0, $factuur['bedrag_excl'], $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+						$rij_0 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['verkoop']['rekening'], 0, $factuur['bedrag_incl'], $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+						
+						//met BTW
+						if( $factuur['bedrag_btw'] != 0 )
+						{
+							$rij_1 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['omzet_btw_hoog']['rekening'],$factuur['bedrag_excl'], 0, $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+							$rij_2 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['btw_afdragen_hoog']['rekening'],$factuur['bedrag_btw'], 0, $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+						} //btw verlegd
+						else
+						{
+							$rij_1 = array( $dagboeken['verkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['omzet_btw_verlegd']['rekening'], $factuur['bedrag_excl'],0 , $factuur['inlener'], $factuur['inlener_id'], $factuur['factuur_nr'] );
+						}
 					}
 				}
 				//marge
 				else
 				{
-					$rij_0 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['inkoop']['rekening'], $factuur['bedrag_incl'], 0, $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
-					$rij_1 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['marge_uitzenders']['rekening'], 0, $factuur['bedrag_excl'], $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
-					$rij_2 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['btw_vorderen_hoog']['rekening'], 0, $factuur['bedrag_btw'], $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
+					if( $creditdebet == 'debet' )
+					{
+						$rij_0 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['inkoop']['rekening'], 0, $factuur['bedrag_incl'], $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
+						$rij_1 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['marge_uitzenders']['rekening'], $factuur['bedrag_excl'], 0, $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
+						$rij_2 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['btw_vorderen_hoog']['rekening'], $factuur['bedrag_btw'], 0, $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
+					}
+					else
+					{
+						$rij_0 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['inkoop']['rekening'], $factuur['bedrag_incl'],0 , $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
+						$rij_1 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['marge_uitzenders']['rekening'],0, $factuur['bedrag_excl'], $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
+						$rij_2 = array( $dagboeken['inkoop']['rekening'], $i, $factuur['factuur_datum'], $dagboeken['btw_vorderen_hoog']['rekening'],0, $factuur['bedrag_btw'], $factuur['uitzender'], $factuur['uitzender_id'], $factuur['factuur_nr'] );
+					}
 				}
 				
-				$excel->writeRow($rij_0);
-				$excel->writeRow($rij_1);
-				if( isset($rij_2) )
-					$excel->writeRow($rij_2);
-				
-				$i++;
+				if(isset($rij_0))
+				{
+					$excel->writeRow( $rij_0 );
+					$excel->writeRow( $rij_1 );
+					if( isset( $rij_2 ) )
+						$excel->writeRow( $rij_2 );
+					
+					$i++;
+				}
 			}
 		}
 		

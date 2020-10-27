@@ -81,6 +81,7 @@ let invoeret = {
 				$tr.find('.wait').remove();
 			});
 		}
+		
 	},
 	
 	
@@ -89,6 +90,20 @@ let invoeret = {
 		//tabel eerst tonen
 		$tabel = $('.vi-table-et').show();
 
+		//altijd reset
+		$tabel.find('[name="vergoeding-huisvesting"]').val('');
+		$tabel.find('[name="vergoeding-levensstandaard"]').val('');
+		
+		$tabel.find('.vi-et-max').html( '' );
+		$tabel.find('.vi-et-totaal').html( '' );
+		$tabel.find('.vi-et-uitruil').html( '' );
+		
+		//is er een max
+		//is er data?
+		if( typeof json.info.et.max != 'undefined' && json.info.et.max != null){
+			$tabel.find('.vi-et-max').html( parseFloat(json.info.et.max).toFixed(2).replace('.',',') );
+		}
+		
 		//is er data?
 		if( typeof json.invoer.et != 'undefined' && json.invoer.et != null){
 			

@@ -79,7 +79,7 @@
 
 										<!----- Zoeken -------------------------->
 										<div class="col-md-2">
-											<h6 class="mb-1 mt-2">Details</h6>
+											<h6 class="mb-1 mt-2">Factuurdetails</h6>
 
 											<table>
 												<tr>
@@ -90,6 +90,19 @@
 												<tr>
 													<td>
 														<input {if isset($smarty.get.zoek)} value="{$smarty.get.zoek}" {/if} name="zoek" type="text" class="form-control" placeholder="omschrijving" style="padding: 2px 5px; height: auto; width: 100%;">
+													</td>
+												</tr>
+											</table>
+										</div>
+
+										<!----- Zoeken -------------------------->
+										<div class="col-md-2">
+											<h6 class="mb-1 mt-2">Nummer factoring</h6>
+
+											<table>
+												<tr>
+													<td>
+														<input {if isset($smarty.get.factuur)} value="{$smarty.get.factuur}" {/if} name="factuur" type="text" class="form-control" placeholder="factoring factuur" style="padding: 2px 5px; height: auto; width: 100%;">
 													</td>
 												</tr>
 											</table>
@@ -320,7 +333,7 @@
 										<tbody>
 											<tr>
 												<td class="pr-3">
-													<input type="text" class="form-control" name="factuur_nr" style="width: 75px">
+													<input type="text" class="form-control" autocomplete="off" name="factuur_nr" style="width: 75px">
 												</td>
 												<td class="pr-3" style="width: 50%">
 													<input type="text" class="form-control" name="omschrijving" style="width: 100%">
