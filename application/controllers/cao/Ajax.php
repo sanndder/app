@@ -33,8 +33,8 @@ class Ajax extends MY_Controller
 		$werknemer = new Werknemer( $_POST['werknemer_id'] );
 		
 		$cao = new CAO( $_POST['cao_id'] );
-		//$cao->setLeeftijd( $werknemer->leeftijd() );
-		$cao->setLeeftijd( 28 );
+		$cao->setLeeftijd( $werknemer->leeftijd() );
+		//$cao->setLeeftijd( 28 );
 
 		//loontabellen altijd ophalen als de cao bekend is
 		$return['loontabellen'] = $cao->loontabellen();

@@ -76,17 +76,17 @@ if (!function_exists('checkAndCreateDir'))
 		{
 			$parts = explode('/', $path);
 			$file_name = end($parts);
-			$dir = str_replace($file_name, '', $path);
+			$dir = trim(str_replace($file_name, '', $path));
 		}
 		else
 		{
-			$dir = $path;
+			$dir = trim($path);
 		}
 
 		//kijken of map al bestaat
 		if (file_exists($dir) && is_dir($dir))
 			return true;
-
+		
 		//anders map aanmaken
 		return mkdir($dir, 0777, true);
 	}
@@ -695,7 +695,7 @@ if (!function_exists('show'))
 {
 	function show($array = '[leeg]', $name = '', $width = 1250)
 	{
-		if ($_SERVER['REMOTE_ADDR'] == '82.74.254.28' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1 || $_SERVER['REMOTE_ADDR'] =='46.243.29.50')
+		if ($_SERVER['REMOTE_ADDR'] == '94.213.238.67' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1 || $_SERVER['REMOTE_ADDR'] == '46.243.29.50')
 		{
 			echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:" . $width . "px;'>";
 
@@ -714,7 +714,7 @@ if (!function_exists('vshow'))
 {
 	function vshow($array = '[leeg]', $name = '', $width = 1250)
 	{
-		if ($_SERVER['REMOTE_ADDR'] == '82.74.254.28' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1 || $_SERVER['REMOTE_ADDR'] =='46.243.29.50')
+		if ($_SERVER['REMOTE_ADDR'] == '94.213.238.67' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '192.168.1.2' || $_SERVER['REMOTE_ADDR'] == 1 || $_SERVER['REMOTE_ADDR'] =='46.243.29.50')
 		{
 			echo "<div style='position:relative; background-color:#fff; z-index:25000; max-width:" . $width . "px;'>";
 			

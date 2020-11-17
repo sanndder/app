@@ -93,12 +93,14 @@
 														</a>
 													</td>
 													<td class="text-right">
-                                                        {$f.marge.factuur_nr}
+														{if isset($f.marge)}{$f.marge.factuur_nr}{/if}
 													</td>
 													<td class="text-right">
-														<a target="_blank" href="facturatie/factuur/view/{$f.marge.factuur_id}">
-															€ {$f.marge.bedrag_incl|number_format:2:',':'.'}
-														</a>
+                                                        {if isset($f.marge)}
+															<a target="_blank" href="facturatie/factuur/view/{$f.marge.factuur_id}">
+	                                                            € {$f.marge.bedrag_incl|number_format:2:',':'.'}
+															</a>
+                                                        {/if}
 													</td>
 													<td>
 														<ul class="list-inline mb-0 mt-2 mt-sm-0">

@@ -37,15 +37,20 @@ class Sign extends MY_Controller {
 		
 		$document = new Document();
 		
+		
 		if( $document->getByHash($_GET['document']) )
 		{
+			
 			$details = $document->details();
 			if( $details['werknemer_id'] != $_GET['werknemer'] )
 				die('Geen toegang');
 		}
 		
-		$this->smarty->assign( 'document', $details );
-		$this->smarty->display('sign/document.tpl');
+		if( isset($details) )
+		{
+			$this->smarty->assign( 'document', $details );
+			$this->smarty->display( 'sign/document.tpl' );
+		}
 	}
 	
 	

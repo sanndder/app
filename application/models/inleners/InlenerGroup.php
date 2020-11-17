@@ -74,7 +74,7 @@ class InlenerGroup extends Connector {
 				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = inleners_status.inlener_id
 				LEFT JOIN inleners_uitzenders ON inleners_status.inlener_id = inleners_uitzenders.inlener_id
 				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.archief = 0 AND inleners_status.complete = 1 AND inleners_factuurgegevens.deleted = 0
-				AND inleners_uitzenders.deleted = 0";
+				AND inleners_uitzenders.deleted = 0 AND inleners_status.hide_ureninvoer = 0 ";
 		
 		//beveiligen
 		if( $this->user->user_type == 'uitzender' )
@@ -99,7 +99,7 @@ class InlenerGroup extends Connector {
 			if( $row['frequentie'] == 'm') $f = 'maand';
 			if( $row['frequentie'] == '4w') $f = '4 weken';
 			
-			$data[$f][$row['inlener_id']] = $row;
+			$data[$f][] = $row;
 		}
 		
 		return $data;

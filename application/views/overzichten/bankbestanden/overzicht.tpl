@@ -2,14 +2,13 @@
 {block "title"}Banktransacties{/block}
 {block "header-icon"}icon-list2{/block}
 {block "header-title"}Overzicht - Banktransacties{/block}
-{assign "select2" "true"}
+
 
 {assign "datamask" "true"}
 {assign "uploader" "true"}
 
 {block "content"}
 	<script src="recources/plugins/jquery.ba-throttle-debounce.js"></script>
-	<script src="recources/js/config.js?{$time}"></script>
 	<script src="recources/js/bankbestanden/transacties.js?{$time}"></script>
 	<!---------------------------------------------------------------------------------------------------------
 	|| Main content

@@ -30,12 +30,13 @@ class Pdf extends File
 	 * @var int number of pages
 	 */
 	protected $_page_count = NULL;
+	protected $_bijlage_page_count = NULL;
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * Init new file from array
 	 * @param file array
-	 * @return object
 	 */
 	public function __construct( $input = NULL )
 	{
@@ -192,10 +193,55 @@ class Pdf extends File
 			}
 		}
 		
+		$this->_bijlage_page_count = $pagecount;
+		
 		$this->_fpdi->Output( $this->_file_path, 'F' );
 		
 		return true;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Tekst toevoegen aan pdf
+	 *
+	 * @return bool
+	 */
+	public function addWachtrijProjectTofactuur( $text = NULL  )
+	{
+		$pageCount = $this->_fpdi->setSourceFile( $this->_file_path );
+		//bestaande pagina's naar nieuwe pdf
+		for( $i = 1; $i <= $pageCount; $i++ )
+		{
+			$tplidx = $this->_fpdi->importPage( $i );
+			$specs = $this->_fpdi->getTemplateSize( $tplidx );
+			
+			if( $specs['width'] > $specs['height'] )
+				$this->_fpdi->AddPage( 'L', array( $specs['width'], $specs['height'] ) );
+			else
+				$this->_fpdi->AddPage( 'P', array( $specs['width'], $specs['height'] ) );
+			
+			$this->_fpdi->useTemplate( $tplidx );
+			
+			if( $i == 1 )
+			{
+				$this->_fpdi->SetDrawColor(255,255,255);
+				$this->_fpdi->SetFillColor(255,255,255);
+				$this->_fpdi->Rect(3,41,150,6,'FD');
+				
+				$this->_fpdi->SetFont( 'Arial', 'BI', 12 );
+				$this->_fpdi->SetTextColor( 0, 46, 101 );
+				$this->_fpdi->Text(5.5,46,$text);
+			}
+		}
+		
+		$file_info['signed_file_name'] = $this->_file_name;
+		$file_info['signed_file_name_display'] = $this->_file_name_display;
+		$file_info['signed_file_dir'] = $this->_file_dir;
+		$file_info['signed_file_path'] = $this->_file_path;
+		
+		$this->_fpdi->Output( $this->_file_path, 'F' );
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -346,6 +392,16 @@ class Pdf extends File
 	public function pageCount()
 	{
 		return $this->_page_count;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Get bijlage page count
+	 * @return int
+	 */
+	public function bijlagePageCount()
+	{
+		return $this->_bijlage_page_count;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

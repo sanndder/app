@@ -54,7 +54,7 @@
 
 				<div class="dropdown-menu">
 					<a href="overzichten/marge" class="dropdown-item">
-						<i class="icon-euro"></i>Marge
+						<i class="icon-euro"></i>Marge & Uren
 					</a>
 				</div>
 			</li>
@@ -64,6 +64,9 @@
 					<a href="facturenoverzicht/wachtrij" class="navbar-nav-link">
 						<i class="icon-hour-glass mr-2" style="font-weight: bold"></i>
 						Wachtrij
+						{if $count_wachtrij > 0}
+							<span class="badge badge-pill badge-warning ml-1" style="position:relative; top: auto; right: auto">{$count_wachtrij}</span>
+						{/if}
 					</a>
 				</li>
             {/if}

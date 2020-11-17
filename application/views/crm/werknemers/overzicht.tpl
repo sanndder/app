@@ -3,7 +3,7 @@
 {block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemers{/block}
 {assign "datatable" "true"}
-{assign "select2" "true"}
+
 
 {block "content"}
 
@@ -56,6 +56,7 @@
 			<!---------------------------------------------------------------------------------------------------------
 			||zoeken
 			---------------------------------------------------------------------------------------------------------->
+            {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
 			<div class="card card-sidebar-mobile">
 
 				<!-- header -->
@@ -130,7 +131,8 @@
 				</div>
 
 
-			</div><!-- /main navigation -->
+			</div><!-- /main navigation -->3
+			{/if}
 
 			<!---------------------------------------------------------------------------------------------------------
 			||Snel zoeken
@@ -182,17 +184,19 @@
 
 						<div class="media-body">
 							<h6 class="mb-0">Werknemeroverzicht</h6>
-							<div class="letter-icon-title font-weight-semibold">{count($werknemers)} werknemers in
-								tabel
+							<div class="letter-icon-title font-weight-semibold">
+								{count($werknemers)} werknemers in tabel
 							</div>
 						</div>
 
+                        {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
 						<div class="justify-content-between">
 							<a href="crm/werknemers/dossier/gegevens" class="btn bg-blue text-blue border-blue">
 								<i class="icon-pencil7 icon mr-1"></i>
 								<span>Werknemer invoeren</span>
 							</a>
 						</div>
+						{/if}
 					</div>
 
 
@@ -207,7 +211,9 @@
 							<th style="width: 75px;">ID</th>
 							<th>Naam</th>
 							<th>Uitzender</th>
-							<th>Plaatsingen</th>
+                            {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
+								<th>Plaatsingen</th>
+                            {/if}
 							<th class="text-center">Actions</th>
 						</tr>
 					</thead>
@@ -221,32 +227,52 @@
                                         {if $w.complete == 0}
 											<span class="badge bg-success  mr-1">NIEUW</span>
                                         {/if}
-										<a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$w.werknemer_id}">{$w.naam}</a>
+                                        {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
+	                                        <a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$w.werknemer_id}">{$w.naam}</a>
+                                        {else}
+                                            {$w.naam}
+                                        {/if}
 									</td>
 									<td>
-										<a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$w.uitzender_id}">{$w.uitzender}</a>
+                                        {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
+	                                        <a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$w.uitzender_id}">{$w.uitzender}</a>
+                                        {else}
+                                            {$w.uitzender}
+                                        {/if}
 									</td>
 									<td>
-										{if isset($w.inleners)}
-											{foreach $w.inleners as $i}
-												<a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/overzicht/{$i@key}">{$i}</a><br />
-                                            {/foreach}
+                                        {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
+                                            {if isset($w.inleners)}
+                                                {foreach $w.inleners as $i}
+                                                    {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
+	                                                    <a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/inleners/dossier/overzicht/{$i@key}">{$i}</a>
+	                                                {else}
+                                                     {$i}
+	                                                {/if}
+													<br/>
+                                                {/foreach}
+                                            {/if}
                                         {/if}
 									</td>
-									<td style="white-space: nowrap">
-                                        {if $ENV == 'development'}
-											<a href="{$base_url}/crm/werknemers?del={$w.werknemer_id}"><i class="icon-trash font-size-sm"></i></a>
-                                        {/if}
-										{if $user_type == 'werkgever' || $user_type == 'uitzender'}
-	                                        {if isset($w.user)}
-												<a href="{$base_url}/dashboard/werknemer?loginals=werknemer&id={$w.werknemer_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
-	                                        {else}
-		                                        <a href="{$base_url}/instellingen/werkgever/users/add?id={$w.werknemer_id}&user_type=werknemer" class="ml-2 text-danger">
-			                                        <i class="icon-warning2 mr-1"></i>user aanmaken
-		                                        </a>
-	                                        {/if}
-                                        {/if}
-									</td>
+                                    {if $user_type == 'werkgever' || $user_type == 'uitzender'}
+										<td style="white-space: nowrap">
+                                            {if $ENV == 'development'}
+												<a href="{$base_url}/crm/werknemers?del={$w.werknemer_id}">
+													<i class="icon-trash font-size-sm"></i></a>
+                                            {/if}
+
+                                            {if isset($w.user)}
+												<a href="{$base_url}/dashboard/werknemer?loginals=werknemer&id={$w.werknemer_id}" class="ml-2">
+													<i class="icon-enter mr-1"></i> Login als
+												</a>
+                                            {else}
+												<a href="{$base_url}/instellingen/werkgever/users/add?id={$w.werknemer_id}&user_type=werknemer" class="ml-2 text-danger">
+													<i class="icon-warning2 mr-1"></i>user aanmaken
+												</a>
+                                            {/if}
+
+										</td>
+                                    {/if}
 								</tr>
                             {/foreach}
 						</tbody>
@@ -262,38 +288,38 @@
 	<!-- /main content -->
 
     {if $user_type == 'werkgever'}
-	<div class="sidebar sidebar-light sidebar-main d-none d-xxl-block sidebar-sections sidebar-expand-lg align-self-start">
+		<div class="sidebar sidebar-light sidebar-main d-none d-xxl-block sidebar-sections sidebar-expand-lg align-self-start">
 
-		<!-- Sidebar content -->
-		<div class="sidebar-content">
+			<!-- Sidebar content -->
+			<div class="sidebar-content">
 
-			<!-- Latest updates -->
-			<div class="card">
-				<div class="card-header bg-transparent header-elements-inline">
-					<span class="text-uppercase font-size-sm font-weight-semibold">Laatst bezocht</span>
+				<!-- Latest updates -->
+				<div class="card">
+					<div class="card-header bg-transparent header-elements-inline">
+						<span class="text-uppercase font-size-sm font-weight-semibold">Laatst bezocht</span>
+					</div>
+
+					<div class="card-body">
+						<ul class="media-list">
+							<li class="media">
+								<div class="media-body">
+                                    {foreach $last_visits as $visit}
+										<a href="crm/werknemers/dossier/overzicht/{$visit.werknemer_id}">
+											<div class="float-left" style="width: 45px;">{$visit.werknemer_id}</div>
+											<div class="mb-1">{$visit.naam|truncate:28:'...':true}</div>
+										</a>
+                                    {/foreach}
+								</div>
+							</li>
+
+						</ul>
+					</div>
 				</div>
+				<!-- /latest updates -->
 
-				<div class="card-body">
-					<ul class="media-list">
-						<li class="media">
-							<div class="media-body">
-                                {foreach $last_visits as $visit}
-									<a href="crm/werknemers/dossier/overzicht/{$visit.werknemer_id}">
-										<div class="float-left" style="width: 45px;">{$visit.werknemer_id}</div>
-										<div class="mb-1">{$visit.naam|truncate:28:'...':true}</div>
-									</a>
-                                {/foreach}
-							</div>
-						</li>
-
-					</ul>
-				</div>
 			</div>
-			<!-- /latest updates -->
+			<!-- /sidebar content -->
 
 		</div>
-		<!-- /sidebar content -->
-
-	</div>
     {/if}
 {/block}

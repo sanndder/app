@@ -142,6 +142,12 @@ var Uniform = function ()
         $('.form-input-styled-info').uniform({
             wrapperClass: 'border-info-600 text-info-800'
         });
+        
+        // primary
+        $('.form-input-styled-primary').uniform({
+            wrapperClass: ' border-primary-600 text-primary-800'
+        });
+        
     };
 
     return {

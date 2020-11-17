@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))exit('No direct script access allowed');
 class FactoringGroup extends Connector
 {
 	
-	protected $_limit = 50;
+	protected $_limit = 250;
 	protected $_count = 0;
 	
 	protected $_filter_van = NULL;
@@ -44,7 +44,46 @@ class FactoringGroup extends Connector
 		//call parent constructor for connecting to database
 		parent::__construct();
 	}
-	
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * TEMP betalingen aan factur koppelen
+	 *
+	 */
+	public function koppelBetalingen()
+	{
+		$sql = "SELECT *, factoring_facturen_regels.factuur_nr AS factuurnr
+				FROM factoring_facturen_regels
+				LEFT JOIN factoring_facturen ON factoring_facturen.factuur_id = factoring_facturen_regels.factuur_id
+				WHERE factoring_facturen_regels.deleted = 0 AND factoring_facturen.deleted = 0 AND factoring_facturen.compleet = 1
+				";
+		
+		$query = $this->db_user->query( $sql );
+		
+		foreach( $query->result_array() as $row )
+		{
+			//nu betaling aan factuur toevoegen
+			if( $row['factuur_type'] == 'aankoop' )
+				$categorie_id = 2;
+			
+			if( $row['factuur_type'] == 'eind' )
+				$categorie_id = 3;
+			
+			$factuur = new Factuur();
+			$factuur->setFactuurNr( $row['factuurnr'] ) ;
+			
+			$betaling = new FactuurBetaling();
+			$betaling->bedrag( $row['bedrag'] )->categorie( $categorie_id )->datum( reverseDate($row['factuur_datum']) )->factorFactuurRegel( $row['regel_id'] );
+			
+			if( $betaling->valid() )
+			{
+				$factuur->addBetaling( $betaling );
+				$factuur->checkFactoringComplete();
+			}
+		}
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -120,7 +159,7 @@ class FactoringGroup extends Connector
 			$sql .= " AND (factoring_facturen.file_name_display LIKE '%".$this->_filter_factuur."%' ) ";
 		
 		$sql .= " ORDER BY factoring_facturen.compleet, factoring_facturen.factuur_datum DESC, factoring_facturen.timestamp DESC LIMIT $this->_limit";
-		
+
 		$query = $this->db_user->query( $sql );
 		$data = DBhelper::toArray( $query, 'factuur_id', 'NULL' );
 		

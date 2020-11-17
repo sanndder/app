@@ -38,9 +38,11 @@ class FacturenGroup extends Connector
 	
 	protected $_jaren_array = NULL;
 	
+	protected $_filter_wachtrij = NULL;
 	protected $_filter_factoring = 1;
 	protected $_filter_geen_factoring = 1;
-	
+	protected $_filter_factuur_aangekocht = NULL;
+
 	protected $_error = NULL;
 	
 	
@@ -67,6 +69,23 @@ class FacturenGroup extends Connector
 		$this->_uitzender_id = intval($uitzender_id);
 		return $this;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * wel of geen wachtrij
+	 *
+	 * @return void
+	 */
+	public function setWachtrij( $val ) :FacturenGroup
+	{
+		if( $val !== 0 && $val !== 1 && $val !== NULL )
+			die('Ongeldige instelling wachtrij filter');
+			
+		$this->_filter_wachtrij = $val;
+		
+		return $this;
+	}
 
 
 
@@ -89,6 +108,9 @@ class FacturenGroup extends Connector
 		
 		if( isset($filter['uitzender_id']) && $filter['uitzender_id'] != '' && intval($filter['uitzender_id']) > 0 )
 			$this->_uitzender_id = intval($filter['uitzender_id']);
+
+		if( isset($filter['factuur_aangekocht']) )
+			$this->_filter_factuur_aangekocht = intval($filter['factuur_aangekocht']);
 			
 		return $this;
 	}
@@ -251,13 +273,17 @@ class FacturenGroup extends Connector
 		if( $this->_filter_geen_factoring == 1 && $this->_filter_factoring == 0 )
 			$sql .= " AND inleners_factuurgegevens.factoring = 0";
 		
+		if( $this->_filter_wachtrij === 1 || $this->_filter_wachtrij === 0 )
+			$sql .= " AND facturen.wachtrij = $this->_filter_wachtrij ";
+		
 		if( $this->_filter_geen_factoring == 0 && $this->_filter_factoring == 1 )
-			$sql .= " AND inleners_factuurgegevens.factoring = 1";
+			$sql .= " AND inleners_factuurgegevens.factoring = 1 ";
 		
 		if( $this->_get_ids !== NULL )
 			$sql .= " AND facturen.factuur_id IN (".implode(',',$this->_get_ids).")";
+
 		
-		$sql .= " ORDER BY jaar DESC, periode DESC, to_factoring_on ";
+		$sql .= " ORDER BY jaar DESC, periode DESC, to_factoring_on, inleners_bedrijfsgegevens.bedrijfsnaam ";
 		
 		$query = $this->db_user->query( $sql );
 		
@@ -290,6 +316,32 @@ class FacturenGroup extends Connector
 		{
 			foreach( $query->result_array() as $row )
 				$data[$row['factuur_id']]['kosten'] = $row;
+		}
+
+		//TODO Dit moet anders, hij pakt alle facturen
+		//aankoopbetalingen erbij wanneer nodig
+		if( $this->_filter_factuur_aangekocht !== NULL )
+		{
+			$sql = "SELECT factuur_id, categorie_id FROM facturen_betalingen 
+					WHERE factuur_id IN (" . array_keys_to_string($data) . ")
+					AND deleted = 0 AND categorie_id = 2
+					";
+
+			$query = $this->db_user->query($sql);
+			if ($query->num_rows() > 0)
+			{
+				foreach ($query->result_array() as $row)
+					$betalingen[$row['factuur_id']] = $row['categorie_id'];
+			}
+
+			//nu opschonen
+			foreach( $betalingen as $factuur_id => $categorie_id )
+			{
+				if( isset($data[$factuur_id]) && $this->_filter_factuur_aangekocht == 0)
+				{
+					unset($data[$factuur_id]);
+				}
+			}
 		}
 		
 		return $data;

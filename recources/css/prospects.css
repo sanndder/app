@@ -1,0 +1,17 @@
+@charset "UTF-8";
+/* ------------------------------------------------------------------------------
+ *
+ *  Style voor propects
+ *
+ * ---------------------------------------------------------------------------- */
+
+.datatable-basic td{
+    border-top: 2px solid #FFF;
+    border-bottom: 2px solid #FFF;
+    padding: 0.35rem 1.0rem;
+}
+
+
+.datatable-basic .odd, .datatable-basic .even {
+    background-color: rgba(0, 0, 0, 0.06 ) !important;
+}

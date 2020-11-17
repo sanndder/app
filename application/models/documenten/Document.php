@@ -4,6 +4,7 @@ namespace models\documenten;
 use models\Connector;
 use models\email\Email;
 use models\file\Pdf;
+use models\uitzenders\Uitzender;
 use models\utils\DBhelper;
 use models\werknemers\Werknemer;
 
@@ -70,7 +71,6 @@ class Document extends Connector {
 		$data = $query->row_array();
 		
 		$this->setDocumentId( $data['document_id'] );
-		
 		return true;
 	}
 
@@ -663,20 +663,16 @@ class Document extends Connector {
 	 */
 	public function _setUitzenderInfo()
 	{
-		//bedrijfsgegevens
-		$sql = "SELECT uitzenders_bedrijfsgegevens.*
-				FROM uitzenders_bedrijfsgegevens
-				WHERE uitzenders_bedrijfsgegevens.deleted = 0 AND uitzender_id = $this->_uitzender_id";
+		$uitzender = new Uitzender( $this->_uitzender_id );
 		
-		$query = $this->db_user->query( $sql );
-		
-		$this->_uitzender_info = DBhelper::toRow($query);
-		
+		$this->_uitzender_info = $uitzender->bedrijfsgegevens();
+		$this->_uitzender_info['logo'] = $uitzender->logo( 'path' );
+		$this->_uitzender_info['systeeminstellingen'] =  $uitzender->systeeminstellingen();
+	
 		//contactpersonen
 		$sql = "SELECT * FROM uitzenders_contactpersonen WHERE deleted = 0 AND uitzender_id = $this->_uitzender_id LIMIT 1";
 		$query = $this->db_user->query( $sql );
 		$this->_uitzender_info['contactpersoon'] = DBhelper::toRow($query);
-		
 	}
 	
 	
@@ -726,6 +722,20 @@ class Document extends Connector {
 		$this->_werknemer_info['postcode'] = '5589OP';
 		$this->_werknemer_info['plaats'] = 'Apeldoorn';
 		$this->_werknemer_info['iban'] = 'NL87RABO13245678';
+		/*
+		$this->_werknemer_info['gb_datum'] = '21-01-1968';
+		$this->_werknemer_info['voorletters'] = 'C.';
+		$this->_werknemer_info['tussenvoegsel'] = '';
+		$this->_werknemer_info['achternaam'] = 'Felea';
+		$this->_werknemer_info['voornaam'] = 'Constantin';
+		$this->_werknemer_info['straat'] = 'Laminoristilor street';
+		$this->_werknemer_info['geslacht'] = 'm';
+		$this->_werknemer_info['huisnummer'] = '5';
+		$this->_werknemer_info['huisnummer_toevoeging'] = '';
+		$this->_werknemer_info['postcode'] = '800114';
+		$this->_werknemer_info['plaats'] = 'Galati';
+		$this->_werknemer_info['iban'] = 'RO51INGB0000999908271377';*/
+		
 		
 		$this->_plaatsing['start_plaatsing'] = '2020-05-04';
 		$this->_plaatsing['bruto_loon'] = '12,54';

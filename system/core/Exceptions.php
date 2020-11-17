@@ -105,7 +105,6 @@ class CI_Exceptions {
 		$severity = isset($this->levels[$severity]) ? $this->levels[$severity] : $severity;
 		log_message('error', 'Severity: '.$severity.' --> '.$message.' '.$filepath.' '.$line);
 		
-		
 		if( ENVIRONMENT == 'production' )
 		{
 			$buffer = $this->make_php_error($severity, $message, $filepath, $line);
@@ -141,8 +140,30 @@ class CI_Exceptions {
 			if( isset($_GET) && count($_GET) > 0 )
 				$mail->Body .= 'GET: <br />' . print_r( $_GET, true ). '<br /><br />';
 			
-			if( $CI->user->user_id != 2 )
-				$mail->Send();
+			$insert['error_hash'] = md5($mail->Body);
+			$insert['error_msg'] = $mail->Body;
+			
+			$query = $CI->db->query( "SELECT id FROM error_log WHERE send_on > (DATE_ADD(now(), INTERVAL -6 HOUR)) AND error_hash = '".$insert['error_hash']."' LIMIT 1" );
+			if($query->num_rows() == 0 )
+			{
+				//log message
+				$CI->db->insert( 'error_log', $insert );
+				if( $CI->user->user_id != 2 )
+					$mail->Send();
+				else
+					show('ERROR: view log for details');
+			}
+			else
+			{
+				if( $CI->user->user_id == 2 )
+				{
+					show( 'ERROR: view log for details' );
+					if( isset( $_GET['error'] ) )
+						show( $mail->Body );
+				}
+			}
+
+			
 		}
 	}
 

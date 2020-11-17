@@ -1,12 +1,11 @@
 {extends file='../../layout.tpl'}
-{block "title"}Dashboard{/block}
+{block "title"}Overzicht facturen{/block}
 {block "header-icon"}mi-euro-symbol{/block}
 {block "header-title"}Overzicht - Facturen{/block}
 {assign "datamask" "true"}
-{assign "select2" "true"}
 
 {block "content"}
-	<script src="recources/js/config.js?{$time}"></script>
+
 	<script src="recources/js/facturen/overzicht.js?{$time}"></script>
 	<!---------------------------------------------------------------------------------------------------------
 	|| Main content
@@ -70,9 +69,8 @@
 												<td colspan="2">Inlener</td>
 											</tr>
 											<tr>
-												<td style="width: 200px">
-
-													<select name="inlener_id" class="form-control select-search" style="width: 200px">
+												<td style="width: 350px">
+													<select name="inlener_id" class="form-control select-search" style="width:100%">
 														<option value="">Alle Inleners</option>
                                                         {if $inleners !== NULL}
                                                             {foreach $inleners as $i}
@@ -93,7 +91,7 @@
 												<td colspan="2">Uitzender</td>
 											</tr>
 											<tr>
-												<td style="width: 200px">
+												<td style="width: 350px; padding-left: 25px">
 
 													<select name="uitzender_id" class="form-control select-search">
 														<option value="">Alle Uitzenders</option>
@@ -138,7 +136,7 @@
 				<div class="col-md-3">
 
 					<!-------------------------------------------------- Details -------------------------------------------------------------->
-					<div class="card">
+					<div class="card" style="position: sticky; top: 65px">
 
 						<!-- header -->
 						<div class="card-header bg-transparent header-elements-inline">
@@ -285,6 +283,7 @@
                             {if $facturen != NULL}
 								<tbody>
                                     {foreach $facturen as $f}
+										{if $f.verkoop.factoring == 1 || ($f.verkoop.factoring == 0 && $f.verkoop.send_on == NULL)}
 										<tr data-id="{$f.verkoop.factuur_id}">
 											<td class="td-selected p-0 m-0"></td>
 											<td class="check-factuur">
@@ -332,25 +331,36 @@
 												€ {$f.verkoop.bedrag_grekening|number_format:2:',':'.'}
 											</td>
 											<td>
-                                                {if $f.verkoop.factoring == 1}
-                                                    {if $f.verkoop.to_factoring_on == NULL}
-														<span class="btn btn-outline-primary btn-factoring btn-sm px-1 py-0">
+                                                {if $f.verkoop.wachtrij == 0 || ($f.verkoop.wachtrij == 1 && $f.verkoop.wachtrij_akkoord == 1)}
+                                                    {if $f.verkoop.factoring == 1}
+                                                        {if $f.verkoop.to_factoring_on == NULL}
+															<span class="btn btn-outline-primary btn-factoring btn-sm px-1 py-0">
 														<i class="icon-check mr-1"></i> Geupload
 													</span>
+                                                        {else}
+                                                            {$f.verkoop.to_factoring_on|date_format: '%d-%m-%Y'}
+                                                        {/if}
                                                     {else}
-                                                        {$f.verkoop.to_factoring_on|date_format: '%d-%m-%Y'}
+														Geen factoring
                                                     {/if}
                                                 {else}
-													Geen factoring
+	                                                <i class="icon-hour-glass mr-1"></i>
+	                                                in wachtrij
                                                 {/if}
+
 											</td>
 											<td>
-                                                {if $f.verkoop.send_on == NULL}
-													<a href="crm/uitzenders/dossier/facturen/{$f.verkoop.uitzender_id}?email={$f.verkoop.factuur_id}" target="_blank" class="btn btn-outline-primary btn-sm px-1 py-0">
-														<i class="icon-envelope mr-1"></i> Emailen
-													</a>
+                                                {if $f.verkoop.wachtrij == 0 || ($f.verkoop.wachtrij == 1 && $f.verkoop.wachtrij_akkoord == 1)}
+                                                    {if $f.verkoop.send_on == NULL}
+														<a href="crm/uitzenders/dossier/facturen/{$f.verkoop.uitzender_id}?email={$f.verkoop.factuur_id}" target="_blank" class="btn btn-outline-primary btn-sm px-1 py-0">
+															<i class="icon-envelope mr-1"></i> Emailen
+														</a>
+                                                    {else}
+                                                        {$f.verkoop.send_on|date_format: '%d-%m-%Y'}
+                                                    {/if}
                                                 {else}
-                                                    {$f.verkoop.send_on|date_format: '%d-%m-%Y'}
+													<i class="icon-hour-glass mr-1"></i>
+													in wachtrij
                                                 {/if}
 											</td>
 											<td class="p-0 m-0">
@@ -359,6 +369,7 @@
 												</a>
 											</td>
 										</tr>
+										{/if}
                                     {/foreach}
 								</tbody>
                             {/if}

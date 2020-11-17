@@ -39,6 +39,37 @@ class WerknemerGroup extends Connector {
 		parent::__construct();
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * List van werknemers
+	 */
+	static function list( $uitzender_id = NULL )
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$sql = "SELECT werknemers_gegevens.werknemer_id, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam, werknemers_gegevens.tussenvoegsel, werknemers_gegevens.achternaam
+				FROM werknemers_gegevens
+				LEFT JOIN werknemers_uitzenders ON werknemers_uitzenders.werknemer_id = werknemers_gegevens.werknemer_id
+				WHERE werknemers_gegevens.deleted = 0";
+		
+		if( $uitzender_id !== NULL )
+			$sql .= " AND werknemers_uitzenders.uitzender_id = ". intval($uitzender_id);
+		
+		$sql .= " ORDER BY werknemers_gegevens.achternaam";
+		
+		$query = $db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+			$data[$row['werknemer_id']] = make_name($row);
+		
+		return $data;
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * list werknemers for inlener

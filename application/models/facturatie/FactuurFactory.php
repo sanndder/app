@@ -36,6 +36,7 @@ class FactuurFactory extends Connector
 	
 	private $_uitzender_bedrijfsgegevens = NULL;
 	private $_uitzender_korting = NULL;
+	private $_uitzender_systeeminstellingen = NULL;
 	
 	private $_inlener_bedrijfsgegevens = NULL;
 	private $_inlener_factuurgegevens = NULL;
@@ -77,7 +78,7 @@ class FactuurFactory extends Connector
 	protected $_periode = NULL;
 	
 	//TODO: instelbaar via app maken
-	protected $_stipp_basis = 2.6;
+	protected $_stipp_basis = 2.8;
 	
 	protected $_error = NULL;
 	
@@ -282,8 +283,13 @@ class FactuurFactory extends Connector
 	 */
 	private function _conceptToFinal(): bool
 	{
-		$update['concept'] = 0;
+		//moet de fatcuur naar de wachtrij?
+		if( isset($this->_uitzender_systeeminstellingen['facturen_wachtrij']) && $this->_uitzender_systeeminstellingen['facturen_wachtrij'] == 1 && $this->_inlener_factuurgegevens['factuur_wachtrij'] == 1 )
+			$this->db_user->query("UPDATE facturen SET wachtrij = 1, wachtrij_akkoord = 0 WHERE sessie_id = $this->_sessie_id AND marge = 0");
+
 		
+		$update['concept'] = 0;
+
 		$this->db_user->where( 'sessie_id', $this->_sessie_id );
 		$this->db_user->update( 'facturen', $update );
 		
@@ -688,8 +694,12 @@ class FactuurFactory extends Connector
 		
 		//pdf maken
 		$this->_sessieLog( 'action', "generate verkoop pdf", $factuur['factuur_id'] );
-		if( !$pdf->generate() )
+		$pdf_file = $pdf->generate();
+		if( !$pdf_file )
 			return false;
+		
+		//aantal pagina's
+		$update['file_org_pages'] = $pdf_file->pageCount();
 		
 		//update met juiste gegevens
 		$this->db_user->where( 'factuur_id', $factuur['factuur_id'] );
@@ -729,7 +739,7 @@ class FactuurFactory extends Connector
 			if( $project_id === NULL || $project_id == $bijlage['project_id'] )
 			{
 				if( $pdf->addFileToPdf( $bijlage['file_dir'], $bijlage['file_name'] ))
-					$this->db_user->query( "UPDATE invoer_bijlages SET factuur_id = $factuur_id WHERE file_id = ".$bijlage['file_id'] ." LIMIT 1" );
+					$this->db_user->query( "UPDATE invoer_bijlages SET factuur_id = $factuur_id, file_pages = ". $pdf->bijlagePageCount() ." WHERE file_id = ".$bijlage['file_id'] ." LIMIT 1" );
 			}
 		}
 		
@@ -1318,6 +1328,7 @@ class FactuurFactory extends Connector
 				}
 			}
 		}
+
 		
 		//dan de vergoedingen
 		if( isset( $werknemer_array['vergoedingengroep'] ) && is_array( $werknemer_array['vergoedingengroep'] ) && count( $werknemer_array['vergoedingengroep'] ) > 0 )
@@ -1363,14 +1374,16 @@ class FactuurFactory extends Connector
 						$insert['subtotaal_kosten'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * $insert['factor'] * 1 ), 2 );
 						$insert['subtotaal_verkoop'] = 0; //eerst op 0, wanneer doorbelasten aan inlener wordt deze overschreven
 						$werknemer_bedrag_kosten += $insert['subtotaal_kosten'];
+
+						//wanneer doorbelasten naar inlener, dan ook verkoop aanmaken
+						if( $insert['doorbelasten_aan'] == 'inlener' )
+						{
+							$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * $insert['factor'] * 1 ), 2 );
+							$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
+						}
 					}
 					
-					//wanneer doorbelasten naar inlener, dan ook verkoop aanmaken
-					if( $insert['doorbelasten_aan'] == 'inlener' )
-					{
-						$insert['subtotaal_verkoop'] = round( ( $insert['uren_decimaal'] * $insert['verkooptarief'] * $insert['factor'] * 1 ), 2 );
-						$werknemer_bedrag_verkoop += $insert['subtotaal_verkoop'];
-					}
+
 				}
 				
 				$this->db_user->insert( 'facturen_regels', $insert );
@@ -2204,6 +2217,7 @@ class FactuurFactory extends Connector
 		
 		//uitzender korting
 		$this->_uitzender_korting = $uitzender->factuurKorting();
+		$this->_uitzender_systeeminstellingen = $uitzender->systeeminstellingen();
 		
 		//alles voor de uitzender is geladen
 		$this->_sessieLog( 'setting', "uitzender_id: $uitzender_id" );

@@ -98,7 +98,7 @@
 														</a>
 														<div class="dropdown-divider"></div>
 														{if $user_id == 2}
-														<a href="{$base_url}/crm/inleners/dossier/documenten/22?del={$d.document_id}" class="dropdown-item">
+														<a href="{$base_url}/crm/inleners/dossier/documenten/{$d.inlener_id}?del={$d.document_id}" class="dropdown-item">
 															<i class="icon-trash"></i> Verwijderen
 														</a>
 														{/if}

@@ -26,9 +26,25 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
     right: 0;
     background-color: #fff;
     overflow-x: hidden;
+    border-left: 1px solid rgba(0, 0, 0, 0.125);
     transition: 0.5s;
 }
 
+
+.sidebar-header{
+    background-color: #002E65;
+}
+
+.sidebar-content-custom .nav-item a{
+    padding: 1.26rem 1.25rem;
+    font-size: 1.1em;
+}
+
+/* marge overzicht */
+.marge-data-per-week .td-week{ background-color: rgb(0,0,0,0.25)}
+
+.marge-data-per-week td{ border: 1px solid #E1E2E3;}
+.marge-data-per-week .td-data{ font-size: 0.85em}
 
 /* ID upload */
 .img-idbewijs{
@@ -98,4 +114,18 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
     border-left: 20px solid #666;
     border-bottom: 20px solid transparent;
     border-top: 20px solid transparent;
+}
+
+/* wachtrij */
+.card-hover-grey:hover{
+    background-color: #F1F2F3;
+}
+
+.card-active{
+    background-color: #E1E2E3;
+}
+
+.card-keuze, .card-details{
+    position: sticky;
+    top: 65px;
 }

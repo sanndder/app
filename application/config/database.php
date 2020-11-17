@@ -95,7 +95,7 @@ $db['admin'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );*/
-
+/*
 $db['admin'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
@@ -116,7 +116,7 @@ $db['admin'] = array(
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);
+);*/
 
 $db['admin'] = array(
 	'dsn'	=> '',

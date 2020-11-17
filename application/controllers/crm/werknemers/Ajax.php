@@ -4,6 +4,7 @@ use models\documenten\IDbewijs;
 use models\verloning\Urentypes;
 use models\werknemers\Plaatsing;
 use models\werknemers\Werknemer;
+use models\werknemers\WerknemerGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -138,6 +139,26 @@ class Ajax extends MY_Controller
 		
 		echo json_encode( $response );
 		
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// json lijst
+	//-----------------------------------------------------------------------------------------------------------------
+	public function listwerknemers( $uitzender_id = NULL )
+	{
+		$list = WerknemerGroup::list($uitzender_id);
+		
+		if( $list === NULL ) return $list;
+		
+		foreach( $list as $id => $name )
+		{
+			$arr = array( 'id'=>$id, 'name' => $name );
+			$inleners[] = $arr;
+		}
+		
+		
+		header('Content-Type: application/json');
+		echo json_encode($inleners);
 	}
 	
 }

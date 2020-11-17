@@ -66,6 +66,12 @@ class Tijdvak
 	private $_periode_einde = NULL;
 	
 	/*
+	 * voor hergebruik
+	 * @var date
+	 */
+		private $_weken_array = NULL;
+	
+	/*
 	 * @var array
 	 */
 	private $_error = NULL;
@@ -129,6 +135,24 @@ class Tijdvak
 			case 7:	return 'zo';
 		}
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * weken array aanmaken
+	 *
+	 */
+	public function wekenArray( $jaar, $return_value = array() )
+	{
+		$this->_setJaar($jaar);
+		$this->_setLaatsteWeek();
+		
+		for( $i=1;$i<=$this->_weken_in_jaar;$i++)
+			$this->_weken_array[$i] = $return_value;
+		
+		return $this->_weken_array;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 * afkortingen

@@ -43,7 +43,7 @@
 
 	<!-- select2 -->
     {if isset($select2) || isset($datatable)}
-		<script src="template/global_assets/js/plugins/forms/selects/select2.min.js" type="text/javascript"></script>
+
     {/if}
 
 	<!-- datamask -->
@@ -68,18 +68,18 @@
 <div class="page-wrapper">
 	<!-- Multiple fixed navbars wrapper -->
 
-		<!-- Main navbar -->
-        {include file='_page/header.tpl'}
-		<!-- /main navbar -->
+	<!-- Main navbar -->
+    {include file='_page/header.tpl'}
+	<!-- /main navbar -->
 
-		<!-- Secondary navbar -->
-		{if !isset($hide_menu)}
-		{if $smarty.session.logindata.user_type == 'werkgever' }{include file='_menu/werkgever.tpl'}{/if}
-		{if $smarty.session.logindata.user_type == 'uitzender' }{include file='_menu/uitzender.tpl'}{/if}
-		{if $smarty.session.logindata.user_type == 'inlener' }{include file='_menu/inlener.tpl'}{/if}
-		{if $smarty.session.logindata.user_type == 'werknemer' }{include file='_menu/werknemer.tpl'}{/if}
-		{/if}
-		<!-- /secondary navbar -->
+	<!-- Secondary navbar -->
+    {if !isset($hide_menu)}
+        {if $smarty.session.logindata.user_type == 'werkgever' }{include file='_menu/werkgever.tpl'}{/if}
+        {if $smarty.session.logindata.user_type == 'uitzender' }{include file='_menu/uitzender.tpl'}{/if}
+        {if $smarty.session.logindata.user_type == 'inlener' }{include file='_menu/inlener.tpl'}{/if}
+        {if $smarty.session.logindata.user_type == 'werknemer' }{include file='_menu/werknemer.tpl'}{/if}
+    {/if}
+	<!-- /secondary navbar -->
 
 	<!-- /multiple fixed navbars wrapper -->
 
@@ -122,64 +122,7 @@
 
 </div>
 
-{if $user_type == 'werkgever'}
-<div class="sidebar-right">
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			NL96SNSB0821159593
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			NL860648400B01
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			hsmeijering@home.nl
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			76504069
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			Reitscheweg 37
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			5232BX 's-Hertogenbosch
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			Factris: NL14 INGB 0007 8661 77
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			Uitzenden: NL49 INGB 0007 2918 89
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			G-rekening:  NL 93 INGB 0990 3336 20
-		</div><!-- /col -->
-	</div><!-- /row -->
-	<div class="row ml-2">
-		<div class="col-md-12 pl-2 pt-2">
-			Bemiddeling: NL41INGB 0006 4341 65
-		</div><!-- /col -->
-	</div><!-- /row -->
-
-
-
-
-</div>
-{/if}
+{include file='layout_sidebar.tpl'}
 
 </body>
 </html>

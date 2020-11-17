@@ -18,19 +18,55 @@ class OmzetGroup extends Connector
 {
 	protected $_error = NULL;
 	
+	
+	
 	private $_omzetuitzenden = NULL;
 	private $_loonkosten = NULL;
 	private $_winst = NULL;
 	private $_winstCum = NULL;
 	
+	private $_jaar = NULL;
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	 * /*
+	 *
 	 * constructor
 	 */
 	public function __construct()
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
+		
+		//default dit jaar
+		$this->jaar( date('Y') );
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * set  jaar
+	 *
+	 */
+	public function jaar( $jaar = NULL ): OmzetGroup
+	{
+		$this->_jaar = $jaar;
+		return $this;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * omzet ophalen
+	 *
+	 */
+	public function totaal(): ?float
+	{
+		$sql = "SELECT SUM(bedrag_excl) AS omzet FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND jaar = $this->_jaar";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$data = $query->row_array();
+		return $data['omzet'];
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 <!-- Main sidebar -->
-<div class="sidebar sidebar-light sidebar-main sidebar-expand-lg align-self-start">
+<div class="sidebar sidebar-light sidebar-main sidebar-expand-lg align-self-start" {if $werknemer->archief == 1}style="border-color: red"{/if}>
 
 	<!-- Sidebar mobile toggler -->
 	<div class="sidebar-mobile-toggler text-center">
@@ -64,6 +64,7 @@
 
 					<!-- li Documenten, andere volgorde wanneer nieuwe aanmelding -->
 
+                    {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
 						<li class="nav-item {if $werknemer->complete != 1}order-2{/if}">
 							<a {if $werknemer->gegevens_complete != NULL}href="crm/werknemers/dossier/documenten/{$werknemer->werknemer_id}"{/if} class="nav-link {if $werknemer->gegevens_complete == NULL}nav-link-disabled{/if} {if $active == 'documenten'}active{/if}">
                                 {* afwijkende icons voor nieuwe aanmelding *}
@@ -83,16 +84,18 @@
 								Documenten
 							</a>
 						</li>
-
+{/if}
 
                     {if $werknemer->complete == 1 }
 						<!-- li plaatsing -->
 
+                        {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
 						<li class="nav-item">
 							<a href="crm/werknemers/dossier/plaatsingen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'plaatsingen'}active{/if}">
 								<i class="far fa-handshake mr-2"></i>Plaatsingen
 							</a>
 						</li>
+						{/if}
 
                         {if $user_type == 'werkgever'}
 							<!-- li Notities -->
@@ -108,6 +111,7 @@
 								</a>
 							</li>
                         {/if}
+                        {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
 						<!-- li ziekmeldingen -->
 						<li class="nav-item">
 							<a href="crm/werknemers/dossier/ziekmeldingen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'ziekmeldingen'}active{/if}">
@@ -126,6 +130,7 @@
 								<i class="icon-stack-text mr-2"></i>Loonstroken
 							</a>
 						</li>
+                        {/if}
                         {if  $user_type == 'werkgever'}
 
 							<!-- li loonbeslagen -->

@@ -1,6 +1,6 @@
 <div style="background-color: #002E65; height: 80px;">
 
-	<table>
+	<table style="width: 100%">
 		<tr>
 			<td>
 				<img src="recources/img/logo-wit.png" style="max-height: 55px; margin-top: 7px; margin-left: 15px;" />
@@ -8,6 +8,11 @@
 			<td style="font-size: 30px; color:#fff; padding-top: 18px; padding-left: 15px;">
 				{$bedrijfsgegevens.bedrijfsnaam}
 			</td>
+			{if isset($logo_uitzender)}
+				<td style="text-align: right; padding-right: 15px; padding-top: 5px;">
+					<img src="{$logo_uitzender}" style="float: right; max-height: 55px; max-width: 250px; border:5px solid #FFF" />
+				</td>
+			{/if})
 		</tr>
 	</table>
 

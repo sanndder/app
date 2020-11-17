@@ -78,7 +78,7 @@ class Auth_model extends CI_Model
 				FROM users
 				LEFT JOIN users_accounts on users.user_id = users_accounts.user_id
 				LEFT JOIN werkgevers ON users_accounts.werkgever_id = werkgevers.werkgever_id
-				WHERE username = ? LIMIT 1";
+				WHERE username = ?  AND users.deleted = 0 LIMIT 1";
 		$query = $this->db_admin->query($sql, array($username));
 		
 		
@@ -140,6 +140,7 @@ class Auth_model extends CI_Model
 	 */
 	public function validate_nologin()
 	{
+
 		if( isset($_SESSION['logindata']['wid']) && isset($_SESSION['logindata']['wg_hash']) )
 		{
 			$_GET['wid'] = $_SESSION['logindata']['wid'];
@@ -158,7 +159,12 @@ class Auth_model extends CI_Model
 		
 		//werkgever niet gevonden
 		if( $query->num_rows() == 0 )
+		{
+			vshow($_SESSION);
+			die('logout');
 			$this->logout( NULL, NULL );
+		}
+
 		
 		//data werkgever
 		$data = $query->row_array();
@@ -319,7 +325,7 @@ class Auth_model extends CI_Model
 				LEFT JOIN users_accounts ON  users_accounts.user_id = users.user_id
 				LEFT JOIN users_sessions ON users.user_id = users_sessions.user_id 
 				LEFT JOIN werkgevers ON users_accounts.werkgever_id = werkgevers.werkgever_id
-				WHERE users.user_id = ? AND sid = ? AND user_type = ? AND users_accounts.id = ? AND session_logout IS NULL
+				WHERE users.user_id = ? AND sid = ? AND user_type = ? AND users_accounts.id = ? AND session_logout IS NULL AND users.deleted = 0
 				LIMIT 1";
 
 		$query = $this->db_admin->query($sql, array($user_id, $sid, $user_type, $account_id));

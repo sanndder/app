@@ -433,8 +433,11 @@ class Ajax extends MY_Controller
 				$week-3 => sprintf("%02d", $week-3),
 				$week-2 => sprintf("%02d", $week-2),
 				$week-1 => sprintf("%02d", $week-1),
-				$week => sprintf("%02d", $week),
+				$week => sprintf("%02d", $week)
 			);
+
+			if( date('w') > 4 )
+				$array['periodes'][$week+1] = sprintf("%02d", $week+1);
 		}
 		
 		if( $factuurgegevens['frequentie'] == '4w')
@@ -500,7 +503,7 @@ class Ajax extends MY_Controller
 	{
 		$this->load->model('upload_model', 'uploadfiles');
 		$this->uploadfiles->setUploadDir( 'invoer/bijlages' );
-		$this->uploadfiles->setAllowedFileTypes( 'jpg|png|pdf' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|png|pdf|jpeg|JPG|JPEG|PNG|PDF' );
 		$this->uploadfiles->setDatabaseTable( 'invoer_bijlages' );
 		$this->uploadfiles->setPrefix( 'bijlage_' );
 		$this->uploadfiles->uploadfiles();

@@ -22,6 +22,7 @@ let transacties = {
 		{
 			transacties.load();
 		});
+		
 		//zoek actie
 		$('.filter [type="text"]').on('keyup', $.debounce(500, function()
 		{

@@ -73,6 +73,10 @@ let invoerbijlages = {
 		//data toevoegen aan uploader
 		$('#upload-bijlages').fileinput('refresh', {uploadExtraData:data});
 		
+		//inlener gekozen?
+		$('.vi-bijlages-placeholder').hide();
+		$('.vi-bijlages-input').show();
+		
 		//bestanden ophalen
 		invoerbijlages.loadFiles();
 	},

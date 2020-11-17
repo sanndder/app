@@ -57,6 +57,7 @@
                                     {if $user_type == 'werkgever' || $inlener->complete == 0}
 
 										<!-- iban -->
+	                                    {if $inlener->complete == 1}
                                         {if isset($formdata.iban)}
                                             {assign "field" "iban"}
 											<div class="form-group row">
@@ -86,6 +87,7 @@
                                                     {/foreach}</span>{/if}
 												</div>
 											</div>
+                                        {/if}
                                         {/if}
 
 										<!-- Factuur betaaltermijn -->
@@ -231,6 +233,7 @@
 
 
 										<!-- factoring -->
+                                      {if $user_type == 'werkgever'}
                                         {if isset($formdata.factoring)}
                                             {assign "field" "factoring"}
 											<div class="form-group row">
@@ -255,6 +258,7 @@
                                                     {/foreach}</span>{/if}
 												</div>
 											</div>
+                                        {/if}
                                         {/if}
 
 
@@ -342,6 +346,7 @@
                                     {/if}
 
 									<!--  factuur_wachtrij -->
+                                    {if !isset($uitzender_sysyteeminstellingen->facturen_wachtrij) || $uitzender_sysyteeminstellingen->facturen_wachtrij == 1}
                                     {if isset($formdata.factuur_wachtrij)}
                                         {assign "field" "factuur_wachtrij"}
 										<div class="form-group row">
@@ -366,6 +371,7 @@
                                                 {/foreach}</span>{/if}
 											</div>
 										</div>
+                                    {/if}
                                     {/if}
 
 
@@ -398,58 +404,62 @@
                                         {/if}
 
 										<!-- bijlages_invoegen -->
-                                        {if isset($formdata.bijlages_invoegen)}
-                                            {assign "field" "bijlages_invoegen"}
-											<div class="form-group row">
-												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-													:
-												</label>
-												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+									    {if $user_type == 'werkgever'}
+	                                        {if isset($formdata.bijlages_invoegen)}
+	                                            {assign "field" "bijlages_invoegen"}
+												<div class="form-group row">
+													<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+														:
+													</label>
+													<div class="col-xl-{$div_xl} col-md-{$div_md}">
 
-                                                    {foreach $formdata.$field.radio.options as $option}
-														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-															<label class="form-check-label">
-														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
-															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
-														</span>
-                                                                {$option}
-															</label>
-														</div>
-                                                    {/foreach}
+	                                                    {foreach $formdata.$field.radio.options as $option}
+															<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+																<label class="form-check-label">
+															<span class="{if $formdata.$field.value == $option@key}checked{/if}">
+																<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
+															</span>
+	                                                                {$option}
+																</label>
+															</div>
+	                                                    {/foreach}
 
-                                                    {if isset($formdata.$field.error)}
-														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
-                                                    {/foreach}</span>{/if}
+	                                                    {if isset($formdata.$field.error)}
+															<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+	                                                    {/foreach}</span>{/if}
+													</div>
 												</div>
-											</div>
-                                        {/if}
+	                                        {/if}
+									    {/if}
 
 										<!-- bijlages_invoegen -->
-                                        {if isset($formdata.verkoop_kosten_gelijk)}
-                                            {assign "field" "verkoop_kosten_gelijk"}
-											<div class="form-group row">
-												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
-													:
-												</label>
-												<div class="col-xl-{$div_xl} col-md-{$div_md}">
+                                    {if $user_type == 'werkgever'}
+	                                        {if isset($formdata.verkoop_kosten_gelijk)}
+	                                            {assign "field" "verkoop_kosten_gelijk"}
+												<div class="form-group row">
+													<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+														:
+													</label>
+													<div class="col-xl-{$div_xl} col-md-{$div_md}">
 
-                                                    {foreach $formdata.$field.radio.options as $option}
-														<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
-															<label class="form-check-label">
-														<span class="{if $formdata.$field.value == $option@key}checked{/if}">
-															<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
-														</span>
-                                                                {$option}
-															</label>
-														</div>
-                                                    {/foreach}
+	                                                    {foreach $formdata.$field.radio.options as $option}
+															<div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+																<label class="form-check-label">
+															<span class="{if $formdata.$field.value == $option@key}checked{/if}">
+																<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
+															</span>
+	                                                                {$option}
+																</label>
+															</div>
+	                                                    {/foreach}
 
-                                                    {if isset($formdata.$field.error)}
-														<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
-                                                    {/foreach}</span>{/if}
+	                                                    {if isset($formdata.$field.error)}
+															<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+	                                                    {/foreach}</span>{/if}
+													</div>
 												</div>
-											</div>
-                                        {/if}
+	                                        {/if}
+	                                    {/if}
                                     {/if}
 
 								</fieldset>

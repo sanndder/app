@@ -53,6 +53,9 @@ class Factoring extends MY_Controller
 			}
 		}
 		
+		//TEMP betalingen koppelen
+		//$factoringGroup->koppelBetalingen();
+		
 		//show( $factoringGroup->filterQuery() );
 		//show($factuur->details());
 		
@@ -156,6 +159,27 @@ class Factoring extends MY_Controller
 		
 		echo json_encode( $result );
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// AJAX set type
+	//-----------------------------------------------------------------------------------------------------------------
+	public function settype( $factuur_id = NULL )
+	{
+		$factuur = new FactoringFactuur( $factuur_id );
+		
+		$factuur->setType( $_POST['type'] );
+		
+		if( $factuur->errors() !== false )
+		{
+			$result['status'] = 'error';
+			$result['error'] = $factuur->errors();
+		}
+		else
+			$result['status'] = 'success';
+		
+		echo json_encode( $result );
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// AJAX set datum

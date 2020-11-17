@@ -245,14 +245,25 @@
 										<a href="crm/uitzenders/dossier/overzicht/{$i.uitzender_id}">{$i.uitzender}</a>
 									</td>
 									<td style="white-space: nowrap">
-										{if $ENV == 'development'}
+
+                                        {***** verbergen ureninvoer *****}
+                                        {if isset($i.hide_ureninvoer)}
+											<i data-id="{$i.inlener_id}" class="{if $i.hide_ureninvoer == 0}icon-eye text-primary{else} icon-eye-blocked text-grey-200{/if} toggle-hide-ureninvoer mr-2 " style="cursor:pointer;" data-popup="tooltip" data-placement="top" data-title="Zichtbaar bij ureninvoer"></i>
+                                        {/if}
+
+                                        {***** weggooien dev *****}
+                                        {if $ENV == 'development'}
 											<a href="{$base_url}/crm/inleners?del={$i.inlener_id}"><i class="icon-trash font-size-sm"></i></a>
                                         {/if}
+
                                         {if $user_type == 'werkgever'}
-                                        {if isset($i.user)}
-											<a href="{$base_url}/dashboard/inlener?loginals=inlener&id={$i.inlener_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
+                                            {***** login als *****}
+                                            {if isset($i.user)}
+												<a href="{$base_url}/dashboard/inlener?loginals=inlener&id={$i.inlener_id}" class="ml-2"><i class="icon-enter mr-1"></i> Login als</a>
+                                            {/if}
                                         {/if}
-                                        {/if}
+
+                                        {***** verbergen ureninvoer *****}
                                         {if $i.complete == 0}
 											<a href="{$base_url}/crm/inleners?action=archief&inlener_id={$i.inlener_id}" class="ml-2"> archief</a>
                                         {/if}

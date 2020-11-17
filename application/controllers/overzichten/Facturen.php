@@ -32,6 +32,8 @@ class Facturen extends MY_Controller
 	public function index()
 	{
 		$facturengroep = new FacturenGroup();
+
+		$_GET['factuur_aangekocht'] = 0;
 		
 		$facturen = $facturengroep->filter($_GET)->facturenMatrix();
 		

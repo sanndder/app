@@ -21,6 +21,7 @@ class Inlener_model extends MY_Model
 	 * inlener id
 	 */
 	public $inlener_id = NULL;
+	public $_uitzender_id = NULL;
 	public $id = NULL;
 	public $_redirect_url = NULL;
 	
@@ -142,6 +143,26 @@ class Inlener_model extends MY_Model
 		$this->_blocked_template_ids = DBhelper::toArray( $query, 'template_id', 'NULL' );
 	}
 	
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * welke uitzender valt de inlener onder
+	 *
+	 * @return string
+	 */
+	public function uitzender()
+	{
+		if( $this->_uitzender_id === NULL )
+		{
+			$query = $this->db_user->query( "SELECT uitzender_id FROM inleners_uitzenders WHERE  deleted = 0 AND inlener_id = $this->inlener_id" );
+			$this->_uitzender_id = DBhelper::toRow( $query, 'NULL', 'uitzender_id');
+		}
+		
+		return $this->_uitzender_id;
+	}
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Kijken welke document noodzakelijk zijn om verder te mogen (blok access = 1) en deze aanmaken
@@ -192,8 +213,9 @@ class Inlener_model extends MY_Model
 	private function _autoGenerateOvereenkomst( $template_id )
 	{
 		$template = new Template( $template_id ); //4 is samenwerkingsovereenkomst
+
 		$document = DocumentFactory::createFromTemplateObject( $template );
-		$document->setInlenerID( $this->inlener_id )->build()->pdf();
+		$document->setInlenerID( $this->inlener_id )->setUitzenderID($this->inlener->uitzender())->build()->pdf();
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

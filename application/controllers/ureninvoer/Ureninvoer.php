@@ -103,9 +103,9 @@ class Ureninvoer extends MY_Controller
 		
 		if( $this->user->user_type == 'werknemer' )
 			die('Geen toegang');
-		
-		if( $this->user->user_type == 'uitzender' &&  $file_array['uitzender_id'] != $this->uitzender->id )
-			die('Geen toegang');
+
+		/*if( $this->user->user_type == 'uitzender' &&  $file_array['uitzender_id'] != $this->uitzender->id )
+			die('Geen toegang');*/
 		
 		if( $this->user->user_type == 'inlener' &&  $file_array['inlener_id'] != $this->inlener->id )
 			die('Geen toegang');

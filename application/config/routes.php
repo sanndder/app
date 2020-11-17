@@ -53,6 +53,8 @@ $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+$route['klantenkaart/(:any)/(:any)/(:any)'] 	= 'klantenkaart/index/$1/$2/$3';
+
 $route['crm/uitzenders(:any)'] 					= 'crm/uitzenders/overzicht/$1';
 $route['crm/uitzenders'] 						= 'crm/uitzenders/overzicht';
 
@@ -61,6 +63,9 @@ $route['crm/inleners'] 							= 'crm/inleners/overzicht';
 
 $route['crm/werknemers(:any)'] 					= 'crm/werknemers/overzicht/$1';
 $route['crm/werknemers'] 						= 'crm/werknemers/overzicht';
+
+$route['crm/prospects(:any)'] 					= 'crm/prospects/overzicht/$1';
+$route['crm/prospects'] 						= 'crm/prospects/overzicht';
 
 $route['crm/zzp(:any)'] 						= 'crm/zzp/overzicht/$1';
 $route['crm/zzp'] 								= 'crm/zzp/overzicht';

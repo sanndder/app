@@ -4,6 +4,7 @@ use models\api\CreditSafe;
 use models\api\Kvk;
 use models\cao\CAOGroup;
 use models\inleners\Inlener;
+use models\inleners\InlenerGroup;
 use models\verloning\Urentypes;
 use models\verloning\Vergoeding;
 
@@ -223,5 +224,39 @@ class Ajax extends MY_Controller
 			$response['error'] = $errors;
 
 		echo json_encode( $response );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// aan en uit zetten bij ureninvoer
+	//-----------------------------------------------------------------------------------------------------------------
+	public function togglevisibilityureninvoer( $inlener_id = NULL, $hide = 0 )
+	{
+		//init inlener object
+		$inlener = new Inlener( $inlener_id );
+		
+		if(  $inlener->setVisibilityUreninvoer($hide) )
+			echo 1;
+		else
+			echo 0;
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// json lijst
+	//-----------------------------------------------------------------------------------------------------------------
+	public function listinleners( $uitzender_id = NULL )
+	{
+		$list = InlenerGroup::list($uitzender_id);
+		
+		if( $list === NULL ) return $list;
+		
+		foreach( $list as $id => $name )
+		{
+			$arr = array( 'id'=>$id, 'name' => $name );
+			$inleners[] = $arr;
+		}
+		
+		
+		header('Content-Type: application/json');
+		echo json_encode($inleners);
 	}
 }

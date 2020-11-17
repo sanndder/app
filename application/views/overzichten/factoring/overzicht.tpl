@@ -6,7 +6,6 @@
 {assign "uploader" "true"}
 
 {block "content"}
-	<script src="recources/js/config.js?{$time}"></script>
 	<script src="recources/js/factoring/overzicht.js?{$time}"></script>
 	<!---------------------------------------------------------------------------------------------------------
 	|| Main content
@@ -217,7 +216,7 @@
 								<div class="card-title">
 									<h3 class="text-primary">
 										<i class="icon-checkmark-circle icon-lg text-green" style="{if $factuur.compleet == 0}display: none{/if}"></i>
-										{$factuur.file_name_display}
+                                        <span class="factuur-name {if $factuur.compleet == 0}text-primary{else}text-success{/if}">{$factuur.file_name_display}</span>
 									</h3>
 								</div>
 								<div class="header-elements">
@@ -256,10 +255,21 @@
 									<tr>
 										<td class="pr-5 pt-2">Type</td>
 										<td colspan="2">
-											<input type="hidden" value="{$factuur.factuur_type}" id="factuur_type" />
-                                            {if $factuur.factuur_type == 'aankoop'}Aankoopfactuur{/if}
-                                            {if $factuur.factuur_type == 'eind'}Eindafrekening{/if}
-                                            {if $factuur.factuur_type === NULL}Onbekend{/if}
+											<input type="hidden" value="{$factuur.factuur_type}" id="factuur_type"/>
+											<span class="span-type">
+	                                            {if $factuur.factuur_type == 'aankoop'}Aankoopfactuur{/if}
+	                                            {if $factuur.factuur_type == 'eind'}Eindafrekening{/if}
+											</span>
+
+                                            {if $factuur.factuur_type !== NULL}
+												<i class="edit-type icon-pencil5 ml-2" style="cursor: pointer; color: #999"></i>
+                                            {/if}
+											<select name="factuur_type" class="form-control" {if $factuur.factuur_type !== NULL}style="display: none" {/if}>
+												<option></option>
+												<option value="aankoop">Aankoopfactuur</option>
+												<option value="eind">Eindafrekening</option>
+											</select>
+
 										</td>
 									</tr>
 
@@ -418,8 +428,8 @@
 						{
 							$('#fileupload').fileinput('refresh', {
 								uploadUrl:'upload/factoringsbestanden',
-								showPreview: false,
-								allowedFileExtensions: ['pdf','PDF']
+								showPreview:false,
+								allowedFileExtensions:['pdf', 'PDF']
 							});
 							$('#fileupload').on('fileuploaded', function()
 							{

@@ -102,6 +102,15 @@ class DocumentOvereenkomstOpdracht extends Document implements DocumentInterface
 		
 		$bedrijfsgegevens = $CI->werkgever->bedrijfsgegevens();
 		$this->pdf->smarty->assign('bedrijfsgegevens', $bedrijfsgegevens);
+
+		//wat moet er in de header
+		if(
+			isset($this->_uitzender_info['systeeminstellingen']['logo_op_inleenovereenkomst']) &&
+			$this->_uitzender_info['systeeminstellingen']['logo_op_inleenovereenkomst'] == 1 &&
+			isset($this->_uitzender_info['logo']) &&
+			$this->_uitzender_info['logo'] !== NULL
+		)
+			$this->pdf->smarty->assign('logo_uitzender', $this->_uitzender_info['logo'] );
 		
 		$header = $this->pdf->smarty->fetch('application/views/pdf/headers/header_full.tpl');
 		$this->pdf->mpdf->SetHTMLHeader($header);
@@ -237,11 +246,12 @@ class DocumentOvereenkomstOpdracht extends Document implements DocumentInterface
 	 */
 	public function _addUitvraagInlenersBeloning( $pdfObject )
 	{
-		$template = new Template( 9 ); //9 is inlenersbeloning
+		/*
+		$template = new Template( 11 ); //11 is inlenersbeloning
 		$document = DocumentFactory::createFromTemplateObject( $template );
 		$pdfInlenersbeloning = $document->setInlenerID( $this->_inlener_id )->build()->pdf();
 		
-		Pdf::Merge($pdfInlenersbeloning->path(), $pdfObject->path(), $pdfObject->path() );
+		Pdf::Merge($pdfInlenersbeloning->path(), $pdfObject->path(), $pdfObject->path() );*/
 	}
 }
 

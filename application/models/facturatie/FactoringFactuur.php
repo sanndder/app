@@ -19,6 +19,7 @@ class FactoringFactuur extends Connector
 {
 	
 	protected $_factuur_id = NULL;
+	protected $_factuur_type = NULL;
 	protected $_regel_totaal = 0;
 	protected $_regel_id = NULL;
 	protected $_factuur_compleet = 0;
@@ -116,7 +117,7 @@ class FactoringFactuur extends Connector
 			$factuur['factuur_nr'] = $this->_setAankoopNummer( $factuur['file_name_display'] );
 		
 		if( $factuur['factuur_type'] === NULL )
-			$factuur['factuur_type'] = $this->_setType( $factuur['file_name_display'] );
+			$factuur['factuur_type'] = $this->_getType( $factuur['file_name_display'] );
 		
 		return $factuur;
 	}
@@ -195,6 +196,13 @@ class FactoringFactuur extends Connector
 					$this->_error[] = 'Vul eerst een geldige factuurdatum in';
 					return false;
 				}
+
+				//stop
+				if( $factorfactuur['factuur_type'] === NULL )
+				{
+					$this->_error[] = 'Stel factuutype in (aankoop of eindafrekening)';
+					return false;
+				}
 				
 				
 				//details van de factuur
@@ -217,13 +225,31 @@ class FactoringFactuur extends Connector
 				$this->db_user->insert( 'factoring_facturen_regels', $insert );
 				$this->_regel_id = $this->db_user->insert_id();
 				
+				$factoringfactuur = $this->details();
+				
 				//nu betaling aan factuur toevoegen
-				$betaling['type'] = $factorfactuur['factuur_type'];
-				$betaling['bedrag'] = $insert['bedrag'];
-				$betaling['datum'] = reverseDate($factorfactuur['factuur_datum']);
-				$betaling['factor_factuur_regel_id'] = $this->_regel_id;
+				if( $factoringfactuur['factuur_type'] == 'aankoop' )
+					$categorie_id = 2;
+				
+				if( $factoringfactuur['factuur_type'] == 'eind' )
+					$categorie_id = 3;
 
-				$factuur->addBetaling( $betaling );
+				$betaling = new FactuurBetaling();
+				$betaling->bedrag( $insert['bedrag'] )->categorie( $categorie_id )->datum( reverseDate($factoringfactuur['factuur_datum']) )->factorFactuurRegel( $this->_regel_id );
+				
+				if( $betaling->valid() )
+				{
+					$factuur->addBetaling( $betaling );
+					$factuur->checkFactoringComplete();
+				}
+				else
+				{
+					//regel weer verwijderen
+					$this->delRegel( $this->_regel_id );
+					
+					$this->_error[] = 'Betaling naar factuur is ongeldig: ' . json_encode($betaling->errors());
+					return false;
+				}
 				
 				$this->_checkFactuurComplete();
 				
@@ -423,15 +449,37 @@ class FactoringFactuur extends Connector
 	 * Type uit bestandsnaam halen
 	 *
 	 */
-	private function _setType( $name )
+	private function _getType( $name )
 	{
 		$update['factuur_type'] = NULL;
 		
-		if( strpos( $name, 'ankoop' ) )
+		if( strpos( $name, 'aan' ) || strpos( $name, 'PN' ))
 			$update['factuur_type'] = 'aankoop';
 		
-		if( strpos( $name, 'indaf' ) )
+		if( strpos( $name, 'eind' ) || strpos( $name, 'CN' ) )
 			$update['factuur_type'] = 'eind';
+		
+		$this->db_user->where( 'factuur_id', $this->_factuur_id );
+		$this->db_user->update( 'factoring_facturen', $update );
+		
+		return $update['factuur_type'];
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Type instellen
+	 *
+	 */
+	public function setType( $name = NULL )
+	{
+		if( $name != 'aankoop' && $name != 'eind' )
+		{
+			$this->_error[] = 'Ongeldig type';
+			return false;
+		}
+		
+		$update['factuur_type'] = $name;
 		
 		$this->db_user->where( 'factuur_id', $this->_factuur_id );
 		$this->db_user->update( 'factoring_facturen', $update );

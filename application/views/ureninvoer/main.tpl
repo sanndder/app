@@ -204,7 +204,7 @@
 							<div class="row">
 								<div class="col-md-12 col-xxl-6 vi-aangenomenwerk-body pt-2">
 
-									{*
+                                    {*
 									<table>
 										<tr>
 											<td class="text-primary text-uppercase font-size-sm font-weight-bold pr-2">Project:</td>
@@ -221,26 +221,26 @@
 											</td>
 										</tr>
 									</table>*}
-{*
-									<fieldset class="mb-3">
-										<legend class="text-primary text-uppercase font-size-sm font-weight-bold">Dienstverband</legend>
-										<table class="vi-aangenomenwerk-regels">
-											<thead>
-												<tr>
-													<th>Omschrijving</th>
-													<th>Bedrag (€)</th>
-												</tr>
-											</thead>
-											<tr>
-												<td class="td-omschrijving">
-													<input name="omschrijving" type="text" class="form-control" value="">
-												</td>
-												<td class="td-bedrag">
-													<input name="bedrag" type="text" class="form-control" value="">
-												</td>
-											</tr>
-										</table>
-									</fieldset>*}
+                                    {*
+																		<fieldset class="mb-3">
+																			<legend class="text-primary text-uppercase font-size-sm font-weight-bold">Dienstverband</legend>
+																			<table class="vi-aangenomenwerk-regels">
+																				<thead>
+																					<tr>
+																						<th>Omschrijving</th>
+																						<th>Bedrag (€)</th>
+																					</tr>
+																				</thead>
+																				<tr>
+																					<td class="td-omschrijving">
+																						<input name="omschrijving" type="text" class="form-control" value="">
+																					</td>
+																					<td class="td-bedrag">
+																						<input name="bedrag" type="text" class="form-control" value="">
+																					</td>
+																				</tr>
+																			</table>
+																		</fieldset>*}
 
 								</div>
 							</div>
@@ -545,58 +545,63 @@
                         {****** bijlages *******************************************************}
 						<div class="tab-pane tab-pane-main fade p-3" id="tab-bijlages">
 
-							<div class="row">
-								<div class="col-md-6">
+							<div class="p-2 font-italic vi-bijlages-placeholder">Selecteer een inlener</div>
 
-									<fieldset class="mt-0">
-										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Bestand(en) uploaden</legend>
-									</fieldset>
+							<div class="vi-bijlages-input" style="display: none">
 
-									<div id="upload-error" class="m-0 mb-2"></div>
+								<div class="row">
+									<div class="col-md-6">
 
-									<form action="#">
-										<input name="file" type="file" id="upload-bijlages" class="file-input" multiple>
-									</form>
-								</div>
-							</div>
+										<fieldset class="mt-0">
+											<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Bestand(en) uploaden</legend>
+										</fieldset>
 
-							<div class="row">
-								<div class="col-md-12">
+										<div id="upload-error" class="m-0 mb-2"></div>
 
-									<fieldset class="mt-5">
-										<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Bijlages en Werkbonnen</legend>
-									</fieldset>
-
-									<div class="table-vi-bijlages-container" style="display: none">
-										<table class="table-vi-bijlages">
-											<thead>
-												<tr>
-													<th style="width: 35px">
-														<i class="icon-radio-unchecked text-grey-200" style="padding-left: 14px" data-vi-action="checkAllBijlages"></i>
-													</th>
-													<th style="width: 35px"></th>
-													<th>Bestand</th>
-													<th class="th-project">Project</th>
-													<th>Grootte</th>
-													<th>Geupload op</th>
-													<th>Geupload door</th>
-													<th></th>
-												</tr>
-											</thead>
-											<tbody></tbody>
-										</table>
-
-
-										<div class="mb-2 mt-3">
-											<i class="icon-arrow-up32 mr-2" style="margin-left: 16px"></i> Met geselecteerde:
-											<button class="btn btn-light btn-sm ml-2" data-vi-action="delSelectedBijlages">
-												<i class="icon-trash mr-2"></i>Bestanden verwijderen
-											</button>
-										</div>
+										<form action="#">
+											<input name="file" type="file" id="upload-bijlages" class="file-input" multiple>
+										</form>
 									</div>
+								</div>
 
-									<div class="table-vi-bijlages-empty">
-										<i class="icon-exclamation mr-1"></i> Geen bijlages gevonden
+								<div class="row">
+									<div class="col-md-12">
+
+										<fieldset class="mt-5">
+											<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Bijlages en Werkbonnen</legend>
+										</fieldset>
+
+										<div class="table-vi-bijlages-container" style="display: none">
+											<table class="table-vi-bijlages">
+												<thead>
+													<tr>
+														<th style="width: 35px">
+															<i class="icon-radio-unchecked text-grey-200" style="padding-left: 14px" data-vi-action="checkAllBijlages"></i>
+														</th>
+														<th style="width: 35px"></th>
+														<th>Bestand</th>
+														<th class="th-project">Project</th>
+														<th>Grootte</th>
+														<th>Geupload op</th>
+														<th>Geupload door</th>
+														<th></th>
+													</tr>
+												</thead>
+												<tbody></tbody>
+											</table>
+
+
+											<div class="mb-2 mt-3">
+												<i class="icon-arrow-up32 mr-2" style="margin-left: 16px"></i> Met geselecteerde:
+												<button class="btn btn-light btn-sm ml-2" data-vi-action="delSelectedBijlages">
+													<i class="icon-trash mr-2"></i>Bestanden verwijderen
+												</button>
+											</div>
+										</div>
+
+										<div class="table-vi-bijlages-empty">
+											<i class="icon-exclamation mr-1"></i> Geen bijlages gevonden
+										</div>
 									</div>
 
 								</div><!-- /col -->

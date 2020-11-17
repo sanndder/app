@@ -93,6 +93,34 @@ class Werknemer extends Connector
 		$this->id = $this->werknemer_id;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Set Archief
+	 *
+	 */
+	public function setArchief( $archief )
+	{
+		//naar archief
+		if( $archief )
+		{
+			$update['archief'] = 1;
+		}
+		
+		//uit archief
+		if( !$archief )
+		{
+			$update['archief'] = 0;
+		}
+		
+		$update['last_update_by'] = $this->user->id;
+		
+		$this->db_user->where( 'werknemer_id', $this->werknemer_id );
+		$this->db_user->update( 'werknemers_status', $update );
+		
+		$this->archief = $update['archief'];
+	}
+	
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

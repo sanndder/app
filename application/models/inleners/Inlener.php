@@ -859,6 +859,22 @@ class Inlener extends Connector
 		
 		return $input;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * inlener verbergen bij ureninvoer
+	 *
+	 */
+	public function setVisibilityUreninvoer( $hide = 0)
+	{
+		$update['hide_ureninvoer'] = intval($hide);
+		$this->db_user->where( 'inlener_id', $this->inlener_id );
+		$this->db_user->update( 'inleners_status', $update );
+		
+		if( $this->db_user->affected_rows() > 0 )
+			return true;
+		return false;
+	}
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

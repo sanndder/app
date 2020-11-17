@@ -23,6 +23,19 @@
           "0": "Nee"
         }
       }
+    },
+    "logo_op_inleenovereenkomst": {
+      "label": "Logo uitzender op inleen overeenkomst",
+      "rules": {
+        "required": false
+      },
+      "radio": {
+        "inline": true,
+        "options": {
+          "1": "Ja",
+          "0": "Nee"
+        }
+      }
     }
   }
 }

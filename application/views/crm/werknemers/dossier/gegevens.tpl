@@ -2,7 +2,7 @@
 {block "title"}Werknemer{/block}
 {block "header-icon"}icon-user{/block}
 {assign "select2" "true"}
-{assign "datamask" "true"}data
+{assign "datamask" "true"}
 {block "header-title"}
     {if $werknemer->werknemer_id == 0}
 		Nieuwe werknemer aanmelden

@@ -26,6 +26,7 @@ class Dossier extends MY_Controller
 		parent::__construct();
 
 		//Deze pagina mag alleen bezocht worden door werkgever
+
 		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'external' )forbidden();
 
 		//method naar smarty
@@ -41,7 +42,7 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function checkaccess( Uitzender $uitzender )
 	{
-
+/*
 		//niet checken bij nieuwe aanmelding
 		if( $uitzender->uitzender_id != 0 )
 		{
@@ -62,7 +63,7 @@ class Dossier extends MY_Controller
 
 		//redirect naar bedankt voor aangemelding
 		if( $this->user->user_type == 'external' && $uitzender->bedrijfsgegevens_complete === '0' && $uitzender->emailadressen_complete === '0' && $uitzender->factuurgegevens_complete === '0' && $uitzender->contactpersoon_complete === '0' )
-			redirect( $this->config->item( 'base_url' ) . 'crm/uitzenders/dossier/bedankt' ,'location' );
+			redirect( $this->config->item( 'base_url' ) . 'crm/uitzenders/dossier/bedankt' ,'location' );*/
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
@@ -222,7 +223,7 @@ class Dossier extends MY_Controller
 		}
 		else
 		{
-			$bedrijfsgevens =  $uitzender->bedrijfsgegevens();
+			$bedrijfsgevens = $uitzender->bedrijfsgegevens();
 			$errors = false; //no errors
 		}
 

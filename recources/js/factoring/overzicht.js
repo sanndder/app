@@ -15,6 +15,11 @@ let factoring = {
 	//events aan dom binden
 	events()
 	{
+		//datum toevoegen
+		$('[name="factuur_type"]').on('change', function()
+		{
+			factoring.setFactuurtype(this);
+		});
 		
 		//datum toevoegen
 		$('[name="factuur_datum"]').on('blur', function()
@@ -26,6 +31,12 @@ let factoring = {
 		$('[name="factuur_totaal"]').on('blur', function()
 		{
 			factoring.setFactuurtotaal(this);
+		});
+		
+				//klik op betaling
+		$('.edit-type').on('click', function()
+		{
+			factoring.makeTypeEditable(this);
 		});
 		
 		//klik op betaling
@@ -214,9 +225,17 @@ let factoring = {
 					
 					//factuur compleet?
 					if( json.factuur_compleet == 1 )
+					{
 						$('.icon-checkmark-circle').show();
+						$('.factuur-name').removeClass('text-primary').addClass('text-success');
+						$('#factuur-' + data.factuur_id).find('.icon-file-pdf').addClass('text-green');
+						$('#factuur-' + data.factuur_id).find('.media-title').addClass('text-green');
+					}
 					else
+					{
 						$('.icon-checkmark-circle').hide();
+						$('.factuur-name').addClass('text-primary').removeClass('text-success');
+					}
 				}
 				else
 				{
@@ -248,6 +267,16 @@ let factoring = {
 		}
 	},
 	
+	
+	makeTypeEditable(obj)
+	{
+		$tr = $(obj).closest('tr');
+		
+		$tr.find('.span-type').hide();
+		$(obj).hide();
+		$tr.find('select').show();
+	},
+	
 	makeEditable(obj)
 	{
 		$tr = $(obj).closest('tr');
@@ -255,6 +284,40 @@ let factoring = {
 		$tr.find('.input-value').hide();
 		$tr.find('.input-group').show();
 		
+	},
+	
+	setFactuurtype(obj)
+	{
+		data.type = $(obj).val();
+		xhr.url = base_url + 'overzichten/factoring/settype/' + $('#factuur_id').val();
+		var response = xhr.call(true);
+		if( response !== false )
+		{
+			response.done(function(json)
+			{
+				
+				if( json.status == 'success' )
+				{
+					$tr.find('i').addClass('icon-check text-success').removeClass('spinner icon-spinner3');
+					
+					//lijst updaten
+					$('#factuur-' + $('#factuur_id').val()).find('.factuur-datum').html(data.datum);
+				}
+				else
+				{
+					$tr.find('i').addClass('icon-alert text-danger').removeClass('spinner icon-spinner3');
+					
+					Swal.fire({
+						type:'warning',
+						title:json.error[0],
+						showCancelButton:false,
+						width:'800px',
+						confirmButtonClass:'btn btn-warning',
+						confirmButtonText:'<i class="icon-cross2 mr-1"></i>sluiten',
+					});
+				}
+			});
+		}
 	},
 	
 	setFactuurdatum(obj)

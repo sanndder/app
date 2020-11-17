@@ -31,7 +31,7 @@
 
 							Voordat u aan de slag kunt hebben wij nog een paar zaken van u nodig. U dient onze
 							<strong class="font-weight-bold">algemene voorwaarden</strong> te accepteren en de
-							<strong class="font-weight-bold">d</strong> te ondertekenen. Daarnaast dient u
+							<strong class="font-weight-bold">de samenwerkingsovereenkomst</strong> te ondertekenen. Daarnaast dient u
 							in het kader van de AVG dient ook onze
 							<strong class="font-weight-bold">verwerkinsovereenkomst</strong> te tekenen.
 

@@ -83,6 +83,29 @@ class Uitzender_model extends MY_Model
 		return NULL;
 	}
 
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Statusbolletjes
+	 *
+	 * @return boolean
+	 */
+	public function statusCount( $type = NULL ) :?int
+	{
+		if( $type == 'facturen_wachtrij' )
+		{
+			if( $this->systeeminstellingen->facturen_wachtrij == 1 )
+				$query = $this->db_user->query( "SELECT count(factuur_id) AS aantal FROM facturen WHERE deleted = 0 AND concept = 0 AND wachtrij = 1 AND wachtrij_akkoord = 0 AND uitzender_id = ?", array($this->id) );
+			else
+				return NULL;
+		}
+		else
+			return NULL;
+		
+		$data = $query->row_array();
+		return $data['aantal'];
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Zijn er nog documenten/acties die de uitzender moet uitvoeren
@@ -91,6 +114,7 @@ class Uitzender_model extends MY_Model
 	 */
 	public function blockAccess()
 	{
+
 		//AV geaccepteerd?
 		if( $this->acceptedAV() === false )
 		{
@@ -122,6 +146,7 @@ class Uitzender_model extends MY_Model
 				FROM documenten
 				LEFT JOIN documenten_templates_settings ON documenten_templates_settings.template_id = documenten.template_id
 				WHERE uitzender_id = $this->uitzender_id AND documenten.deleted = 0 AND documenten_templates_settings.deleted = 0
+				  AND documenten.inlener_id IS NULL AND documenten.werknemer_id IS NULL AND documenten.zzp_id IS NULL
 				AND documenten.signed = 0 AND documenten_templates_settings.block_access = 1
 				";
 		

@@ -70,6 +70,20 @@ class Dossier extends MY_Controller
 				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/etregeling/' . $werknemer_id, 'location' );
 		}
 		
+		//acties
+		if( isset($_GET['action']) )
+		{
+			switch( $_GET['action'] )
+			{
+				case 'archief':
+					$werknemer->setArchief( true );
+					break;
+				case 'uitarchief':
+					$werknemer->setArchief( false );
+					break;
+			}
+		}
+		
 		//show($werknemers);
 		
 		$this->smarty->assign( 'werknemer', $werknemer );
@@ -411,6 +425,9 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function loonstroken( $werknemer_id = NULL )
 	{
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )
+			forbidden();
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
@@ -427,6 +444,9 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function loonbeslagen( $werknemer_id = NULL )
 	{
+		if( $this->user->user_type != 'werkgever' )
+			forbidden();
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
@@ -439,6 +459,9 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function ziekmeldingen( $werknemer_id = NULL )
 	{
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )
+			forbidden();
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
@@ -452,6 +475,9 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function notities( $werknemer_id = NULL )
 	{
+		if( $this->user->user_type != 'werkgever')
+			forbidden();
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
@@ -465,6 +491,9 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function dienstverband( $werknemer_id = NULL )
 	{
+		if( $this->user->user_type != 'werkgever' &&  $this->user->user_type != 'uitzender' )
+			forbidden();
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
@@ -516,6 +545,9 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function verloning( $werknemer_id = NULL )
 	{
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )
+			forbidden();
+		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
@@ -552,6 +584,9 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function etregeling( $werknemer_id = NULL )
 	{
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )
+			forbidden();
+		
 		//load the formbuilder
 		$formbuidler = new Formbuilder();
 		

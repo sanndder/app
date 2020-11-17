@@ -46,6 +46,9 @@
 							<i class="icon-user"></i>ZZP'ers
 						</a>
 					{/if}
+					<a href="crm/prospects" class="dropdown-item">
+						<i class="icon-question3"></i>Prospects
+					</a>
 				</div>
 			</li>
 

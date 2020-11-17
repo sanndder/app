@@ -1,5 +1,6 @@
 <?php
 
+use models\taken\TakenGroup;
 use models\utils\Ondernemingen;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -21,6 +22,7 @@ class MY_Controller extends CI_Controller
 		//base_url naar smarty
 		$this->smarty->assign( 'time' , time() );
 		$this->smarty->assign( 'now' , date('d-m-Y') );
+		$this->smarty->assign( 'this_year' , date('Y') );
 		$this->smarty->assign( 'base_url' , BASE_URL );
 		$this->smarty->assign( 'current_url' , current_url() );
 		$this->smarty->assign( 'qs' , $_SERVER['QUERY_STRING'] );
@@ -46,8 +48,9 @@ class MY_Controller extends CI_Controller
 		$logout = false; if( isset($_GET['logout']) )$logout = true;
 		
 		//controllers die benaderd mogen worden zonder login
-		$no_login = array('aanmelden', 'usermanagement', 'sign', 'documenten', 'cronjobs');
-		
+		$no_login = array('aanmelden', 'usermanagement', 'sign', 'documenten', 'cronjobs', 'crm' );
+
+
 		//validate user, wanneer ingelogd dan nooit no-access
 		if( !in_array($this->uri->segment(1),$no_login) || isset($_SESSION['logindata']['main']) )
 		{
@@ -77,6 +80,7 @@ class MY_Controller extends CI_Controller
 			if( $this->uri->segment(1) != 'cronjobs' )
 				$this->auth->validate_nologin();
 		}
+		
 		//init user
 		$this->load->model('user_model', 'user');
 		$this->smarty->assign( 'account_id' , $this->user->account_id );
@@ -114,6 +118,7 @@ class MY_Controller extends CI_Controller
 			$this->load->model('uitzender_model', 'uitzender');
 			$this->smarty->assign( 'uitzender_id', $this->user->uitzender_id );
 			$this->smarty->assign( 'uitzender_sysyteeminstellingen', $this->uitzender->systeeminstellingen );
+			$this->smarty->assign( 'count_wachtrij', $this->uitzender->statusCount( 'facturen_wachtrij' ) );
 			if( $this->uitzender->blockAccess() && !in_array( $this->uri->segment(1), $no_redirect) )
 				redirect( $this->config->item( 'base_url' ) . $this->uitzender->redirectUrl() ,'location' );
 		}
@@ -134,6 +139,12 @@ class MY_Controller extends CI_Controller
 			$this->smarty->assign( 'werknemer_id', $this->user->werknemer_id );
 		}
 		
+		//voor werkgever taken laden
+		if( $this->user->user_type == 'werkgever' )
+		{
+			$takenGroup = new TakenGroup();
+			$this->smarty->assign( 'taak_categorien', $takenGroup->categorien() );
+		}
 	}
 
 }

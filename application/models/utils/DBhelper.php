@@ -12,7 +12,33 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  *
  */
 class DBhelper{
-
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * verwerk basic db result
+	 * @param query is het codeignitor query object
+	 * @return mixed
+	 */
+	public static function toList( $query, $key_value = array(), $return = 'NULL' )
+	{
+		//empty
+		if ($query->num_rows() == 0)
+		{
+			if( $return == 'false' )
+				return false;
+			if( $return == 'NULL' )
+				return NULL;
+			if( $return == 'array' )
+				return array();
+		}
+		
+		$data = array();
+		
+		foreach ($query->result_array() as $row)
+			$data[$row[key($key_value)]] = $row[current($key_value)];
+		
+		return $data;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

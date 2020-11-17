@@ -50,7 +50,7 @@ class DocumentFactory extends Connector {
 				$document = new DocumentDefault( $templateObject );
 				break;
 		}
-		
+
 		return $document;
 	}
 }

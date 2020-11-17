@@ -37,6 +37,7 @@ class PdfBuilder extends Connector {
 	protected $_file_dir = NULL; //dir
 	protected $_file_path = NULL; // full path ( dir + file_name)
 	protected $_file_table = NULL; //table where file is stored
+	protected $_file_pages = NULL; //number of pages
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -240,6 +241,7 @@ class PdfBuilder extends Connector {
 		$config['file_name_display'] = $this->_file_name_display;
 
 		$pdf = new Pdf( $config );
+		
 		return $pdf;
 	}
 	

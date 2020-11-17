@@ -4,6 +4,7 @@
 {block "header-title"}Dashboard{/block}
 
 {block "content"}
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 
 	<!-- Main content -->
@@ -266,17 +267,90 @@
 					<div class="card">
 						<div class="card-body">
 
-							<fieldset class="mb-0 mt-0">
-								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Omzet en marge</legend>
-							</fieldset>
+							<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Marge & Uren</legend>
 
-							<div class="row">
-								<div class="col-md-12">
-									<i>Geen data beschikbaar</i>
-								</div>
-							</div>
-						</div><!-- /card body -->
-					</div><!-- /basic card -->
+							<div id="chart"></div>
+							<script>
+
+								var options = {
+									chart:{
+										height:350,
+										zoom:{
+											enabled:false
+										}
+									},
+                                    colors: ['#00ABE9', '#002B61'],
+									series: [{
+										name: "Marge",
+										data: {$data_marge},
+										type: 'column',
+									},
+										{
+											name: "Uren",
+											data: {$data_uren},
+											type: 'column',
+										}],
+									dataLabels:{
+										enabled:false
+									},
+									tooltip:{
+										shared:true,
+										x:{
+											show:true,
+										}
+									},
+									xaxis: {
+										categories: {$x_as},
+										labels: {
+											formatter: function(value) {
+												return 'week ' + value;
+											}
+										}
+									},
+									yaxis: [{
+										title: {
+											text: 'Marge (€)',
+										},
+										decimalsInFloat: 0
+									}, {
+										opposite:true,
+										title:{
+											text:'Gewerkte uren'
+										},
+										forceNiceScale: true,
+										decimalsInFloat: 0
+									}],
+
+									noData:{
+										text:'Gegevens laden...'
+									},
+									stroke:{
+										width:[2],
+										curve:'straight'
+									},
+
+									fill:{
+										opacity:[1, 1, 1, 0.25],
+
+										gradient:{
+											inverseColors:false,
+											shade:'light',
+											type:"vertical",
+											opacityFrom:0.85,
+											opacityTo:0.55,
+											stops:[0, 100, 100, 100]
+										}
+									}
+								};
+
+								var chart = new ApexCharts(document.querySelector("#chart"), options);
+								chart.render();
+
+							</script>
+
+
+						</div>
+					</div>
 
 
 					<!-- Basic card -->
@@ -284,14 +358,21 @@
 						<div class="card-body">
 
 							<fieldset class="mb-0 mt-0">
-								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Gewerkte uren</legend>
+								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Top 5 marge inleners</legend>
 							</fieldset>
 
-							<div class="row">
-								<div class="col-md-12">
-									<i>Geen data beschikbaar</i>
-								</div>
-							</div>
+							<table style="width: 100%;">
+                                {foreach $top5 as $inlener}
+									<tr>
+										<td style="width: 20%" class="pl-2 py-1">{$inlener.inlener}</td>
+										<td>
+											<div style="width:{$inlener.percentage}%; height: 15px; float: left; background-color:#4CAF50"></div>
+											<div style="margin-left:6px; float: left;">€ {$inlener.marge|number_format:2:',':'.'} ({$inlener.percentage|number_format:2:',':'.'}%)</div>
+										</td>
+									</tr>
+                                {/foreach}
+							</table>
+
 						</div><!-- /card body -->
 					</div><!-- /basic card -->
 

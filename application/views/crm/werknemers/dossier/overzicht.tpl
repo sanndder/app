@@ -1,7 +1,7 @@
 {extends file='../../../layout.tpl'}
 {block "title"}Werknemer{/block}
 {block "header-icon"}icon-user{/block}
-{block "header-title"}Werknemer - {$werknemer->naam}{/block}
+{block "header-title"}Werknemer - {$werknemer->naam} {if $werknemer->archief == 1} <span style="color:red">(archief)</span> {/if}{/block}
 
 {block "content"}
 
@@ -56,13 +56,29 @@
 									</div><!-- /row -->
 								</div>
 
+                                {if $user_type == 'werkgever'}
 								<div class="">
-									<a href="crm/werknemers/dossier/exportwerknemer/{$werknemer->werknemer_id}" target="_blank">
-										<i class="icon-download"></i>
+									<a href="crm/werknemers/dossier/exportwerknemer/{$werknemer->werknemer_id}" target="_blank" class="btn btn-light mr-1">
+										<i class="icon-download"></i> XML
 									</a>
 								</div>
 
+								<div>
+                                    {if $werknemer->archief == 0}
+										<a style="width: 150px" href="crm/werknemers/dossier/overzicht/{$werknemer->werknemer_id}?action=archief" class="btn btn-light">
+											<i class="icon-archive mr-1"></i>Naar archief
+										</a>
+                                    {/if}
+                                    {if $werknemer->archief == 1}
+										<a style="width: 150px" href="crm/werknemers/dossier/overzicht/{$werknemer->werknemer_id}?action=uitarchief" class="btn btn-light">
+											<i class="icon-archive mr-1"></i>Uit archief
+										</a>
+                                    {/if}
+								</div>
+                                {/if}
 							</div>
+
+
 
 
 						</div><!-- /card body-->
@@ -73,7 +89,7 @@
 				|| Right side
 				--------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 				<div class="col-md-3">
-
+                    {if $user_type == 'werkgever'}
 					<!------------------------------------------------------- card: Accountmanager ------------------------------------------------------>
 					<div class="card">
 						<div class="card-header bg-transparent header-elements-inline">
@@ -91,6 +107,7 @@
 
 						</div>
 					</div><!-- /card: Accountmanager  -->
+					{/if}
 
 					<!------------------------------------------------------- card: Accountmanager ------------------------------------------------------>
 					<div class="card">
@@ -110,6 +127,7 @@
 						</div>
 					</div><!-- /card: Accountmanager  -->
 
+                    {if $user_type == 'werkgever'}
 					<!------------------------------------------------------- card: Gebruikers --------------------------------------------------------->
 					<div class="card">
 						<div class="card-header bg-transparent header-elements-inline">
@@ -143,6 +161,7 @@
 
 						</div>
 					</div><!-- /card: Accountmanager  -->
+					{/if}
 
 				</div><!-- / Right side -->
 			</div><!-- /einde main row -->

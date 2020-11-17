@@ -119,8 +119,8 @@ class UserGroup extends Connector {
 	 */
 	static function findUserNames( $input_array = array() )
 	{
-		if( count($input_array) == 0 )
-			return $array;
+		if( !is_array($input_array) || count($input_array) == 0 )
+			return $input_array;
 		
 		$user_ids = array();
 		

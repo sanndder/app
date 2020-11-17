@@ -3,7 +3,7 @@
 {block "header-icon"}icon-folder-plus2{/block}
 {block "header-title"}Overzicht - Zorgverzekering{/block}
 {assign "datatable" "true"}
-{assign "select2" "true"}
+
 
 {block "content"}
 	<!---------------------------------------------------------------------------------------------------------

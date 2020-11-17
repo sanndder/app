@@ -4,6 +4,7 @@ use models\email\Email;
 use models\forms\Formbuilder;
 use models\forms\Valid;
 use models\uitzenders\Uitzender;
+use models\uitzenders\UitzenderGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -125,5 +126,23 @@ class Ajax extends MY_Controller
 			$response['error'] = $errors;
 
 		echo json_encode( $response );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// uitzenders ophalen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function listuitzenders()
+	{
+		$list = UitzenderGroup::list();
+		
+		foreach( $list as $id => $name )
+		{
+			$arr = array( 'id'=>$id, 'name' => $name );
+			$uitzenders[] = $arr;
+		}
+		
+		header('Content-Type: application/json');
+		echo json_encode($uitzenders);
+		
 	}
 }
