@@ -24,6 +24,9 @@ class MargeGroup extends Connector
 	
 	private $_info_jaren = array();
 	private $_info_inleners = array();
+
+	private $_set_tijdvak = NULL;
+	private $_set_periode = NULL;
 	
 	private $_set_jaar = NULL;
 	private $_set_inleners = NULL;
@@ -63,6 +66,33 @@ class MargeGroup extends Connector
 		$this->_uitzender_id = intval($id);
 		return $this;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * set  tijdvak
+	 *
+	 */
+	public function tijdvak( $val = NULL ) :MargeGroup
+	{
+		if( $val == 'w' || $val == '4w' || $val == 'm')
+			$this->_set_tijdvak = $val;
+		
+		return $this;
+	}
+	
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * set  tijdvak
+	 *
+	 */
+	public function periode( $val = NULL ) :MargeGroup
+	{
+		$this->_set_periode = intval($val);
+		return $this;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -158,6 +188,144 @@ class MargeGroup extends Connector
 		return $this;
 	}
 
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * marge data werknemers instellen
+	 *
+	 */
+	public function weekoverzicht() :?array
+	{
+		$sql = "SELECT facturen.factuur_id, facturen.factuur_nr, facturen.inlener_id, ib.bedrijfsnaam AS inlener, facturen.periode, facturen.tijdvak, row_start, row_end, omschrijving, uren_decimaal, uren_aantal, uitkeren_werknemer, subtotaal_verkoop, subtotaal_kosten,
+       				(facturen_regels.subtotaal_verkoop - facturen_regels.subtotaal_kosten) AS marge, facturen_regels.werknemer_id, wg.voornaam, wg.tussenvoegsel, wg.voorletters, wg.achternaam
+				FROM facturen_regels
+				LEFT JOIN facturen ON facturen_regels.factuur_id = facturen.factuur_id
+				LEFT JOIN werknemers_gegevens wg ON facturen_regels.werknemer_id = wg.werknemer_id
+				LEFT JOIN inleners_bedrijfsgegevens ib ON facturen.inlener_id = ib.inlener_id
+				WHERE facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0 AND facturen.jaar = $this->_set_jaar
+				  	AND facturen.uitzender_id = $this->_uitzender_id AND periode = $this->_set_periode AND tijdvak = '$this->_set_tijdvak'
+					AND wg.deleted = 0 AND ib.deleted = 0 AND row_start IS NULL AND row_end IS NULL
+				GROUP BY regel_id
+				ORDER BY facturen_regels.regel_id";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		//init
+		$werknemer_template = 	[
+			'uren_aantal_verkoop' => 0,
+			'uren_aantal_kosten' => 0,
+			'uren_bedrag_verkoop' => 0,
+			'uren_bedrag_kosten' => 0,
+			'vergoedingen_bedrag_verkoop' => 0,
+			'vergoedingen_bedrag_kosten' => 0,
+			'totaal_bedrag_verkoop' => 0,
+			'totaal_bedrag_kosten' => 0,
+			'totaal_bedrag_marge' => 0,
+			'percentage_marge' => 0
+		];
+		
+		foreach( $query->result_array() as $row )
+		{
+			$data[] = $row;
+			$werknemer_id = $row['werknemer_id'];
+			$inlener_id = $row['inlener_id'];
+			
+			$weekoverzicht[$inlener_id]['inlener'] = $row['inlener'];
+			
+			if( !isset(	$weekoverzicht[$inlener_id]['werknemers']['totaal']))
+				$weekoverzicht[$inlener_id]['werknemers']['totaal'] = $werknemer_template;
+			
+			//aanmaken
+			if( !isset($weekoverzicht[$inlener_id]['werknemers'][$werknemer_id]) )
+			{
+				$weekoverzicht[$inlener_id]['werknemers'][$werknemer_id] = $werknemer_template;
+				$weekoverzicht[$inlener_id]['werknemers'][$werknemer_id]['naam'] = make_name( $row );;
+			}
+			
+			//uren optellen
+			if( $row['uren_aantal'] !== NULL )
+			{
+				//wanneer verkoop uren
+				if( $row['subtotaal_verkoop'] !== NULL && $row['subtotaal_verkoop'] !== 0 )
+				{
+					$weekoverzicht[$inlener_id]['werknemers'][$werknemer_id]['uren_aantal_verkoop'] += $row['uren_decimaal'];
+					$weekoverzicht[$inlener_id]['werknemers'][$werknemer_id]['uren_bedrag_verkoop'] += $row['subtotaal_verkoop'];
+					$weekoverzicht[$inlener_id]['werknemers']['totaal']['uren_aantal_verkoop'] += $row['uren_decimaal'];
+					$weekoverzicht[$inlener_id]['werknemers']['totaal']['uren_bedrag_verkoop'] += $row['subtotaal_verkoop'];
+				}
+				//zijn het ook kosten?
+				if( $row['uitkeren_werknemer'] == 1 )
+				{
+					$weekoverzicht[$inlener_id]['werknemers'][$werknemer_id]['uren_aantal_kosten'] += $row['uren_decimaal'];
+					$weekoverzicht[$inlener_id]['werknemers'][$werknemer_id]['uren_bedrag_kosten'] += $row['subtotaal_kosten'];
+					$weekoverzicht[$inlener_id]['werknemers']['totaal']['uren_aantal_kosten'] += $row['uren_decimaal'];
+					$weekoverzicht[$inlener_id]['werknemers']['totaal']['uren_bedrag_kosten'] += $row['subtotaal_kosten'];
+				}
+			}
+			
+			//vergoedingen/kosten
+			if( $row['uren_aantal'] === NULL )
+			{
+				//wanneer verkoop uren
+				if( $row['subtotaal_verkoop'] !== NULL && $row['subtotaal_verkoop'] != 0 )
+				{
+					$weekoverzicht[$inlener_id]['werknemers'][$werknemer_id]['vergoedingen_bedrag_verkoop'] += $row['subtotaal_verkoop'];
+					$weekoverzicht[$inlener_id]['werknemers']['totaal']['vergoedingen_bedrag_verkoop'] += $row['subtotaal_verkoop'];
+				}
+				//zijn het ook kosten?
+				if( $row['uitkeren_werknemer'] == 1 )
+				{
+					$weekoverzicht[$inlener_id]['werknemers'][$werknemer_id]['vergoedingen_bedrag_kosten'] += $row['subtotaal_kosten'];
+					$weekoverzicht[$inlener_id]['werknemers']['totaal']['vergoedingen_bedrag_kosten'] += $row['subtotaal_kosten'];
+				}
+			}
+			
+		}
+		
+		$totaal = $werknemer_template;
+		
+		//nu percentages uitrekenen
+		foreach( $weekoverzicht as $inlener_id => &$inlener )
+		{
+			foreach( $inlener['werknemers'] as $werknemer_id => &$werknemer )
+			{
+				$werknemer['totaal_bedrag_verkoop'] = $werknemer['uren_bedrag_verkoop'] + $werknemer['vergoedingen_bedrag_verkoop'];
+				$werknemer['totaal_bedrag_kosten'] = $werknemer['uren_bedrag_kosten'] + $werknemer['vergoedingen_bedrag_kosten'];
+				$werknemer['totaal_bedrag_marge'] = $werknemer['totaal_bedrag_verkoop'] - $werknemer['totaal_bedrag_kosten'];
+				
+				$werknemer['percentage_marge'] = round( ( $werknemer['totaal_bedrag_marge'] / $werknemer['totaal_bedrag_verkoop'] ) * 100, 2);
+				
+				//totaaltelling
+				if( $werknemer_id == 'totaal' )
+				{
+					$totaal['uren_aantal_verkoop'] += $werknemer['uren_aantal_verkoop'];
+					$totaal['uren_aantal_kosten'] += $werknemer['uren_aantal_kosten'];
+					$totaal['uren_bedrag_verkoop'] += $werknemer['uren_bedrag_verkoop'];
+					$totaal['uren_bedrag_kosten'] += $werknemer['uren_bedrag_kosten'];
+					$totaal['vergoedingen_bedrag_verkoop'] += $werknemer['vergoedingen_bedrag_verkoop'];
+					$totaal['vergoedingen_bedrag_kosten'] += $werknemer['vergoedingen_bedrag_kosten'];
+					$totaal['totaal_bedrag_verkoop'] += $werknemer['totaal_bedrag_verkoop'];
+					$totaal['totaal_bedrag_kosten'] += $werknemer['totaal_bedrag_kosten'];
+					$totaal['totaal_bedrag_marge'] += $werknemer['totaal_bedrag_marge'];
+				}
+			}
+		}
+		
+		//totaal percentage
+		$totaal['percentage_marge'] = round( ( $totaal['totaal_bedrag_marge'] / $totaal['totaal_bedrag_verkoop'] ) * 100, 2);
+		$weekoverzicht['totaal'] = $totaal;
+	
+		if(isset($_GET['s']))
+		{
+			show($weekoverzicht);
+			die();
+		}
+		
+		return $weekoverzicht;
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *

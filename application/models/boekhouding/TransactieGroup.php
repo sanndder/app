@@ -43,7 +43,21 @@ class TransactieGroup extends Connector
 		//call parent constructor for connecting to database
 		parent::__construct();
 	}
-	
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Lijst met alle categorien
+	 *
+	 */
+	public function listCategorien()
+	{
+		$query = $this->db_user->query( "SELECT categorie_id, categorie, factoring, factuur FROM bank_transacties_categorien WHERE deleted = 0 ORDER BY categorie" );
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		return DBhelper::toArray( $query, 'categorie_id', 'NULL' );
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -54,9 +68,7 @@ class TransactieGroup extends Connector
 	{
 		$this->_limit = intval( $limit );
 	}
-
-
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * filter parameters

@@ -21,6 +21,8 @@ class Upload_model extends MY_Model
 	private $_file_name_display = NULL; //name before upload
 	private $_file_path = NULL; //path after upload
 	private $_file_ext = NULL; //extentions after upload
+	private $_file_must_be_unique = false; //moet bestand uniek zijn
+	private $_file_hash = NULL; //md5 has van bestand
 
 	private $_field = NULL; //welk veld is key
 	private $_id = NULL; //id voor table
@@ -161,6 +163,19 @@ class Upload_model extends MY_Model
 	{
 		$this->_random_name_prefix = $prefix;
 	}
+	
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * check if bestand uniek is
+	 *
+	 * @return void
+	 */
+	function setcheckUnique( bool $val = false )
+	{
+		$this->_file_must_be_unique = $val;
+	}
 
 
 
@@ -201,6 +216,10 @@ class Upload_model extends MY_Model
 		$this->_file_name = $uploaddata['orig_name'];
 		$this->_file_name_display = $uploaddata['client_name'];
 		$this->_file_path = $this->_path . '/' . $this->_file_name;
+		
+		//alleen bij uniek
+		if( $this->_file_must_be_unique )
+			$this->_file_hash = md5_file($this->_file_path);
 
 		if( !file_exists($this->_file_path) || is_dir($this->_file_path))
 		{
@@ -236,12 +255,27 @@ class Upload_model extends MY_Model
 		$insert['file_name_display'] = $this->_file_name_display;
 		$insert['file_size'] = filesize($this->_file_path);
 		$insert['user_id'] = $this->user->user_id;
+		
+		if( $this->_file_must_be_unique )
+		{
+			$insert['file_hash'] = $this->_file_hash;
+			
+			//check
+			$query = $this->db_user->query( "SELECT bestand_id FROM bank_transactiebestanden WHERE deleted = 0 AND file_hash = ?", array( $insert['file_hash'] ) );
+			if( $query->num_rows() > 0 )
+			{
+				$this->_error[] = 'Bestand is al eerder geupload';
+				return false;
+			}
+		}
 
 		$this->db_user->insert( $this->_table, $insert);
 		
 		if( $this->db_user->insert_id() > 0 )
-		return $this->db_user->insert_id();
+			return $this->db_user->insert_id();
 
+		$this->_error[] = 'Bestand kon niet worden weggeschreven naar database';
+		return false;
 	}
 
 

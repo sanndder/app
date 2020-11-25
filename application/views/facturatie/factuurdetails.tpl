@@ -70,15 +70,15 @@
 								<tr>
 									<td class="pr-5 pt-1 font-weight-bold">Totaal incl.:</td>
 									<td class=" pr-3 pt-1 text-right {if $factuur.bedrag_incl == ($factuur.bedrag_incl - $factuur.bedrag_openstaand)} text-success font-weight-bold{/if}">€ {$factuur.bedrag_incl|number_format:2:',':'.'}</td>
-									<td class=" pr-3 pt-1 text-right">€ {$factuur.bedrag_incl - $factuur.bedrag_openstaand|number_format:2:',':'.'}</td>
+									<td class=" pr-3 pt-1 text-right">€ {abs($factuur.bedrag_incl) - $factuur.bedrag_openstaand|number_format:2:',':'.'}</td>
 									<td class="pt-1 text-right">€ {$factuur.bedrag_openstaand|number_format:2:',':'.'}</td>
 								</tr>
                                 {** incl **}
 								<tr>
 									<td class="pr-5 pt-1 font-weight-bold">Totaal vrij:</td>
-									<td class="pr-3 pt-1 text-right {if ($factuur.bedrag_excl - $factuur.bedrag_grekening) == $betaald_vrij} text-success font-weight-bold{/if}">€ {$factuur.bedrag_excl - $factuur.bedrag_grekening|number_format:2:',':'.'}</td>
+									<td class="pr-3 pt-1 text-right {if ($factuur.bedrag_incl - $factuur.bedrag_grekening) == $betaald_vrij} text-success font-weight-bold{/if}">€ {$factuur.bedrag_incl - $factuur.bedrag_grekening|number_format:2:',':'.'}</td>
 									<td class="pr-3 pt-1 text-right">€ {$betaald_vrij|number_format:2:',':'.'}</td>
-									<td class="pt-1 text-right">€ {$factuur.bedrag_excl - $factuur.bedrag_grekening - $betaald_vrij|number_format:2:',':'.'}</td>
+									<td class="pt-1 text-right">€ {abs($factuur.bedrag_incl) - $factuur.bedrag_grekening - $betaald_vrij|number_format:2:',':'.'}</td>
 								</tr>
 								<tr>
 									<td class="pr-5 pt-1 font-weight-bold">Totaal G-rekening:</td>

@@ -55,7 +55,7 @@ class TransactieBestandenFactory extends Connector
 		if( $this->bank() == 'INGB' )
 			return new TransactieBestandenIng( $this->_bestand_id, $this->_bestand );
 		
-		return NULL;
+		return $this;
 		
 	}
 	

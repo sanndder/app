@@ -458,11 +458,15 @@ class Dossier extends MY_Controller
 		}
 		
 		//emailen
-		if( isset($_GET['email']) )
+		if( isset($_GET['email'])  )
 		{
-			$factuur = new \models\facturatie\Factuur( $_GET['email'] );
-			if( $factuur->email() )
-				redirect( $this->config->item( 'base_url' ) . '/crm/uitzenders/dossier/facturen/' . $uitzender_id . '?send' ,'location' );
+			$details = $factuur->details();
+			if( $details['bedrag_excl'] != 0 )
+			{
+				$factuur = new \models\facturatie\Factuur($_GET['email']);
+				if ($factuur->email())
+					redirect($this->config->item('base_url') . '/crm/uitzenders/dossier/facturen/' . $uitzender_id . '?send', 'location');
+			}
 		}
 		
 		if( isset($_GET['send']) )

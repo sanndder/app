@@ -1,5 +1,5 @@
 {extends file='../layout.tpl'}
-{block "title"}Dashboard{/block}
+{block "title"}Facturen & Marge{/block}
 {block "header-icon"}mi-euro-symbol{/block}
 {block "header-title"}Facturen & Marge{/block}
 {assign "ckeditor" "true"}
@@ -26,7 +26,7 @@
 					</div>
 				{else}
 					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-hover">
+						<table class="table table-striped table-hover table-sm">
 							<thead>
 								<tr>
 									<th style="width: 25px;">Jaar</th>
@@ -42,8 +42,40 @@
 								</tr>
 							</thead>
 							<tbody>
+								{assign 'periode' '-1'}
+								{assign 'jaar' '-1'}
+								{assign 'totaal_verkoop' '0'}
+								{assign 'totaal_kosten' '0'}
+								{assign 'totaal_marge' '0'}
                                 {foreach $facturen as $f}
-									<tr>
+                                    {*regel voor overzicht*}
+	                                {if ($periode != $f.verkoop.periode && $periode != -1)}
+		                                <tr style="background-color: #E8E8E8;">
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1">Totaal</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1">{$periode}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1">
+				                                <a target="_blank" href="facturenoverzicht/weekoverzicht/{$f.verkoop.tijdvak}/{$jaar}/{$periode}">
+					                                <i class="icon-file-pdf mr-1"></i>overzicht_periode_{$periode}.pdf
+				                                </a>
+			                                </td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_verkoop|number_format:2:',':'.'}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_kosten|number_format:2:',':'.'}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder"></td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_marge|number_format:2:',':'.'}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
+		                                </tr>
+                                        {$totaal_verkoop = 0}
+                                        {$totaal_kosten = 0}
+                                        {$totaal_marge = 0}
+	                                {/if}
+									{$periode = $f.verkoop.periode}
+									{$jaar = $f.verkoop.jaar}
+	                                {$totaal_verkoop = $totaal_verkoop + $f.verkoop.bedrag_incl}
+	                                {$totaal_kosten = $totaal_kosten + $f.verkoop.kosten_incl}
+	                                {$totaal_marge = $totaal_marge + $f.marge.bedrag_incl}
+	                                <tr>
 										<td>{$f.verkoop.jaar}</td>
 										<td>{$f.verkoop.periode}</td>
 										<td style="width: 1px; white-space: nowrap;">
@@ -80,7 +112,7 @@
 														<i class="icon-menu7"></i></a>
 
 													<div class="dropdown-menu dropdown-menu-right">
-														<a href="javascript:void()" class="dropdown-item">
+														<a target="_blank" href="facturatie/factuur/download/{$f.verkoop.factuur_id}" class="dropdown-item">
 															<i class="icon-file-download"></i> Download
 														</a>
 														{*
@@ -94,6 +126,28 @@
 										</td>
 										<td></td>
 									</tr>
+                                    {*regel voor overzicht*}
+                                    {if $f@last }
+		                                <tr style="background-color: #E8E8E8;">
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1">Totaal</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1">{$periode}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1">
+				                                <a target="_blank" href="facturenoverzicht/weekoverzicht/{$f.verkoop.tijdvak}/{$jaar}/{$periode}">
+					                                <i class="icon-file-pdf mr-1"></i>overzicht_periode_{$periode}.pdf
+				                                </a>
+			                                </td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_verkoop|number_format:2:',':'.'}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_kosten|number_format:2:',':'.'}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder"></td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_marge|number_format:2:',':'.'}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
+		                                </tr>
+                                        {$totaal_verkoop = 0}
+                                        {$totaal_kosten = 0}
+                                        {$totaal_marge = 0}
+                                    {/if}
                                 {/foreach}
 							</tbody>
 						</table>

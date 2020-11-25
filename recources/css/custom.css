@@ -129,3 +129,9 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
     position: sticky;
     top: 65px;
 }
+
+
+/* bank transacties */
+.search-result-facturen{width: 100%;}
+.search-result-facturen tbody tr:first-of-type td{border-top:1px solid #333;}
+.search-result-facturen tbody tr:last-of-type td{border-bottom:1px solid #333;}

@@ -194,18 +194,36 @@
 
 								<!----- knoppen -------------------------->
 								<div class="row">
+									<div class="col-md-12">
 
+										<button type="button" class="btn btn-sm btn-outline-primary btn-verwerkt">
+											<i class="icon-check mr-1"></i>Markeren als verwerkt
+										</button>
+										<button type="button" class="btn btn-sm btn-outline-warning btn-onverwerkt">
+											<i class="icon-cross mr-1"></i>Markeren als niet verwerkt
+										</button>
+
+
+									</div><!-- /col -->
+								</div><!-- /row -->
+
+								<div class="row">
 
 									<!----- details -------------------------->
 									<div class="col-md-4">
 
-										<input type="hidden" id="transactie_id" />
+										<input type="hidden" id="transactie_id"/>
 
-										<table style="width: 100%;" class="table-transactiegegevens">
+										<table style="width: 100%;" class="table-transactiegegevens mt-3">
 											<tr>
 												<td colspan="2" class="h5 pb-2 text-primary">
-													Transactiegegevens <i class="ml-1 icon-checkmark-circle text-success"></i>
+													Transactiegegevens
+													<i class="ml-1 icon-checkmark-circle text-success"></i>
 												</td>
+											</tr>
+											<tr>
+												<td>ID</td>
+												<td class="font-weight-bolder pt-1 td-id"></td>
 											</tr>
 											<tr>
 												<td>Relatie</td>
@@ -227,66 +245,180 @@
 												<td class="pr-3">Omschrijving</td>
 												<td class="font-weight-bolder pt-1 td-omschrijving"></td>
 											</tr>
+											<tr>
+												<td colspan="2" style="height: 20px"></td>
+											</tr>
+											<tr>
+												<td class="pr-3 pt-1">Categorie</td>
+												<td class="font-weight-bolder pt-1">
+													<select class="form-control" name="categorie_id" style="height: 35px; padding: 1px 9px">
+														<option value="-1"></option>
+                                                        {foreach $categorien as $c}
+															<option class="px-2" value="{$c@key}">{$c.categorie}</option>
+                                                        {/foreach}
+													</select>
+												</td>
+												<td class="status-categorie">
+													<i></i><span></span>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="h5 pt-4 pb-2 text-primary">
+													Opmerking
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="pt-1">
+													<textarea name="opmerking" class="form-control p-1" style="height: 60px;" data-lpignore="true"></textarea>
+												</td>
+											</tr>
 										</table>
 
 									</div><!-- /col -->
 
-									<!----- koppelen -------------------------->
-									<div class="col-md-5">
+									<div class="col-md-7 offset-md-1">
 
-										<table class="table-koppeling">
+										<!----- koppelen factuur -------------------------------------->
+										<table class="table-koppeling-factuur mt-3" style="display: none">
 											<tr>
 												<td colspan="3" class="h5 pb-2 text-primary">
-													Koppeling
+													Koppeling factuur
 												</td>
 											</tr>
 											<tr>
 												<td class="pr-3 pt-1">Type</td>
 												<td class="font-weight-bolder pt-1">
-													<select class="form-control" name="type" style="height: 35px; width: 105px; padding: 1px 9px">
-														<option></option>
-														<option value="inlener">Inlener</option>
-														<option value="uitzender">Uitzender</option>
-													</select>
+													<span class="span-relatie-type-select">
+														<select class="form-control" name="type" style="height: 35px; padding: 1px 9px">
+															<option value="-1"></option>
+															<option value="inlener">Inlener</option>
+															<option value="uitzender">Uitzender</option>
+														</select>
+													</span>
+													<span class="span-relatie-type-text"></span>
+													<input type="hidden" id="relatie-type" value="">
+												</td>
+												<td class="td-status-relatie-type">
+												</td>
+											</tr>
+											<tr>
+												<td class="pr-3 pt-1">Bedrijfsnaam</td>
+												<td class="font-weight-bolder pt-1" style="width: 400px;">
+													<span class="span-relatie-select">
+														<select class="form-control select-search" name="bedrijfsnaam" style="height: 25px; width: 105px; padding: 0">
+															<option value="-1">Selecteer een inlener/uitzender</option>
+														</select>
+													</span>
+													<span class="span-relatie-text"></span>
+													<input type="hidden" id="relatie-id" value="">
+												</td>
+												<td class="td-status-bedrijfsnaam">
+													<i></i><span></span>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3" style="height: 20px"></td>
+											</tr>
+											<tr>
+												<td class="pr-3 pt-1">Filter op relatie</td>
+												<td class="font-weight-bolder pt-1" style="width: 400px;">
+													<input type="checkbox" checked class="" name="search-relatie">
 												</td>
 												<td></td>
 											</tr>
 											<tr>
-												<td class="pr-3 pt-1">Bedrijfsnaam</td>
-												<td class="font-weight-bolder pt-1" style="width: 300px;">
-													<select class="form-control select-search" name="bedrijfsnaam"  style="height: 25px; width: 105px; padding: 0">
-														<option>Selecteer een inlener/uitzender</option>
-													</select>
+												<td class="pr-3 pt-1">Factuur nr(s)</td>
+												<td class="font-weight-bolder pt-1" style="width: 400px;">
+													<input type="text" class="form-control" name="search-factuur-nr">
 												</td>
-												<td class="status-bedrijfsnaam">
-													<i></i><span></span>
+												<td></td>
+											</tr>
+											<tr>
+												<td class="pr-3 pt-1">Bedrag van/tot</td>
+												<td class="font-weight-bolder pt-1" style="width: 400px;">
+													<input type="text" class="form-control text-right pull-left" name="search-bedrag-van" style="width: 80px; display: inline-block">
+													<input type="text" class="form-control text-right pull-left" name="search-bedrag-tot" style="width: 80px; display: inline-block"">
+												</td>
+												<td></td>
+											</tr>
+											<tfoot>
+												<tr>
+													<td colspan="3">
+
+														<table class="search-result-facturen mt-3">
+															<thead>
+																<tr class="tr-search-facturen">
+																	<td colspan="4"><i class="icon-spinner3 spinner"></i> <i>Facturen zoeken....</i></td>
+																</tr>
+																<tr class="tr-search-not-found">
+																	<td colspan="4"><i>Geen facturen gevonden</i></td>
+																</tr>
+																<tr>
+																	<th>
+																		<input type="checkbox" name="toggle-all-facturen" />
+																	</th>
+																	<th class="pr-2">Nr</th>
+																	<th class="pr-2">Type</th>
+																	<th class="text-right pr-2">Totaal</th>
+																	<th class="text-right pr-2">Open</th>
+																	<th class="text-right pr-2">Verwerken</th>
+																	<th class="pr-2">Credit</th>
+																	<th class="pr-2">Relatie</th>
+																	<th></th>
+																</tr>
+															</thead>
+															<tbody>
+
+															</tbody>
+															<tfoot>
+																<tr>
+																	<td>
+																		<i class="mi-subdirectory-arrow-left" style=" transform: rotate(90deg) "></i>
+																	</td>
+																	<td colspan="3" class="pt-1">
+																		<span style="cursor: pointer" class="text-primary koppel-selected-facturen">koppelen</span>
+																	</td>
+																	<td class="text-right pr-2 font-weight-bold">Totaal</td>
+																	<td class="text-right pr-2 font-weight-bold search-facturen-totaal"></td>
+																	<td colspan="3"></td>
+																</tr>
+															</tfoot>
+														</table>
+
+													</td>
+												</tr>
+											</tfoot>
+										</table>
+
+
+
+
+										<!----- koppelen factoring -------------------------------------->
+										<table class="table-koppeling-factoring mt-3" style="display: none">
+											<tr>
+												<td colspan="3" class="h5 pb-2 text-primary">
+													Koppeling factoring
 												</td>
 											</tr>
 											<tr>
-												<td class="pr-3 pt-1">Opmerking</td>
-												<td class="font-weight-bolder pt-1" style="width:300px;">
-													<input name="opmerking" value="" type="text" class="form-control p-1" style="height: 34px;" data-lpignore="true" />
-												</td>
-												<td class="status-opmerking">
-													<i></i><span></span>
+												<td class="pr-3">Factuur ID</td>
+												<td class="td-factuur-id"></td>
+											</tr>
+											<tr>
+												<td class="pr-3">Bedrag</td>
+												<td class="td-bedrag"></td>
+											</tr>
+											<tr>
+												<td class="pr-3">PDF</td>
+												<td class="td-factuur-pdf">
+													<a target="_blank" href=""></a>
 												</td>
 											</tr>
 										</table>
 
 									</div><!-- /col -->
 
-									<!----- knoppen -------------------------->
-									<div class="col-md-3 text-right">
-										<button type="button" class="btn btn-sm btn-outline-primary btn-verwerkt">
-											<i class="icon-check mr-1"></i>Markeren als verwerkt
-										</button>
-										<button type="button" class="btn btn-sm btn-outline-warning btn-onverwerkt">
-											<i class="icon-cross mr-1"></i>Markeren als niet verwerkt
-										</button>
-									</div>
-
 								</div><!-- /row -->
-
 
 							</div><!-- /details -->
 
@@ -319,6 +451,7 @@
 							$('#fileupload').fileinput('refresh', {
 								uploadUrl:'upload/bankbestanden',
 								showPreview:false,
+								elErrorContainer:"#errorBlock",
 								allowedFileExtensions:['xml', 'XML']
 							});
 							$('#fileupload').on('fileuploaded', function()
@@ -328,6 +461,7 @@
 						});
                         {/literal}
 					</script>
+					<div id="errorBlock"></div>
 
 					<form action="#">
 						<input name="file" type="file" id="fileupload" class="file-input">

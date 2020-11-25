@@ -1,6 +1,8 @@
 
 p{margin-bottom: 6px; margin-top: 6px;}
-
+.bold{font-weight: bold}
+.text-right{text-align: right}
+.text-left{text-align: left}
 .container{ padding:0 70px 0 35px; font-size: 8pt;}
 table{ font-size: 8pt;}
 
@@ -13,3 +15,14 @@ table.aanmelding td{ padding-top: 9px; padding-bottom: 9px; border-bottom:1px so
 .footer{
     font-size: 9pt;
 }
+
+/*marge weekoverzicht*/
+.margeweekoverzicht{width: 100%; border-collapse: collapse}
+
+.margeweekoverzicht th{padding: 2px 4px}
+.margeweekoverzicht td{padding: 4px 4px}
+.margeweekoverzicht .bl{border-left: 1px solid #444}
+.margeweekoverzicht .br{border-right: 1px solid #444; padding-right: 10px}
+.margeweekoverzicht .tr-header td{background-color: #E2E2E2; padding: 4px 4px}
+.margeweekoverzicht .bt2{border-top:1px solid #333;}
+.margeweekoverzicht .bb2{border-bottom: 1px solid #333;}

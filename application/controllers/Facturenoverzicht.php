@@ -1,6 +1,8 @@
 <?php
 
+use models\boekhouding\MargeGroup;
 use models\facturatie\FacturenGroup;
+use models\pdf\PdfMargeWeekoverzicht;
 
 defined( 'BASEPATH' ) OR exit( 'No direct script access allowed' );
 
@@ -51,6 +53,30 @@ class Facturenoverzicht extends MY_Controller
 		$this->smarty->assign( 'facturen', $facturen );
 		$this->smarty->display( 'facturenoverzicht/uitzender.tpl' );
 	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Facturen en marge uitzender
+	//-----------------------------------------------------------------------------------------------------------------
+	public function weekoverzicht( $tijdvak = NULL, $jaar = NULL, $periode = NULL )
+	{
+		//beveiligen
+		if( $this->user->user_type != 'uitzender' )
+			redirect( $this->config->item( 'base_url' ) . 'dashboard/' . $this->user->user_type, 'location' );
+		
+		$margeGroup = new MargeGroup();
+		$margeGroup->uitzender( $this->uitzender->id )->tijdvak( $tijdvak )->jaar( $jaar )->periode( $periode );
+		
+		$weekoverzicht = $margeGroup->weekoverzicht();
+		if( $weekoverzicht !== NULL )
+		{
+			$pdf = new PdfMargeWeekoverzicht();
+			$pdf->setHeader( $tijdvak, $jaar, $periode )->setFooter()->setBody( $weekoverzicht );
+			
+			$pdf->preview();
+		}
+	}
+	
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------

@@ -469,7 +469,7 @@ class Factuur extends Connector
 		if( $data['betaald'] === NULL ) $data['betaald'] = 0;
 		
 		if( $data !== NULL )
-			$this->db_user->query( "UPDATE facturen SET bedrag_openstaand = (bedrag_incl - " . $data['betaald'] . ") WHERE factuur_id =  $this->_factuur_id LIMIT 1" );
+			$this->db_user->query( "UPDATE facturen SET bedrag_openstaand = (ABS(bedrag_incl) - " . $data['betaald'] . ") WHERE factuur_id =  $this->_factuur_id LIMIT 1" );
 		
 		//factuur op voldaan indien van toepassing
 		$query = $this->db_user->query( "SELECT betaald_op FROM facturen_betalingen WHERE factuur_id = $this->_factuur_id AND deleted = 0 ORDER BY betaald_op DESC LIMIT 1" );

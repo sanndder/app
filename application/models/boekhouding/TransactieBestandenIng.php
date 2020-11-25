@@ -64,7 +64,8 @@ class TransactieBestandenIng extends Connector
 				unset($entrie);
 				
 				$entrie['bestand_id'] = $this->_bestand_id;
-
+				$entrie['batch'] = 0;
+				
 				//datum
 				if( isset($stmt->BookgDt))
 					$entrie['datum'] = (string)$stmt->BookgDt->Dt;
@@ -102,6 +103,15 @@ class TransactieBestandenIng extends Connector
 				//relatie Debet IBAN
 				if( isset($stmt->NtryDtls->TxDtls->RltdPties->DbtrAcct->Id->IBAN))
 					$entrie['relatie_iban'] = (string)$stmt->NtryDtls->TxDtls->RltdPties->DbtrAcct->Id->IBAN;
+				
+				//batch?
+				if( isset($stmt->NtryDtls->Btch) )
+				{
+					$entrie['batch'] = 1;
+					
+					if( isset($stmt->NtryDtls->Btch->PmtInfId))
+						$entrie['omschrijving'] = (string)$stmt->NtryDtls->Btch->PmtInfId;
+				}
 				
 				//omschrijving
 				if( isset($stmt->NtryDtls->TxDtls->RmtInf->Ustrd))

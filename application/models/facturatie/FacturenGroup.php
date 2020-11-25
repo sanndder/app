@@ -235,11 +235,58 @@ class FacturenGroup extends Connector
 		$query = $this->db_user->query( $sql );
 		return DBhelper::toArray( $query, 'factuur_id', 'NULL' );
 	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * TODO 1 zoekfunctie van maken
+	 * bepaalde facturen ophalen
+	 */
+	public function searchForBankTransacties( $param ) :?array
+	{
+		$sql = "SELECT facturen.*, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender
+				FROM facturen
+				LEFT JOIN inleners_bedrijfsgegevens ON facturen.inlener_id = inleners_bedrijfsgegevens.inlener_id
+				LEFT JOIN uitzenders_bedrijfsgegevens ON facturen.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
+				WHERE facturen.deleted = 0 AND facturen.concept = 0 ";
+		
+		if( isset($param['inlener_id']) && $param['inlener_id'] !== NULL && $param['filter_relatie'] == 'true' )
+			$sql .= " AND (inleners_bedrijfsgegevens.deleted = 0 AND inleners_bedrijfsgegevens.inlener_id = ".intval($param['inlener_id']).") ";
+		else
+			$sql .= " AND (inleners_bedrijfsgegevens.deleted = 0 OR facturen.inlener_id IS NULL) ";
+		
+		if( isset($param['uitzender_id']) && $param['uitzender_id'] !== NULL && $param['filter_relatie'] == 'true' )
+			$sql .= " AND (uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_bedrijfsgegevens.uitzender_id = ".intval($param['uitzender_id']).") AND facturen.marge = 1";
+		else
+			$sql .= " AND (uitzenders_bedrijfsgegevens.deleted = 0 OR facturen.uitzender_id IS NULL) ";
+		
+		if( isset($param['factuur_nrs']) && strlen($param['factuur_nrs'] > 0 ) )
+			$sql .= " AND facturen.factuur_nr IN (".$param['factuur_nrs'].")";
+		
+		if( isset($param['bedrag_van']) && strlen($param['bedrag_van'] > 0 ) )
+			$sql .= " AND facturen.bedrag_incl >= ". prepareAmountForDatabase($param['bedrag_van']) ." ";
+		
+		if( isset($param['bedrag_tot']) && strlen($param['bedrag_tot'] > 0 ) )
+			$sql .= " AND facturen.bedrag_incl <= ". prepareAmountForDatabase($param['bedrag_tot']) ." ";
+		
+		$sql .= " ORDER BY facturen.factuur_nr DESC";
+
+		$query = $this->db_user->query( $sql );
+
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+			$data[] = $row;
+
+		return $data;
+	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
-	 * bepaalde fatcuren ophalen
+	 * bepaalde facturen ophalen
 	 */
 	public function getIDS( $factuur_ids ) :FacturenGroup
 	{

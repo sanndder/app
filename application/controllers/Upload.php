@@ -1,5 +1,6 @@
 <?php
 
+use models\boekhouding\TransactieBestandenFactory;
 use models\documenten\Document;
 use models\documenten\IDbewijs;
 use models\file\File;
@@ -160,6 +161,52 @@ class Upload extends MY_Controller {
 			/*$preview[] = 'http://via.placeholder.com/150';
 			$config[] = array('url' => '/test', 'caption' => 'test.jpg', 'key' => 101, 'size' => 100);
 			$result = [ 'initialPreview' => $preview,'initialPreviewConfig' => $config, 'initialPreviewAsData' => true];*/
+			$result = [];
+		}
+		else
+			$result['error'] = $this->uploadfiles->errors();
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+		die();
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// factorings pdf's
+	//-----------------------------------------------------------------------------------------------------------------
+	public function bankbestanden()
+	{
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'bank/transacties' );
+		$this->uploadfiles->setAllowedFileTypes( 'xml|XML' );
+		$this->uploadfiles->setDatabaseTable( 'bank_transactiebestanden' );
+		$this->uploadfiles->setPrefix( 'bank_' );
+		$this->uploadfiles->setcheckUnique( true );
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			//save to database
+			$file_id = $this->uploadfiles->dataToDatabase();
+			if( $file_id === false )
+			{
+				$result['error'] = current($this->uploadfiles->errors());
+				header( 'Content-Type: application/json' ); // set json response headers
+				echo json_encode( $result );
+				die();
+			}
+			
+			$file_array = $this->uploadfiles->getFileArray();
+			
+			//zip uitlezen
+			if( $file_id > 0 )
+			{
+				$transactiebestandFactory = new TransactieBestandenFactory( $file_id );
+				$transactiebestand = $transactiebestandFactory->getBestandByBankType();
+				
+				$transactiebestand->loadTransacties();
+			}
+			
 			$result = [];
 		}
 		else
