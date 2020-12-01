@@ -60,9 +60,10 @@
 											<th>Inlener</th>
 											<th style="width: 100px" class="text-right">Factuur nr</th>
 											<th style="width: 120px" class="text-right">Verkoop (€)</th>
+											<th style="width: 120px" class="text-right">Vervallen</th>
 											<th style="width: 120px" class="text-right">Kosten (€)</th>
 											<th style="width: 120px" class="text-right">Factuur nr</th>
-											<th style="width: 100px" class="text-right">Marge (€)</th>
+											<th style="width: 140px" class="text-right">Marge (€)</th>
 											<th style="width: 25px"></th>
 											<th></th>
 										</tr>
@@ -88,10 +89,14 @@
 														</a>
 													</td>
 													<td class="text-right">
+														{$f.verkoop.verval_dagen}
+													</td>
+													<td class="text-right">
 														<a target="_blank" href="facturatie/factuur/viewkosten/{$f.verkoop.factuur_id}">
 															€ {$f.verkoop.kosten_incl|number_format:2:',':'.'}
 														</a>
 													</td>
+
 													<td class="text-right">
 														{if isset($f.marge)}{$f.marge.factuur_nr}{/if}
 													</td>

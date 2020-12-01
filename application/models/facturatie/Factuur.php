@@ -50,6 +50,7 @@ class Factuur extends Connector
 	protected $_kosten = false;
 	
 	protected $_error = NULL;
+	private $_betaling_id = NULL;
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -223,6 +224,19 @@ class Factuur extends Connector
 			$this->details();
 		
 		return $this->_file_dir;
+	}
+	
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * factuur nr ophalen
+	 *
+	 */
+	public function nr()
+	{
+		$query = $this->db_user->query( "SELECT factuur_nr FROM facturen WHERE factuur_id = $this->_factuur_id LIMIT 1" );
+		return DBhelper::toRow( $query, 'NULL', 'factuur_nr' );
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -437,7 +451,20 @@ class Factuur extends Connector
 		
 		$this->_log( 'Betaling toegevoegd', json_encode( $insert ) );
 		
+		$this->_betaling_id = $this->db_user->insert_id();
+		
 		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * betaling ID ophalen
+	 *
+	 */
+	public function getBetalingID()
+	{
+		return $this->_betaling_id;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -550,6 +577,7 @@ class Factuur extends Connector
 	{
 		$this->db_user->query( "UPDATE facturen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE (factuur_id = $this->_factuur_id OR parent_id = $this->_factuur_id) AND  deleted = 0", array( $this->user->user_id ) );
 		$this->db_user->query( "UPDATE facturen_kostenoverzicht SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE factuur_id = $this->_factuur_id AND  deleted = 0", array( $this->user->user_id ) );
+		$this->db_user->query( "UPDATE zzp_facturen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE parent_id = $this->_factuur_id AND  deleted = 0", array( $this->user->user_id ) );
 		$this->db_user->query( "UPDATE invoer_uren SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id" );
 		$this->db_user->query( "UPDATE invoer_kilometers SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id" );
 		$this->db_user->query( "UPDATE invoer_vergoedingen SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id" );

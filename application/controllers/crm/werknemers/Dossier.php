@@ -377,7 +377,7 @@ class Dossier extends MY_Controller
 		
 		
 		
-		$inleners = $inlenerGroup->uitzender( $werknemer->uitzenderID() )->all();
+		$inleners = $inlenerGroup->uitzender( $werknemer->uitzenderID() )->all( array('complete' => 1) );
 		
 		
 		//$this->smarty->assign('plaatsingen', $plaatsingen );

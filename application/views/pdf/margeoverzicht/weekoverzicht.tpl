@@ -72,6 +72,51 @@
 					{/foreach}
                 {/if}
 			{/foreach}
+			<tr class="tr-header">
+				<td colspan="12" class="">Weektotaal</td>
+			</tr>
+			<tr>
+				<td class="text-right bold bt2 bold" style="padding-right: 20px"></td>
+				<td class="text-right bl bt2 bold">{$data.totaal.uren_aantal_verkoop}</td>
+				<td class="text-right bt2 bold">{$data.totaal.uren_aantal_verkoop - $data.totaal.uren_aantal_kosten}</td>
+				<td class="text-right br bt2 bold">{$data.totaal.uren_aantal_verkoop + ($data.totaal.uren_aantal_verkoop - $data.totaal.uren_aantal_kosten)}</td>
+				<td class="text-right bt2 bold">{$data.totaal.uren_bedrag_verkoop|number_format:2:',':'.'}</td>
+				<td class="text-right bt2 bold ">{$data.totaal.vergoedingen_bedrag_verkoop|number_format:2:',':'.'}</td>
+				<td class="text-right br bt2 bold">{$data.totaal.totaal_bedrag_verkoop|number_format:2:',':'.'}</td>
+				<td class="text-right bt2 bold">{$data.totaal.uren_bedrag_kosten|number_format:2:',':'.'}</td>
+				<td class="text-right bt2 bold ">{$data.totaal.vergoedingen_bedrag_kosten|number_format:2:',':'.'}</td>
+				<td class="text-right bt2 br bold">{$data.totaal.totaal_bedrag_kosten|number_format:2:',':'.'}</td>
+				<td class="text-right bl bt2 bold">{$data.totaal.totaal_bedrag_marge|number_format:2:',':'.'}</td>
+				<td class="text-right bt2 bold">{$data.totaal.percentage_marge|number_format:2:',':'.'} %</td>
+			</tr>
+			<tr>
+				<td class="text-right bold bt2 bold" style="padding-right: 20px"></td>
+				<td class="text-right bl bt2 bold"></td>
+				<td class="text-right bt2 bold"></td>
+				<td class="text-right br bt2 bold"></td>
+				<td class="text-right bt2 bold"></td>
+				<td class="text-right bt2 bold "></td>
+				<td class="text-right br bt2 bold"></td>
+				<td class="text-right bt2 bold"></td>
+				<td class="text-right bt2 bold "></td>
+				<td class="text-right bt2 br bold">BTW</td>
+				<td class="text-right bl bt2 bold">{($data.totaal.totaal_bedrag_marge*0.21)|number_format:2:',':'.'}</td>
+				<td class="text-right bt2 bold"></td>
+			</tr>
+			<tr>
+				<td class="text-right bold bt2 bold" style="padding-right: 20px"></td>
+				<td class="text-right bl bt2 bold"></td>
+				<td class="text-right bt2 bold"></td>
+				<td class="text-right br bt2 bold"></td>
+				<td class="text-right bt2 bold"></td>
+				<td class="text-right bt2 bold "></td>
+				<td class="text-right br bt2 bold"></td>
+				<td class="text-right bt2 bold"></td>
+				<td class="text-right bt2 bold "></td>
+				<td class="text-right bt2 br bold">Incl. BTW</td>
+				<td class="text-right bl bt2 bold">{($data.totaal.totaal_bedrag_marge*1.21)|number_format:2:',':'.'}</td>
+				<td class="text-right bt2 bold"></td>
+			</tr>
 		</tbody>
 	</table>
 

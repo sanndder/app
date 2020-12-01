@@ -45,7 +45,7 @@
 								text: 'Gegevens laden...'
 							},
 							stroke: {
-								width: [3, 3, 3, 3],
+								width: [3, 3, 3, 3,3],
 								curve: 'straight'
 							},
 
@@ -72,6 +72,7 @@
 								name: 'Omzet uitzenden',
 								data: response.omzetuitzenden
 							},
+
 							{
 								name: 'Loonkosten',
 								data: response.loonkosten
@@ -80,12 +81,17 @@
 								name: 'Winst',
 								data: response.winst
 							},
-								{
-									name: 'Winst Cummelatief',
-									data: response.winstcum,
-									type: 'area'
-								}
+							{
+								name: 'Winst Cummelatief',
+								data: response.winstcum,
+								type: 'area'
+							},
+							{
+								name: 'Omzet Verkoop',
+								data: response.omzet
+							}
 							])
+
 						});
 
 

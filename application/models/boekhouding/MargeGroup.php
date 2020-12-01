@@ -101,12 +101,11 @@ class MargeGroup extends Connector
 	 */
 	public function infoInleners() :array
 	{
-		$sql = "SELECT facturen.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam
+		$sql = "SELECT DISTINCT facturen.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam
 				FROM facturen
 				LEFT JOIN inleners_bedrijfsgegevens ON facturen.inlener_id = inleners_bedrijfsgegevens.inlener_id
 				WHERE facturen.concept = 0 AND facturen.deleted = 0 AND facturen.uitzender_id = $this->_uitzender_id AND facturen.jaar = $this->_set_jaar
 				AND inleners_bedrijfsgegevens.deleted = 0
-				GROUP BY inleners_bedrijfsgegevens.bedrijfsnaam
 				ORDER BY inleners_bedrijfsgegevens.bedrijfsnaam";
 		
 		$query = $this->db_user->query( $sql );
@@ -121,7 +120,7 @@ class MargeGroup extends Connector
 				$this->_set_inleners[] = $row['inlener_id'];
 			}
 		}
-		
+
 		return $this->_info_inleners;
 	}
 	

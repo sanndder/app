@@ -3,6 +3,7 @@
 use models\documenten\DocumentFactory;
 use models\documenten\IDbewijs;
 use models\documenten\Template;
+use models\facturatie\FacturenGroup;
 use models\forms\Formbuilder;
 use models\inleners\InlenerGroup;
 use models\zzp\ZzpGroup;
@@ -407,10 +408,14 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function facturen( $zzp_id = NULL )
 	{
+		
 		//init inlener object
 		$zzp = new Zzp( $zzp_id );
+		$facturen = $zzp->facturen();
 		
 		$this->smarty->assign('zzp', $zzp);
+		$this->smarty->assign('facturen', $facturen);
+		$this->smarty->assign( 'jaren', $zzp->jarenArrayFacturen() );
 		$this->smarty->display('crm/zzp/dossier/facturen.tpl');
 	}
 	

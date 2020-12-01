@@ -16,6 +16,7 @@
 
 	<div class="navbar-collapse collapse" id="navbar-navigation">
 		<ul class="navbar-nav">
+
 			<li class="nav-item">
 				<a href="dashboard/werkgever" class="navbar-nav-link">
 					<i class="icon-home4 mr-2"></i>

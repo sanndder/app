@@ -142,9 +142,10 @@ class Transactie extends Connector
 	 */
 	public function koppelFacturen( $facturen )
 	{
-		///details laden
+		//details laden
 		$this->details();
 		
+		$response = [];
 		foreach( $facturen as $factuur_id => $bedrag )
 		{
 			$factuur = new Factuur($factuur_id);
@@ -154,13 +155,19 @@ class Transactie extends Connector
 			if( $betaling->valid() )
 			{
 				$factuur->addBetaling( $betaling );
+				$factuur->delBetaling( $factuur->getBetalingID() );
 				$this->_log('Factuur ' .  $factuur_id . ' gekoppeld');
+				$response[$factuur_id]['status'] = 'success';
 			}
 			else
 			{
-				show($betaling->errors());
+				$response[$factuur_id]['status'] = 'error';
+				$response[$factuur_id]['factuur_nr'] = $factuur->nr();
+				$response[$factuur_id]['errors'] = $betaling->errors();
 			}
 		}
+		
+		return $response;
 	}
 	
 	

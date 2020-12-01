@@ -122,9 +122,12 @@ let transacties = {
 	
 	koppelSelectedFacturen()
 	{
+		$alert = $('.warning-facturen')
 		$table = $('.search-result-facturen');
 		
-		$checkboxes = $table.find( 'tbody [type="checkbox"]:checked' );
+		$alert.hide().html('');
+		
+		$checkboxes = $table.find( 'tbody [name="koppel-factuur"]:checked' );
 		
 		data.transactie_id = $('#transactie_id').val();
 		data.facturen = {};
@@ -141,16 +144,33 @@ let transacties = {
 		{
 			response.done(function(json)
 			{
-				if( json.status == 'success' )
-				{
 				
-				
-				}
+				if( json.status == 'error' )
+					$alert.show().html(json.error);
 				else
 				{
-					//niks gevonden
-					alert('Fout bij koppelen:' + json.error );
+					error = '';
+					for( let f of Object.values(json) )
+					{
+						//errors
+						if( f.status == 'error' )
+						{
+							for( let e of Object.values(f.errors) )
+								error += f.factuur_nr +': ' + e + '<br/>';
+						}
+						//factuur is gekoppeld
+						else
+						{
+						
+						}
+					}
+					//show errors
+					$alert.show().html(error);
 				}
+				
+				//niks gevonden
+				//alert('Fout bij koppelen:' + json.error );
+				
 				
 			});
 		}

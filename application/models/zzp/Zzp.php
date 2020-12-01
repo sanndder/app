@@ -4,6 +4,7 @@ namespace models\zzp;
 
 use models\Connector;
 use models\file\File;
+use models\file\Pdf;
 use models\forms\Valid;
 use models\forms\Validator;
 use models\utils\DBhelper;
@@ -29,10 +30,9 @@ class Zzp extends Connector
 	public $naam = NULL; // @var string
 	public $bedrijfsnaam = NULL; // @var string
 	private $_uitzender_id_new = NULL; // @var int
+
+	private $_jaren_array_facturen = NULL; // @var int
 	
-	/*
-	 * @var array
-	 */
 	private $_error = NULL;
 
 	public $complete = NULL;
@@ -229,6 +229,23 @@ class Zzp extends Connector
 	}
 	
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * hoogste factuurnummer ophalen
+	 */
+	public function getCurrentFactuurCount()
+	{
+		$query = $this->db_user->query( "SELECT MAX(factuur_nr_count) AS count FROm zzp_facturen WHERE zzp_id = $this->zzp_id AND deleted = 0" );
+		
+		if( $query->num_rows() == 0 )
+			return 1;
+		
+		$data = $query->row_array();
+		return $data['count'];
+	}
+
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Nieuwe werknemer aanmaken
@@ -254,8 +271,73 @@ class Zzp extends Connector
 
 		return false;
 	}
-	
 
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * facturen voor zzp'er
+	 *
+	 */
+	public function facturen( $param = NULL )
+	{
+		$sql = "SELECT * FROM zzp_facturen WHERE deleted = 0";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			$this->_jaren_array_facturen[$row['jaar']] = 1;
+			$data[] = $row;
+		}
+		
+		return $data;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * factuur gegevens
+	 *
+	 */
+	public function factuur( $factuur_id )
+	{
+		$query = $this->db_user->query( "SELECT * FROM zzp_facturen WHERE zzp_id = $this->zzp_id AND factuur_id = $factuur_id LIMIT 1" );
+		return DBhelper::toRow( $query, ' NULL' );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * pdf bekijken
+	 *
+	 */
+	public function viewFactuur( $factuur_id )
+	{
+		$bedrijfsgegevens = $this->bedrijfsgegevens();
+		
+		$factuur = $this->factuur( $factuur_id );
+		
+		$pdf = new Pdf( $factuur );
+		
+		$filename = NULL;
+		
+		if( isset( $details['inlener_id'] ) && $details['inlener_id'] !== NULL )
+			$filename = $factuur['jaar'] . '_' . $factuur['periode'] . '_' . $bedrijfsgegevens['bedrijfsnaam'] . '.pdf';
+		
+		$pdf->inline( $filename );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * jaren array voor de facturen
+	 */
+	public function jarenArrayFacturen()
+	{
+		return $this->_jaren_array_facturen;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

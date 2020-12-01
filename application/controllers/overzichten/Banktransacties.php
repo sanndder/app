@@ -52,7 +52,6 @@ class Banktransacties extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function koppelfacturen()
 	{
-		show($_POST);
 		if( !isset($_POST['facturen']) || !is_array($_POST['facturen']))
 		{
 			$response['status'] = 'error';

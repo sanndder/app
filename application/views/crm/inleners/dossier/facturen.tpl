@@ -55,6 +55,7 @@
 											<th style="width: 25px;">Periode</th>
 											<th style="width: 100px" class="text-right">Factuur nr</th>
 											<th style="width: 120px" class="text-right">Bedrag (€)</th>
+											<th style="width: 120px" class="text-right">Vervallen (dagen)</th>
 											<th style="width: 25px"></th>
 											<th></th>
 										</tr>
@@ -72,6 +73,9 @@
 														<a target="_blank" href="facturatie/factuur/view/{$f.factuur_id}">
 															€ {$f.bedrag_incl|number_format:2:',':'.'}
 														</a>
+													</td>
+													<td class="text-right">
+														{$f.verval_dagen}
 													</td>
 													<td>
 														

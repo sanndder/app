@@ -76,7 +76,7 @@ class OmzetGroup extends Connector
 	 */
 	public function omzetverkoop(): ?array
 	{
-		$sql = "SELECT periode, SUM(bedrag_excl) AS omzet FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 GROUP BY periode ORDER BY periode";
+		$sql = "SELECT periode, SUM(bedrag_excl) AS omzet FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND tijdvak = 'w' GROUP BY periode ORDER BY periode";
 		$query = $this->db_user->query( $sql );
 		
 		if( $query->num_rows() == 0 )

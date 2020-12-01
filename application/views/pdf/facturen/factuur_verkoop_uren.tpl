@@ -55,7 +55,7 @@
 	</tr>
 	<tr>
 		<td>
-			<table style="{if $type == 'kosten'}margin-top:0px;{else}margin-top: -35px;{/if} color:#002E65; font-size: 16px; font-weight: bold; font-style: italic">
+			<table style="{if $type == 'kosten' }margin-top:0px;{else}margin-top: -35px;{/if} color:#002E65; font-size: 16px; font-weight: bold; font-style: italic">
 				<tr>
 					<td>
                         {if $factuur.tijdvak == 'w'}Week {$periode} - {$jaar}{/if}
@@ -67,7 +67,7 @@
 						<td> {$relatie_gegevens.bedrijfsnaam|default:''} ({$relatie_gegevens.inlener_id|default:''})</td>
 					</tr>
                 {/if}
-                {if $factuur.project !== NULL}
+                {if isset($factuur.project) && $factuur.project !== NULL}
 					<tr>
 						<td>{$factuur.project}</td>
 					</tr>
@@ -76,6 +76,7 @@
 		</td>
 	</tr>
 </table>
+
 <br/>
 
 <table class="regels">
@@ -120,7 +121,7 @@
 
                         {* regels met invoer *}
                         {if $r.row_start == NULL && $r.row_end == NULL}
-                            {if ($type == 'verkoop' && $r.doorbelasten_aan != 'uitzender') || ($type == 'kosten' && $r.uitkeren_werknemer == 1)  || ($type == 'zzp' && $r.uitkeren_werknemer == 1) || (isset($relatie_factuurgegevens.verkoop_kosten_gelijk) && $relatie_factuurgegevens.verkoop_kosten_gelijk == 1) }
+                            {if ($type == 'verkoop' && $r.doorbelasten_aan != 'uitzender') || ( $r.bemiddelingskosten == 1 && $type != 'zzp')  || ($type == 'kosten' && $r.uitkeren_werknemer == 1)  || ($type == 'zzp' && $r.uitkeren_werknemer == 1) || (isset($relatie_factuurgegevens.verkoop_kosten_gelijk) && $relatie_factuurgegevens.verkoop_kosten_gelijk == 1) }
 								<tr>
 									<td style="padding-left: 18px">{$r.omschrijving}</td>
                                     {if $aangenomenwerk == 0}
@@ -170,7 +171,7 @@
 							<td class="bold text-right">subtotaal</td>
 							<td class="bold text-right">
                                 {if $type == 'verkoop'}&euro; {$r.subtotaal_verkoop|number_format:2:',':'.'}{/if}
-                                {if $type == 'kosten'}&euro; {$r.subtotaal_kosten|number_format:2:',':'.'}{/if}
+                                {if $type == 'kosten' || $type == 'zzp'}&euro; {$r.subtotaal_kosten|number_format:2:',':'.'}{/if}
 							</td>
 						</tr>
                     {/if}

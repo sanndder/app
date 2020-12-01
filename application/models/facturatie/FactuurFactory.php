@@ -349,7 +349,6 @@ class FactuurFactory extends Connector
 			}
 			
 			//bij bemiddeling ook zzp'facturen aanmaken
-			/*
 			if( $this->user->werkgever_type == 'bemiddeling' )
 			{
 				if( !$this->_pdfZzp( $factuur_id ) )
@@ -358,7 +357,6 @@ class FactuurFactory extends Connector
 					return false;
 				}
 			}
-			*/
 		}
 		
 		return true;
@@ -473,7 +471,7 @@ class FactuurFactory extends Connector
 		$factuur_regels = $this->getFactuurRegels( $factuur_id );
 		
 		//regels per zzp er
-		foreach( $factuur_regels as $r )
+		foreach( $factuur_regels as $id => $r )
 		{
 			$regels[$r['zzp_id']][$r['regel_id']] = $r;
 			
@@ -484,8 +482,11 @@ class FactuurFactory extends Connector
 			//optellen
 			if( $r['uitkeren_werknemer'] == 1 )
 				$totaal_excl[$r['zzp_id']] += $r['subtotaal_kosten'];
+			
+			if( $r['row_end'] == 1 )
+				$regels[$r['zzp_id']][$r['regel_id']]['subtotaal_kosten'] = $totaal_excl[$r['zzp_id']];
 		}
-		
+
 		//per zzp'er een factuur
 		foreach( $regels as $zzp_id => $zzp_regels )
 		{
@@ -497,19 +498,30 @@ class FactuurFactory extends Connector
 			
 			//new pdf
 			$pdf = new PdfFactuurZzp();
+			$pdf->setType( 'zzp' );
 			
 			//fotoer anders instelllen
 			$bedrijfsgegevens = $zzp->bedrijfsgegevens();
 			$persoonsgegevens = $zzp->persoonsgegevens();
 			$factuurgegevens = $zzp->factuurgegevens();
 			
+			$highestCount = $zzp->getCurrentFactuurCount();
+			$zzp_factuur['factuur_nr_count'] = $highestCount+1;
+			$zzp_factuur['factuur_nr'] = $zzp_id . '-' . $zzp_factuur['factuur_nr_count'];
+			
+			$pdf->setFactuurNr( $zzp_factuur['factuur_nr'] );
 			$pdf->setBedrijfsgegevens( $bedrijfsgegevens + [ 'email' => $persoonsgegevens['email'] ] + $factuurgegevens );
 			
 			$pdf->setTijdvak( array( 'tijdvak' => $this->_tijdvak, 'jaar' => $this->_jaar, 'periode' => $this->_periode ) );
 			$pdf->setType( 'zzp' );
 			
 			$pdf->setFactuurdatum( $factuur['factuur_datum'] );
-			$pdf->setVervaldatum( date( 'Y-m-d', strtotime( $factuur['factuur_datum'] . ' + 7 days' ) ) );
+			
+			$zzp_factuur['tijdvak'] = $this->_tijdvak;
+			$zzp_factuur['jaar'] = $this->_jaar;
+			$zzp_factuur['periode'] = $this->_periode;
+			$zzp_factuur['verval_datum'] = date( 'Y-m-d', strtotime( $factuur['factuur_datum'] . ' + 8 days' ) );
+			$pdf->setVervaldatum( $zzp_factuur['verval_datum'] );
 			
 			$pdf->setFooter();
 			$pdf->setHeader();
@@ -524,13 +536,15 @@ class FactuurFactory extends Connector
 				$zzp_factuur['bedrag_incl'] = $zzp_factuur['bedrag_excl'] + $zzp_factuur['bedrag_btw'];
 			}
 			
+			$zzp_factuur['bedrag_openstaand'] = $zzp_factuur['bedrag_incl'];
+			
 			$pdf->setBody( $zzp_factuur, $zzp_regels );
 			
-			$insert['file_dir'] = 'facturen/' . $factuur['jaar'];
-			$insert['file_name'] = $factuur['factuur_id'] . '_kostenoverzicht_' . generateRandomString( 4 ) . '.pdf';
+			$zzp_factuur['file_dir'] = 'zzp/facturen/' . $factuur['jaar'];
+			$zzp_factuur['file_name'] = $factuur['factuur_id'] . '_factuur_' . generateRandomString( 4 ) . '.pdf';
 			
-			$pdf->setFileDir( $insert['file_dir'] );
-			$pdf->setFileName( $insert['file_name'] );
+			$pdf->setFileDir( $zzp_factuur['file_dir'] );
+			$pdf->setFileName( $zzp_factuur['file_name'] );
 			
 		}
 		
@@ -538,11 +552,14 @@ class FactuurFactory extends Connector
 			return false;
 		
 		//insert met juiste gegevens
-		$insert['sessie_id'] = $this->_sessie_id;
-		$insert['factuur_id'] = $factuur['factuur_id'];
-		$insert['user_id'] = $this->user->user_id;
+		$zzp_factuur['inlener_id'] = $factuur['inlener_id'];
+		$zzp_factuur['uitzender_id'] = $factuur['uitzender_id'];
+		$zzp_factuur['zzp_id'] = $zzp_id;
+		$zzp_factuur['parent_id'] = $factuur['factuur_id'];
+		$zzp_factuur['sessie_id'] = $this->_sessie_id;
+		$zzp_factuur['user_id'] = $this->user->user_id;
 		
-		$this->db_user->insert( 'zzp_facturen', $insert );
+		$this->db_user->insert( 'zzp_facturen', $zzp_factuur );
 		if( $this->db_user->insert_id() == 0 )
 		{
 			$this->_sessieLog( 'error', "insert zzp factuur mislukt", $factuur['factuur_id'] );
@@ -1256,6 +1273,7 @@ class FactuurFactory extends Connector
 				{
 					$insert['row_start'] = NULL;
 					$insert['omschrijving'] = 'bemiddelingskosten';
+					$insert['bemiddelingskosten'] = 1;
 					$insert['uren_aantal'] = NULL;
 					$insert['uren_decimaal'] = $aantal;
 					$insert['verkooptarief'] = NULL;
@@ -1274,7 +1292,7 @@ class FactuurFactory extends Connector
 				}
 			}
 		}
-		
+
 		//dan de kilometers
 		if( isset( $werknemer_array['kmgroep'] ) && is_array( $werknemer_array['kmgroep'] ) && count( $werknemer_array['kmgroep'] ) > 0 )
 		{
@@ -1989,7 +2007,7 @@ class FactuurFactory extends Connector
 					$this->_group_array[$project_id][$werknemer_id]['urengroep'][$doorbelasten]['bruto_loon'] = 0;
 				}
 				
-				//voor bemiddeling marge telling bijhouden, altijd naar uitzender doorbelasten maar bij inlener array parkere
+				//voor bemiddeling marge telling bijhouden, altijd naar uitzender doorbelasten maar bij inlener array parkeren
 				if( $this->user->werkgever_type == 'bemiddeling' )
 				{
 					if( !isset( $this->_group_array[$project_id][$werknemer_id]['urengroep']['inlener']['marge'][$row['marge']] ) )

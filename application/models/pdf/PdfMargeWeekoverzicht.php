@@ -34,7 +34,7 @@ class PdfMargeWeekoverzicht extends PdfBuilder {
 			$config['margin_top'] = 18;
 			$config['margin_header'] = 0;
 			$config['margin_right'] = 0;
-			$config['margin_bottom'] = 45;
+			$config['margin_bottom'] = 25;
 			
 			$config['margin_header'] = 0;
 			$config['margin_footer'] = 0;

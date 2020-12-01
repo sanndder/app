@@ -345,6 +345,9 @@
 												<tr>
 													<td colspan="3">
 
+														<div class="alert warning-facturen alert-warning alert-styled-left alert-arrow-left alert-dismissible mt-3 p-1 pl-2" role="alert" style="display: none">
+														</div>
+
 														<table class="search-result-facturen mt-3">
 															<thead>
 																<tr class="tr-search-facturen">

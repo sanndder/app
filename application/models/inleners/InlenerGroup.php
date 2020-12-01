@@ -128,6 +128,10 @@ class InlenerGroup extends Connector {
 		if( $this->user->user_type == 'uitzender' )
 			$sql .= " AND inleners_uitzenders.uitzender_id = ".$this->uitzender->id." ";
 		
+		//complete?
+		if( isset($param['complete']) )
+			$sql .= " AND inleners_status.complete = " . intval($param['complete']);
+		
 		//archief ook?
 		if( isset($param['actief']) && !isset($param['archief']) )
 			$sql .= " AND inleners_status.archief = 0";
@@ -162,7 +166,6 @@ class InlenerGroup extends Connector {
 		//sort
 		$sql .= " ORDER BY inleners_bedrijfsgegevens.bedrijfsnaam ";
 		
-
 		//go
 		$query = $this->db_user->query($sql);
 
