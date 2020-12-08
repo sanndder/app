@@ -63,6 +63,13 @@ class Prospects extends MY_Controller
 				redirect( $this->config->item( 'base_url' ) . 'crm/prospects/prospects/details/' . $id ,'location' );
 		}
 		
+		//taak toevoegen
+		if( isset($_POST['taak_opslaan']) )
+		{
+			if( $prospect->addNotitie() )
+				redirect( $this->config->item( 'base_url' ) . 'crm/prospects/prospects/details/' . $id ,'location' );
+		}
+		
 		$this->smarty->assign('prospect', $prospect->details() );
 		$this->smarty->assign('notities', $prospect->notities() );
 		$this->smarty->display('crm/prospects/details.tpl');
