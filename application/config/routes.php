@@ -64,8 +64,7 @@ $route['crm/inleners'] 							= 'crm/inleners/overzicht';
 $route['crm/werknemers(:any)'] 					= 'crm/werknemers/overzicht/$1';
 $route['crm/werknemers'] 						= 'crm/werknemers/overzicht';
 
-$route['crm/prospects(:any)'] 					= 'crm/prospects/overzicht/$1';
-$route['crm/prospects'] 						= 'crm/prospects/overzicht';
+$route['crm/prospects'] 						= 'crm/prospects/prospects';
 
 $route['crm/zzp(:any)'] 						= 'crm/zzp/overzicht/$1';
 $route['crm/zzp'] 								= 'crm/zzp/overzicht';

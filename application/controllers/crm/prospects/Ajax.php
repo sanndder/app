@@ -1,6 +1,7 @@
 <?php
 
 use models\documenten\IDbewijs;
+use models\prospects\Prospect;
 use models\verloning\Urentypes;
 use models\werknemers\Plaatsing;
 use models\werknemers\Werknemer;
@@ -28,11 +29,18 @@ class Ajax extends MY_Controller
 
 
 	//-----------------------------------------------------------------------------------------------------------------
-	// verkooptarief wijzigen
+	// veld opslaan
 	//-----------------------------------------------------------------------------------------------------------------
-	public function setverkooptarief()
+	public function set( $id )
 	{
-	
+		$prospect = new Prospect($id);
+		if( $prospect->set($_POST['name'], $_POST['value']) )
+			$response['status'] = 'success';
+		else
+			$response['status'] = 'error';
+		
+		echo json_encode($response);
+		
 	}
 
 	

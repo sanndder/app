@@ -35,6 +35,7 @@ class FactuurBetaling extends Connector
 	protected $_categorie_id = NULL;
 	protected $_iban = NULL;
 	protected $_factor_factuur_regel_id = NULL;
+	protected $_transactie_id = NULL;
 	
 	protected $_categorien = NULL;
 
@@ -88,6 +89,7 @@ class FactuurBetaling extends Connector
 		$array['categorie_id'] = $this->_categorie_id;
 		$array['betaald_op'] = $this->_datum;
 		$array['factor_factuur_regel_id'] = $this->_factor_factuur_regel_id;
+		$array['transactie_id'] = $this->_transactie_id;
 
 		return $array;
 	}
@@ -106,6 +108,22 @@ class FactuurBetaling extends Connector
 		
 		return $this;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set transactie ID
+	 *
+	 */
+	public function tansactieID( $id = NULL ) :FactuurBetaling
+	{
+		if( $id === NULL )
+			return $this;
+		
+		$this->_transactie_id = intval($id);
+		
+		return $this;
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

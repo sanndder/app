@@ -281,7 +281,7 @@ class Werknemer extends Connector
 	 *
 	 * @return object
 	 */
-	public function etregeling() :Et
+	public function etregeling() :?Et
 	{
 		$query = $this->db_user->query( "SELECT et_regeling FROM werknemers_verloning_instellingen WHERE werknemer_id = $this->werknemer_id AND et_regeling = 1 AND deleted = 0 LIMIT 1" );
 		if( $query->num_rows() > 0 )

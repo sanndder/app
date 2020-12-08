@@ -126,7 +126,7 @@ class InvoerReserveringen extends Invoer
 	public function getOpgevraagdeReserveringen() :?array
 	{
 		$sql = "SELECT invoer_id, vakantieuren_F12, vakantieuren, vakantiegeld, feestdagen, kort_verzuim, atv_uren FROM invoer_reserveringen
-				WHERE invoer_id IS NOT NULL AND deleted = 0 AND werknemer_id = $this->_werknemer_id";
+				WHERE invoer_id IS NOT NULL AND deleted = 0 AND werknemer_id = $this->_werknemer_id AND verloning_id IS NULL";
 		$query = $this->db_user->query( $sql );
 		
 		return DBhelper::toRow( $query, 'NULL' );

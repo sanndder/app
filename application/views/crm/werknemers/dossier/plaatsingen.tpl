@@ -184,7 +184,7 @@
 											<div class="col-xl-2 pt-1">Start plaatsing</div>
 											<div class="col-xl-6">
 
-												<input class="form-control pickadate-start-plaatsing" type="text" name="start_plaatsing">
+												<input class="form-control pickadate-start-plaatsing" type="text" name="start_plaatsing" autocomplete="off">
 
 											</div>
 										</div>

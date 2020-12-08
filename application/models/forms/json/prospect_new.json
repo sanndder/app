@@ -1,0 +1,47 @@
+{
+  "remove": [
+    "new",
+    "set",
+    "id",
+    "user_id",
+    "prospect_id",
+    "timestamp",
+    "deleted",
+    "deleted_by",
+    "deleted_on"
+  ],
+  "field": {
+    "bedrijfsnaam": {
+      "label": "Bedrijfsnaam",
+      "rules": {
+        "required": true,
+        "minlength": 3,
+        "maxlength": 128
+      }
+    },
+    "telefoon": {
+      "label": "Telefoonnummer",
+      "rules": {
+        "required": false,
+        "minlength": 10,
+        "maxlength": 20,
+        "removespaces": false,
+        "removechars": ".,_"
+      }
+    },
+    "status": {
+      "label": "Status",
+      "rules": {
+        "required": false
+      }
+    },
+    "reden": {
+      "label": "Reden geen interesse",
+      "rules": {
+        "required": false,
+        "minlength": 1,
+        "maxlength": 255
+      }
+    }
+  }
+}

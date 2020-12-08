@@ -121,7 +121,7 @@
 
                         {* regels met invoer *}
                         {if $r.row_start == NULL && $r.row_end == NULL}
-                            {if ($type == 'verkoop' && $r.doorbelasten_aan != 'uitzender') || ( $r.bemiddelingskosten == 1 && $type != 'zzp')  || ($type == 'kosten' && $r.uitkeren_werknemer == 1)  || ($type == 'zzp' && $r.uitkeren_werknemer == 1) || (isset($relatie_factuurgegevens.verkoop_kosten_gelijk) && $relatie_factuurgegevens.verkoop_kosten_gelijk == 1) }
+                            {if ($type == 'verkoop' && $r.doorbelasten_aan != 'uitzender') || ( $r.bemiddelingskosten == 1 && $type == 'kosten' )  || ($type == 'kosten' && $r.uitkeren_werknemer == 1)  || ($type == 'zzp' && $r.uitkeren_werknemer == 1) || (isset($relatie_factuurgegevens.verkoop_kosten_gelijk) && $relatie_factuurgegevens.verkoop_kosten_gelijk == 1) }
 								<tr>
 									<td style="padding-left: 18px">{$r.omschrijving}</td>
                                     {if $aangenomenwerk == 0}

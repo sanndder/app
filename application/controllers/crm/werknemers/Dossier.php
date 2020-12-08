@@ -17,6 +17,8 @@ use models\verloning\Invoer;
 use models\verloning\LoonstrokenGroup;
 use models\verloning\Loonstrook;
 use models\verloning\UrenbriefjesGroup;
+use models\werknemers\Loonbeslag;
+use models\werknemers\LoonbeslagGroup;
 use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingGroup;
 use models\werknemers\Werknemer;
@@ -444,15 +446,47 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function loonbeslagen( $werknemer_id = NULL )
 	{
-		if( $this->user->user_type != 'werkgever' )
-			forbidden();
+		if( $this->user->user_type != 'werkgever' )	forbidden();
 		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
 		
+		//add
+		if( isset($_POST['go']) )
+		{
+			$loonbeslag = new Loonbeslag();
+			$loonbeslag->setWerknemerID( $werknemer_id );
+			if( $loonbeslag->add( $_POST ) )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/loonbeslag/' . $werknemer_id . '/' . $loonbeslag->id()  ,'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'danger', $loonbeslag->errors() ));
+		}
+		
+		$loonbeslagenGroup = new LoonbeslagGroup();
+		$loonbeslagenGroup->setWerknemerID( $werknemer_id );
+		
 		$this->smarty->assign( 'werknemer', $werknemer );
-		$this->smarty->display( 'crm/werknemers/dossier/ziekmeldingen.tpl' );
+		$this->smarty->assign( 'loonbeslagen', $loonbeslagenGroup->all() );
+		$this->smarty->display( 'crm/werknemers/dossier/loonbeslagen.tpl' );
 	}
+	
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// loonbeslagen pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function loonbeslag( $werknemer_id = NULL, $loonbeslag_id = NULL )
+	{
+		if( $this->user->user_type != 'werkgever' )	forbidden();
+		
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		$loonbeslag = new Loonbeslag( $loonbeslag_id );
+		
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/loonbeslag.tpl' );
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// ziekmeldingen pagina

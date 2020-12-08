@@ -243,7 +243,7 @@ class FacturenGroup extends Connector
 	 * TODO 1 zoekfunctie van maken
 	 * bepaalde facturen ophalen
 	 */
-	public function searchForBankTransacties( $param ) :?array
+	public function searchForBankTransacties( $param, $exclude = NULL ) :?array
 	{
 		$sql = "SELECT facturen.*, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender
 				FROM facturen
@@ -270,8 +270,11 @@ class FacturenGroup extends Connector
 		if( isset($param['bedrag_tot']) && strlen($param['bedrag_tot'] > 0 ) )
 			$sql .= " AND facturen.bedrag_incl <= ". prepareAmountForDatabase($param['bedrag_tot']) ." ";
 		
+		if( $exclude !== NULL && is_array($exclude) )
+			$sql .= " AND facturen.factuur_id NOT IN ( ". array_keys_to_string($exclude) .")";
+		
 		$sql .= " ORDER BY facturen.factuur_nr DESC";
-
+		
 		$query = $this->db_user->query( $sql );
 
 		if( $query->num_rows() == 0 )
@@ -309,7 +312,7 @@ class FacturenGroup extends Connector
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = facturen.inlener_id
 				LEFT JOIN inleners_projecten ON inleners_projecten.id = facturen.project_id
 				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = facturen.inlener_id
-				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_factuurgegevens.deleted = 0 AND facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0 AND facturen.voldaan = 0";
+				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_factuurgegevens.deleted = 0 AND facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0";
 				
 		if( $this->_uitzender_id != NULL )
 			$sql .= " AND facturen.uitzender_id = $this->_uitzender_id ";
@@ -328,7 +331,6 @@ class FacturenGroup extends Connector
 		
 		if( $this->_get_ids !== NULL )
 			$sql .= " AND facturen.factuur_id IN (".implode(',',$this->_get_ids).")";
-
 		
 		$sql .= " ORDER BY jaar DESC, periode DESC, to_factoring_on, inleners_bedrijfsgegevens.bedrijfsnaam ";
 		
@@ -382,11 +384,14 @@ class FacturenGroup extends Connector
 			}
 
 			//nu opschonen
-			foreach( $betalingen as $factuur_id => $categorie_id )
+			if(isset($betalingen) && is_array($betalingen))
 			{
-				if( isset($data[$factuur_id]) && $this->_filter_factuur_aangekocht == 0)
+				foreach ($betalingen as $factuur_id => $categorie_id)
 				{
-					unset($data[$factuur_id]);
+					if (isset($data[$factuur_id]) && $this->_filter_factuur_aangekocht == 0)
+					{
+						unset($data[$factuur_id]);
+					}
 				}
 			}
 		}

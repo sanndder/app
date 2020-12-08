@@ -51,6 +51,11 @@
 		<script src="template/global_assets/js/plugins/forms/inputs/inputmask.js" type="text/javascript"></script>
     {/if}
 
+	<!-- debounce -->
+    {if isset($debounce)}
+		<script src="recources/plugins/jquery.ba-throttle-debounce.js"></script>
+    {/if}
+
 	<!-- /JS plugins -->
 
 </head>

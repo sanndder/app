@@ -42,7 +42,12 @@ class Banktransacties extends MY_Controller
 	public function transactiedetails( $transactie_id )
 	{
 		$transactie = new Transactie( $transactie_id );		
-		$response['details'] = $transactie->details();		
+		$response['details'] = $transactie->details();
+		$response['facturen'] = NULL;
+		
+		if( $response['details']['cat_factuur'] == 1 )
+			$response['facturen'] = $transactie->facturen();
+		
 		echo json_encode( $response );
 	}
 	
@@ -85,11 +90,13 @@ class Banktransacties extends MY_Controller
 		$transactie = new Transactie( $_POST['transactie_id'] );
 		$details = $transactie->details();
 		
+		$facturen = $transactie->facturen();
+		
 		$_POST['inlener_id'] = $details['inlener_id'];
 		$_POST['uitzender_id'] = $details['uitzender_id'];
 		
 		$facturenGroup = new FacturenGroup();
-		$facturen = $facturenGroup->searchForBankTransacties( $_POST );
+		$facturen = $facturenGroup->searchForBankTransacties( $_POST, $facturen );
 		
 		$response['status'] = 'error';
 		

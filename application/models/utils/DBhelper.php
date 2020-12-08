@@ -148,7 +148,7 @@ class DBhelper{
 			$data['naam'] = make_name($data);
 		
 		//1 veld
-		if( $field !== NULL && isset($data[$field]) )
+		if( $field !== NULL && (isset($data[$field]) || $data[$field] === NULL) )
 			return $data[$field];
 		
 		return $data;

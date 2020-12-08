@@ -3,12 +3,11 @@
 {block "header-icon"}icon-list2{/block}
 {block "header-title"}Overzicht - Banktransacties{/block}
 
-
 {assign "datamask" "true"}
 {assign "uploader" "true"}
+{assign "debounce" "true"}
 
 {block "content"}
-	<script src="recources/plugins/jquery.ba-throttle-debounce.js"></script>
 	<script src="recources/js/bankbestanden/transacties.js?{$time}"></script>
 	<!---------------------------------------------------------------------------------------------------------
 	|| Main content
@@ -282,7 +281,7 @@
 										<table class="table-koppeling-factuur mt-3" style="display: none">
 											<tr>
 												<td colspan="3" class="h5 pb-2 text-primary">
-													Koppeling factuur
+													Koppeling relatie
 												</td>
 											</tr>
 											<tr>
@@ -310,6 +309,7 @@
 														</select>
 													</span>
 													<span class="span-relatie-text"></span>
+													<span class="span-relatie-link"></span>
 													<input type="hidden" id="relatie-id" value="">
 												</td>
 												<td class="td-status-bedrijfsnaam">
@@ -318,6 +318,11 @@
 											</tr>
 											<tr>
 												<td colspan="3" style="height: 20px"></td>
+											</tr>
+											<tr>
+												<td colspan="3" class="h5 pb-2 text-primary">
+													Koppeling facturen
+												</td>
 											</tr>
 											<tr>
 												<td class="pr-3 pt-1">Filter op relatie</td>
@@ -383,6 +388,13 @@
 																	</td>
 																	<td class="text-right pr-2 font-weight-bold">Totaal</td>
 																	<td class="text-right pr-2 font-weight-bold search-facturen-totaal"></td>
+																	<td colspan="3"></td>
+																</tr>
+																<tr>
+																	<td></td>
+																	<td colspan="3" class="pt-1"></td>
+																	<td class="text-right pr-2 font-weight-bold">Transactie</td>
+																	<td class="text-right pr-2 font-weight-bold transactie-totaal"></td>
 																	<td colspan="3"></td>
 																</tr>
 															</tfoot>

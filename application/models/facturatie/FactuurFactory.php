@@ -464,7 +464,7 @@ class FactuurFactory extends Connector
 	 * pdf zzp'er maken
 	 *
 	 */
-	private function _pdfZzp( $factuur_id ): bool
+	public function _pdfZzp( $factuur_id ): bool
 	{
 		//factuur per zzp'er
 		$factuur = $this->getFactuurDetails( $factuur_id );
@@ -490,6 +490,8 @@ class FactuurFactory extends Connector
 		//per zzp'er een factuur
 		foreach( $regels as $zzp_id => $zzp_regels )
 		{
+			unset($zzp_factuur);
+			
 			//log action
 			$this->_sessieLog( 'action', "start zzp pdf", $factuur_id );
 			
@@ -504,7 +506,7 @@ class FactuurFactory extends Connector
 			$bedrijfsgegevens = $zzp->bedrijfsgegevens();
 			$persoonsgegevens = $zzp->persoonsgegevens();
 			$factuurgegevens = $zzp->factuurgegevens();
-			
+
 			$highestCount = $zzp->getCurrentFactuurCount();
 			$zzp_factuur['factuur_nr_count'] = $highestCount+1;
 			$zzp_factuur['factuur_nr'] = $zzp_id . '-' . $zzp_factuur['factuur_nr_count'];
@@ -512,14 +514,14 @@ class FactuurFactory extends Connector
 			$pdf->setFactuurNr( $zzp_factuur['factuur_nr'] );
 			$pdf->setBedrijfsgegevens( $bedrijfsgegevens + [ 'email' => $persoonsgegevens['email'] ] + $factuurgegevens );
 			
-			$pdf->setTijdvak( array( 'tijdvak' => $this->_tijdvak, 'jaar' => $this->_jaar, 'periode' => $this->_periode ) );
+			$pdf->setTijdvak( array( 'tijdvak' => $factuur['tijdvak'], 'jaar' => $factuur['jaar'], 'periode' => $factuur['periode'] ) );
 			$pdf->setType( 'zzp' );
 			
 			$pdf->setFactuurdatum( $factuur['factuur_datum'] );
 			
-			$zzp_factuur['tijdvak'] = $this->_tijdvak;
-			$zzp_factuur['jaar'] = $this->_jaar;
-			$zzp_factuur['periode'] = $this->_periode;
+			$zzp_factuur['tijdvak'] = $factuur['tijdvak'];
+			$zzp_factuur['jaar'] = $factuur['jaar'];
+			$zzp_factuur['periode'] = $factuur['periode'];
 			$zzp_factuur['verval_datum'] = date( 'Y-m-d', strtotime( $factuur['factuur_datum'] . ' + 8 days' ) );
 			$pdf->setVervaldatum( $zzp_factuur['verval_datum'] );
 			
@@ -546,28 +548,31 @@ class FactuurFactory extends Connector
 			$pdf->setFileDir( $zzp_factuur['file_dir'] );
 			$pdf->setFileName( $zzp_factuur['file_name'] );
 			
+			if( !$pdf->generate() )
+				return false;
+			
+			//insert met juiste gegevens
+			$zzp_factuur['inlener_id'] = $factuur['inlener_id'];
+			$zzp_factuur['uitzender_id'] = $factuur['uitzender_id'];
+			$zzp_factuur['zzp_id'] = $zzp_id;
+			$zzp_factuur['parent_id'] = $factuur['factuur_id'];
+			$zzp_factuur['sessie_id'] = $this->_sessie_id;
+			$zzp_factuur['user_id'] = $this->user->user_id;
+			
+			$this->db_user->insert( 'zzp_facturen', $zzp_factuur );
+			if( $this->db_user->insert_id() == 0 )
+			{
+				$this->_sessieLog( 'error', "insert zzp factuur mislukt", $factuur['factuur_id'] );
+				return false;
+			}
+			else
+				$this->_sessieLog( 'action', "zzp factuur gegenereerd",  $this->db_user->insert_id() );
+			
 		}
 		
-		if( !$pdf->generate() )
-			return false;
-		
-		//insert met juiste gegevens
-		$zzp_factuur['inlener_id'] = $factuur['inlener_id'];
-		$zzp_factuur['uitzender_id'] = $factuur['uitzender_id'];
-		$zzp_factuur['zzp_id'] = $zzp_id;
-		$zzp_factuur['parent_id'] = $factuur['factuur_id'];
-		$zzp_factuur['sessie_id'] = $this->_sessie_id;
-		$zzp_factuur['user_id'] = $this->user->user_id;
-		
-		$this->db_user->insert( 'zzp_facturen', $zzp_factuur );
-		if( $this->db_user->insert_id() == 0 )
-		{
-			$this->_sessieLog( 'error', "insert zzp factuur mislukt", $factuur['factuur_id'] );
-			return false;
-		}
 		
 		//log action
-		$this->_sessieLog( 'action', "einde zzp factuur pdf", $factuur['factuur_id'] );
+		$this->_sessieLog( 'action', "einde zzp facturen pdf", $factuur['factuur_id'] );
 		
 		return true;
 	}

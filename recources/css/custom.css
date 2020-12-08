@@ -135,3 +135,5 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
 .search-result-facturen{width: 100%;}
 .search-result-facturen tbody tr:first-of-type td{border-top:1px solid #333;}
 .search-result-facturen tbody tr:last-of-type td{border-bottom:1px solid #333;}
+
+.tr-gekoppeld td{ padding: 4px 0; font-weight: bold}

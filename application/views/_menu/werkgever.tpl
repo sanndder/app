@@ -55,6 +55,21 @@
 
 			<li class="nav-item dropdown">
 				<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+					<i class=icon-folder-minus2 mr-2"></i>
+					Debiteurbeheer {*<span class="badge badge-pill badge-warning ml-2" style="position: relative">3</span>*}
+				</a>
+
+				<div class="dropdown-menu">
+
+					<a href="debiteru/facturen/index" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-list-unordered mr-2"></i>Facturen</div>
+					</a>
+
+				</div>
+			</li>
+
+			<li class="nav-item dropdown">
+				<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
 					<i class="icon-list mr-2"></i>
 					Overzichten {*<span class="badge badge-pill badge-warning ml-2" style="position: relative">3</span>*}
 				</a>
@@ -66,7 +81,7 @@
 						<span class="badge badge-pill badge-warning" style="position: relative;">3</span>
 					</a>*}
 					<a href="overzichten/facturen/index" class="dropdown-item d-flex justify-content-between">
-						<div><i class="mi-euro-symbol mr-2"></i>Facturen</div>
+						<div><i class="mi-euro-symbol mr-2"></i>Export Facturen</div>
 					</a>
 					<a href="overzichten/banktransacties/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="icon-list2 mr-2"></i>Banktransacties</div>

@@ -326,6 +326,7 @@
 											<th class="pl-1">Datum</th>
 											<th class="text-right">Bedrag</th>
 											<th>Type</th>
+											<th>Bank</th>
 											<th>Door</th>
 											<th>Op</th>
 										</tr>
@@ -341,6 +342,9 @@
 													<td class="text-right">€ {$b.bedrag|number_format:2:',':'.'}</td>
 													<td>
                                                         {if isset($betaling_categorien[$b.categorie_id])}{$betaling_categorien[$b.categorie_id]}{/if}
+													</td>
+													<td>
+                                                        {$b.transactie_id}
 													</td>
 													<td>{$b.user|default:''}</td>
 													<td>{$b.timestamp|date_format: '%d-%m-%Y'}</td>

@@ -89,18 +89,18 @@ let transacties = {
 		{
 			transacties.searchFacturen();
 		}));
-		$(document).on('change', '[name="search-relatie"]',function(e)
+		$(document).on('change', '[name="search-relatie"]', function(e)
 		{
 			transacties.searchFacturen();
 		});
 		
-		$(document).on('change', '[name="koppel-factuur"]',function(e)
+		$(document).on('change', '[name="koppel-factuur"]', function(e)
 		{
 			transacties.toggleFactuur();
 		});
 		
 		//geslecteerde facturen uit tabel selecteren
-		$(document).on('click', '.koppel-selected-facturen',function(e)
+		$(document).on('click', '.koppel-selected-facturen', function(e)
 		{
 			transacties.koppelSelectedFacturen();
 		});
@@ -112,9 +112,9 @@ let transacties = {
 		});
 		
 		//toggle all
-		$(document).on('change', '[name="toggle-all-facturen"]',function(e)
+		$(document).on('change', '[name="toggle-all-facturen"]', function(e)
 		{
-			$('.search-result-facturen tbody [name="koppel-factuur"]').prop('checked', $(this).prop('checked') );
+			$('.search-result-facturen tbody [name="koppel-factuur"]').prop('checked', $(this).prop('checked'));
 			transacties.toggleFactuur();
 		});
 		
@@ -122,20 +122,21 @@ let transacties = {
 	
 	koppelSelectedFacturen()
 	{
-		$alert = $('.warning-facturen')
+		$alert = $('.warning-facturen');
 		$table = $('.search-result-facturen');
 		
 		$alert.hide().html('');
 		
-		$checkboxes = $table.find( 'tbody [name="koppel-factuur"]:checked' );
+		$checkboxes = $table.find('tbody [name="koppel-factuur"]:checked');
 		
 		data.transactie_id = $('#transactie_id').val();
 		data.facturen = {};
 		
 		//door de gecheckte regels heen lopen
-		$checkboxes.each(function(){
+		$checkboxes.each(function()
+		{
 			$tr = $(this).closest('tr');
-			data.facturen[$(this).val()] = $tr.find('[type="text"]').val().replace(',','.');
+			data.facturen[$(this).val()] = $tr.find('[type="text"]').val().replace(',', '.');
 		})
 		
 		xhr.url = base_url + 'overzichten/banktransacties/koppelfacturen';
@@ -150,22 +151,28 @@ let transacties = {
 				else
 				{
 					error = '';
-					for( let f of Object.values(json) )
+					for( let factuur_id of Object.keys(json) )
 					{
 						//errors
-						if( f.status == 'error' )
+						if( json[factuur_id].status == 'error' )
 						{
-							for( let e of Object.values(f.errors) )
-								error += f.factuur_nr +': ' + e + '<br/>';
+							for( let e of Object.values(json[factuur_id].errors) )
+								error += json[factuur_id].factuur_nr + ': ' + e + '<br/>';
+							
+							//show errors
+							$alert.show().html(error);
 						}
 						//factuur is gekoppeld
 						else
 						{
-						
+							//get tr
+							$tr = $table.find('[data-id="'+factuur_id+'"]');
+							$tr.removeClass('tr-search').addClass('tr-gekoppeld');
+							$tr.find('.td-checkbox').html('<i class="icon-cross del-factuur text-danger" style="cursor: pointer; font-size: 18px; margin-left: -2px"></i>')
+							$tr.find('.td-verwerken').html('€ ' +  parseFloat(json[factuur_id].bedrag).toFixed(2).replace('.', ',') );
+							$tr.find('.td-verwerken').data('bedrag', json[factuur_id].bedrag );
 						}
 					}
-					//show errors
-					$alert.show().html(error);
 				}
 				
 				//niks gevonden
@@ -185,21 +192,30 @@ let transacties = {
 		$facturenTd = $table.find('.facturen-result-factuur');
 		if( $facturenTd.length == 0 )
 			return false;
-		
+
 		totaalBedrag = 0;
 		
-		$facturenTd.each(function() {
+		$facturenTd.each(function()
+		{
 			$tr = $(this).closest('tr');
-			if( $tr.find('[name="koppel-factuur"]').prop( 'checked') )
+			if( $tr.find('[name="koppel-factuur"]').prop('checked') )
 			{
 				if( $tr.find('[name="credit-factuur"]').prop('checked') )
 					totaalBedrag -= parseFloat($(this).find('input').val().replace(',', '.'));
 				else
 					totaalBedrag += parseFloat($(this).find('input').val().replace(',', '.'));
 			}
+			
+			if( $tr.find('.del-factuur').length > 0 )
+			{
+				if( $tr.find('[name="credit-factuur"]').prop('checked') )
+					totaalBedrag -= parseFloat($tr.find('.facturen-result-factuur').data('bedrag'));
+				else
+					totaalBedrag += parseFloat($tr.find('.facturen-result-factuur').data('bedrag'));
+			}
 		});
 		
-		$('.search-facturen-totaal').html( '€ ' + totaalBedrag.toFixed(2).replace('.',',') );
+		$('.search-facturen-totaal').html('€ ' + totaalBedrag.toFixed(2).replace('.', ','));
 	},
 	
 	
@@ -208,10 +224,10 @@ let transacties = {
 		//reset
 		$tableSearchResult = $('.search-result-facturen');
 		$tableSearchResultBody = $tableSearchResult.find('tbody');
-		$tableSearchResultBody.html('');
-		$('.search-facturen-totaal').html('');
+		$tableSearchResultBody.find('.tr-search').remove();
+		transacties.toggleFactuur();
 		$('[name="toggle-all-facturen"]').prop('checked', false);
-			
+		
 		$trSearchFacturen = $('.tr-search-facturen').show();
 		$trSearchNotFind = $('.tr-search-not-found').hide();
 		
@@ -220,7 +236,7 @@ let transacties = {
 		data.factuur_nrs = $('[name="search-factuur-nr"]').val();
 		data.bedrag_van = $('[name="search-bedrag-van"]').val();
 		data.bedrag_tot = $('[name="search-bedrag-tot"]').val();
-		data.filter_relatie = $('[name="search-relatie"]').prop( 'checked' );
+		data.filter_relatie = $('[name="search-relatie"]').prop('checked');
 		
 		xhr.url = base_url + 'overzichten/banktransacties/searchfacturen';
 		var response = xhr.call();
@@ -243,18 +259,18 @@ let transacties = {
 						if( f.marge == 1 && f.bedrag_incl > 0 ) credit = true;
 						
 						trHtml = '';
-						trHtml += '<tr>';
-						trHtml += '<td class="pr-2" style="padding-top: 4px"><input type="checkbox" name="koppel-factuur" value="'+f.factuur_id+'" /></td>';
+						trHtml += '<tr class="tr-search" data-id="'+f.factuur_id+'">';
+						trHtml += '<td class="pr-2 td-checkbox" style="padding-top: 4px"><input type="checkbox" name="koppel-factuur" value="' + f.factuur_id + '" /></td>';
 						trHtml += '<td class="pr-2">' + f.factuur_nr + '</td>';
 						trHtml += '<td class="pr-2">';
 						if( f.marge == 1 ) trHtml += 'marge';
 						if( f.marge == 0 ) trHtml += 'verkoop';
 						trHtml += '</td>';
 						
-						trHtml += '<td class="text-right pr-2">' + '€ ' + parseFloat(f.bedrag_incl).toFixed(2).replace('.',',') + '</td>';
-						trHtml += '<td class="text-right pr-2 ">' + '€ ' + parseFloat(f.bedrag_openstaand).toFixed(2).replace('.',',') + '</td>';
-						trHtml += '<td class="text-right pr-2 facturen-result-factuur">' +
-							'<input type="text" style="width: 90px;" class="text-right input-koppel-bedrag" value="' + parseFloat(f.bedrag_openstaand).toFixed(2).replace('.',',') + '" /></td>';
+						trHtml += '<td class="text-right pr-2">' + '€ ' + parseFloat(f.bedrag_incl).toFixed(2).replace('.', ',') + '</td>';
+						trHtml += '<td class="text-right pr-2 ">' + '€ ' + parseFloat(f.bedrag_openstaand).toFixed(2).replace('.', ',') + '</td>';
+						trHtml += '<td class="text-right pr-2 facturen-result-factuur td-verwerken">' +
+							'<input type="text" style="width: 90px;" class="text-right input-koppel-bedrag" value="' + parseFloat(f.bedrag_openstaand).toFixed(2).replace('.', ',') + '" /></td>';
 						trHtml += '<td class="pr-2" style="padding-top: 4px"><input type="checkbox" name="credit-factuur"';
 						if( credit ) trHtml += ' checked';
 						trHtml += ' /></td>';
@@ -262,7 +278,7 @@ let transacties = {
 						if( f.marge == 1 ) trHtml += f.uitzender;
 						if( f.marge == 0 ) trHtml += f.inlener;
 						trHtml += '</td>';
-						trHtml += '<td><a href="facturatie/factuur/details/'+f.factuur_id+'" target="_blank"><i class="icon-file-text2 mr-1"></i></a></td>';
+						trHtml += '<td><a href="facturatie/factuur/details/' + f.factuur_id + '" target="_blank"><i class="icon-file-text2 mr-1"></i></a></td>';
 						
 						trHtml += '</tr>';
 						
@@ -273,6 +289,7 @@ let transacties = {
 				{
 					//niks gevonden
 					$trSearchNotFind.show();
+					$trSearchFacturen.hide();
 				}
 				
 			});
@@ -367,15 +384,15 @@ let transacties = {
 		$table = $('.table-koppeling-factuur');
 		$selectType = $table.find('[name="type"]');
 		$selectBedrijfsnaam = $table.find('[name="bedrijfsnaam"]');
-
+		
 		$tdStatus = $('.table-koppeling .status-bedrijfsnaam');
 		$tdStatus.find('i').removeClass('icon-checkmark-circle text-success icon-warning text-danger').addClass('spinner icon-spinner3');
 		$tdStatus.find('span').html('');
-
+		
 		data.transactie_id = $('#transactie_id').val();
 		data.type = $selectType.val();
 		data.id = $selectBedrijfsnaam.val();
-
+		
 		xhr.url = base_url + 'overzichten/banktransacties/setrelatie';
 		var response = xhr.call();
 		if( response !== false )
@@ -387,10 +404,10 @@ let transacties = {
 					$('#relatie-id').val(data.id);
 				else
 					alert('Opslaan relatie mislukt');
-
+				
 			});
 		}
-
+		
 	},
 	
 	setOpmerking(obj)
@@ -471,14 +488,16 @@ let transacties = {
 		
 		//marge
 		if( transacties.categorie_id == 4 )
-			transacties.koppelFacturenScherm( 'uitzender' );
+			transacties.koppelFacturenScherm('uitzender');
+		
+		if( transacties.categorie_id == 1 )
+			transacties.koppelFacturenScherm('inlener');
 		
 	},
 	
 	
-	
 	//transactie koppelingen laten zien voor facturen
-	koppelFacturenScherm( $type_relatie = null )
+	koppelFacturenScherm($type_relatie = null)
 	{
 		$table = $('.table-koppeling-factuur');
 		$table.show();
@@ -520,23 +539,25 @@ let transacties = {
 		$table.show();
 		
 		$table.find('.td-factuur-id').html('');
-		$table.find('.td-factuur-pdf a').html('').attr( 'href', '');
+		$table.find('.td-factuur-pdf a').html('').attr('href', '');
 		
-		xhr.url = base_url + 'overzichten/banktransacties/transactiefactoringfactuur/' + $('#transactie_id').val();;
+		xhr.url = base_url + 'overzichten/banktransacties/transactiefactoringfactuur/' + $('#transactie_id').val();
+		;
 		var response = xhr.call();
 		if( response !== false )
 		{
 			response.done(function(json)
 			{
 				if( json === null )
-				{}
-					//alert('niks');
+				{
+				}
+				//alert('niks');
 				else
 				{
 					$table.find('.td-factuur-id').html(json.factuur_id);
-					$table.find('.td-bedrag').html( '€ ' + parseFloat(json.factuur_totaal).toFixed(2).replace('.',',') );
+					$table.find('.td-bedrag').html('€ ' + parseFloat(json.factuur_totaal).toFixed(2).replace('.', ','));
 					$table.find('.td-factuur-pdf a').html(json.file_name_display);
-					$table.find('.td-factuur-pdf a').attr( 'href', 'overzichten/factoring/view/' + json.factuur_id);
+					$table.find('.td-factuur-pdf a').attr('href', 'overzichten/factoring/view/' + json.factuur_id);
 				}
 			});
 		}
@@ -549,12 +570,14 @@ let transacties = {
 		//reset
 		transacties.categorie_id = null;
 		$tableKoppeling = $('.table-koppeling-factuur');
-		$tableKoppeling.find( '[name="type"]').val('-1');
-		$tableKoppeling.find( '[name="bedrijfsnaam"]').html('<option value="-1">Selecteer een inlener/uitzender</option>');
+		$tableKoppeling.find('[name="type"]').val('-1');
+		$tableKoppeling.find('[name="bedrijfsnaam"]').html('<option value="-1">Selecteer een inlener/uitzender</option>');
 		$('.search-result-facturen').find('tbody').html('');
-
+		$('.search-facturen-totaal').html('');
+		$('.warning-facturen').hide();
+		
 		//chekcbox altijd aan
-		$('[name="search-relatie"]').prop( 'checked', true );
+		$('[name="search-relatie"]').prop('checked', true);
 		
 		$('#relatie-type').val('');
 		$('#relatie-id').val('');
@@ -578,105 +601,157 @@ let transacties = {
 		if( response !== false )
 		{
 			response.done(function(json)
-			{
-				$('div .load').hide();
-				
-				//geen data gevonden
-				if( json.details === null )
 				{
-					$('div .error').show();
-					return false;
-				}
-				
-				//wel data gevonden
-				$('div .details').show();
-				
-				//reset
-				$('.btn-verwerkt').find('i').addClass('icon-check').removeClass('spinner icon-spinner3');
-				$('.btn-onverwerkt').find('i').addClass('icon-cross').removeClass('spinner icon-spinner3');
-				
-				$table = $('.table-transactiegegevens');
-				
-				$('#transactie_id').val(json.details.transactie_id);
-				$table.find('.td-id').html(json.details.bestand_id + `/` + json.details.transactie_id);
-				$table.find('.td-relatie').html(json.details.relatie);
-				$table.find('.td-iban').html(json.details.relatie_iban);
-				$table.find('.td-datum').html(json.details.datum_format);
-				$table.find('.td-bedrag').html(parseFloat(json.details.bedrag).toFixed(2).replace('.', ','));
-				$table.find('.td-omschrijving').html(json.details.omschrijving);
-				$table.find('[name="opmerking"]').val(json.details.opmerking);
-				
-				//factuur nrs naar zoekveld
-				$('[name="search-factuur-nr"]').val(json.details.factuur_nrs)
-
-				//geen categorie ingesteld
-				if( json.details.categorie_id == null )
-					$table.find('[name="categorie_id"]').val(-1);
-				//wel categorie
-				else
-				{
-					$table.find('[name="categorie_id"]').val(json.details.categorie_id);
-					transacties.categorie_id = json.details.categorie_id;
-					transacties.koppelingenscherm();
-				}
-
-				//Relatie dropdown weergeven
-				if( json.details.inlener_id === null && json.details.uitzender_id === null )
-				{
-					$tableKoppeling.find('.span-relatie-type-text').hide();
-					$tableKoppeling.find('.span-relatie-text').hide();
-					$tableKoppeling.find('.span-relatie-type-select').show();
-					$tableKoppeling.find('.span-relatie-select').show();
-				}
-				//Relatie is bekend
-				else
-				{
-					if( json.details.inlener_id !== null )
-					{
-						relatie = json.details.inlener;
-						relatie_type = 'ínlener';
-						relatie_id = json.details.inlener_id;
-					}
-
-					if( json.details.uitzender_id !== null )
-					{
-						relatie = json.details.uitzender;
-						relatie_type = 'uitzender';
-						relatie_id = json.details.uitzender_id;
-					}
-
-					$tableKoppeling.find('.span-relatie-type-select').hide();
-					$tableKoppeling.find('.span-relatie-select').hide();
-					$tableKoppeling.find('.span-relatie-type-text').show().html(relatie_type);
-					$tableKoppeling.find('.span-relatie-text').show().html(relatie);
+					$('div .load').hide();
 					
-					$('#relatie-type').val(relatie_type);
-					$('#relatie-id').val(relatie_id);
+					//geen data gevonden
+					if( json.details === null )
+					{
+						$('div .error').show();
+						return false;
+					}
+					
+					//wel data gevonden
+					$('div .details').show();
+					
+					//reset
+					$('.btn-verwerkt').find('i').addClass('icon-check').removeClass('spinner icon-spinner3');
+					$('.btn-onverwerkt').find('i').addClass('icon-cross').removeClass('spinner icon-spinner3');
+					
+					$table = $('.table-transactiegegevens');
+					
+					$('#transactie_id').val(json.details.transactie_id);
+					$table.find('.td-id').html(json.details.bestand_id + `/` + json.details.transactie_id);
+					$table.find('.td-relatie').html(json.details.relatie);
+					$table.find('.td-iban').html(json.details.relatie_iban);
+					$table.find('.td-datum').html(json.details.datum_format);
+					$table.find('.td-bedrag').html(parseFloat(json.details.bedrag).toFixed(2).replace('.', ','));
+					$('.transactie-totaal').html( '€ ' + parseFloat(json.details.bedrag).toFixed(2).replace('.', ','));
+					$table.find('.td-omschrijving').html(json.details.omschrijving);
+					$table.find('[name="opmerking"]').val(json.details.opmerking);
+					
+					//factuur nrs naar zoekveld
+					$('[name="search-factuur-nr"]').val(json.details.factuur_nrs)
+					
+					//geen categorie ingesteld
+					if( json.details.categorie_id == null )
+						$table.find('[name="categorie_id"]').val(-1);
+					//wel categorie
+					else
+					{
+						$table.find('[name="categorie_id"]').val(json.details.categorie_id);
+						transacties.categorie_id = json.details.categorie_id;
+						transacties.koppelingenscherm();
+					}
+					
+					//Relatie dropdown weergeven
+					if( json.details.inlener_id === null && json.details.uitzender_id === null )
+					{
+						$tableKoppeling.find('.span-relatie-type-text').hide();
+						$tableKoppeling.find('.span-relatie-text').hide();
+						$tableKoppeling.find('.span-relatie-link').hide();
+						$tableKoppeling.find('.span-relatie-type-select').show();
+						$tableKoppeling.find('.span-relatie-select').show();
+					}
+					//Relatie is bekend
+					else
+					{
+						if( json.details.inlener_id !== null )
+						{
+							relatie = json.details.inlener;
+							relatie_type = 'ínlener';
+							relatie_id = json.details.inlener_id;
+							relatie_link = '<a href="crm/inleners/dossier/facturen/'+relatie_id+'" class="ml-2" target="_blank"><i class="icon-folder"></i></a>';
+						}
+						
+						if( json.details.uitzender_id !== null )
+						{
+							relatie = json.details.uitzender;
+							relatie_type = 'uitzender';
+							relatie_id = json.details.uitzender_id;
+							relatie_link = '<a href="crm/uitzenders/dossier/facturen/'+relatie_id+'" class="ml-2" target="_blank"><i class="icon-folder"></i></a>';
+							
+						}
+						
+						$tableKoppeling.find('.span-relatie-type-select').hide();
+						$tableKoppeling.find('.span-relatie-select').hide();
+						$tableKoppeling.find('.span-relatie-type-text').show().html(relatie_type);
+						$tableKoppeling.find('.span-relatie-text').show().html(relatie);
+						$tableKoppeling.find('.span-relatie-link').show().html(relatie_link);
+						
+						$('#relatie-type').val(relatie_type);
+						$('#relatie-id').val(relatie_id);
+						
+					}
+					
+					$tableSearchResultBody = $('.search-result-facturen').find('tbody');
+					
+					//facturen weergeven
+					if( json.facturen !== null )
+					{
+						for( let f of Object.values(json.facturen) )
+						{
+							credit = false
+							f.bedrag_openstaand = Math.abs(f.bedrag_openstaand);
+							
+							//credit?
+							if( f.marge == 0 && f.bedrag_incl < 0 ) credit = true;
+							if( f.marge == 1 && f.bedrag_incl > 0 ) credit = true;
+							
+							trHtml = '';
+							trHtml += '<tr class="tr-gekoppeld">';
+							trHtml += '<td class="pr-2" style="padding-top: 4px;"><i class="icon-cross del-factuur text-danger" style="cursor: pointer; font-size: 18px; margin-left: -2px"></i></td>';
+							trHtml += '<td class="pr-2">' + f.factuur_nr + '</td>';
+							trHtml += '<td class="pr-2">';
+							if( f.marge == 1 ) trHtml += 'marge';
+							if( f.marge == 0 ) trHtml += 'verkoop';
+							trHtml += '</td>';
+							
+							trHtml += '<td class="text-right pr-2">' + '€ ' + parseFloat(f.bedrag_incl).toFixed(2).replace('.', ',') + '</td>';
+							trHtml += '<td class="text-right pr-2 ">' + '€ ' + parseFloat(f.bedrag_openstaand).toFixed(2).replace('.', ',') + '</td>';
+							trHtml += '<td class="text-right pr-2 facturen-result-factuur" data-bedrag="'+parseFloat(f.bedrag).toFixed(2)+'">€ '+parseFloat(f.bedrag).toFixed(2).replace('.', ',')+'</td>';
+							trHtml += '<td class="pr-2" style="padding-top: 8px"><input type="checkbox" name="credit-factuur"';
+							if( credit ) trHtml += ' checked';
+							trHtml += ' /></td>';
+							trHtml += '<td class="pr-2">';
+							if( f.marge == 1 ) trHtml += f.uitzender;
+							if( f.marge == 0 ) trHtml += f.inlener;
+							trHtml += '</td>';
+							trHtml += '<td><a href="facturatie/factuur/details/' + f.factuur_id + '" target="_blank"><i class="icon-file-text2 mr-1"></i></a></td>';
+							
+							trHtml += '</tr>';
+							
+							$tableSearchResultBody.append(trHtml);
+						}
+					}
+					
+					//optellen
+					transacties.toggleFactuur();
 					
 					//zoek facturen
 					transacties.searchFacturen();
+					
+					if( json.details.bedrag > 0 )
+						$table.find('.td-bedrag').addClass('font-weight-bold').removeClass('font-weight-bolder');
+					else
+						$table.find('.td-bedrag').removeClass('font-weight-bold').addClass('font-weight-bolder');
+					
+					if( json.details.verwerkt === 1 )
+					{
+						$('.icon-checkmark-circle').show();
+						$('.btn-onverwerkt').show();
+						$('.btn-verwerkt').hide();
+					}
+					else
+					{
+						$('.icon-checkmark-circle').hide();
+						$('.btn-onverwerkt').hide();
+						$('.btn-verwerkt').show();
+					}
+					
+					
 				}
-				
-				if( json.details.bedrag > 0 )
-					$table.find('.td-bedrag').addClass('font-weight-bold').removeClass('font-weight-bolder');
-				else
-					$table.find('.td-bedrag').removeClass('font-weight-bold').addClass('font-weight-bolder');
-				
-				if( json.details.verwerkt === 1 )
-				{
-					$('.icon-checkmark-circle').show();
-					$('.btn-onverwerkt').show();
-					$('.btn-verwerkt').hide();
-				}
-				else
-				{
-					$('.icon-checkmark-circle').hide();
-					$('.btn-onverwerkt').hide();
-					$('.btn-verwerkt').show();
-				}
-				
-				
-			});
+			);
 		}
 		
 	},
@@ -689,10 +764,38 @@ let transacties = {
 		$table.find('tfoot').show();
 		$table.find('tbody').show().html('');
 		
-		if( $filter.find('[name="bij"]')[0].checked === true ){data.bij = 1} else{data.bij = 0}
-		if( $filter.find('[name="af"]')[0].checked === true ){data.af = 1} else{data.af = 0}
-		if( $filter.find('[name="verwerkt"]')[0].checked === true ){data.verwerkt = 1} else{data.verwerkt = 0}
-		if( $filter.find('[name="onverwerkt"]')[0].checked === true ){data.onverwerkt = 1} else{data.onverwerkt = 0}
+		if( $filter.find('[name="bij"]')[0].checked === true )
+		{
+			data.bij = 1
+		}
+		else
+		{
+			data.bij = 0
+		}
+		if( $filter.find('[name="af"]')[0].checked === true )
+		{
+			data.af = 1
+		}
+		else
+		{
+			data.af = 0
+		}
+		if( $filter.find('[name="verwerkt"]')[0].checked === true )
+		{
+			data.verwerkt = 1
+		}
+		else
+		{
+			data.verwerkt = 0
+		}
+		if( $filter.find('[name="onverwerkt"]')[0].checked === true )
+		{
+			data.onverwerkt = 1
+		}
+		else
+		{
+			data.onverwerkt = 0
+		}
 		
 		data.min = $filter.find('[name="min"]').val();
 		data.max = $filter.find('[name="max"]').val();
@@ -747,6 +850,7 @@ let transacties = {
 
 document.addEventListener('DOMContentLoaded', function()
 {
+	
 	transacties.init();
 	setTimeout(function()
 	{

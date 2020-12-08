@@ -5,10 +5,13 @@ namespace models\boekhouding;
 use models\Connector;
 use models\facturatie\Factuur;
 use models\facturatie\FactuurBetaling;
+use models\inleners\InlenerGroup;
+use models\uitzenders\Uitzender;
+use models\uitzenders\UitzenderGroup;
 use models\utils\DBhelper;
 
-if (!defined('BASEPATH'))exit('No direct script access allowed');
-
+if( !defined( 'BASEPATH' ) )
+	exit( 'No direct script access allowed' );
 
 /*
  * Hoofdclass voor invoer verloning
@@ -23,22 +26,19 @@ class Transactie extends Connector
 	private $_categorie_id = NULL;
 	protected $_error = NULL;
 	
-	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
+	 * /*
 	 * constructor
 	 */
-	public function __construct( $id = NULL  )
+	public function __construct( $id = NULL )
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
 		
-		if( $id !== NULL && intval($id) != 0 )
+		if( $id !== NULL && intval( $id ) != 0 )
 			$this->setId( $id );
 	}
-
-
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * Details
@@ -46,20 +46,22 @@ class Transactie extends Connector
 	 */
 	public function details()
 	{
-		$sql = "SELECT bank_transacties.*, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender
+		$sql = "SELECT bank_transacties.*, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender, btc.factuur AS cat_factuur, btc.factoring AS cat_factoring
 				FROM bank_transacties
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = bank_transacties.inlener_id
 				LEFT JOIN uitzenders_bedrijfsgegevens ON uitzenders_bedrijfsgegevens.uitzender_id = bank_transacties.uitzender_id
+				LEFT JOIN bank_transacties_categorien btc ON bank_transacties.categorie_id = btc.categorie_id
 				WHERE bank_transacties.transactie_id = $this->_transactie_id AND bank_transacties.deleted = 0 
 					AND ( inleners_bedrijfsgegevens.deleted = 0 OR bank_transacties.inlener_id IS NULL )
 					AND ( uitzenders_bedrijfsgegevens.deleted = 0 OR bank_transacties.uitzender_id IS NULL )
 				LIMIT 1";
-
+		
 		$query = $this->db_user->query( $sql );
 		$this->_transactie = DBhelper::toRow( $query, 'NULL' );
-		
+
 		//afbreken wanneer niet gevonden
-		if( $this->_transactie === NULL ) return $this->_transactie;
+		if( $this->_transactie === NULL )
+			return $this->_transactie;
 		
 		//datum al aaanpassen voor javascript
 		$this->_transactie['datum_format'] = reverseDate( $this->_transactie['datum'] );
@@ -69,8 +71,8 @@ class Transactie extends Connector
 		//factuurnummers uit de omschrijving vissen
 		if( $this->_transactie['omschrijving'] !== NULL && $this->_transactie['omschrijving'] != '' )
 		{
-			preg_match_all('!\d+!', $this->_transactie['omschrijving'], $matches);
-			$this->_transactie['factuur_nrs'] = implode(',', $matches[0]);
+			preg_match_all( '!\d+!', $this->_transactie['omschrijving'], $matches );
+			$this->_transactie['factuur_nrs'] = implode( ',', $matches[0] );
 			/*
 			$parts = explode( ' ', $this->_transactie['omschrijving'] );
 			if( is_array($parts) && count($parts) > 0 )
@@ -91,6 +93,25 @@ class Transactie extends Connector
 		return $this->_transactie;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * facturen die bij transactie
+	 *
+	 */
+	public function facturen()
+	{
+		$sql = "SELECT facturen_betalingen.bedrag, facturen.factuur_id, facturen.factuur_nr, facturen.marge, facturen.bedrag_incl, facturen.bedrag_openstaand, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender
+				FROM facturen_betalingen
+					LEFT JOIN facturen ON facturen_betalingen.factuur_id = facturen.factuur_id
+					LEFT JOIN inleners_bedrijfsgegevens ON facturen.inlener_id = inleners_bedrijfsgegevens.inlener_id
+					LEFT JOIN uitzenders_bedrijfsgegevens ON facturen.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
+				WHERE facturen_betalingen.transactie_id = $this->_transactie_id AND facturen_betalingen.deleted = 0";
+		
+		$query = $this->db_user->query( $sql );
+		
+		return DBhelper::toArray( $query, 'factuur_id', 'NULL' );
+		
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -102,21 +123,65 @@ class Transactie extends Connector
 		//koppeling maar 1x proberen
 		if( $this->_transactie['auto_koppeling'] !== NULL )
 			return false;
-		
-		$query = $this->db_user->query( "SELECT relatie_iban, categorie_id FROM bank_transacties_koppeling WHERE deleted = 0 AND relatie_iban = ? ", array( $this->_transactie['relatie_iban']) );
+
+		//salaris betaling?
+		if( strpos( $this->_transactie['omschrijving'], 'salaris' ) !== false  )
+		{
+			$update['categorie_id'] = 5;
+			$update['auto_koppeling'] = 1;
+			
+			$this->db_user->where( 'transactie_id', $this->_transactie_id );
+			$this->db_user->update( 'bank_transacties', $update );
+			if( $this->db_user->affected_rows() != -1 )
+			{
+				$this->_categorie_id = $this->_transactie['categorie_id'] = $update['categorie_id'];
+				return true;
+			}
+		}
+		//geen salaris
+		$query = $this->db_user->query( "SELECT relatie_iban, uitzender_id, inlener_id, categorie_id FROM bank_transacties_koppeling WHERE deleted = 0 AND relatie_iban = ? ", array( $this->_transactie['relatie_iban'] ) );
 		
 		//niks gevonden
-		if( $query->num_rows() == 0 ) return false;
+		if( $query->num_rows() == 0 )
+			return false;
 		
 		$categorien = [];
+		$inlener = NULL;
+		$uitzender = NULL;
 		
 		foreach( $query->result_array() as $row )
+		{
 			$categorien[$row['categorie_id']] = 1;
-
-		//wannneer er maar 1 categorie is, die instellen
-		if( count($categorien) != 1 ) return false;
+			if( $row['uitzender_id'] !== NULL ) $uitzender[$row['uitzender_id']] = 1;
+			if( $row['inlener_id'] !== NULL ) $inlener[$row['inlener_id']] = 1;
+		}
 		
-		$update['categorie_id'] = key($categorien);
+		//relatie koppelen
+		if( $uitzender !== NULL && count($uitzender) == 1 )
+		{
+			$updateU['uitzender_id'] = key( $uitzender );
+			$this->db_user->where( 'transactie_id', $this->_transactie_id );
+			$this->db_user->update( 'bank_transacties', $updateU );
+			
+			$this->_transactie['uitzender_id'] = $updateU['uitzender_id'];
+			$this->_transactie['uitzender'] = UitzenderGroup::bedrijfsnaam($updateU['uitzender_id']);
+		}
+		
+		if( $inlener !== NULL && count($inlener) == 1 )
+		{
+			$updateI['inlener_id'] = key( $inlener );
+			$this->db_user->where( 'transactie_id', $this->_transactie_id );
+			$this->db_user->update( 'bank_transacties', $updateI );
+			
+			$this->_transactie['inlener_id'] = $updateI['inlener_id'];
+			$this->_transactie['inlener'] = InlenerGroup::bedrijfsnaam($updateI['inlener_id']);
+		}
+		
+		//wannneer er maar 1 categorie is, die instellen
+		if( count( $categorien ) != 1 )
+			return false;
+		
+		$update['categorie_id'] = key( $categorien );
 		$update['auto_koppeling'] = 1;
 		
 		$this->db_user->where( 'transactie_id', $this->_transactie_id );
@@ -132,9 +197,7 @@ class Transactie extends Connector
 			return true;
 		}
 	}
-
-
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * facturen aan transactie koppelen
@@ -148,18 +211,22 @@ class Transactie extends Connector
 		$response = [];
 		foreach( $facturen as $factuur_id => $bedrag )
 		{
-			$factuur = new Factuur($factuur_id);
+			$factuur = new Factuur( $factuur_id );
 			
 			$betaling = new FactuurBetaling();
-			$betaling->bedrag( $bedrag )->categorie( $this->_getBetalingCategorie( $this->_transactie['categorie_id']) )->datum( reverseDate($this->_transactie['datum']) );
+			$betaling->bedrag( $bedrag )
+				->categorie( $this->_getBetalingCategorie( $this->_transactie['categorie_id'] ) )
+				->datum( reverseDate( $this->_transactie['datum'] ) )
+				->tansactieID( $this->_transactie['transactie_id'] );
+			
 			if( $betaling->valid() )
 			{
 				$factuur->addBetaling( $betaling );
 				$factuur->delBetaling( $factuur->getBetalingID() );
-				$this->_log('Factuur ' .  $factuur_id . ' gekoppeld');
+				$this->_log( 'Factuur ' . $factuur_id . ' gekoppeld' );
 				$response[$factuur_id]['status'] = 'success';
-			}
-			else
+				$response[$factuur_id]['bedrag'] = $bedrag;
+			} else
 			{
 				$response[$factuur_id]['status'] = 'error';
 				$response[$factuur_id]['factuur_nr'] = $factuur->nr();
@@ -170,7 +237,6 @@ class Transactie extends Connector
 		return $response;
 	}
 	
-	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * probeer transactie te koppelen
@@ -179,11 +245,11 @@ class Transactie extends Connector
 	private function _getBetalingCategorie( $transactieCategorie )
 	{
 		//gewone betaling
-		if( $transactieCategorie == 1)
+		if( $transactieCategorie == 1 )
 			return 1;
 		
 		//marge betaling
-		if( $transactieCategorie == 4)
+		if( $transactieCategorie == 4 )
 			return 9;
 	}
 	
@@ -203,7 +269,6 @@ class Transactie extends Connector
 			return $this->_koppelFactoringFactuur();
 		
 	}
-
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -213,9 +278,8 @@ class Transactie extends Connector
 	public function getFactoringFactuur()
 	{
 		$query = $this->db_user->query( "SELECT factuur_id, file_name_display, factuur_totaal FROM factoring_facturen WHERE transactie_id = $this->_transactie_id AND deleted = 0 LIMIT 1" );
-		return DBhelper::toRow( $query, 'NULL');
+		return DBhelper::toRow( $query, 'NULL' );
 	}
-	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -227,16 +291,16 @@ class Transactie extends Connector
 		//nr uit omschrijving halen
 		$nr = explode( ' ', $this->_transactie['omschrijving'] );
 		
-		if( !is_array($nr) || count($nr) == 0 )
+		if( !is_array( $nr ) || count( $nr ) == 0 )
 			return false;
 		
 		//zoek factoring factuur
 		$sql = "SELECT factuur_id FROM factoring_facturen WHERE deleted = 0 AND ( ";
 		
 		foreach( $nr as $part )
-			$sql .= " factuur_nr LIKE '%".$part."%' OR ";
+			$sql .= " factuur_nr LIKE '%" . $part . "%' OR ";
 		
-		$sql = substr( $sql, 0, -3);
+		$sql = substr( $sql, 0, -3 );
 		$sql .= " ) ";
 		
 		$query = $this->db_user->query( $sql );
@@ -255,11 +319,9 @@ class Transactie extends Connector
 			
 			return true;
 		}
-
+		
 		return false;
 	}
-	
-	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -268,10 +330,11 @@ class Transactie extends Connector
 	 */
 	private function _saveKoppeling( $info = NULL )
 	{
-		if( $this->_transactie === NULL ) $this->details();
-
+		if( $this->_transactie === NULL )
+			$this->details();
+		
 		$query = $this->db_user->query( "SELECT * FROM bank_transacties_koppeling WHERE deleted = 0 AND relatie_iban = ? AND categorie_id = ?", array( $this->_transactie['relatie_iban'], $this->_categorie_id ) );
-
+		
 		//koppeling is al gemaakt
 		if( $query->num_rows() > 0 )
 			return NULL;
@@ -279,16 +342,15 @@ class Transactie extends Connector
 		$insert['relatie'] = $this->_transactie['relatie'];
 		$insert['relatie_iban'] = $this->_transactie['relatie_iban'];
 		$insert['categorie_id'] = $this->_categorie_id;
-
-		if( is_array($info) && count($info) > 0 )
+		
+		if( is_array( $info ) && count( $info ) > 0 )
 		{
-			foreach ( $info as $key => $value )
+			foreach( $info as $key => $value )
 				$insert[$key] = $value;
 		}
 		
 		$this->db_user->insert( 'bank_transacties_koppeling', $insert );
 	}
-	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -313,7 +375,6 @@ class Transactie extends Connector
 		return false;
 	}
 	
-	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * Opmerking opslaan
@@ -337,36 +398,33 @@ class Transactie extends Connector
 		
 		return false;
 	}
-
-
-
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * relatie opslaan
 	 *
 	 */
-	public function setRelatie( $type, $id ) :bool
+	public function setRelatie( $type, $id ): bool
 	{
 		if( $type != 'inlener' && $type != 'uitzender' )
 			return false;
-
-		$update[$type . '_id'] = intval($id);
-		$this->db_user->where( 'transactie_id', $this->_transactie_id);
-		$this->db_user->update('bank_transacties', $update);
-
+		
+		$update[$type . '_id'] = intval( $id );
+		$this->db_user->where( 'transactie_id', $this->_transactie_id );
+		$this->db_user->update( 'bank_transacties', $update );
+		
 		//koppeling maken
 		$this->_saveKoppeling( $update );
-
+		
 		return true;
 	}
-
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * categorie opslaan
 	 *
 	 */
-	public function setCategorie( $categorie_id ) :bool
+	public function setCategorie( $categorie_id ): bool
 	{
 		if( $this->_transactie_id === NULL )
 		{
@@ -374,7 +432,7 @@ class Transactie extends Connector
 			return false;
 		}
 		
-		$update['categorie_id'] = $this->_categorie_id = intval($categorie_id);
+		$update['categorie_id'] = $this->_categorie_id = intval( $categorie_id );
 		$this->db_user->where( 'transactie_id', $this->_transactie_id );
 		$this->db_user->update( 'bank_transacties', $update );
 		
@@ -388,7 +446,6 @@ class Transactie extends Connector
 		
 		return false;
 	}
-
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -397,9 +454,8 @@ class Transactie extends Connector
 	 */
 	public function setId( $id )
 	{
-		return $this->_transactie_id = intval($id);
+		return $this->_transactie_id = intval( $id );
 	}
-	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -419,29 +475,27 @@ class Transactie extends Connector
 		$this->db_user->insert( 'bank_transacties_log', $insert );
 	}
 	
-	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
+	 * /*
 	 * Toon errors
 	 * @return array|boolean
 	 */
 	public function errors()
 	{
 		//output for debug
-		if (isset($_GET['debug']))
+		if( isset( $_GET['debug'] ) )
 		{
-			if ($this->_error === NULL)
-				show('Geen errors');
+			if( $this->_error === NULL )
+				show( 'Geen errors' );
 			else
-				show($this->_error);
+				show( $this->_error );
 		}
-
-		if ($this->_error === NULL)
+		
+		if( $this->_error === NULL )
 			return false;
-
+		
 		return $this->_error;
 	}
 }
-
 
 ?>

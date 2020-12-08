@@ -38,7 +38,7 @@ let invoerreserveringen = {
 		//spinners weg
 		$tr.find('.spinner').remove();
 		
-		if( $input.val() == 0 || $input.val().length == 0 || $input.val() == '' )
+		if( $input.val() < 0 || $input.val().length == 0 || $input.val() == '' )
 			return false;
 		
 		data.reserveringType =  $tr.data('type');

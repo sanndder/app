@@ -302,3 +302,73 @@ function acceptAV(){
 		alert("Er gaat wat mis tijdens de AJAX call, herlaad de pagina en probeer het opnieuw");
 	});
 }
+
+//----------------------------------------------------------------------------------------------------------------------------
+// inline save TODO: samenvoegen
+//----------------------------------------------------------------------------------------------------------------------------
+$(function(){
+	
+	if (typeof $.debounce == 'undefined')
+		return;
+	
+	$(document).on('change','.edit-inline-select',function(){
+		
+		//elemets
+		$obj = $(this);
+		$tdStatus = $obj.closest('tr').find('.td-status');
+		
+		$tdStatus.html('<i class="icon-spinner3 spinner"></i>');
+		data.name = $obj.attr('name');
+		data.value = $obj.val();
+		
+		xhr.url = base_url + $obj.closest('table').data('link');
+		var response = xhr.call( true );
+		if( response !== false )
+		{
+			response.done(function(json)
+			{
+				if( json.status == 'success' )
+				{
+					$tdStatus.html('<i class="icon-check2 text-success"></i>');
+				}
+				else
+					$tdStatus.html('<i class="icon-warning text-danger" title="Fout bij opslaan"></i>');
+				
+			}).fail(function(){
+				$tdStatus.html('<i class="icon-warning text-danger" title="Fout bij opslaan"></i>');
+			});
+		}
+		
+	});
+	
+	$(document).on('keyup','.edit-inline', $.debounce(750, function(e){
+		
+		//elemets
+		$obj = $(this);
+		$tdStatus = $obj.closest('tr').find('.td-status');
+		
+		$tdStatus.html('<i class="icon-spinner3 spinner"></i>');
+		data.name = $obj.attr('name');
+		data.value = $obj.val();
+		
+		xhr.url = base_url + $obj.closest('table').data('link');
+		var response = xhr.call( true );
+		if( response !== false )
+		{
+			response.done(function(json)
+			{
+				if( json.status == 'success' )
+				{
+					$tdStatus.html('<i class="icon-check2 text-success"></i>');
+				}
+				else
+					$tdStatus.html('<i class="icon-warning text-danger" title="Fout bij opslaan"></i>');
+				
+			}).fail(function(){
+				$tdStatus.html('<i class="icon-warning text-danger" title="Fout bij opslaan"></i>');
+			});
+		}
+		
+	}));
+	
+});

@@ -409,6 +409,12 @@ class Dossier extends MY_Controller
 	public function facturen( $zzp_id = NULL )
 	{
 		
+		if(isset($_GET['g']))
+		{
+			$factuur  = new \models\facturatie\FactuurFactory();
+			$factuur->_pdfZzp($_GET['g']);
+		}
+
 		//init inlener object
 		$zzp = new Zzp( $zzp_id );
 		$facturen = $zzp->facturen();

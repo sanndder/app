@@ -37,6 +37,7 @@
 									<th style="width: 120px" class="text-right">Kosten (€)</th>
 									<th style="width: 120px" class="text-right">Factuur nr</th>
 									<th style="width: 120px" class="text-right">Marge (€)</th>
+									<th style="width: 140px">Voldaan op</th>
 									<th style="width: 25px"></th>
 									<th></th>
 								</tr>
@@ -63,6 +64,7 @@
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_kosten|number_format:2:',':'.'}</td>
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder"></td>
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_marge|number_format:2:',':'.'}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
 		                                </tr>
@@ -105,6 +107,16 @@
 												€ {$f.marge.bedrag_incl|number_format:2:',':'.'}
 											</a>
 										</td>
+		                                <td>
+			                                {if $f.marge.voldaan == 1}
+				                                <span class="text-success font-weight-bold">
+					                                <i class="icon-check mr-1"></i>
+					                                {$f.marge.voldaan_op|date_format: '%d-%m-%Y'}
+				                                </span>
+				                            {else}
+				                                -
+			                                {/if}
+		                                </td>
 										<td>
 											<ul class="list-inline mb-0 mt-2 mt-sm-0">
 												<li class="list-inline-item dropdown">
@@ -141,6 +153,7 @@
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_kosten|number_format:2:',':'.'}</td>
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder"></td>
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1 text-right font-weight-bolder">€ {$totaal_marge|number_format:2:',':'.'}</td>
+			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
 			                                <td style="border-top: 1px solid #666; border-bottom: 1px solid #666" class="py-1"></td>
 		                                </tr>

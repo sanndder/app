@@ -130,7 +130,7 @@
     "telefoon": {
       "label": "Telefoonnummer",
       "rules": {
-        "required": true,
+        "required": false,
         "minlength": 10,
         "maxlength": 20,
         "removespaces": false,
@@ -140,7 +140,7 @@
     "mobiel": {
       "label": "Mobiel",
       "rules": {
-        "required": false,
+        "required": true,
         "minlength": 10,
         "maxlength": 20,
         "removespaces": false,

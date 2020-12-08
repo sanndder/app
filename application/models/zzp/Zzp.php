@@ -281,7 +281,7 @@ class Zzp extends Connector
 	 */
 	public function facturen( $param = NULL )
 	{
-		$sql = "SELECT * FROM zzp_facturen WHERE deleted = 0";
+		$sql = "SELECT * FROM zzp_facturen WHERE deleted = 0 AND zzp_id = $this->zzp_id ORDER BY jaar DESC, periode DESC";
 		$query = $this->db_user->query( $sql );
 		
 		if( $query->num_rows() == 0 )

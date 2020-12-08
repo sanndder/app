@@ -187,6 +187,31 @@ class InlenerGroup extends Connector {
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * Bedrijfsnaam opvragen
+	 *
+	 */
+	static function bedrijfsnaam( $inlener_id )
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$sql = "SELECT inleners_bedrijfsgegevens.bedrijfsnaam FROM inleners_bedrijfsgegevens
+				WHERE inleners_bedrijfsgegevens.deleted = 0
+				AND inlener_id = ".intval($inlener_id)." LIMIT 1";
+		
+		$query = $db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$data = $query->row_array();
+		
+		return $data['bedrijfsnaam'];
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * List van uitzenders
 	 */
 	static function list( $uitzender_id = NULL )

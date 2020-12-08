@@ -131,7 +131,7 @@
 				</div>
 
 
-			</div><!-- /main navigation -->3
+			</div><!-- /main navigation -->
 			{/if}
 
 			<!---------------------------------------------------------------------------------------------------------
@@ -211,6 +211,7 @@
 							<th style="width: 75px;">ID</th>
 							<th>Naam</th>
 							<th>Uitzender</th>
+							<th>CAO</th>
                             {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
 								<th>Plaatsingen</th>
                             {/if}
@@ -240,6 +241,7 @@
                                             {$w.uitzender}
                                         {/if}
 									</td>
+									<td>{$w.short_name}</td>
 									<td>
                                         {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
                                             {if isset($w.inleners)}

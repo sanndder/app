@@ -1,9 +1,6 @@
 <?php
 
-use models\uitzenders\UitzenderGroup;
-use models\utils\VisitsLogger;
-use models\werknemers\Werknemer;
-use models\werknemers\WerknemerGroup;
+use models\debiteurbeheer\OpenstaandeFacturen;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -11,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Instellingen controller
  */
-class Overzicht extends MY_Controller
+class Facturen extends MY_Controller
 {
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -20,28 +17,22 @@ class Overzicht extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
+		if( $this->user->user_type != 'werkgever' )forbidden();
 	}
-
-
+	
+	
 	//-----------------------------------------------------------------------------------------------------------------
-	// Overzicht pagina
+	// overzicht
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-		//alleen in devolpment TODO: remove
-		if( isset($_GET['del']) )
-		{
-			$werknemer = new Werknemer( NULL );
-			$werknemer->del($_GET['del']);
-		}
+		$openstaandeFacturen = new OpenstaandeFacturen();
+		$facturen = $openstaandeFacturen->facturen( $_POST );
 
-		//show($werknemers);
-		/*
-		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
-		$this->smarty->assign('werknemers', $werknemers);
-		$this->smarty->assign('last_visits', $log->getLastCRMVisits('werknemer') );*/
-		$this->smarty->display('crm/prospects/overzicht.tpl');
+		//show($facturen);
+		
+		$this->smarty->assign( 'facturen', $facturen );
+		$this->smarty->display('debiteurbeheer/facturen.tpl');
 	}
 	
 }

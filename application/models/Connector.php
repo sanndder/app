@@ -3,6 +3,7 @@
 namespace models;
 
 use CI_DB_driver;
+use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -212,6 +213,23 @@ class Connector
 		
 		return false;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * wat is het hoogste id
+	 *
+	 */
+	public function lastID( $table, $field )
+	{
+		$query = $this->db_user->query( "SELECT MAX($field) AS max_id FROM $table" );
+		
+		if( $query->num_rows() == 0 )
+			return 0;
+		
+		$data = $query->row_array();
+		return $data['max_id'];
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
