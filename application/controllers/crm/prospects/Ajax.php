@@ -40,8 +40,20 @@ class Ajax extends MY_Controller
 			$response['status'] = 'error';
 		
 		echo json_encode($response);
-		
 	}
-
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// taak aanpassen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function toggletaak($id)
+	{
+		$prospect = new Prospect($id);
+		
+		if( $prospect->toggleTaak($_POST['taak_id'], $_POST['state']) )
+			$response['status'] = 'success';
+		else
+			$response['status'] = 'error';
+		
+		echo json_encode($response);
+	}
 }

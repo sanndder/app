@@ -5,7 +5,7 @@
 
 {block "content"}
 
-	{include file='crm/inleners/dossier/_sidebar.tpl' active='facturen'}
+    {include file='crm/inleners/dossier/_sidebar.tpl' active='facturen'}
 
 
 	<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -54,8 +54,11 @@
 											<th style="width: 25px;">Jaar</th>
 											<th style="width: 25px;">Periode</th>
 											<th style="width: 100px" class="text-right">Factuur nr</th>
-											<th style="width: 120px" class="text-right">Bedrag (€)</th>
-											<th style="width: 120px" class="text-right">Vervallen (dagen)</th>
+											<th style="width: 130px" class="text-right">Bedrag (€)</th>
+											<th style="width: 130px" class="text-right">Vrije deel (€)</th>
+											<th style="width: 130px" class="text-right">G-rekening (€)</th>
+											<th style="width: 140px" class="text-right">Vervallen (dagen)</th>
+											<th style="width: 180px" class="text-right">Voldaan</th>
 											<th style="width: 25px"></th>
 											<th></th>
 										</tr>
@@ -75,10 +78,26 @@
 														</a>
 													</td>
 													<td class="text-right">
-														{$f.verval_dagen}
+															€ {($f.bedrag_incl-$f.bedrag_grekening)|number_format:2:',':'.'}
+													</td>
+													<td class="text-right">
+															€ {$f.bedrag_grekening|number_format:2:',':'.'}
+													</td>
+													<td class="text-right">
+                                                        {if $f.voldaan != 1}{$f.verval_dagen}{/if}
+													</td>
+													<td class="text-right">
+                                                        {if $f.voldaan == 1}
+															<span class="text-success font-weight-bold">
+							                                <i class="icon-check mr-1"></i>
+							                                {$f.voldaan_op|date_format: '%d-%m-%Y'}
+						                                 </span>
+                                                        {else}
+															-
+                                                        {/if}
 													</td>
 													<td>
-														
+
 													</td>
 													<td></td>
 												</tr>

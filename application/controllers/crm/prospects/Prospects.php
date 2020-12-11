@@ -32,6 +32,7 @@ class Prospects extends MY_Controller
 			$prospect = new Prospect();
 			if( $prospect->validate() )
 			{
+
 				if( $prospect->new() )
 					redirect( $this->config->item( 'base_url' ) . 'crm/prospects/prospects/details/' . $prospect->insertID()  ,'location' );
 				else
@@ -66,12 +67,13 @@ class Prospects extends MY_Controller
 		//taak toevoegen
 		if( isset($_POST['taak_opslaan']) )
 		{
-			if( $prospect->addNotitie() )
+			if( $prospect->addTaak() )
 				redirect( $this->config->item( 'base_url' ) . 'crm/prospects/prospects/details/' . $id ,'location' );
 		}
 		
 		$this->smarty->assign('prospect', $prospect->details() );
 		$this->smarty->assign('notities', $prospect->notities() );
+		$this->smarty->assign('taken', $prospect->taken() );
 		$this->smarty->display('crm/prospects/details.tpl');
 	}
 

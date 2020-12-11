@@ -211,7 +211,7 @@
 						</div>
 
 						<!-- Reden -->
-						<div class="form-group row mb-3 input-reden" {if isset($smarty.post.status) && $smarty.post.status != 3}style="display: none"{/if}>
+						<div class="form-group row mb-3 input-reden" {if (isset($smarty.post.status) && $smarty.post.status != 3) || !isset($smarty.post.status)}style="display: none"{/if}>
 							<label class="col-form-label col-sm-3">Reden geen interesse</label>
 							<div class="col-sm-7">
 								<textarea name="reden" class="form-control" {if isset($smarty.post.status) && $smarty.post.status == 3} required{/if}>{if isset($smarty.post.reden)}{$smarty.post.reden}{/if}</textarea>

@@ -211,22 +211,28 @@
 
                     {if isset($notities) && is_array($notities) && count($notities) > 0}
                         {foreach $notities as $n}
-						<div class="card" style="margin-top: 7px; margin-bottom: 7px">
-							<div class="card-body media">
-								{if $n.type == 'notitie'}<i class="icon-pencil5 text-blue-600 mr-4" style="font-size:24px"></i>{/if}
-								{if $n.type == 'telefoon'}<i class="icon-phone2 text-blue-600 mr-4" style="font-size:24px"></i>{/if}
-								{if $n.type == 'email'}<i class="icon-envelop3 text-blue-600 mr-4" style="font-size:24px"></i>{/if}
-								<div class="media-body">
-									{$n.notitie}
-								</div>
-								<div class="text-right">
-									{$n.timestamp|date_format: '%d-%m-%Y om %R:%S'}<br />
-									{$n.user}
+							<div class="card" style="margin-top: 7px; margin-bottom: 7px">
+								<div class="card-body media">
+                                    {if $n.type == 'notitie'}
+										<i class="icon-pencil5 text-blue-600 mr-4" style="font-size:24px"></i>
+                                    {/if}
+                                    {if $n.type == 'telefoon'}
+										<i class="icon-phone2 text-blue-600 mr-4" style="font-size:24px"></i>
+                                    {/if}
+                                    {if $n.type == 'email'}
+										<i class="icon-envelop3 text-blue-600 mr-4" style="font-size:24px"></i>
+                                    {/if}
+									<div class="media-body">
+                                        {$n.notitie}
+									</div>
+									<div class="text-right">
+                                        {$n.timestamp|date_format: '%d-%m-%Y om %R:%S'}<br/>
+                                        {$n.user}
+									</div>
 								</div>
 							</div>
-						</div>
-						{/foreach}
-					{/if}
+                        {/foreach}
+                    {/if}
 
 				</div><!-- /col -->
 
@@ -241,6 +247,7 @@
 							<span class="text-uppercase font-size-sm font-weight-semibold">Taken</span>
 						</div>
 						<div class="card-body">
+
 							<form method="post" action="">
 
 								<table style="width: 100%;">
@@ -251,18 +258,69 @@
 									</tr>
 									<tr>
 										<td>
-											<input name="datum" type="text" class="form-control pickadate" autocomplete="off"  style="width: 95px">
+											<input name="datum" type="text" class="form-control pickadate" autocomplete="off" style="width: 95px" required>
 										</td>
 										<td>
-											<input type="text" class="form-control" name="actie">
+											<input type="text" class="form-control" name="actie" required>
 										</td>
 										<td>
-											<button type="submit" name="notitie_opslaan" class="btn btn-success">
+											<button type="submit" name="taak_opslaan" class="btn btn-success">
 												<i class="icon-plus-circle2"></i>
 											</button>
 										</td>
 									</tr>
 								</table>
+
+                                {if isset($taken) && is_array($taken) && count($taken) > 0}
+									<table style="width: 100%" class="mt-3">
+                                        {foreach $taken as $t}
+											<tr {if $t.afgerond == 1}style="text-decoration: line-through"{/if} data-id="{$t.taak_id}">
+												<td style="width: 25px; padding-top: 10px">
+													<div class="form-check">
+														<label class="form-check-label">
+															<input name="afgerond" value="{$t.taak_id}" type="checkbox" class="form-input-styled" {if $t.afgerond == 1}checked{/if}>
+														</label>
+													</div>
+												</td>
+												<td style="padding-top: 10px">
+													<div class="text-primary" style="font-size: 15px">{$t.actie}</div>
+												</td>
+												<td style="width:105px; padding-top: 10px">
+													<span class="">
+														<i class="icon-calendar2 mr-1"></i>{$t.datum|date_format: '%d-%m-%Y'}
+													</span>
+												</td>
+												<td style="width:15px; padding-top: 8px">
+													<i class="icon-trash text-muted" style="font-size: 12px; cursor: pointer" onclick="return confirm('Taak verwijderen?')"></i>
+												</td>
+											</tr>
+                                        {/foreach}
+									</table>
+                                {/if}
+
+								<script>
+									{literal}
+									$('[name="afgerond"]').on('change', function(){
+
+										$obj = $(this);
+										$tr = $obj.closest('tr');
+										if( $obj.prop('checked') )
+											$tr.css( 'text-decoration', 'line-through' );
+										else
+											$tr.css( 'text-decoration', 'none' );
+
+										data.state = $obj.prop('checked');
+										data.taak_id = $tr.data('id');
+
+										xhr.url = base_url + 'crm/prospects/ajax/toggletaak/' + {/literal}{$prospect.prospect_id}{literal};
+										var response = xhr.call( true );
+										if( response !== false )
+										{
+
+										}
+									})
+									{/literal}
+								</script>
 
 							</form>
 						</div>

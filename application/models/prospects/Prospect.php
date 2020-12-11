@@ -137,6 +137,38 @@ class Prospect extends Connector
 		
 		return false;
 	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Taak afronden of juist niet
+	 *
+	 */
+	public function toggleTaak( $taak_id, $state)
+	{
+		if( $state == 'true' )
+		{
+			$update['afgerond'] = 1;
+			$update['afgerond_door'] = $this->user->id;
+			$update['afgerond_op'] = date('Y-m-d');
+		}
+		else
+		{
+			$update['afgerond'] = 0;
+			$update['afgerond_door'] = NULL;
+			$update['afgerond_op'] = NULL;
+		}
+		
+		$this->db_user->where( 'taak_id', $taak_id);
+		$this->db_user->where( 'prospect_id', $this->_prospect_id );
+		$this->db_user->update( 'prospects_taken', $update );
+		
+		if( $this->db_user->affected_rows() != -1 )
+			return true;
+		return false;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -157,6 +189,29 @@ class Prospect extends Connector
 		
 		return false;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * TODO: verbeteren
+	 * Taak toevoegen
+	 *
+	 */
+	public function addTaak()
+	{
+		
+		
+		$insert['prospect_id'] = $this->_prospect_id;
+		$insert['actie'] = trim($_POST['actie']);
+		$insert['datum'] = reverseDate($_POST['datum']);
+		$insert['user_id'] = $this->user->id;
+		
+		$this->db_user->insert( 'prospects_taken', $insert );
+		if( $this->db_user->insert_id() > 0 )
+			return true;
+		
+		return false;
+	}
+
 
 	
 	
@@ -215,6 +270,25 @@ class Prospect extends Connector
 		return $data;
 	}
 	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * notities
+	 *
+	 */
+	public function taken()
+	{
+		$sql = "SELECT * FROM prospects_taken
+				WHERE prospect_id = $this->_prospect_id AND deleted = 0 AND (afgerond_op > DATE_SUB(NOW(), INTERVAL 7 DAY) OR afgerond_op IS NULL )
+				ORDER BY afgerond ASC, datum ASC";
+		
+		
+		$query = $this->db_user->query( $sql );
+		$data = DBhelper::toArray( $query, 'taak_id', 'NULL',  );
+		
+		$data = UserGroup::findUserNames($data);
+		
+		return $data;
+	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
