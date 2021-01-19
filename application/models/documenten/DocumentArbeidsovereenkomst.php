@@ -147,6 +147,23 @@ class DocumentArbeidsovereenkomst extends Document implements DocumentInterface 
 		//template html
 		$this->_html .= $this->_template_object->body();
 		
+		//ET erbij?
+		if( isset($this->_werknemer_info['et_regeling']) && $this->_werknemer_info['et_regeling'] == 1 && $this->_template_object->id() != 10 )
+		{
+			$this->_html .= '<div style="page-break-before:always"></div>';
+			
+			$template = new Template( 10 );
+			$this->_html .= '<span style="font-size: 20px;">'.$template->titel().'</span><br /><br />';
+			$this->_html .= $template->body();
+		}
+		
+		//vaststelling identiteit erbij
+		$this->_html .= '<div style="page-break-before:always"></div>';
+		
+		$template_id = new Template( 11 );
+		$this->_html .= '<span style="font-size: 20px;">'.$template_id->titel().'</span><br /><br />';
+		$this->_html .= $template_id->body();
+		
 		//sluit container
 		$this->_html .= '</div>';
 	}
@@ -167,6 +184,7 @@ class DocumentArbeidsovereenkomst extends Document implements DocumentInterface 
 		
 		return $this;
 	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -213,7 +231,8 @@ class DocumentArbeidsovereenkomst extends Document implements DocumentInterface 
 			//set ID
 			$this->setDocumentId( $this->db_user->insert_id() );
 
-			$this->_addFormulierLoonheffingen( $pdfObject );
+			if( $this->_template_object->id() != 10 )
+				$this->_addFormulierLoonheffingen( $pdfObject );
 			
 			//handtekeningen in de wacht
 			$this->addEmptySignature( 'werknemer', $this->_werknemer_id );

@@ -224,7 +224,7 @@ class Dossier extends MY_Controller
 
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
-		
+
 		//id bewijs is appart object
 		$idbewijs = new IDbewijs();
 		$idbewijs->werknemer( $werknemer_id );
@@ -233,6 +233,24 @@ class Dossier extends MY_Controller
 		if( isset( $_GET['contract'] ) )
 		{
 			$template = new Template( 7 ); //4 is samenwerkingsovereenkomst
+			$document = DocumentFactory::createFromTemplateObject( $template );
+			$document->setUitzenderID($werknemer->uitzenderID())->setWerknemerID( $werknemer_id )->build()->pdf();
+			
+			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
+		}
+		
+		if( isset( $_GET['contractro'] ) )
+		{
+			$template = new Template( 12 ); //4 is samenwerkingsovereenkomst
+			$document = DocumentFactory::createFromTemplateObject( $template );
+			$document->setUitzenderID($werknemer->uitzenderID())->setWerknemerID( $werknemer_id )->build()->pdf();
+			
+			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
+		}
+		
+		if( isset( $_GET['et'] ) )
+		{
+			$template = new Template( 10 ); //4 is samenwerkingsovereenkomst
 			$document = DocumentFactory::createFromTemplateObject( $template );
 			$document->setWerknemerID( $werknemer_id )->build()->pdf();
 			
@@ -380,7 +398,6 @@ class Dossier extends MY_Controller
 		
 		
 		$inleners = $inlenerGroup->uitzender( $werknemer->uitzenderID() )->all( array('complete' => 1) );
-		
 		
 		//$this->smarty->assign('plaatsingen', $plaatsingen );
 		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );

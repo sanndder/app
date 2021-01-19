@@ -573,13 +573,14 @@ class Document extends Connector {
 	 */
 	public function _setWerknemerInfo()
 	{
-		$sql = "SELECT werknemers_gegevens.*, werknemers_dienstverband_duur.fase
+		$sql = "SELECT werknemers_gegevens.*, werknemers_dienstverband_duur.fase, werknemers_verloning_instellingen.et_regeling
 				FROM werknemers_gegevens
 				LEFT JOIN werknemers_dienstverband_duur ON werknemers_gegevens.werknemer_id = werknemers_dienstverband_duur.werknemer_id
+				LEFT JOIN werknemers_verloning_instellingen ON werknemers_gegevens.werknemer_id = werknemers_verloning_instellingen.werknemer_id
 				WHERE werknemers_gegevens.deleted = 0 AND werknemers_dienstverband_duur.deleted = 0 AND werknemers_gegevens.werknemer_id = $this->_werknemer_id";
 		
 		$query = $this->db_user->query( $sql );
-		
+
 		$this->_werknemer_info = DBhelper::toRow($query);
 		$this->_werknemer_info['gb_datum'] = reverseDate($this->_werknemer_info['gb_datum']);
 		
@@ -691,9 +692,20 @@ class Document extends Connector {
 		$this->_uitzender_info['plaats'] = 'Hoofddorp';
 		$this->_uitzender_info['kvknr'] = '12345678';
 		$this->_uitzender_info['btwnr'] = 'NL123456789B01';
+		/*
+		$this->_uitzender_info['bedrijfsnaam'] = 'Royal DS Personeel-service B.V.';
+		$this->_uitzender_info['straat'] = 'Ambachtsweg';
+		$this->_uitzender_info['huisnummer'] = '57';
+		$this->_uitzender_info['postcode'] = '6541DA';
+		$this->_uitzender_info['plaats'] = 'Nijmegen';
+		$this->_uitzender_info['kvknr'] = '62724827';
+		$this->_uitzender_info['btwnr'] = 'NL854932525B01';*/
 		
 		$this->_uitzender_info['contactpersoon']['aanhef'] = 'de heer';
 		$this->_uitzender_info['contactpersoon']['naam'] = 'U.K.L. van Jongbloed';
+		/*
+		$this->_uitzender_info['contactpersoon']['aanhef'] = 'de heer';
+		$this->_uitzender_info['contactpersoon']['naam'] = 'R. Weeren';*/
 		
 		
 		$this->_inlener_info['bedrijfsnaam'] = 'Clean Supplies Schoonmaak B.V.';
@@ -722,19 +734,20 @@ class Document extends Connector {
 		$this->_werknemer_info['postcode'] = '5589OP';
 		$this->_werknemer_info['plaats'] = 'Apeldoorn';
 		$this->_werknemer_info['iban'] = 'NL87RABO13245678';
+		
 		/*
-		$this->_werknemer_info['gb_datum'] = '21-01-1968';
-		$this->_werknemer_info['voorletters'] = 'C.';
+		$this->_werknemer_info['gb_datum'] = '04-09-1974';
+		$this->_werknemer_info['voorletters'] = 'D.';
 		$this->_werknemer_info['tussenvoegsel'] = '';
-		$this->_werknemer_info['achternaam'] = 'Felea';
-		$this->_werknemer_info['voornaam'] = 'Constantin';
-		$this->_werknemer_info['straat'] = 'Laminoristilor street';
+		$this->_werknemer_info['achternaam'] = 'Racoreanu';
+		$this->_werknemer_info['voornaam'] = 'Dumitrel';
+		$this->_werknemer_info['straat'] = 'Strada Asachi Gheorghe';
 		$this->_werknemer_info['geslacht'] = 'm';
-		$this->_werknemer_info['huisnummer'] = '5';
+		$this->_werknemer_info['huisnummer'] = '24';
 		$this->_werknemer_info['huisnummer_toevoeging'] = '';
-		$this->_werknemer_info['postcode'] = '800114';
-		$this->_werknemer_info['plaats'] = 'Galati';
-		$this->_werknemer_info['iban'] = 'RO51INGB0000999908271377';*/
+		$this->_werknemer_info['postcode'] = '810080';
+		$this->_werknemer_info['plaats'] = 'Braila';
+		$this->_werknemer_info['iban'] = '';*/
 		
 		
 		$this->_plaatsing['start_plaatsing'] = '2020-05-04';

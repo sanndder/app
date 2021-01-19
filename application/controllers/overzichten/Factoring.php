@@ -131,7 +131,7 @@ class Factoring extends MY_Controller
 		}
 		
 		$details = $factuur->details();
-		
+
 		//factor bedrag uitrekenen
 		$response['bedrag'] = FactoringFactuur::calcFactoringBedrag( $details );
 		$response['eind'] = FactoringFactuur::calcFactoringEindafrekening( $details );

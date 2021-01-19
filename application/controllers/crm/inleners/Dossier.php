@@ -487,7 +487,10 @@ class Dossier extends MY_Controller
 		
 		//cao's hier al ophalen, kan gebruikt worden
 		$caos_inlener = $CAOgroup->inlener( $inlener_id );
-
+		
+		//check altijd voor standaard urentype
+		$inlener->checkForDefaultUrenType();
+		
 		//del data
 		if( isset($_POST['del']) )
 		{

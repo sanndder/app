@@ -74,7 +74,15 @@
 								<legend class="text-uppercase font-size-sm font-weight-bold text-primary">Arbeidsovereenkomst</legend>
 							</fieldset>
 							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?contract">
-								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren
+								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren (NL)
+							</a>
+							<br />
+							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?contractro">
+								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren (RO)
+							</a>
+							<br />
+							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?et">
+								<i class="icon-file-plus mr-2"></i>ET-addendum genereren
 							</a>
 
 						</div>

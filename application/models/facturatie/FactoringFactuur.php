@@ -56,7 +56,7 @@ class FactoringFactuur extends Connector
 			$factorbedrag -= $factuur['bedrag_grekening'];
 		
 		$voorschot = $factorbedrag*0.1;
-		$voorschot = $voorschot *1.21; //BTW erbij
+		//$voorschot = $voorschot *1.21; //BTW erbij
 		
 		return round($factorbedrag - $voorschot, 2);
 	}
@@ -78,7 +78,7 @@ class FactoringFactuur extends Connector
 		$voorschot = $factorbedrag*0.1;
 		$kosten = $factorbedrag*0.022;
 		
-		$restant = ($voorschot-$kosten) *1.21; //BTW erbij
+		$restant = ($voorschot-$kosten) *1.0; //BTW erbij
 		
 		return round($restant, 2);
 	}

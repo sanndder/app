@@ -4,6 +4,7 @@ namespace models\verloning;
 
 use models\Connector;
 use models\forms\Validator;
+use models\inleners\Inlener;
 use models\utils\DBhelper;
 use models\werknemers\WerknemerGroup;
 
@@ -493,6 +494,10 @@ class Urentypes extends Connector
 	 */
 	public function addUrentypesWerknemerForInlener( $plaatsing_id, $werknemer_id, $inlener_id )
 	{
+		//check of standaard urentype goed is aangemaakt
+		$inlener = new Inlener( $inlener_id );
+		$inlener->checkForDefaultUrenType();
+		
 		$urentypesgroup = new UrentypesGroup();
 		$urentypes = $urentypesgroup->inlener( $inlener_id )->getUrentypeWerknemerMatrix();
 	

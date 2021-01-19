@@ -221,6 +221,16 @@ class Auth_model extends CI_Model
 			
 			$url = 'dashboard/werknemer';
 		}
+		
+		if( $user_type == 'zzp' )
+		{
+			$sql = "SELECT users_accounts.*, users.username, users.naam
+					FROM users_accounts
+					LEFT JOIN users ON users.user_id = users_accounts.user_id
+					WHERE zzp_id = ? AND werkgever_id = ? AND admin = 1 AND users.deleted = 0 LIMIT 1";
+			
+			$url = 'dashboard/zzp';
+		}
 
 		$query = $this->db_admin->query( $sql, array($id, $_SESSION['logindata']['werkgever_id']) );
 		$user = $query->row_array();

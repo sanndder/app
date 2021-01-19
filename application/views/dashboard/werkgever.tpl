@@ -310,27 +310,85 @@
 
 			<!--------------------------------------------------------------------------- grafieken ------------------------------------------------->
 			<div class="col-md-5">
-
 				<div class="row">
-					<div class="col-md-4">
 
-						<!-- Area chart in colored card -->
-						<div class="card bg-indigo-400 has-bg-image">
-							<div class="card-body">
-								<div class="d-flex">
-									<h3 class="font-weight-semibold mb-0">€ {$totaalOmzet|number_format:2:',':'.'}</h3>
-								</div>
-								<div>
-									Omzet {$jaar}
-								</div>
+					<!--------------------------------- Omzet ------------------------------->
+					<div class="col-md-6">
+
+						<div class="card bg-blue-400 has-bg-image">
+							<div class="card-body pt-1">
+								<h6 class="font-weight-semibold mb-0 mt-0" style="font-size: 22px">Omzet </h6>
+
+
+								<table style="width: 100%">
+									<tr>
+										<td colspan="3" class="text-uppercase font-size-xs pt-2">totaal</td>
+									</tr>
+									<tr>
+										<td class="text-uppercase font-weight-semibold" style="font-size: 22px; width: 50px">{$jaar}</td>
+										<td class="text-right font-weight-semibold" style="font-size: 20px">€ {$totaalOmzet|number_format:2:',':'.'}</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td colspan="3" class="text-uppercase font-size-xs pt-2">week</td>
+									</tr>
+                                    {foreach $wekenOmzet as $week}
+                                        {if $week@key != 0}
+											<tr>
+												<td class="text-uppercase font-weight-semibold" style="font-size: 18px">{$week@key|string_format:"%02d"}</td>
+												<td class="text-right" style="font-size: 15px">€ {$week[0]|number_format:2:',':'.'}</td>
+												<td class="text-right" style="font-size: 15px">
+                                                    {if $week[1] != 0}
+                                                        {if $week[1] > 0}+{/if}{$week[1]|number_format:1:',':'.'}%
+                                                    {/if}
+												</td>
+											</tr>
+                                        {/if}
+                                    {/foreach}
+								</table>
+
 							</div>
-
 						</div>
-						<!-- /area chart in colored card -->
-
 					</div>
-				</div>
+					<!--------------------------------- Uren ------------------------------->
+					<div class="col-md-6">
 
+						<div class="card bg-teal-400 has-bg-image">
+							<div class="card-body pt-1">
+								<h6 class="font-weight-semibold mb-0 mt-0" style="font-size: 22px">Uren</h6>
+
+
+								<table style="width: 100%">
+									<tr>
+										<td colspan="3" class="text-uppercase font-size-xs pt-2">totaal</td>
+									</tr>
+									<tr>
+										<td class="text-uppercase font-weight-semibold" style="font-size: 22px; width: 50px">{$jaar}</td>
+										<td class="text-right font-weight-semibold" style="font-size: 20px">{$totaalUren|number_format:0:',':'.'}</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td colspan="3" class="text-uppercase font-size-xs pt-2">week</td>
+									</tr>
+                                    {foreach $wekenUren as $week}
+                                        {if $week@key != 0}
+											<tr>
+												<td class="text-uppercase font-weight-semibold" style="font-size: 18px">{$week@key|string_format:"%02d"}</td>
+												<td class="text-right" style="font-size: 15px">{$week[0]|number_format:0:',':'.'}</td>
+												<td class="text-right" style="font-size: 15px">
+                                                    {if $week[1] != 0}
+                                                        {if $week[1] > 0}+{/if}{$week[1]|number_format:1:',':'.'}%
+                                                    {/if}
+												</td>
+											</tr>
+                                        {/if}
+                                    {/foreach}
+								</table>
+
+							</div>
+						</div>
+					</div><!-- /col -->
+				</div><!-- /row -->
 			</div>
 
 

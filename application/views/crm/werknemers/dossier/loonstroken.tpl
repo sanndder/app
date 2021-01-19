@@ -37,7 +37,7 @@
 					<div class="card-body">
 
 
-						<table class="table table-striped text-nowrap datatable-basic no-footer" data-order="[[3,&quot;desc&quot; ]]">
+						<table class="table table-striped text-nowrap datatable-basic no-footer" data-order="[[2,&quot;desc&quot;],[3,&quot;desc&quot;]]">
 							<thead>
 								<tr role="row">
 									<th></th>

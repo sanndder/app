@@ -76,7 +76,9 @@
 									{$jaar = $f.verkoop.jaar}
 	                                {$totaal_verkoop = $totaal_verkoop + $f.verkoop.bedrag_incl}
 	                                {$totaal_kosten = $totaal_kosten + $f.verkoop.kosten_incl}
-	                                {$totaal_marge = $totaal_marge + $f.marge.bedrag_incl}
+	                                {if isset($f.marge.bedrag_incl)}
+	                                    {$totaal_marge = $totaal_marge + $f.marge.bedrag_incl}
+                                    {/if}
 	                                <tr>
 										<td>{$f.verkoop.jaar}</td>
 										<td>{$f.verkoop.periode}</td>
@@ -100,14 +102,17 @@
 											</a>
 										</td>
 										<td class="text-right">
-                                            {$f.marge.factuur_nr}
+                                           {if isset($f.marge.factuur_nr)}{$f.marge.factuur_nr}{/if}
 										</td>
 										<td class="text-right">
+                                            {if isset($f.marge.factuur_nr)}
 											<a target="_blank" href="facturatie/factuur/view/{$f.marge.factuur_id}">
 												€ {$f.marge.bedrag_incl|number_format:2:',':'.'}
 											</a>
+                                            {/if}
 										</td>
 		                                <td>
+                                            {if isset($f.marge.factuur_nr)}
 			                                {if $f.marge.voldaan == 1}
 				                                <span class="text-success font-weight-bold">
 					                                <i class="icon-check mr-1"></i>
@@ -115,6 +120,7 @@
 				                                </span>
 				                            {else}
 				                                -
+			                                {/if}
 			                                {/if}
 		                                </td>
 										<td>
@@ -124,9 +130,11 @@
 														<i class="icon-menu7"></i></a>
 
 													<div class="dropdown-menu dropdown-menu-right">
-														<a target="_blank" href="facturatie/factuur/download/{$f.verkoop.factuur_id}" class="dropdown-item">
+                                                        {if isset($f.marge.factuur_nr)}
+														<a target="_blank" href="facturatie/factuur/download/{$f.marge.factuur_id}" class="dropdown-item">
 															<i class="icon-file-download"></i> Download
 														</a>
+														{/if}
 														{*
 														<a href="crm/uitzenders/dossier/facturen/{$f.verkoop.uitzender_id}?del={$f.verkoop.factuur_id}" class="dropdown-item">
 															<i class="icon-cross2"></i> Verwijderen

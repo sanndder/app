@@ -97,9 +97,7 @@ class WerknemerGroup extends Connector {
 		
 		return $data;
 	}
-
-
-
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -211,7 +209,7 @@ class WerknemerGroup extends Connector {
 				LEFT JOIN cao ON cao.id = werknemers_inleners. cao_id_intern
 				WHERE werknemers_gegevens.deleted = 0 AND (uitzenders_bedrijfsgegevens.deleted = 0 OR uitzenders_bedrijfsgegevens.deleted IS NULL)
 				  AND (werknemers_uitzenders.deleted = 0 OR werknemers_uitzenders.deleted IS NULL )
-				  AND (werknemers_inleners.deleted = 0 OR werknemers_inleners.deleted IS NULL  )
+				  AND (werknemers_inleners.deleted = 0 OR werknemers_inleners.deleted IS NULL )
 				";
 		
 		//beveiligen
@@ -305,8 +303,8 @@ class WerknemerGroup extends Connector {
 	{
 		return $this->all( array('new' => true) );
 	}
-
-
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * TEMP

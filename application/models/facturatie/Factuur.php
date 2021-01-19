@@ -575,7 +575,7 @@ class Factuur extends Connector
 	 */
 	public function delete()
 	{
-		$this->db_user->query( "UPDATE facturen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE (factuur_id = $this->_factuur_id OR parent_id = $this->_factuur_id) AND  deleted = 0", array( $this->user->user_id ) );
+		$this->db_user->query( "UPDATE facturen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE (factuur_id = $this->_factuur_id OR parent_id = $this->_factuur_id) AND deleted = 0", array( $this->user->user_id ) );
 		$this->db_user->query( "UPDATE facturen_kostenoverzicht SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE factuur_id = $this->_factuur_id AND  deleted = 0", array( $this->user->user_id ) );
 		$this->db_user->query( "UPDATE zzp_facturen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE parent_id = $this->_factuur_id AND  deleted = 0", array( $this->user->user_id ) );
 		$this->db_user->query( "UPDATE invoer_uren SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id" );

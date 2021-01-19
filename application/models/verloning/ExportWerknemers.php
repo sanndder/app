@@ -196,7 +196,7 @@ class ExportWerknemers extends Connector
 		{
 			$inhoudingen = $w->addChild( 'Inhoudingen' );
 			$inhoudingen->addChild( 'Code', 'Hollandzorg' );
-			$inhoudingen->addChild( 'Bedrag', 24.82 );
+			$inhoudingen->addChild( 'Bedrag', 25.84 );
 		}
 		
 		if( $verloningsInstellingen['vakantiegeld_direct'] == 1 )
@@ -216,7 +216,7 @@ class ExportWerknemers extends Connector
 		{
 			$reserveringen = $w->addChild('WerknemerReserveringen');
 			$reserveringen->addChild('Code', 'feestdagen inst. direct');
-			$reserveringen->addChild('PercentageReservering', 3.04);
+			$reserveringen->addChild('PercentageReservering', 2.16);
 			unset($reserveringen);
 			
 			$reserveringen = $w->addChild('WerknemerReserveringen');
@@ -242,17 +242,17 @@ class ExportWerknemers extends Connector
 		{
 			$reserveringen = $w->addChild('WerknemerReserveringen');
 			$reserveringen->addChild('Code', 'Vakantieuren inst. direct');
-			$reserveringen->addChild('PercentageReservering', 2.17 );
+			$reserveringen->addChild('PercentageReservering', 2.164 );
 			unset($reserveringen);
 			
 			$reserveringen = $w->addChild('WerknemerReserveringen');
 			$reserveringen->addChild('Code', 'Vakantieuren inst.');
-			$reserveringen->addChild('PercentageReservering', 8.7 );
+			$reserveringen->addChild('PercentageReservering', 8.656 );
 			unset($reserveringen);
 		}
 		
 		//atv perc
-		$atv_percentage = $verloningsInstellingen['aantal_atv_dagen'] * 0.435;
+		$atv_percentage = $verloningsInstellingen['aantal_atv_dagen'] * 0.3937;
 		
 		if( $verloningsInstellingen['atv_direct'] == 1 )
 		{
@@ -280,11 +280,15 @@ class ExportWerknemers extends Connector
 		}
 		
 		//-------------------------------- bruto uurloon en funcie --------------------------------------------------------------
-		$sql = "SELECT * FROM werknemers_inleners WHERE werknemer_id = $this->_werknemer_id AND deleted = 0";
+		$sql = "SELECT werknemers_inleners.*, cao_jobs.name AS functie FROM werknemers_inleners
+				LEFT JOIN cao_jobs ON cao_jobs.id = werknemers_inleners.job_id_intern
+				WHERE werknemers_inleners.werknemer_id = $this->_werknemer_id AND werknemers_inleners.deleted = 0";
 		$query = $this->db_user->query( $sql );
 		$plaatsing = $query->row_array();
 		
 		$tijdvak->addChild('Uurloon', $plaatsing['bruto_loon']);
+		
+		$algemeen->addChild('Beroep', substr($plaatsing['functie'],0,40));
 		
 		$FiscusUwv = $w->addChild('FiscusUwv');
 		$FiscusUwv->addChild('CaoCodeCBS', '633');
@@ -294,6 +298,7 @@ class ExportWerknemers extends Connector
 		//loonheffing
 		$loonheffing = $w->addChild('WerknemerLoonheffing');
 		$loonheffing->addChild('FiscaalJaarloon', $plaatsing['bruto_loon'] * 1900 );
+		
 
 		header('Content-type: text/xml');
 		header('Content-Disposition: attachment; filename="export '.$this->_werknemer_id.'.xml"');

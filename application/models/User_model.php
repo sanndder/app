@@ -22,6 +22,7 @@ class User_model extends MY_Model
 	public $werkgever_naam = NULL;
 	public $werkgever_type = NULL;
 	public $werknemer_id = NULL;
+	public $zzp_id = NULL;
 	public $inlener_id = NULL;
 	public $uitzender_id = NULL;
 	//public $logindata = NULL;

@@ -504,6 +504,24 @@ class User extends Connector
 			$return['bedrijfsnaam'] = $return['naam'];
 		}
 		
+		if($_GET['user_type'] == 'zzp' )
+		{
+			$sql = "SELECT zzp_persoonsgegevens.*
+					FROM zzp_persoonsgegevens
+					WHERE zzp_persoonsgegevens.deleted = 0 AND zzp_persoonsgegevens.zzp_id = ".intval(($_GET['id']) . " LIMIT 1" );
+			
+			$query = $this->db_user->query( $sql );
+			$data = $query->row_array();
+			
+			$return['zzp_id'] = $data['zzp_id'];
+			$return['email'] = $data['email'];
+			$return['naam'] = $data['voornaam'];
+			if( $data['tussenvoegsel'] != '' )
+				$return['naam'] .= ' ' . $data['tussenvoegsel'];
+			$return['naam'] .= ' ' . $data['achternaam'];
+			$return['bedrijfsnaam'] = $return['naam'];
+		}
+		
 		return $return;
 	}
 

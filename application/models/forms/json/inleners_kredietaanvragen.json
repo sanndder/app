@@ -94,7 +94,7 @@
     "btwnr": {
       "label": "BTW nummer",
       "rules": {
-        "required": true,
+        "required": false,
         "minlength": 6,
         "maxlength": 50,
         "removespaces": true,

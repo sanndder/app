@@ -29,6 +29,7 @@
 
 									<form method="post" action="">
 										<button type="submit" name="go" class="btn btn-primary">Export</button>
+										<button type="submit" name="update" class="btn btn-primary">Werknemers Update</button>
 									</form>
 
 								</div>

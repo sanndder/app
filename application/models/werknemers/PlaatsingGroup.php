@@ -62,7 +62,7 @@ class PlaatsingGroup extends Connector
 	 * get all
 	 * @return array
 	 */
-	public function uurlonen() :array
+	public function uurlonen() :?array
 	{
 		$sql = "SELECT werknemers_inleners.bruto_loon
 				FROM werknemers_inleners
@@ -102,7 +102,7 @@ class PlaatsingGroup extends Connector
 	{
 		$sql = "SELECT werknemers_inleners.*, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener,
        					werknemers_gegevens.gb_datum, werknemers_gegevens.achternaam, werknemers_gegevens.tussenvoegsel, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam,
-       					cao.name AS cao, cao_jobs.name AS functie, REPLACE(LCASE(cao_salary_table.short_name), '_', ' ') AS loontabel
+       					cao.name AS cao, cao_jobs.name AS functie, REPLACE(LCASE(cao_salary_table.short_name), '_', ' ') AS loontabel, cao_salary_table.hours_in_workweek AS uren_werkweek
 				FROM werknemers_inleners
 				LEFT JOIN werknemers_status ON werknemers_status.werknemer_id = werknemers_inleners.werknemer_id
 				LEFT JOIN inleners_bedrijfsgegevens ON werknemers_inleners.inlener_id = inleners_bedrijfsgegevens.inlener_id

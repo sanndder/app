@@ -209,12 +209,22 @@ class Invoer extends Connector
 			
 			$werknemer['start_plaatsing'] = $plaatsing['start_plaatsing'];
 			$werknemer['einde_plaatsing'] = $plaatsing['einde_plaatsing'];
+			
 			$werknemer['block'] = 0;
 			$werknemer['block_msg'] = '';
 			
+			if( $this->user->werkgever_type == 'uitzenden' )
+			{
+				$werknemer['uren_werkweek'] = 40;
+				if( isset( $plaatsing['uren_werkweek'] ) )
+					$werknemer['uren_werkweek'] = $plaatsing['uren_werkweek'];
+			}
+			else
+				$werknemer['uren_werkweek'] = 999;
+			
 			$werknemers[] = $werknemer;
 		}
-		
+
 		return $werknemers;
 	}
 	

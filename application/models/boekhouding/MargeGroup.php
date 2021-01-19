@@ -475,6 +475,9 @@ class MargeGroup extends Connector
 		//0 vervangen door null
 		for( $i = 53; $i >= 0; $i-- )
 		{
+			if( !isset( $this->_data_marge_totaal_per_week['weken'][$i] )) //week 53 bestaat niet elk jaar
+				continue;
+			
 			if( $this->_data_marge_totaal_per_week['weken'][$i] == 0)
 				$this->_data_marge_totaal_per_week['weken'][$i] = 'null';
 			else
@@ -615,6 +618,9 @@ class MargeGroup extends Connector
 		//0 vervangen door null
 		for( $i = 53; $i >= 0; $i-- )
 		{
+			if( !isset( $this->_data_marge_totaal_per_week['weken'][$i] )) //week 53 bestaat niet elk jaar
+				continue;
+			
 			if( $this->_data_uren_totaal_per_week['weken'][$i] == 0)
 				$this->_data_uren_totaal_per_week['weken'][$i] = 'null';
 			else

@@ -40,20 +40,127 @@ class ExportEasylon extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
+	 * update werknemergegevens
+	 *
+	 */
+	public function update()
+	{
+		$wids = '20003,20004,20005,20006,20008,20009,20013,20014,20015,20016,20017,20018,20019,20020,20021,20022,20024,20025,20026,20028,20029,
+				20036,20037,20038,20039,20043,20044,20045,20046,20047,20049,20050,20051,20052,
+		20055,20057,20058,20060,20063,20064,20065,20070,20071,20072,20073,20074,20076,20077,20078,20079,20080,20081,20082,20083,20084';
+		
+		$sql = "SELECT werknemers_inleners.werknemer_id, werknemers_inleners.bruto_loon, werknemers_verloning_instellingen.*, cao_jobs.name AS functie
+				FROM werknemers_inleners
+				LEFT JOIN werknemers_verloning_instellingen ON werknemers_inleners.werknemer_id = werknemers_verloning_instellingen.werknemer_id
+				LEFT JOIN cao_jobs ON cao_jobs.id = werknemers_inleners.job_id_intern
+				WHERE werknemers_inleners.deleted = 0
+				  AND werknemers_inleners.werknemer_id IN ($wids) AND werknemers_inleners.deleted = 0 AND werknemers_verloning_instellingen.deleted = 0";
+		
+		$query = $this->db_user->query( $sql );
+		foreach( $query->result_array() as $row )
+		{
+			$data[$row['werknemer_id']] = $row;
+		}
+		
+		$xml = new \SimpleXMLElement('<ImportElsa/>');
+		$xml->addChild('Werkgeversnummer', '1');
+		$werknemers = $xml->addChild('Werknemersgegevens');
+		
+		
+		foreach( $data as $werknemer_id => $wdata )
+		{
+			$w = $werknemers->addChild('WerknemerMutatie');
+			$w->addChild('Persnr', $wdata['werknemer_id']);
+			
+			$algemeen = $w->addChild('WerknemerAlgemeen');
+			$algemeen->addChild('Beroep', substr($wdata['functie'],0,40));
+			
+			$tijdvak = $w->addChild('WerknemerTijdvak');
+			$tijdvak->addChild('Uurloon', $wdata['bruto_loon']);
+			
+			if( $wdata['feestdagen_direct'] == 1 )
+			{
+				$reserveringen = $w->addChild('WerknemerReserveringen');
+				$reserveringen->addChild('Code', 'feestdagen inst. direct');
+				$reserveringen->addChild('PercentageReservering', 2.16);
+				unset($reserveringen);
+				
+				$reserveringen = $w->addChild('WerknemerReserveringen');
+				$reserveringen->addChild('Code', 'feestdagen inst.');
+				$reserveringen->addChild('PercentageReservering', 0);
+				unset($reserveringen);
+			}
+			else
+			{
+				$reserveringen = $w->addChild('WerknemerReserveringen');
+				$reserveringen->addChild('Code', 'feestdagen inst. direct');
+				$reserveringen->addChild('PercentageReservering', 0);
+				unset($reserveringen);
+				
+				$reserveringen = $w->addChild('WerknemerReserveringen');
+				$reserveringen->addChild('Code', 'feestdagen inst.');
+				$reserveringen->addChild('PercentageReservering', 2.16);
+				unset($reserveringen);
+			}
+			
+			
+			if( $wdata['vakantieuren_bovenwettelijk_direct'] == 1 )
+			{
+				$reserveringen = $w->addChild('WerknemerReserveringen');
+				$reserveringen->addChild('Code', 'Vakantieuren inst. direct');
+				$reserveringen->addChild('PercentageReservering', 2.164 );
+				unset($reserveringen);
+				
+				$reserveringen = $w->addChild('WerknemerReserveringen');
+				$reserveringen->addChild('Code', 'Vakantieuren inst.');
+				$reserveringen->addChild('PercentageReservering', 8.656 );
+				unset($reserveringen);
+			}
+			else
+			{
+				$reserveringen = $w->addChild('WerknemerReserveringen');
+				$reserveringen->addChild('Code', 'Vakantieuren inst. direct');
+				$reserveringen->addChild('PercentageReservering', 0 );
+				unset($reserveringen);
+				
+				$reserveringen = $w->addChild('WerknemerReserveringen');
+				$reserveringen->addChild('Code', 'Vakantieuren inst.');
+				$reserveringen->addChild('PercentageReservering', 10.82 );
+				unset($reserveringen);
+			}
+			
+		}
+		
+		$path =  UPLOAD_DIR . '/verloning/update.xml';
+		
+		$xml->asXML( $path );
+		
+		header('Content-disposition: attachment; filename="update.xml"');
+		header('Content-type: "text/xml"; charset="utf8"');
+		readfile($path);
+		
+		die();
+		
+	}
+	
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
 	 * set werknemer
 	 *
 	 */
 	public function export()
 	{
-		$periode = 49;
-		$jaar = 2020;
+		$periode = 1;
+		$jaar = 2021;
 		
 		$werknemers = array();
 		
 		$tijdvak = new Tijdvak( 'w', $jaar, $periode );
 		
 		// Alleen royal DS
-		$sql = "SELECT werknemer_id FROM werknemers_uitzenders WHERE uitzender_id IN (100,108,103)";
+		$sql = "SELECT werknemer_id FROM werknemers_uitzenders WHERE uitzender_id IN (100,108,110,109,103,116)";
 		$query = $this->db_user->query( $sql );
 		
 		foreach( $query->result_array() as $row )

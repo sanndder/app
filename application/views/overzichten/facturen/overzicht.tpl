@@ -352,9 +352,11 @@
 											<td>
                                                 {if $f.verkoop.wachtrij == 0 || ($f.verkoop.wachtrij == 1 && $f.verkoop.wachtrij_akkoord == 1)}
                                                     {if $f.verkoop.send_on == NULL}
+	                                                    {if $f.verkoop.bedrag_incl != 0}
 														<a href="crm/uitzenders/dossier/facturen/{$f.verkoop.uitzender_id}?email={$f.verkoop.factuur_id}" target="_blank" class="btn btn-outline-primary btn-sm px-1 py-0">
 															<i class="icon-envelope mr-1"></i> Emailen
 														</a>
+                                                        {/if}
                                                     {else}
                                                         {$f.verkoop.send_on|date_format: '%d-%m-%Y'}
                                                     {/if}

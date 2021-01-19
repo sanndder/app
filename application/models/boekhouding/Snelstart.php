@@ -170,7 +170,7 @@ class Snelstart extends Connector
 		
 		$sql = "SELECT facturen.factuur_datum, factuur_id, factuur_nr, inlener_id, uitzender_id, bedrag_excl, bedrag_incl, bedrag_btw, marge
 				FROM facturen
-				WHERE facturen.deleted = 0 AND facturen.concept = 0  AND factuur_nr > 574 AND factuur_datum < '2020-10-01' ";
+				WHERE facturen.deleted = 0 AND facturen.concept = 0 AND bedrag_incl != 0 AND factuur_nr > 1813 AND factuur_datum < '2021-01-01' ";
 				
 		if( $max_id !== NULL )
 			$sql .= " AND factuur_id > $max_id";

@@ -210,7 +210,25 @@
 									<td>
 										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.uitzender}</a>
 									</td>
-									<td></td>
+                                    {if $user_type == 'werkgever' || $user_type == 'uitzender'}
+										<td style="white-space: nowrap">
+                                            {if $ENV == 'development'}
+												<a href="{$base_url}/crm/zzp?del={$u.zzp_id}">
+													<i class="icon-trash font-size-sm"></i></a>
+                                            {/if}
+
+                                            {if isset($u.user)}
+												<a href="{$base_url}/dashboard/zzp?loginals=zzp&id={$u.zzp_id}" class="ml-2">
+													<i class="icon-enter mr-1"></i> Login als
+												</a>
+                                            {else}
+												<a href="{$base_url}/instellingen/werkgever/users/add?id={$u.zzp_id}&user_type=zzp" class="ml-2 text-danger">
+													<i class="icon-warning2 mr-1"></i>user aanmaken
+												</a>
+                                            {/if}
+
+										</td>
+                                    {/if}
 								</tr>
                             {/foreach}
 						</tbody>

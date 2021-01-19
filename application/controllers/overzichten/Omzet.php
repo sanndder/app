@@ -34,15 +34,16 @@ class Omzet extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// json data
 	//-----------------------------------------------------------------------------------------------------------------
-	public function json()
+	public function json( $jaar = 2020 )
 	{
 		$omzetGroup = new OmzetGroup();
+		$omzetGroup->jaar( $jaar );
 		
-		$data['omzet'] = array_values($omzetGroup->omzetverkoop());
-		$data['omzetuitzenden'] = array_values($omzetGroup->omzetuitzenden());
-		$data['loonkosten'] = array_values($omzetGroup->loonkosten());
-		$data['winst'] = array_values($omzetGroup->winst());
-		$data['winstcum'] = array_values($omzetGroup->winstCum());
+		$data[$jaar]['omzet'] = array_values($omzetGroup->omzetverkoop() );
+		$data[$jaar]['omzetuitzenden'] = array_values($omzetGroup->omzetuitzenden() );
+		$data[$jaar]['loonkosten'] = array_values($omzetGroup->loonkosten() );
+		$data[$jaar]['winst'] = array_values($omzetGroup->winst() );
+		$data[$jaar]['winstcum'] = array_values($omzetGroup->winstCum() );
 		
 		header('Content-Type: application/json');
 

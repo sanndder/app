@@ -1,23 +1,16 @@
 <?php
 
-use models\documenten\DocumentGroup;
-use models\inleners\InlenerGroup;
-use models\inleners\KredietaanvraagGroup;
-use models\uitzenders\UitzenderGroup;
-use models\verloning\ExportEasylon;
-use models\verloning\LoonstrokenZip;
+use models\werknemers\Data;
 use models\werknemers\WerknemerGroup;
-use models\zzp\ZzpGroup;
-
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
 /**
- * Account en userbeheer
+ * Instellingen controller
  */
-
-class Export extends MY_Controller {
-
+class Werknemerdata extends MY_Controller
+{
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// Constructor
@@ -25,35 +18,22 @@ class Export extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-
-		//beveiligen
-		if(	 $this->user->user_type != 'werkgever' )
-			forbidden();
+		if( $this->user->user_type != 'werkgever' )forbidden();
 	}
 	
+	
 	//-----------------------------------------------------------------------------------------------------------------
-	// uploaden
+	// overzicht
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-		$export = new ExportEasylon();
-	
-		//go
-		if( isset($_POST['go']) )
-		{
-			$export->export();
-		}
+		$werknemerGroup = new WerknemerGroup();
 		
-		//go
-		if( isset($_POST['update']) )
-		{
-			$export->update();
-		}
+		$werknemerdata = new Data();
 		
-
-		
-		$this->smarty->display('verloning/export/overzicht.tpl');
+		$this->smarty->assign( 'werknemers', $werknemerdata->werknemers() );
+		$this->smarty->display('overzichten/werknemerdata/overzicht.tpl');
 	}
 	
-
+	
 }

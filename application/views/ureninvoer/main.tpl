@@ -71,9 +71,9 @@
 								<td class="pr-3">
 									<ul class="list-inline list-inline-condensed mb-0">
 										<li class="list-inline-item dropdown" data-ajax-list="true" data-value="30">
-											<a href="javascript:void(0)" class="btn btn-link text-default dropdown-toggle vi-jaar" data-toggle="dropdown">2020</a>
+											<a href="javascript:void(0)" class="btn btn-link text-default dropdown-toggle vi-jaar" data-toggle="dropdown">2021</a>
 											<div class="dropdown-menu">
-												<a href="javascript:void(0)" class="dropdown-item" data-id="2020">2020</a>
+												<a href="javascript:void(0)" class="dropdown-item" data-id="2021">2021</a>
 											</div>
 										</li>
 									</ul>

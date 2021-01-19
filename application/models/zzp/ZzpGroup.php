@@ -3,6 +3,7 @@
 namespace models\zzp;
 
 use models\Connector;
+use models\users\UserGroup;
 use models\utils\DBhelper;
 
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
@@ -156,7 +157,13 @@ class ZzpGroup extends Connector {
 			$row['naam'] = make_name($row);
 			$data[$row['zzp_id']] = $row;
 		}
-
+		
+		//kijken of uitzender users heeft
+		$users = UserGroup::listUsertypeID('zzp', array_keys($data));
+		
+		foreach ( $users as $user )
+			$data[$user]['user'] = 1;
+		
 		return $data;
 	}
 	

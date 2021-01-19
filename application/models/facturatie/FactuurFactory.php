@@ -54,6 +54,8 @@ class FactuurFactory extends Connector
 	private $_setting_g_rekening = 0;
 	private $_setting_g_rekening_percentage = 0;
 	
+	private $_setting_uren_werkweek = 40;
+	
 	//array met alle ruwe data
 	private $_invoer_array = NULL;
 	
@@ -78,7 +80,7 @@ class FactuurFactory extends Connector
 	protected $_periode = NULL;
 	
 	//TODO: instelbaar via app maken
-	protected $_stipp_basis = 2.8;
+	protected $_stipp_basis = 3;
 	
 	protected $_error = NULL;
 	
@@ -179,6 +181,7 @@ class FactuurFactory extends Connector
 			$this->_sessieFinish( 'fout bij controleren van invoer' );
 			return false;
 		}
+		
 		// alle data is gereed, nu facturen in database aanmaken
 		if( !$this->_setConceptVerkoopFacturen() )
 		{
@@ -706,6 +709,7 @@ class FactuurFactory extends Connector
 		$pdf->setFileDir( $update['file_dir'] );
 		$pdf->setFileName( $update['file_name'] );
 		
+		
 		//preview
 		if( $this->_preview )
 		{
@@ -797,6 +801,13 @@ class FactuurFactory extends Connector
 	 */
 	private function _checkInvoer(): bool
 	{
+		//check uren werkweek
+		if( !$this->_urenWerkweek() )
+		{
+			$this->_sessieFinish( 'te veel uren' );
+			return false;
+		}
+		
 		//controle doorbelasten
 		if( !$this->_checkDoorbelasten() )
 		{
@@ -1439,7 +1450,7 @@ class FactuurFactory extends Connector
 					//STIPP Plus
 					if( $this->_werknemers_pensioen[$werknemer_id]['stipp'] == 'plus' )
 					{
-						$pensioenpremie = round( ( $salaris * ( 8 / 100 ) ), 2 );
+						$pensioenpremie = round( ( $salaris * ( 9 / 100 ) ), 2 );
 						$omschrijving = 'STiPP pensioen Plus';
 					}
 					
@@ -1836,6 +1847,45 @@ class FactuurFactory extends Connector
 		
 		return false;
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Controleren of er niet meer gewone uren ingevoerd zijn dan mag
+	 * TODO: checken voor uren bij meerdere inleners
+	 * TODO: m en 4w aanpassen
+	 */
+	private function _urenWerkweek(): bool
+	{
+		$totaaltelling_error = false;
+		
+		//korte check
+		foreach( $this->_group_array as $project_array )
+		{
+			foreach( $project_array as $werknemer_id => $werknemer_array )
+			{
+				//uren werkweek ophalen
+				if( !isset($this->_inlener_werknemers[$werknemer_id]['uren_werkweek']) || $this->_inlener_werknemers[$werknemer_id]['uren_werkweek'] == 0 )
+					$uren_werkweek = $this->_setting_uren_werkweek;
+				else
+					$uren_werkweek = $this->_inlener_werknemers[$werknemer_id]['uren_werkweek'];
+				
+				if( $this->_tijdvak == '4w' ) $uren_werkweek = $uren_werkweek * 40;
+				
+				if( $werknemer_array['urengroep']['inlener']['uren_totaal'] > $uren_werkweek )
+				{
+					$totaaltelling_error = true;
+					$this->_error[] = 'Voor werknemer ' . $this->_inlener_werknemers[$werknemer_id]['naam'] . ' (' . $werknemer_id . ') zijn te veel standaard uren ingevoerd (ingevoerd: '.$werknemer_array['urengroep']['inlener']['uren_totaal'].' maximaal: '.$uren_werkweek.' uur ). Overuren zijn mogelijk van toepassing.';
+				}
+			}
+		}
+
+		if( !$totaaltelling_error )
+			return true;
+		else
+			return false;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -2183,7 +2233,10 @@ class FactuurFactory extends Connector
 			return false;
 		
 		foreach( $werknemers as $array )
+		{
 			$this->_inlener_werknemers[$array['id']]['naam'] = $array['naam'];
+			$this->_inlener_werknemers[$array['id']]['uren_werkweek'] = $array['uren_werkweek'];
+		}
 		
 		//log actie
 		$this->_sessieLog( 'load', json_encode( $this->_inlener_werknemers ) );
@@ -2194,7 +2247,6 @@ class FactuurFactory extends Connector
 		
 		//log actie
 		$this->_sessieLog( 'load', json_encode( $this->_werknemers_pensioen ) );
-		
 		
 		return true;
 	}

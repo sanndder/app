@@ -70,7 +70,6 @@ class UserGroup extends Connector {
 				 AND werkgever_id = ".$_SESSION['logindata']['werkgever_id']." AND users_accounts.".$user_type ."_id IN (".implode(',',$ids).")";
 				
 		$query = $db_admin->query( $sql );
-
 		if( $query->num_rows() == 0 )
 			return $list;
 		

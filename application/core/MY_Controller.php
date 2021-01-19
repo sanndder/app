@@ -105,6 +105,7 @@ class MY_Controller extends CI_Controller
 			$this->smarty->assign( '_werknemer' , "ZZP'er" );
 		}
 		
+		
 		//deze classes niet redirecten
 		$no_redirect[] = 'welkom';
 		$no_redirect[] = 'ajax';
@@ -138,6 +139,12 @@ class MY_Controller extends CI_Controller
 			$this->load->model('werknemer_model', 'werknemer');
 			$this->smarty->assign( 'werknemer_id', $this->user->werknemer_id );
 		}
+		if( $this->user->user_type == 'zzp' )
+		{
+			$this->load->model('zzp_model', 'zzp');
+			$this->smarty->assign( 'zzp_id', $this->user->zzp_id );
+		}
+		
 		
 		//voor werkgever taken laden
 		if( $this->user->user_type == 'werkgever' )

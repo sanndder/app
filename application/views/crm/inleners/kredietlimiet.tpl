@@ -133,7 +133,7 @@
 														<tr>
 															<td>BTW nummer</td>
 															<td class="td-btw font-weight-bold">
-																<input type="text" class="form-control" name="btwnr" required value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.btwnr}{/if}"/>
+																<input type="text" class="form-control" name="btwnr" value="{if isset($bedrijfsgegevens)}{$bedrijfsgegevens.btwnr}{/if}"/>
 															</td>
 														</tr>
 														<tr>

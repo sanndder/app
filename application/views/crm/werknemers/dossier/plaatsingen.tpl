@@ -192,7 +192,7 @@
 
 										<div class="row mt-3">
 											<div class="col-xl-2 pt-1">
-												<button type="button" class="btn btn-success" name="add_plaatsing" onclick="plaatsing.add()">
+												<button type="button" class="btn btn-success" name="add_plaatsing" onclick="plaatsing.addPlaatsing()">
 													<i class="icon-plus-circle2 mr-2"></i>Plaatsing toevoegen
 												</button>
 											</div>
@@ -215,6 +215,7 @@
 												<th>Uurloon</th>
 												<th>CAO</th>
 												<th class="d-none d-xl-table-cell">Loontabel</th>
+												<th class="d-none d-xl-table-cell">Schaal</th>
 												<th>Functie</th>
 												<th></th>
 											</tr>
@@ -256,8 +257,12 @@
 														</div>
 														<input type="text" class="form-control text-right change-uurloon" style="width: 80px" value="{$p.bruto_loon|number_format:2:',':'.'}"  {if $user_type != 'werkgever'} readonly{/if} />
 													</td>
-													<td>{$p.cao}</td>
+													<td>
+														{$p.cao}/{$p.loontabel}/{if $p.periodiek == NULL || $p.periodiek == ''}-{else}{$p.periodiek}{/if}/{$p.schaal}
+													</td>
 													<td class="d-none d-xl-table-cell">{$p.loontabel}</td>
+													<td class="d-none d-xl-table-cell">{$p.schaal}</td>
+													<td>{$p.functie}</td>
 													<td>{$p.functie}</td>
 													<td>
 														<a class="text-danger" href="{$base_url}/crm/werknemers/dossier/plaatsingen/{$werknemer->id}/?delplaatsing={$p.plaatsing_id}" onclick="return confirm('Plaasting verwijderen?')">
@@ -266,7 +271,7 @@
 													</td>
 												</tr>
 												<tr>
-													<td colspan="5" style="border-top:0; padding-bottom: 25px;">
+													<td colspan="6" style="border-top:0; padding-bottom: 25px;">
 
 														{if isset($p.urentypes) && is_array($p.urentypes) && count($p.urentypes) > 0}
 														<table>

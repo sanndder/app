@@ -204,8 +204,8 @@ let invoer = {
 		data.werknemer_id = werknemer_id;
 		
 		//element verbergen
-		$('[data-vi-action="setWerknemer"]').show(200);
-		$werknemer = $('[data-vi-action="setWerknemer"][data-id="' + werknemer_id + '"]').hide(200);
+		$('[data-vi-action="setWerknemer"]').removeClass('font-weight-bold').css('color','#999');
+		$werknemer = $('[data-vi-action="setWerknemer"][data-id="' + werknemer_id + '"]').addClass('font-weight-bold').css('color','#333');
 		
 		//naar titel
 		$('.vi-title-name').html($werknemer.find('span').html() + ' <i class="fas fa-chevron-right ml-3 mt-1"></i>');

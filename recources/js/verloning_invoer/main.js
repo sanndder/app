@@ -223,7 +223,7 @@ let invoer = {
 			if( el[0].clientWidth > 0 )
 				textFit(document.getElementsByClassName('fit-text'), {maxFontSize:14});
 		}
-		
+		alert();
 		//subtab voor werknemer laden
 		invoer.buildInvoerSchermen();
 	},

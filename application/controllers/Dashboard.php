@@ -10,6 +10,7 @@ use models\utils\Tijdvak;
 use models\verloning\LoonstrokenGroup;
 use models\werknemers\Werknemer;
 use models\werknemers\WerknemerGroup;
+use models\zzp\Zzp;
 use models\zzp\ZzpGroup;
 
 
@@ -55,6 +56,9 @@ class Dashboard extends MY_Controller {
 		//show($inlenergroup->aanmeldActies());
 		
 		$this->smarty->assign('totaalOmzet', $omzet->totaal() );
+		$this->smarty->assign('wekenOmzet', $omzet->laatsteWeken() );
+		$this->smarty->assign('totaalUren', $omzet->totaalUren() );
+		$this->smarty->assign('wekenUren', $omzet->urenLaatsteWeken() );
 		$this->smarty->assign('jaar', date('Y') );
 		$this->smarty->assign('uitzenders', $uitzendergroup->new());
 		$this->smarty->assign('inlener_acties', $inlenergroup->aanmeldActies() );
@@ -142,6 +146,19 @@ class Dashboard extends MY_Controller {
 		$this->smarty->assign( 'stand', $reserveringen->werknemer( $this->werknemer->werknemer_id )->stand() );
 		$this->smarty->assign( 'loonstroken', $loonstrokengroup->werknemer( $this->werknemer->werknemer_id )->all() );
 		$this->smarty->display('dashboard/werknemer.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// zzp
+	//-----------------------------------------------------------------------------------------------------------------
+	public function zzp()
+	{
+		$zzp = new Zzp( $this->zzp->zzp_id );
+	
+		$this->smarty->assign('zzp', $zzp->persoonsgegevens() );
+		$this->smarty->assign('bedrijf', $zzp->bedrijfsgegevens() );
+		$this->smarty->assign('facturen', $zzp->facturen() );
+		$this->smarty->display('dashboard/zzp.tpl');
 	}
 
 }

@@ -233,6 +233,9 @@ class Ajax extends MY_Controller
 	{
 		$invoerUren = new InvoerUren( $this->invoer );
 		
+		//komma vervangen
+		$_POST['urenrow']['aantal'] = str_replace( ',', '.', $_POST['urenrow']['aantal'] );
+		
 		if( $this->user->werkgever_type == 'uitzenden' ) $invoerUren->setWerknemer( $_POST['werknemer_id'] );
 		if( $this->user->werkgever_type == 'bemiddeling' ) $invoerUren->setZZP( $_POST['werknemer_id'] );
 		
@@ -423,10 +426,10 @@ class Ajax extends MY_Controller
 		{
 			$array['tijdvak'] = 'w';
 			$array['titel'] = 'week';
-			$array['jaren'] = array( 2020 );
-			//$array['periodes'] = array(  9=> '09', 10=> '10', 11 => '11' , 12 => '12');
+			$array['jaren'] = array( 2021 );
 			
-			$week = date( 'W' )-1;
+			
+		/*	$week = date( 'W' )-1;
 			$array['periodes'] = array(
 				$week-5 => sprintf("%02d", $week-5),
 				$week-4 => sprintf("%02d", $week-4),
@@ -434,8 +437,11 @@ class Ajax extends MY_Controller
 				$week-2 => sprintf("%02d", $week-2),
 				$week-1 => sprintf("%02d", $week-1),
 				$week => sprintf("%02d", $week)
-			);
-
+			);*/
+			
+			$array['periodes'] = array( 1 => '01', 2 => '02'  );
+			
+			
 			if( date('w') > 4 )
 				$array['periodes'][$week+1] = sprintf("%02d", $week+1);
 		}
@@ -455,7 +461,7 @@ class Ajax extends MY_Controller
 		{
 			$array['tijdvak'] = 'm';
 			$array['titel'] = 'maand';
-			$array['jaren'] = array( 2020 );
+			$array['jaren'] = array( 2021 );
 			$array['periodes'] = array( 4 => 'april', 5 => 'mei' );
 		}
 		

@@ -217,7 +217,33 @@ var Datatables = function ()
                 $("#DataTables_Table_0_length").detach().prependTo("#move-length-dropdown");
             }
         });
-
+    
+        $('.datatable-filter-column thead tr').clone(true).appendTo( '.datatable-filter-column thead' );
+        $('.datatable-filter-column thead tr:eq(1) th').each( function (i) {
+            var title = $(this).text();
+            $(this).html( '<input type="text" placeholder="" class="form-control px-1 py-1" style="font-size: 11px; height: auto" />' );
+        
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( tablecoulmn.column(i).search() !== this.value ) {
+                    tablecoulmn
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+                }
+            } );
+        } );
+    
+    
+        // Basic datatable
+        var tablecoulmn = $('.datatable-filter-column').DataTable({
+            orderCellsTop: true,
+            fixedHeader: true,
+            fnInitComplete: function (oSettings, json)
+            {
+                $("#DataTables_Table_0_length").detach().prependTo("#move-length-dropdown");
+            }
+        });
+     
 
         // Resize scrollable table when sidebar width changes
         $('.sidebar-control').on('click', function ()
@@ -231,6 +257,8 @@ var Datatables = function ()
             $('.datatable-basic').DataTable().search($(this).val()).draw();
         });
 
+    
+    
     };
 
     // Select2 for length menu styling

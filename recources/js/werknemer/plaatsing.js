@@ -302,7 +302,7 @@ let plaatsing = {
 	},
 	
 	//plaatsing toevoegen
-	add(){
+	addPlaatsing(){
 		//kijken of brutoloon niet te laag is
 		brutoloon = $('#plaatsing [name="uurloon"]').val();
 		brutoloon = brutoloon.replace(',', '.');

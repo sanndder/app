@@ -71,16 +71,133 @@ class OmzetGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
+	 * uren ophalen
+	 *
+	 */
+	public function totaalUren(): ?float
+	{
+		$van = $this->_jaar . '-01-01';
+		$tot = $this->_jaar . '-12-31';
+		
+		$sql = "SELECT SUM(aantal) AS aantal FROM invoer_uren WHERE factuur_id IS NOT NULL AND datum >= '$van' AND datum <= '$tot' ";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$data = $query->row_array();
+		return floor($data['aantal']);
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * uren laatste weken
+	 */
+	public function urenLaatsteWeken(): ?array
+	{
+		$weken = $this->_wekenArray();
+		
+		$sql = "SELECT SUM(aantal) AS aantal, WEEK(datum,3) AS periode FROM invoer_uren
+				WHERE factuur_id IS NOT NULL AND WEEK(datum,3) IN (".array_keys_to_string($weken).")
+				AND YEAR(datum) = $this->_jaar
+				GROUP BY periode";
+
+		$query = $this->db_user->query( $sql );
+		if( $query->num_rows() == 0 )
+			return $weken;
+		
+		foreach( $query->result_array() as $row )
+			$weken[$row['periode']][0] = $row['aantal'];
+		
+		foreach( $weken as $periode => $row )
+		{
+			if( isset($weken[$periode-1]) && $weken[$periode-1][0] != 0 )
+			{
+				$verschil = ($row[0] - $weken[$periode-1][0]);
+				$weken[$periode][1] = round($verschil / $weken[$periode-1][0] * 100, 1);
+			}
+		}
+		
+		return $weken;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * omzet ophalen
+	 * TODO: 4 weken en maand er in verwerken
+	 */
+	public function laatsteWeken(): ?array
+	{
+		$weken = $this->_wekenArray();
+		
+		$sql = "SELECT SUM(bedrag_excl) AS omzet,  periode FROM facturen
+				WHERE concept = 0 AND deleted = 0 AND marge = 0
+				  AND tijdvak = 'w' AND periode IN (".array_keys_to_string($weken).") AND jaar = $this->_jaar
+				  GROUP BY periode";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return $weken;
+		
+		foreach( $query->result_array() as $row )
+			$weken[$row['periode']][0] = $row['omzet'];
+		
+		foreach( $weken as $periode => $row )
+		{
+			if( isset($weken[$periode-1]) && $weken[$periode-1][0] != 0 )
+			{
+				$verschil = ($row[0] - $weken[$periode-1][0]);
+				$weken[$periode][1] = round($verschil / $weken[$periode-1][0] * 100, 1);
+			}
+		}
+
+		return $weken;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * weken array voorbereiden
+	 *
+	 */
+	private function _wekenArray() :array
+	{
+		$vorigeweek = date('W') - 1;
+		$loop = 1;
+		while($loop < 5)
+		{
+			$weken[$vorigeweek] = array(0,0);
+			
+			$vorigeweek--;
+			$loop++;
+			if( $vorigeweek == 0 )
+			{
+				$weken[0] = array(0,0);
+				break;
+			}
+		}
+		
+		return $weken;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
 	 * omzet ophalen
 	 *
 	 */
 	public function omzetverkoop(): ?array
 	{
-		$sql = "SELECT periode, SUM(bedrag_excl) AS omzet FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND tijdvak = 'w' GROUP BY periode ORDER BY periode";
+		$sql = "SELECT periode, SUM(bedrag_excl) AS omzet FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND tijdvak = 'w' AND jaar = $this->_jaar GROUP BY periode ORDER BY periode";
 		$query = $this->db_user->query( $sql );
 		
+		for( $i = 1; $i <= 52; $i++)
+			$data[$i] = array('x' => $i, 'y' => NULL);
+		
 		if( $query->num_rows() == 0 )
-			return NULL;
+			return $data;
 		
 		foreach( $query->result_array() as $row )
 		{
@@ -100,11 +217,11 @@ class OmzetGroup extends Connector
 	 */
 	public function omzetuitzenden(): ?array
 	{
-		$sql = "SELECT periode, SUM(kosten_excl) AS kosten FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND tijdvak = 'w' GROUP BY periode ORDER BY periode";
+		$sql = "SELECT periode, SUM(kosten_excl) AS kosten FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND tijdvak = 'w' AND jaar = $this->_jaar GROUP BY periode ORDER BY periode";
 		$query = $this->db_user->query( $sql );
 		
 		if( $query->num_rows() == 0 )
-			return NULL;
+			return array();
 		
 		foreach( $query->result_array() as $row )
 		{
@@ -125,11 +242,11 @@ class OmzetGroup extends Connector
 	 */
 	public function loonkosten(): ?array
 	{
-		$sql = "SELECT * FROM overzicht_loonkosten ORDER BY periode";
+		$sql = "SELECT * FROM overzicht_loonkosten WHERE jaar = $this->_jaar ORDER BY periode";
 		$query = $this->db_user->query( $sql );
 		
 		if( $query->num_rows() == 0 )
-			return NULL;
+			return array();
 		
 		foreach( $query->result_array() as $row )
 		{
