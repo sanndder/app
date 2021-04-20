@@ -97,7 +97,7 @@ class OmzetGroup extends Connector
 	 */
 	public function urenLaatsteWeken(): ?array
 	{
-		$weken = $this->_wekenArray();
+		$weken = $this->_wekenArray( 5 );
 		
 		$sql = "SELECT SUM(aantal) AS aantal, WEEK(datum,3) AS periode FROM invoer_uren
 				WHERE factuur_id IS NOT NULL AND WEEK(datum,3) IN (".array_keys_to_string($weken).")
@@ -131,7 +131,7 @@ class OmzetGroup extends Connector
 	 */
 	public function laatsteWeken(): ?array
 	{
-		$weken = $this->_wekenArray();
+		$weken = $this->_wekenArray( 5 );
 		
 		$sql = "SELECT SUM(bedrag_excl) AS omzet,  periode FROM facturen
 				WHERE concept = 0 AND deleted = 0 AND marge = 0
@@ -163,11 +163,11 @@ class OmzetGroup extends Connector
 	 * weken array voorbereiden
 	 *
 	 */
-	private function _wekenArray() :array
+	private function _wekenArray( $aantal_weken = 4 ) :array
 	{
 		$vorigeweek = date('W') - 1;
 		$loop = 1;
-		while($loop < 5)
+		while($loop <= $aantal_weken )
 		{
 			$weken[$vorigeweek] = array(0,0);
 			
@@ -202,7 +202,7 @@ class OmzetGroup extends Connector
 		foreach( $query->result_array() as $row )
 		{
 			$arr['x'] = $row['periode'];
-			$arr['y'] = $row['omzet'];
+			$arr['y'] =  round($row['omzet']*2.5);
 			
 			$data[$row['periode']] = $arr;
 		}
@@ -226,7 +226,7 @@ class OmzetGroup extends Connector
 		foreach( $query->result_array() as $row )
 		{
 			$arr['x'] = $row['periode'];
-			$arr['y'] = $row['kosten'];
+			$arr['y'] =  round($row['kosten']*2.5);
 			
 			$data[$row['periode']] = $arr;
 		}
@@ -251,7 +251,7 @@ class OmzetGroup extends Connector
 		foreach( $query->result_array() as $row )
 		{
 			$arr['x'] = $row['periode'];
-			$arr['y'] = $row['kosten'];
+			$arr['y'] = round($row['kosten']*2.5);
 			
 			$data[$row['periode']] = $arr;
 		}

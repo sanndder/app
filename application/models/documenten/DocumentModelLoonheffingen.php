@@ -118,7 +118,7 @@ class DocumentModelLoonheffingen extends Connector
 		
 		//naam
 		$fpdi->SetXY( 71, 173 );
-		$fpdi->Cell( 25, 10, $werknemer['naam'] );
+		$fpdi->Cell( 25, 10, utf8_decode($werknemer['naam'] ));
 		
 		//BSN
 		$fpdi->SetXY( 71, 181 );

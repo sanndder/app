@@ -336,11 +336,23 @@ class InvoerVergoedingen extends Invoer
 				}
 			}
 			
-			//vaste vergoedingen uitrekenen
+			//vaste vergoedingen uur uitrekenen
 			if( $vergoeding['vergoeding_type'] == 'vast' )
 			{
 				$vergoeding['bedrag'] = $this->_calcVasteVergoeding( $invoer_id, $vergoeding );
 				
+				//record bestaat
+				if( isset($invoer[$id]) )
+				{
+					$vergoeding['factor'] = $invoer[$id]['factor'];
+					$vergoeding['doorbelasten'] = $invoer[$id]['doorbelasten'];
+				}
+			}
+			//vaste vergoedingen dag uitrekenen
+			if( $vergoeding['vergoeding_type'] == 'dag' )
+			{
+				$vergoeding['bedrag'] = $this->_calcDagVergoeding( $invoer_id, $vergoeding );
+
 				//record bestaat
 				if( isset($invoer[$id]) )
 				{
@@ -427,6 +439,58 @@ class InvoerVergoedingen extends Invoer
 		
 		return $beschikbare_vergoedingen;
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Vaste dag vergoedingen uitrekenen
+	 *
+	 */
+	private function _calcDagVergoeding( $invoer_id, $vergoeding )
+	{
+		
+		//zijn er uren
+		if( $this->_uren === NULL )
+			return 0;
+		
+		$totaal_dagen = $this->_sumDagen();
+		
+		// nul mag gelijk terug
+		if( $totaal_dagen == 0 )
+			return 0;
+		
+		//update of insert
+		if( $invoer_id !== NULL )
+		{
+			$update['bedrag'] = round( ($vergoeding['bedrag_per_dag'] * $totaal_dagen), 2 );
+			$this->db_user->where( 'invoer_id', $invoer_id );
+			$this->db_user->update( 'invoer_vergoedingen', $update );
+			
+			$this->_logVergoedingActie( 'update', $this->getVergoeding($invoer_id) );
+			
+			return $update['bedrag'];
+		}
+		//nieuwe invor aanmaken
+		else
+		{
+			$insert['bedrag'] = round( $vergoeding['bedrag_per_dag'] * $totaal_dagen );
+			$insert['tijdvak'] = $this->_tijdvak;
+			$insert['jaar'] = $this->_jaar;
+			$insert['periode'] = $this->_periode;
+			$insert['werknemer_vergoeding_id'] = $vergoeding['id'];
+			$insert['doorbelasten'] = $vergoeding['doorbelasten'];
+			$insert['uitzender_id'] = $this->_uitzender_id;
+			$insert['inlener_id'] = $this->_inlener_id;
+			$insert['werknemer_id'] = $this->_werknemer_id;
+			$insert['zzp_id'] = $this->_zzp_id;
+			
+			$this->db_user->insert( 'invoer_vergoedingen', $insert );
+			
+			return $insert['bedrag'];
+		}
+		
+	}
+	
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -505,6 +569,22 @@ class InvoerVergoedingen extends Invoer
 		
 		return $aantal;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * dagen optellen
+	 *
+	 */
+	private function _sumDagen()
+	{
+		$array = array();
+		
+		foreach( $this->_uren as $row )
+			$array[$row['datum']] = 1;
+		
+		return count($array);
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *

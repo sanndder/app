@@ -46,9 +46,9 @@ class ZzpGroup extends Connector {
 		
 		$sql = "SELECT zzp_persoonsgegevens.zzp_id, achternaam, voorletters, voornaam, tussenvoegsel
 				FROM zzp_inleners
-				LEFT JOIN zzp_gegevens ON zzp_gegevens.zzp_id = zzp_inleners.zzp_id
+				LEFT JOIN zzp_persoonsgegevens ON zzp_persoonsgegevens.zzp_id = zzp_inleners.zzp_id
 				WHERE zzp_inleners.inlener_id = $inlener_id
-				AND zzp_gegevens.deleted = 0 AND zzp_inleners.deleted = 0
+				AND zzp_persoonsgegevens.deleted = 0 AND zzp_inleners.deleted = 0
 				ORDER BY achternaam";
 		$query = $db_user->query( $sql );
 		
@@ -81,7 +81,31 @@ class ZzpGroup extends Connector {
 		return $data['count'];
 	}
 	
-	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * List van zzp'ers
+	 */
+	static function list()
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$sql = "SELECT zzp_bedrijfsgegevens.zzp_id, zzp_bedrijfsgegevens.bedrijfsnaam
+				FROM zzp_status
+				LEFT JOIN zzp_bedrijfsgegevens ON zzp_bedrijfsgegevens.zzp_id = zzp_status.zzp_id
+				WHERE zzp_bedrijfsgegevens.deleted = 0 AND zzp_status.archief = 0
+				ORDER BY zzp_bedrijfsgegevens.bedrijfsnaam";
+		
+		$query = $db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+			$data[$row['zzp_id']] = $row['bedrijfsnaam'];
+		
+		return $data;
+	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

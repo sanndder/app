@@ -26,7 +26,7 @@ class Upload_model extends MY_Model
 
 	private $_field = NULL; //welk veld is key
 	private $_id = NULL; //id voor table
-	
+
 	private $_allowed_file_types = '*'; //allowed file types
 
 	private $_error = NULL;
@@ -73,7 +73,7 @@ class Upload_model extends MY_Model
 	}
 
 
-	
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * Welke bestanden mogen worden geupload
@@ -163,9 +163,9 @@ class Upload_model extends MY_Model
 	{
 		$this->_random_name_prefix = $prefix;
 	}
-	
-	
-	
+
+
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * check if bestand uniek is
@@ -216,7 +216,7 @@ class Upload_model extends MY_Model
 		$this->_file_name = $uploaddata['orig_name'];
 		$this->_file_name_display = $uploaddata['client_name'];
 		$this->_file_path = $this->_path . '/' . $this->_file_name;
-		
+
 		//alleen bij uniek
 		if( $this->_file_must_be_unique )
 			$this->_file_hash = md5_file($this->_file_path);
@@ -228,6 +228,35 @@ class Upload_model extends MY_Model
 		}
 
 		return true;
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * dubbele bestanden weggooien
+	 *
+	 */
+	function removeIfDuplicate( array $id, $field_check, $delete = false )
+	{
+		$this_field_check = '_' . $field_check;
+
+		$sql = "SELECT * FROM $this->_table WHERE $field_check = '". $this->$this_field_check. "' AND ".key($id)." != " . current($id);
+		$query = $this->db_user->query($sql);
+
+		//bestand bestaat al
+		if ($query->num_rows() > 0)
+		{
+			if($delete)
+			{
+				$file_path = $this->_dir . '/' . $this->_file_name;
+				if (file_exists($file_path) && !is_dir($file_path))
+					unlink($file_path);
+			}
+
+			$sql = "DELETE FROM $this->_table WHERE ".key($id)." = " . current($id) ." LIMIT 1";
+			$this->db_user->query($sql);
+		}
 	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -249,17 +278,17 @@ class Upload_model extends MY_Model
 
 		if( $this->_field !== NULL )
 			$insert[$this->_field] = $this->_id;
-		
+
 		$insert['file_dir'] = $this->_dir;
 		$insert['file_name'] = $this->_file_name;
 		$insert['file_name_display'] = $this->_file_name_display;
 		$insert['file_size'] = filesize($this->_file_path);
 		$insert['user_id'] = $this->user->user_id;
-		
+
 		if( $this->_file_must_be_unique )
 		{
 			$insert['file_hash'] = $this->_file_hash;
-			
+
 			//check
 			$query = $this->db_user->query( "SELECT bestand_id FROM bank_transactiebestanden WHERE deleted = 0 AND file_hash = ?", array( $insert['file_hash'] ) );
 			if( $query->num_rows() > 0 )
@@ -270,7 +299,7 @@ class Upload_model extends MY_Model
 		}
 
 		$this->db_user->insert( $this->_table, $insert);
-		
+
 		if( $this->db_user->insert_id() > 0 )
 			return $this->db_user->insert_id();
 
@@ -300,17 +329,17 @@ class Upload_model extends MY_Model
 		if( $this->_allowed_file_types != '*' )
 		{
 			$ext = getFileExtension($_FILES['file']['name']);
-			
+
 			$types = explode('|', $this->_allowed_file_types );
-			
+
 			if( !in_array($ext, $types) )
 			{
 				$this->_error = 'Bestandstype niet toegestaan';
 				return false;
 			}
 		}
-		
-		
+
+
 		//$sql = "INSERT INTO uitzenders_handtekening (file) VALUES ('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."')";
 		$sql = "INSERT INTO $this->_table (file, ".$this->_field.",user_id)
 				VALUES (AES_ENCRYPT('".addslashes(file_get_contents($_FILES['file']['tmp_name']))."', UNHEX(SHA2('".UPLOAD_SECRET."',512))),

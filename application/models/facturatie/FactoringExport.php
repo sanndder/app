@@ -4,6 +4,7 @@ namespace models\facturatie;
 
 use models\Connector;
 use models\file\Excel;
+use models\utils\DBhelper;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 
@@ -118,6 +119,44 @@ class FactoringExport extends Connector
 		}
 		
 		return false;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * bestanden ophalen
+	 *
+	 */
+	public function bestanden( $limit = 20 )
+	{
+		$query = $this->db_user->query( "SELECT * FROM factoring_export WHERE deleted = 0 ORDER BY timestamp DESC LIMIT $limit" );
+		return DBhelper::toArray( $query, 'id', 'NULL' );
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * bestand downloaden
+	 *
+	 */
+	public function download( $file_id = NULL )
+	{
+		$query = $this->db_user->query( "SELECT * FROM factoring_export WHERE deleted = 0 AND id = ".intval($file_id)." LIMIT 1" );
+		
+		if( $query->num_rows() === 0 )
+			die('Bestand niet gevonden in database');
+		
+		$file = $query->row_array();
+		$path = $this->_dir . '/' . $file['file_name'];
+		
+		if( !file_exists($path) || is_dir($path) )
+			die('Bestand niet gevonden op de server');
+			
+		header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+		header('Content-disposition: attachment; filename="'.$file['file_name'].'"');
+
+		readfile($path);
+		die();
 	}
 
 	

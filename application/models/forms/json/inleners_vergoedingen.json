@@ -27,6 +27,7 @@
         "inline": true,
         "options": {
           "vast": "Bedrag per uur",
+          "dag": "Bedrag per dag",
           "variabel": "Variabel (Vrij in te vullen bij invoer)"
         }
       },

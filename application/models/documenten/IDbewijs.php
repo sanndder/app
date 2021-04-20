@@ -292,13 +292,13 @@ class IDbewijs extends Connector {
 		if( $data['file_1'] !== NULL )
 		{
 			$this->_file_voorkant = $data['file_1'];
-			$this->_url_voorkant = 'image/idbewijs/voorkant/werknemer/' . $this->_entity_id . '/' . $data['id'];
+			$this->_url_voorkant = 'image/idbewijs/voorkant/werknemer/' . $this->_entity_id . '/' . $data['id'] . '/?' . time() ;
 		}
 		
 		if( $data['file_2'] !== NULL )
 		{
 			$this->_file_achterkant = $data['file_2'];
-			$this->_url_achterkant = 'image/idbewijs/achterkant/werknemer/' . $this->_entity_id . '/' . $data['id'];
+			$this->_url_achterkant = 'image/idbewijs/achterkant/werknemer/' . $this->_entity_id . '/' . $data['id'] . '/?' . time();
 		}
 	
 	}

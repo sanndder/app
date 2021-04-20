@@ -58,7 +58,7 @@ class PdfBuilder extends Connector {
 			$config['format'] = 'A4-P';
 
 		//font
-		$config['default_font'] = 'arial';
+		$config['default_font'] = 'DejaVuSans';
 		$config['autoMarginPadding'] = 0;
 		$config['bleedMargin'] = 0;
 		$config['collapseBlockMargins'] = false;

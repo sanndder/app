@@ -147,7 +147,7 @@ class PdfFactuur extends PdfBuilder {
 	 */
 	public function setFooter() :PdfFactuur
 	{
-		$footer = $this->smarty->fetch('application/views/pdf/footers/footer_full.tpl');
+		$footer = $this->smarty->fetch('application/views/pdf/facturen/factuur_footer.tpl');
 		$this->mpdf->SetHTMLFooter($footer);
 		return $this;
 	}

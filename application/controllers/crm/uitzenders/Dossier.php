@@ -444,17 +444,20 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// facturen pagina
 	//-----------------------------------------------------------------------------------------------------------------
-	public function facturen( $uitzender_id = NULL )
+	public function facturen( $uitzender_id = NULL, $jaar = NULL )
 	{
 		//init uitzender object
 		$uitzender = new Uitzender( $uitzender_id );
 		$this->checkaccess($uitzender);
+		
+		$jaar = $jaar ?? date('Y');
 		
 		//verwijderen
 		if( isset($_GET['del']) )
 		{
 			$factuur = new \models\facturatie\Factuur( $_GET['del'] );
 			$factuur->delete();
+			redirect($this->config->item('base_url') . '/crm/uitzenders/dossier/facturen/' . $uitzender_id . '?deleted', 'location');
 		}
 		
 		//emailen
@@ -469,14 +472,15 @@ class Dossier extends MY_Controller
 			}
 		}
 		
-		if( isset($_GET['send']) )
-			$this->smarty->assign('msg', msg('success', 'Factuur is verstuurd'));
+		if( isset($_GET['send']) )$this->smarty->assign('msg', msg('success', 'Factuur is verstuurd'));
+		if( isset($_GET['deleted']) )$this->smarty->assign('msg', msg('success', 'Factuur is verwijderd'));
 		
 		$facturengroep = new FacturenGroup();
-		$facturen = $facturengroep->setUitzender( $uitzender_id )->facturenMatrix();
+		$facturen = $facturengroep->setUitzender( $uitzender_id )->facturenMatrix( $jaar );
 
 		$this->smarty->assign( 'facturen', $facturen );
 		$this->smarty->assign( 'jaren', $facturengroep->jarenArray() );
+		$this->smarty->assign( 'jaar', $jaar );
 		
 		$this->smarty->assign('uitzender', $uitzender);
 		$this->smarty->display('crm/uitzenders/dossier/facturen.tpl');

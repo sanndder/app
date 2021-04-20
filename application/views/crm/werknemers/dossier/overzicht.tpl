@@ -25,11 +25,8 @@
 
 					<!----------------------------------------------- card: Bedrijfsgegevens ------------------------------------------------------------->
 					<div class="card">
+
 						<div class="card-body">
-
-							<div class="media">
-
-								<img style="max-width: 300px; max-height: 120px;" class="align-self-start mr-4 d-none d-lg-block" src="">
 
 								<div class="media-body">
 									<div class="row">
@@ -39,7 +36,7 @@
 									</div><!-- /row -->
 
 									<div class="row">
-										<div class="col-md-6 col-xxl-3">
+										<div class="col-md-6  col-xxl-3">
 
 											<ul class="list-unstyled">
 												<li>{$gegevens.straat} {$gegevens.huisnummer} {$gegevens.huisnummer_toevoeging}</li>
@@ -51,6 +48,7 @@
 
 										</div><!-- /col -->
 										<div class="col-md-6 col-xxl-3">
+
 
 										</div>
 									</div><!-- /row -->
@@ -76,13 +74,42 @@
                                     {/if}
 								</div>
                                 {/if}
-							</div>
 
 
 
 
 						</div><!-- /card body-->
 					</div><!-- /card: Bedrijfsgegevens  -->
+
+					<div class="card">
+						<div class="card-header bg-transparent header-elements-inline">
+							<span class="card-title font-weight-bold font-size-sm text-primary text-uppercase">Reserveringen per {if isset($stand.datum)}{$stand.datum|date_format: '%d-%m-%Y'}{/if}</span>
+						</div>
+
+						<div class="card-body">
+
+							<table>
+								<tr>
+									<td class="pr-5">Vakantiegeld</td>
+									<td class="text-right">€ {if isset($stand.vakantiegeld)}{$stand.vakantiegeld|number_format:2:',':'.'}{else}0,00{/if}</td>
+								</tr>
+								<tr>
+									<td class="pr-5">Vakantieuren F12</td>
+									<td class="text-right">€ {if isset($stand.vakantieuren_F12)}{$stand.vakantieuren_F12|number_format:2:',':'.'}{else}0,00{/if}</td>
+								</tr>
+								<tr>
+									<td class="pr-5">Feestdagen</td>
+									<td class="text-right">€ {if isset($stand.feestdagen)}{$stand.feestdagen|number_format:2:',':'.'}{else}0,00{/if}</td>
+								</tr>
+								<tr>
+									<td class="pr-5">Kort verzuim</td>
+									<td class="text-right">€ {if isset($stand.kort_verzuim)}{$stand.kort_verzuim|number_format:2:',':'.'}{else}0,00{/if}</td>
+								</tr>
+							</table>
+
+						</div>
+					</div>
+
 				</div><!-- / left side -->
 
 				<!-------------------------------------------------------------------------------------------------------------------------------------------------------------------

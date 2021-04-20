@@ -118,11 +118,11 @@ class CI_Exceptions {
 			
 			$mail->IsSMTP(); // enable SMTP
 			$mail->SMTPAuth = false; // authentication enabled
-			$mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			$mail->Host = "flexxgroep-nl01c.mail.protection.outlook.com";
 			$mail->Port = 25; // or 587
 			$mail->CharSet = 'UTF-8';
 			
-			$mail->SetFrom( "info@aberinghr.nl" );
+			$mail->SetFrom( "info@flexxoffce-uitzenden.nl" );
 			$mail->Subject = 'ERROR DEVIS ONLINE';
 			$mail->isHTML(true);
 			

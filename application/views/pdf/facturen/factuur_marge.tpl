@@ -1,9 +1,6 @@
 <table style="margin-left: 15px; width: 100%">
 	<tr>
-		<td style="font-size: 40px; color:#002E65">
-			MARGEFACTUUR
-		</td>
-		<td rowspan="2" style="text-align: right; padding-right: 25px; padding-top: 6px;">
+		<td style="text-align: left; padding-right: 25px; padding-top: 9px;">
 
 			<table style="font-size: 12px;">
 				<tr>
@@ -24,6 +21,19 @@
                         {$relatie_gegevens.postcode}  {$relatie_gegevens.plaats}
 					</td>
 				</tr>
+			</table>
+
+		</td>
+
+		<td style="text-align: right; padding-right: 25px; padding-top: 9px;">
+
+			<table style="font-size: 12px;">
+				<tr>
+					<td class="relatie">relatienummer</td>
+					<td class="relatie-info">
+                        {if isset($relatie_gegevens.uitzender_id)}{$relatie_gegevens.uitzender_id}{/if}
+					</td>
+				</tr>
 				<tr>
 					<td class="relatie">btw nr</td>
 					<td class="relatie-info">
@@ -42,20 +52,20 @@
 
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<table style="margin-top: -25px; color:#002E65; font-size: 16px; font-weight: bold; font-style: italic">
-				<tr>
-					<td>
-                        {if $factuur.tijdvak == 'w'}Week {$periode} - {$jaar}{/if}
-                        {if $factuur.tijdvak == '4w'}Periode {$periode} - {$jaar}{/if}
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
 </table>
 
+<br/>
+
+{if $werkgever_type == 'uitzenden'}
+	<div class="balk" style="width: 100%; height: 5px; background-color: #2DA4DC"></div>
+{/if}
+{if $werkgever_type == 'bemiddeling'}
+	<div class="balk" style="width: 100%; height: 5px; background-color: #22AF8F"></div>
+{/if}
+
+
+<br/>
+<br/>
 <br/>
 
 <table class="regels">

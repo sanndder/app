@@ -38,6 +38,62 @@ let invoeruren = {
 			}
 		});
 		
+		//vullen met uren
+		$(document).on('click', '.vi-action-uren-fill', function(){
+			invoeruren.fillUren($(this).data('vi-fill-uren'));
+		});
+		
+		//vullen met uren
+		$(document).on('click', '.vi-action-del-uren', function(){
+			if( confirm('Ureninvoer verwijderen?') )
+				invoeruren.delUrenInvoer();
+		});
+		
+	},
+	
+	// uren verwijderen ----------------------------------------------------------------------------------------------------------------------------
+	delUrenInvoer(){
+		
+		xhr.url = base_url + 'ureninvoer/ajax/deluren';
+		xhr.data = data;
+		
+		var response = xhr.call(true);
+		if( response !== false ){
+			response.done(function(json){
+				//er gata iets mis
+				if( json.status == 'error' ){
+					alert(json.error);
+				}
+				//success
+				else{
+					invoer.buildInvoerSchermen();
+				}
+			});
+			
+		}
+		
+	},
+	
+	// uren invullen ----------------------------------------------------------------------------------------------------------------------------
+	fillUren( aantal ){
+		
+		xhr.url = base_url + 'ureninvoer/ajax/filluren/' + aantal;
+		xhr.data = data;
+		
+		var response = xhr.call(true);
+		if( response !== false ){
+			response.done(function(json){
+				//er gata iets mis
+				if( json.status == 'error' ){
+					alert(json.error);
+				}
+				//success
+				else{
+					invoer.buildInvoerSchermen();
+				}
+			});
+			
+		}
 	},
 
 	// enter naar volgende rij ----------------------------------------------------------------------------------------------------------------------------

@@ -76,6 +76,16 @@
 							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?contract">
 								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren (NL)
 							</a>
+							{if $user_id == 2}
+							<br />
+							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?vast">
+								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst vaste omvang genereren (NL)
+							</a>
+							<br />
+							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?faseb">
+								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst Fase B genereren (NL)
+							</a>
+                            {/if}
 							<br />
 							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?contractro">
 								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren (RO)

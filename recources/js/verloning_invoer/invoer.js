@@ -578,7 +578,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		invoer.setInlener( $('.inlener-id').val() );
 	
 	//$('.uitzender-id').val(101).trigger('change');
-	//$('.uitzender-id').val(103).trigger('change');
+	//$('.uitzender-id').val(100).trigger('change');
 	
 		/*
 	setTimeout(function(){
@@ -595,19 +595,19 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	/*
 	setTimeout(function(){
-		$('[data-vi-action="setInlener"][data-id="3029"]').trigger('click');
+		$('[data-vi-action="setInlener"][data-id="3051"]').trigger('click');
 		
 		setTimeout(function(){
-			$('[href="#tab-aangenomenwerk"]').trigger('click');
-			/*
+			$('[href="#tab-ureninvoer"]').trigger('click');
+			
 			setTimeout(function(){
-				$('[data-id="20037"]').trigger('click');
-				
-				/*setTimeout(function(){
-					$('[href="#sub-kilometers"]').trigger('click');
+				$('[data-id="20014"]').trigger('click');
+				/*
+				setTimeout(function(){
+					$('[href="#sub-uren"]').trigger('click');
 		
-				}, 300);
-			}, 300);
+				}, 300);*/
+			/*}, 300);
 			
 		}, 300);
 		

@@ -34,8 +34,18 @@ class Ureninvoer extends MY_Controller
 	{
 		//inlener
 		if( $this->user->user_type == 'inlener' )
-			$this->smarty->assign('inlener_id', $this->inlener->id);
+		{
+			$this->smarty->assign( 'inlener_id', $this->inlener->id );
+			$this->smarty->assign( 'uitzender_id', $this->inlener->_uitzender_id );
+		}
 		
+		if( $this->user->user_type == 'werknemer' )
+		{
+			$werknemer = new \models\werknemers\Werknemer( $this->werknemer->id );
+			$this->smarty->assign( 'inleners', $werknemer->inleners() );
+			$this->smarty->assign( 'uitzender_id', $werknemer->uitzenderID() );
+			$this->smarty->assign( 'werknemer_id', $this->werknemer->id );
+		}
 		
 		$this->smarty->assign('cola', ETregeling::colBebedragen() ); // cola bedragen
 		$this->smarty->assign('uitzenders', UitzenderGroup::list()); //uitzenders voor werkgever ophalen

@@ -57,6 +57,23 @@ class Snelstart extends MY_Controller
 				$this->smarty->assign('msg', msg('warning', $errors ));
 		}
 		
+		//nieuwe exportlijst zzp maken
+		if( isset($_POST['go_zzp']))
+		{
+			$id = $boekhouding->exportBoekingenZzp( $_POST['datum'] );
+			
+			$errors = $boekhouding->errors();
+			die();
+			//msg
+			if( $errors === false )
+			{
+				$this->session->set_flashdata('msg', 'Exportbestand ZZP is aangemaakt' );
+				redirect( $this->config->item( 'base_url' ) . 'overzichten/snelstart/index?export_id=' . $id, 'location' );
+			}
+			else
+				$this->smarty->assign('msg', msg('warning', $errors ));
+		}
+		
 		//redirect msg
 		if( $this->session->flashdata('msg') !== NULL )
 			$this->smarty->assign( 'msg', msg( 'success', $this->session->flashdata('msg') ) );

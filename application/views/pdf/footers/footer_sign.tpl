@@ -3,7 +3,7 @@
 
 	<img src="recources/img/footer.jpg" style="width: 100%; margin-bottom: -75px; height: 100px">
 
-	<table style="font-size: 11px; color:#002E65; width: 100%; margin-left: 25px; margin-right: 25px; margin-top: 5px; margin-bottom: 7px;">
+	<table style="font-size: 11px; color:#2DA4DC; width: 100%; margin-left: 25px; margin-right: 25px; margin-top: 5px; margin-bottom: 7px;">
 		<tr>
 			<td style="width: 24%;">
 				<b>{$bedrijfsgegevens.bedrijfsnaam|default:''}</b>

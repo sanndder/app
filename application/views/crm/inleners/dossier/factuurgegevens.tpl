@@ -146,6 +146,43 @@
 											</div>
                                         {/if}
 
+	                                    <!-- eu levering  -->
+	                                    {if isset($formdata.eu_levering)}
+	                                        {assign "field" "eu_levering"}
+		                                    <div class="form-group row pt-3">
+			                                    <label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+				                                    :
+			                                    </label>
+			                                    <div class="col-xl-{$div_xl} col-md-{$div_md}">
+
+	                                                {foreach $formdata.$field.radio.options as $option}
+					                                    <div class="form-check {if isset($formdata.$field.radio.inline) && $formdata.$field.radio.inline == true }form-check-inline{/if}">
+						                                    <label class="form-check-label">
+															<span class="{if $formdata.$field.value == $option@key}checked{/if}">
+																<input value="{$option@key}" type="radio" class="form-input-styled" name="{$field}" {if $formdata.$field.value == $option@key}checked=""{/if}>
+															</span>
+	                                                            {$option}
+						                                    </label>
+					                                    </div>
+	                                                {/foreach}
+
+	                                                {if isset($formdata.$field.error)}
+					                                    <span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+	                                                {/foreach}</span>{/if}
+			                                    </div>
+		                                    </div>
+		                                    <script>
+	                                            {literal}
+												$('[name="btw_verleggen"]').on('change',function(){
+													if($(this).val() == 1 )
+														$('.div-btw_tarief').hide();
+													else
+														$('.div-btw_tarief').show();
+												})
+	                                            {/literal}
+		                                    </script>
+	                                    {/if}
+
 										<!-- BTW verleggen -->
                                         {if isset($formdata.btw_verleggen)}
                                             {assign "field" "btw_verleggen"}
@@ -171,14 +208,54 @@
                                                     {/foreach}</span>{/if}
 												</div>
 											</div>
+	                                        <script>
+		                                        {literal}
+		                                            $('[name="btw_verleggen"]').on('change',function(){
+		                                            	if($(this).val() == 1 )
+															$('.div-btw_tarief').hide();
+		                                            	else
+															$('.div-btw_tarief').show();
+		                                            })
+		                                        {/literal}
+	                                        </script>
                                         {/if}
+
+	                                    <!-- BTW tarief -->
+                                        {if isset($formdata.btw_tarief)}
+                                            {assign "field" "btw_tarief"}
+		                                    <div class="form-group row div-{$field}" {if isset($formdata.btw_verleggen.value) && $formdata.btw_verleggen.value == 1} style="display: none" {/if}>
+			                                    <label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+				                                    :
+			                                    </label>
+			                                    <div class="col-xl-{$div_xl} col-md-{$div_md}">
+				                                    <select name="{$field}" class="form-control" style="width: 150px">
+                                                        {if !isset($formdata.$field.list.empty)}
+						                                    <option value=""></option>
+                                                        {/if}
+                                                        {if is_array($formdata.$field.list.options)}
+                                                            {assign "options" $formdata.$field.list.options}
+                                                        {else}
+                                                            {assign "options" $list[$formdata.$field.list.options]}
+                                                        {/if}
+                                                        {foreach $options as $option}
+						                                    <option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+                                                        {/foreach}
+				                                    </select>
+
+                                                    {if isset($formdata.$field.error)}
+					                                    <span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}<br/>
+                                                    {/foreach}</span>{/if}
+			                                    </div>
+		                                    </div>
+                                        {/if}
+
                                     {/if}
 
                                     {if $user_type == 'werkgever' || $inlener->complete == 0}
 										<!-- g_rekening -->
                                         {if isset($formdata.g_rekening)}
                                             {assign "field" "g_rekening"}
-											<div class="form-group row">
+											<div class="form-group row pt-3">
 												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
 													:
 												</label>
@@ -236,7 +313,7 @@
                                       {if $user_type == 'werkgever'}
                                         {if isset($formdata.factoring)}
                                             {assign "field" "factoring"}
-											<div class="form-group row">
+											<div class="form-group row pt-3">
 												<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
 													:
 												</label>

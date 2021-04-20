@@ -87,7 +87,10 @@ class Dossier extends MY_Controller
 		}
 		
 		//show($werknemers);
-		
+
+		$reserveringen = new \models\verloning\Reserveringen();
+
+		$this->smarty->assign( 'stand', $reserveringen->werknemer( $werknemer_id )->stand() );
 		$this->smarty->assign( 'werknemer', $werknemer );
 		$this->smarty->assign( 'gegevens', $werknemer->gegevens() );
 		$this->smarty->display( 'crm/werknemers/dossier/overzicht.tpl' );
@@ -238,6 +241,25 @@ class Dossier extends MY_Controller
 			
 			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
 		}
+
+		if( isset( $_GET['vast'] ) )
+		{
+			$template = new Template( 14 ); //4 is samenwerkingsovereenkomst
+			$document = DocumentFactory::createFromTemplateObject( $template );
+			$document->setUitzenderID($werknemer->uitzenderID())->setWerknemerID( $werknemer_id )->build()->pdf();
+
+			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
+		}
+		
+		if( isset( $_GET['faseb'] ) )
+		{
+			$template = new Template( 15 ); //4 is samenwerkingsovereenkomst
+			$document = DocumentFactory::createFromTemplateObject( $template );
+			$document->setUitzenderID($werknemer->uitzenderID())->setWerknemerID( $werknemer_id )->build()->pdf();
+			
+			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
+		}
+		
 		
 		if( isset( $_GET['contractro'] ) )
 		{

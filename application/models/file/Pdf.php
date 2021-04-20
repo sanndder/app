@@ -78,7 +78,7 @@ class Pdf extends File
 	 *
 	 * pdf's samenvoegen
 	 *
-	 * @return bool
+	 *
 	 */
 	static function merge( $path_1, $path_2, $new_path = NULL )
 	{
@@ -125,7 +125,7 @@ class Pdf extends File
 	 *
 	 * bestand toevoegen aan pdf
 	 *
-	 * @return bool
+	 *
 	 */
 	public function addFileToPdf( $file_dir, $file_name )
 	{
@@ -204,7 +204,7 @@ class Pdf extends File
 	 *
 	 * Tekst toevoegen aan pdf
 	 *
-	 * @return bool
+	 *
 	 */
 	public function addWachtrijProjectTofactuur( $text = NULL  )
 	{
@@ -247,7 +247,7 @@ class Pdf extends File
 	 *
 	 * Plaatje van handtekening bijvoegen
 	 *
-	 * @return bool
+	 *
 	 */
 	public function addSignature( $countSignatures = 0, $arbeidsovereenkomst = false )
 	{
@@ -425,9 +425,9 @@ class Pdf extends File
 	 *
 	 * Get one page from the origional and make an object
 	 *
-	 * @return object Pdf
+	 *
 	 */
-	public function splitPage( $page = 1, $new_name = NULL ): Pdf
+	public function splitPage( $page = 1, $new_name = NULL ):?Pdf
 	{
 		//Pagina moet wel bestaan
 		if( $this->pageCount() < $page )

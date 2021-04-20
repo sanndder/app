@@ -1,0 +1,132 @@
+html {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Nunito, Roboto, Arial, serif;
+    background-image: url('../img/bg-grey.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.center-wrapper{
+    max-width: 960px;
+    padding: 0 10px;
+}
+
+@media (min-width: 576px) {
+    .center-wrapper{
+        padding: 0;
+
+    }
+}
+
+.logo img {
+    height: 40px;
+}
+
+@media (min-width: 992px) {
+    .logo img {
+        height: 80px;
+    }
+}
+
+.div-header {
+    background-color: #2DA4DC;
+    margin-top: 15px;
+    height: 80px;
+    box-shadow: 0 0 8px 0 #E7E8EA;
+}
+
+@media (min-width: 992px) {
+    .div-header {
+        margin-top: 35px;
+    }
+}
+
+.div-header span {
+    color: #FFF;
+    font-size: 1.7rem;
+    line-height: 3em;
+}
+
+.div-card {
+    background-color: #FFF;
+    min-height: 300px;
+    box-shadow: 0 5px 8px 0 #E7E8EA;
+}
+
+.title {
+    color: #2DA4DC;
+    font-size: 1.3rem;
+    font-weight: bold;
+    line-height: 2.4rem;
+    padding-left: 10px;
+}
+
+.circle-white {
+    height: 40px;
+    width: 40px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    padding: 6px;
+}
+
+@media (min-width: 576px) {
+    .circle-white {
+        margin-left:-20px;
+    }
+}
+
+.circle-blue {
+    height: 28px;
+    width: 28px;
+    background-color: #2DA4DC;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+    color: #fff;
+    font-family: Nunito, arial, serif;
+    padding-top: 2px;
+    font-weight: bold;
+    font-size: 1.05rem;
+}
+
+.samenwerking{
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: -15px;
+}
+
+@media (min-width: 992px) {
+    .samenwerking {
+        margin-top: 25px;
+    }
+}
+
+.samenwerking img{
+    max-height: 150px;
+    max-width: 140px;
+}
+
+.form-group{
+    margin-bottom: 15px;
+}
+
+.aanmeld-label{
+    color: #777;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}

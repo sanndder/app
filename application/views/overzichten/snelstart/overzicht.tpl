@@ -85,6 +85,31 @@
 
 					</div><!-- /row -->
 
+                    {if $werkgever_type == 'bemiddeling'}
+					<div class="row">
+
+						<!----------------------------------- boekingen export ------------------------------------------>
+						<div class="col-md-4">
+							<div class="card ">
+								<div class="media h-100">
+									<div class="bg-info p-2">
+										<i class="icon-file-spreadsheet icon-2x"></i>
+									</div>
+									<div class="media-body pl-3 font-size-lg" style="padding-top: 9px">
+										<form method="post" action="" target="_blank">
+											Boekingen ZZP t/m
+											<input name="datum" value="{$yesterday|date_format: '%d-%m-%Y'}" type="text" class="form-control" style="display: inline-block; width:105px;"/>
+											<button type="submit" name="go_zzp" class="btn btn-sm btn-success">
+												<i class="icon-check"></i>
+											</button>
+										</form>
+									</div>
+								</div>
+							</div><!-- /basic card -->
+						</div>
+					</div>
+					{/if}
+
 					      <!-- Basic card -->
 					<div class="card">
 

@@ -40,7 +40,7 @@
 	                            </a>
 
                             {else}
-								<p class="mb-4">U hoef alleen het KvK nummer van de klant in te voeren. Wij halen automatisch de bijbehorende gegevens op.</p>
+								<p class="mb-4">U hoeft alleen het KvK nummer van de klant in te voeren. Wij halen automatisch de bijbehorende gegevens op.</p>
 								<div class="row">
 									<div class="alert alert-warning alert-styled-left alert-dismissible col-xxl-4 col-lg-6" style="display: none">
 										<span class="font-weight-semibold"></span>

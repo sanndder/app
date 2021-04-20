@@ -102,7 +102,7 @@ class Vergoeding extends Connector
 			$this->_error['doorbelasten'] = 'Maak een keuze a.u.b.';
 		
 		//is type gekozen
-		if( !isset( $post['vergoeding_type'] ) || ( $post['vergoeding_type'] != 'vast' && $post['vergoeding_type'] != 'variabel' ) )
+		if( !isset( $post['vergoeding_type'] ) || ( $post['vergoeding_type'] != 'vast' && $post['vergoeding_type'] != 'dag' && $post['vergoeding_type'] != 'variabel' ) )
 			$this->_error['vergoeding_type'] = 'Maak een keuze a.u.b.';
 		
 		//is bij vast type ook bedrag
@@ -149,6 +149,9 @@ class Vergoeding extends Connector
 		
 		if( $post['vergoeding_type'] == 'vast' )
 			$insert['bedrag_per_uur'] = prepareAmountForDatabase( $post['bedrag_per_uur'] );
+		
+		if( $post['vergoeding_type'] == 'dag' )
+			$insert['bedrag_per_dag'] = prepareAmountForDatabase( $post['bedrag_per_dag'] );
 
 		$this->db_user->insert( 'inleners_vergoedingen', $insert );
 		

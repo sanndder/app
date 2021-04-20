@@ -90,6 +90,9 @@
     padding: 0 10px 0 0 !important;
 }
 
+.navbar-vi-acties{ padding-left: 0; margin-top: 6px}
+.navbar-vi-acties .navbar-nav-link, .navbar-vi-acties .navbar-text{padding: 0.5rem 1rem;}
+
 /* tabel voor ureninvoer */
 .vi-input {
     font-size: 11px;

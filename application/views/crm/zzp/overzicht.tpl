@@ -190,6 +190,7 @@
 						<tr>
 							<th></th>
 							<th style="width: 75px;">ID</th>
+							<th>Bedrijf</th>
 							<th>Naam</th>
 							<th>Uitzender</th>
 							<th class="text-center">Actions</th>
@@ -206,6 +207,9 @@
 											<span class="badge bg-success  mr-1">NIEUW</span>
                                         {/if}
 										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/zzp/dossier/overzicht/{$u.zzp_id}">{$u.bedrijfsnaam}</a>
+									</td>
+									<td>
+										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.zzp_id}">{$u.naam}</a>
 									</td>
 									<td>
 										<a style="{if $u.archief == 1}color: #F44336;{/if}" href="crm/uitzenders/dossier/overzicht/{$u.uitzender_id}">{$u.uitzender}</a>

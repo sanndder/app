@@ -2,7 +2,7 @@
 Factuur header
 Zelfde voor alle facturen
  */
-body{font-family: "roboto"; font-size: 10pt; margin: 0; padding: 0}
+body{font-size: 10pt; margin: 0; padding: 0}
 .bold{font-weight: bold}
 
 ul{list-style: none;}
@@ -10,7 +10,7 @@ ul{list-style: none;}
 table td{vertical-align: text-top}
 
 td.relatie{
-    color:#002E65;
+    color:#666;
     text-align: right;
     padding-right: 12px;
 }
@@ -18,9 +18,9 @@ td.relatie-info{
     text-align: left!important;
 }
 
-.regels{ width: 100%; border-collapse: collapse; margin: 0 15px; font-size: 12px}
+.regels{ width: 100%; border-collapse: collapse; margin: 0 15px; font-size: 10px}
 
-.regels th{background-color:#D5E9E8; padding: 7px 14px}
+.regels th{color:#333; padding: 7px 14px; border-bottom: 1px solid #D5E9E8; text-transform: uppercase;  font-size: 8px}
 .regels tbody td{padding: 2px 14px;}
 
 .tr-end td{border-bottom: 1px solid #D5E9E8; padding-bottom: 10px; padding-top: 10px}
@@ -30,6 +30,6 @@ td.relatie-info{
 .text-left{text-align: left}
 .text-right{text-align: right}
 
-.grekening{font-size: 11px; font-style: italic; padding-right: 28px; padding-top: 10px; text-align: right}
-.cessie_tekst{font-size: 10px; font-style: italic; position: absolute; bottom: 75px; padding: 0 15px;}
+.grekening{font-size: 10px; font-style: italic; padding-right: 28px; padding-top: 10px; text-align: right}
+.cessie_tekst{font-size: 10px; font-style: italic; position: absolute; bottom: 50px; padding: 0 15px; color: #555}
 .iban{ font-size: 12px; font-weight: bold; background-color: yellow}

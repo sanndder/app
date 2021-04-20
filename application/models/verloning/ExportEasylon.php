@@ -152,7 +152,7 @@ class ExportEasylon extends Connector
 	 */
 	public function export()
 	{
-		$periode = 1;
+		$periode = 14;
 		$jaar = 2021;
 		
 		$werknemers = array();
@@ -160,21 +160,24 @@ class ExportEasylon extends Connector
 		$tijdvak = new Tijdvak( 'w', $jaar, $periode );
 		
 		// Alleen royal DS
-		$sql = "SELECT werknemer_id FROM werknemers_uitzenders WHERE uitzender_id IN (100,108,110,109,103,116)";
+		$sql = "SELECT werknemer_id FROM werknemers_uitzenders WHERE uitzender_id IN (100,105,108,109,117) AND werknemer_id NOT IN (20126)";
 		$query = $this->db_user->query( $sql );
 		
 		foreach( $query->result_array() as $row )
 		{
-			$royal[$row['werknemer_id']] = $row['werknemer_id'];
+			$uitzender_werknemers[$row['werknemer_id']] = $row['werknemer_id'];
 		}
-		
+
 		// ------------------------------- uren --------------------------------------------------------------
 		$sql = "SELECT invoer_uren.*, urentypes.percentage, urentypes.urentype_id, urentypes.urentype_categorie_id, inleners_urentypes.label, inleners_urentypes.default_urentype, urentypes.naam
 				FROM invoer_uren
 				LEFT JOIN werknemers_urentypes ON invoer_uren.uren_type_id_werknemer = werknemers_urentypes.id
     			LEFT JOIN inleners_urentypes ON werknemers_urentypes.inlener_urentype_id = inleners_urentypes.inlener_urentype_id
 				LEFT JOIN urentypes ON werknemers_urentypes.urentype_id = urentypes.urentype_id
-				WHERE datum >= '". $tijdvak->startDatum()."' AND datum <= '". $tijdvak->eindDatum() ."' AND factuur_id IS NOT NULL";
+				WHERE datum >= '". $tijdvak->startDatum()."' AND datum <= '". $tijdvak->eindDatum() ."' AND factuur_id IS NOT NULL
+				AND invoer_uren.werknemer_id IN (".array_keys_to_string($uitzender_werknemers).")
+				";
+		
 		$query = $this->db_user->query( $sql );
 		
 		foreach( $query->result_array() as $row )
@@ -231,9 +234,66 @@ class ExportEasylon extends Connector
 			
 			$werknemers[$row['werknemer_id']] = $row['werknemer_id'];
 		}
+
+		//------------------------------------------------ reserveringen stand ---------------------------------------------------------------------------------------------
+		$sql = "SELECT * FROM werknemers_reserveringen WHERE deleted = 0 AND werknemer_id IN ( ".array_keys_to_string($uren).") ";
+		$query = $this->db_user->query( $sql );
+
+		foreach( $query->result_array() as $row )
+		{
+			$stand_reservering[$row['werknemer_id']] = $row;
+		}
+
+		//------------------------------------------------ reserveringen opgevraagd ---------------------------------------------------------------------------------------------
+		$sql = "SELECT werknemer_id, vakantiegeld, vakantieuren_F12, kort_verzuim, feestdagen FROM invoer_reserveringen WHERE verloning_id IS NULL AND werknemer_id IN ( ".array_keys_to_string($uren).") ";
+		$query = $this->db_user->query( $sql );
+
+
+		foreach( $query->result_array() as $row )
+		{
+			$werknemer_id = $row['werknemer_id'];
+			if( $row['vakantiegeld'] > 0 )
+			{
+				if( $row['vakantiegeld'] < $stand_reservering[$werknemer_id]['vakantiegeld'] )
+					$reserveringen[$werknemer_id]['vakantiegeld'] = $row['vakantiegeld'];
+				else
+					$reserveringen[$werknemer_id]['vakantiegeld'] = $row['vakantiegeld'];
+
+			}
+
+			if( $row['vakantieuren_F12'] > 0 )
+			{
+				if( $row['vakantieuren_F12'] < $stand_reservering[$werknemer_id]['vakantieuren_F12'] )
+					$reserveringen[$werknemer_id]['vakantieuren_F12'] = $row['vakantieuren_F12'];
+				else
+					$reserveringen[$werknemer_id]['vakantieuren_F12'] = $row['vakantieuren_F12'];
+
+			}
+
+			if( $row['kort_verzuim'] > 0 )
+			{
+				if( $row['kort_verzuim'] < $stand_reservering[$werknemer_id]['kort_verzuim'] )
+					$reserveringen[$werknemer_id]['kort_verzuim'] = $row['kort_verzuim'];
+				else
+					$reserveringen[$werknemer_id]['kort_verzuim'] = $row['kort_verzuim'];
+
+			}
+
+			if( $row['feestdagen'] > 0 )
+			{
+				if( $row['feestdagen'] < $stand_reservering[$werknemer_id]['feestdagen'] )
+					$reserveringen[$werknemer_id]['feestdagen'] = $row['feestdagen'];
+				else
+					$reserveringen[$werknemer_id]['feestdagen'] = $row['feestdagen'];
+
+			}
+
+			$werknemers[$row['werknemer_id']] = $werknemer_id;
+		}
 		
+
 		// ------------------------------- ET --------------------------------------------------------------
-		$sql = "SELECT * FROM invoer_et WHERE tijdvak = 'w' AND periode = $periode";
+		$sql = "SELECT * FROM invoer_et WHERE tijdvak = 'w' AND periode = $periode AND werknemer_id IN (".array_keys_to_string($uren).")";
 		$query = $this->db_user->query( $sql );
 		
 		foreach( $query->result_array() as $row )
@@ -245,7 +305,7 @@ class ExportEasylon extends Connector
 		
 		// ------------------------------- kilometers --------------------------------------------------------------
 		$sql = "SELECT * FROM invoer_kilometers
-				WHERE uitkeren = 1 AND datum >= '". $tijdvak->startDatum()."' AND datum <= '". $tijdvak->eindDatum() ."'";
+				WHERE factuur_id IS NOT NULL AND uitkeren = 1 AND datum >= '". $tijdvak->startDatum()."' AND datum <= '". $tijdvak->eindDatum() ."' AND werknemer_id IN (".array_keys_to_string($uren).")";
 		
 		$query = $this->db_user->query( $sql );
 		
@@ -266,7 +326,7 @@ class ExportEasylon extends Connector
 				LEFT JOIN werknemers_vergoedingen ON werknemers_vergoedingen.id = invoer_vergoedingen.werknemer_vergoeding_id
 				LEFT JOIN inleners_vergoedingen iv on werknemers_vergoedingen.inlener_vergoeding_id = iv.inlener_vergoeding_id
 				LEFT JOIN vergoedingen ON vergoedingen.vergoeding_id = iv.vergoeding_id
-				WHERE tijdvak = 'w' AND periode = $periode AND jaar = $jaar";
+				WHERE factuur_id IS NOT NULL AND tijdvak = 'w' AND periode = $periode AND jaar = $jaar AND iv.uitkeren_werknemer = 1 AND invoer_vergoedingen.werknemer_id IN (".array_keys_to_string($uren).")";
 		
 		$query = $this->db_user->query( $sql );
 		
@@ -277,8 +337,7 @@ class ExportEasylon extends Connector
 			
 			$werknemers[$row['werknemer_id']] = $row['werknemer_id'];
 		}
-		
-		
+
 		//start xml document hoofd
 		$xml = new SimpleXMLElement('<ImportElsa/>');
 		
@@ -291,9 +350,6 @@ class ExportEasylon extends Connector
 		
 		foreach( $werknemers as $werknemer_id => $arr )
 		{
-			if( !isset($royal[$werknemer_id]) )
-				continue;
-			
 			$looninvoer = $mutatie->addChild('Looninvoer');
 			$looninvoer->addChild('Persnr', $werknemer_id );
 			
@@ -411,6 +467,17 @@ class ExportEasylon extends Connector
 					$vergoedingenObj = $looninvoer->addChild( 'Vergoedingen' );
 					$vergoedingenObj->addChild( 'Code', $vergoeding['type'] );
 					$vergoedingenObj->addChild( 'BedragAantal', $vergoeding['bedrag'] );
+				}
+			}
+
+			//reserveringen
+			if( isset($reserveringen[$werknemer_id]) )
+			{
+				foreach( $reserveringen[$werknemer_id] as $reservering => $bedrag  )
+				{
+					$vergoedingenObj = $looninvoer->addChild( 'Vergoedingen' );
+					$vergoedingenObj->addChild( 'Code', $reservering . '_uit' );
+					$vergoedingenObj->addChild( 'BedragAantal', $bedrag );
 				}
 			}
 			

@@ -296,6 +296,10 @@
 										<td class="pt-1">{$factuur.user|default:''}</td>
 									</tr>
                                 {/if}
+								<tr>
+									<td class="pr-5 pt-1 font-weight-bold">Filename:</td>
+									<td class="pt-1">{$factuur.file_name}</td>
+								</tr>
 							</table>
 
 						</div>

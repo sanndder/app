@@ -80,7 +80,7 @@
 						<div><i class="fas fa-briefcase-medical mr-2"></i>Hollandzorg</div>
 						<span class="badge badge-pill badge-warning" style="position: relative;">3</span>
 					</a>*}
-					<a href="overzichten/facturen/index" class="dropdown-item d-flex justify-content-between">
+					<a href="overzichten/facturenexport/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="mi-euro-symbol mr-2"></i>Export Facturen</div>
 					</a>
 					<a href="overzichten/banktransacties/index" class="dropdown-item d-flex justify-content-between">
@@ -103,6 +103,9 @@
 					</a>
 					<a href="overzichten/werknemerdata/" class="dropdown-item d-flex justify-content-between">
 						<div><i class="icon-user mr-2"></i>Werknemer data</div>
+					</a>
+					<a href="overzichten/margebetalingen/" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-coin-euro mr-2"></i>Marge betalingen</div>
 					</a>
 				</div>
 			</li>
@@ -139,26 +142,24 @@
 				</a>
 			</li>
 
-			{if $user_id == 2}
-				<li class="nav-item dropdown">
-					<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
-						<i class="icon-file-spreadsheet mr-2"></i>
-						Verloning
-					</a>
+			<li class="nav-item dropdown">
+				<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+					<i class="icon-file-spreadsheet mr-2"></i>
+					Verloning
+				</a>
 
-					<div class="dropdown-menu">
-						<a href="verloning/export/index" class="dropdown-item">
-							<i class="icon-download"></i>Export
-						</a>
-						<a href="verloning/loonstroken/uploaden" class="dropdown-item">
-							<i class="icon-coin-euro"></i>Loonstroken uploaden
-						</a>
-						<a href="verloning/reserveringen/uploaden" class="dropdown-item">
-							<i class="icon-upload"></i>Reserveringen uploaden
-						</a>
-					</div>
-				</li>
-            {/if}
+				<div class="dropdown-menu">
+					<a href="verloning/export/index" class="dropdown-item">
+						<i class="icon-download"></i>Export
+					</a>
+					<a href="verloning/loonstroken/uploaden" class="dropdown-item">
+						<i class="icon-coin-euro"></i>Loonstroken uploaden
+					</a>
+					<a href="verloning/reserveringen/uploaden" class="dropdown-item">
+						<i class="icon-upload"></i>Reserveringen uploaden
+					</a>
+				</div>
+			</li>
 
 			<li class="nav-item">
 				<a href="instellingen/werkgever" class="navbar-nav-link">

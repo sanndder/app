@@ -138,6 +138,7 @@ let tplVergoedingVastTr = `<tr data-id="{invoer_id}">
 								</td>
 							</tr>`;
 
+
 let tplVergoedingVariabelTr = `<tr data-id="{invoer_id}" data-werknemer-vergoeding-id="{id}">
 								<td class="td-vergoeding">{naam}</td>
 								<td class="td-euro">€</td>

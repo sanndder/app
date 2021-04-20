@@ -29,8 +29,8 @@ class Email extends Connector {
 	/*
 	 * default from
 	 */
-	private $_from_name = 'Abering Uitzenden';
-	private $_from_email = 'info@aberinghr.nl';
+	private $_from_name = 'FlexxOffice Uitzenden';
+	private $_from_email = 'info@flexxoffice-uitzenden.nl';
 
 	/*
 	 * @var int
@@ -368,7 +368,7 @@ class Email extends Connector {
 		foreach( $this->_to as $to )
 			$this->_mail->AddAddress( $to['email'] );
 		
-		$this->_mail->addBCC('sander@aberinghr.nl', 'Sander Meijering');
+		$this->_mail->addBCC('copy@flexx-groep.nl');
 		
 		//attachments erbij
 		if( $this->_attachments !== NULL )
@@ -397,8 +397,21 @@ class Email extends Connector {
 		if( ENVIRONMENT == 'production' )
 		{
 			$this->_mail->SMTPAuth = false; // authentication enabled
-			$this->_mail->SetFrom( "info@aberinghr.nl" );
-			$this->_mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			
+			if( !isset($this->user->werkgever_type) )
+			{
+				$this->_mail->SetFrom( "info@flexxoffice-uitzenden.nl", 'FlexxOffice' );
+			}
+			else
+			{
+				if( $this->user->werkgever_type == 'uitzenden' )
+					$this->_mail->SetFrom( "info@flexxoffice-uitzenden.nl", 'FlexxOffice Uitzenden' );
+				if( $this->user->werkgever_type == 'bemiddeling' )
+					$this->_mail->SetFrom( "info@flexxoffice-bemiddeling.nl", 'FlexxOffice Bemiddeling' );
+			}
+			
+			//$this->_mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			$this->_mail->Host = "flexxgroep-nl01c.mail.protection.outlook.com";
 			$this->_mail->Port = 25; // or 587
 		}
 		
@@ -475,10 +488,33 @@ class Email extends Connector {
 			$this->_mail->IsSMTP(); // enable SMTP
 			$this->_mail->SMTPDebug = $this->_debug_level; // debugging: 1 = errors and messages, 2 = messages only
 			$this->_mail->SMTPAuth = false; // authentication enabled
-			$this->_mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			//$this->_mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			$this->_mail->Host = "flexxgroep-nl01c.mail.protection.outlook.com";
 			$this->_mail->Port = 25; // or 587
 			
-			$this->_mail->SetFrom( "info@aberinghr.nl" );
+			$this->_mail->SetFrom( "info@flexxoffce-uitzenden.nl", 'FlexxOffice Uitzenden' );
+			$this->_mail->Subject = $this->_subject;
+			
+			$this->_mail->Body = $this->_body;
+			$this->_mail->AddAddress( "hsmeijering@home.nl" );
+			
+			if( !$this->_mail->Send() )
+			{
+				$this->_error = $this->_mail->ErrorInfo;
+			}
+			else
+			{
+				show( "Message has been sent" );
+			}
+			
+			$this->_mail->IsSMTP(); // enable SMTP
+			$this->_mail->SMTPDebug = $this->_debug_level; // debugging: 1 = errors and messages, 2 = messages only
+			$this->_mail->SMTPAuth = false; // authentication enabled
+			//$this->_mail->Host = "aberinghr-nl.mail.protection.outlook.com";
+			$this->_mail->Host = "flexxgroep-nl01c.mail.protection.outlook.com";
+			$this->_mail->Port = 25; // or 587
+			
+			$this->_mail->SetFrom( "info@flexxoffice-uitzenden.nl", 'FlexxOffice Uitzenden' );
 			$this->_mail->Subject = $this->_subject;
 			
 			$this->_mail->Body = $this->_body;

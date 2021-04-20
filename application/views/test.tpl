@@ -51,8 +51,22 @@
 			</div><!-- /row -->
 
 		</div><!-- /content area -->
-	</div>
-	<!-- /main content -->
+	</div><!-- /main content -->
 
+	<table style="font-family: Arial; font-size: 12px">
+		<tr>
+			<td style="vertical-align: text-top">
+				<span style="font-size: 14px; font-weight: bold">Sander Meijering</span><br />
+				Technisch Directeur
+
+			</td>
+			<td style="vertical-align: text-top">
+				085-4855450 | 06-26951065<br />
+				sander@flexx-groep.nl<br /><br />
+				Rijnkade 34<br />
+				6811HA Arnhem
+			</td>
+		</tr>
+	</table>
 
 {/block}

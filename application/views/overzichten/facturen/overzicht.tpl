@@ -5,7 +5,6 @@
 {assign "datamask" "true"}
 
 {block "content"}
-
 	<script src="recources/js/facturen/overzicht.js?{$time}"></script>
 	<!---------------------------------------------------------------------------------------------------------
 	|| Main content
@@ -18,7 +17,16 @@
 			|| Zoeken
 			---------------------------------------------------------------------------------------------------------->
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-3">
+					<div class="card">
+						<div class="card-header bg-white header-elements-inline p-0">
+							<a href="overzichten/facturenexport/index" class="btn {if !isset($smarty.get.exportbestanden)}btn-primary{/if} m-0" style="padding:15px 0; width: 50%; border-radius: 0.1875rem 0 0 0.1875rem">Facturen</a>
+							<a href="overzichten/facturenexport/index?exportbestanden" class="btn {if isset($smarty.get.exportbestanden)}btn-primary{/if} m-0" style="padding:15px 0; width: 50%; border-radius:0 0.1875rem 0.1875rem 0">Exportbestanden</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-9">
 					<div class="card">
 						<div class="card-header bg-white header-elements-inline">
 							<h6 class="card-title py-0">Filteren</h6>
@@ -41,9 +49,9 @@
 											</tr>
 											<tr>
 												<td>
-										<span class="checked">
-											<input id="factoring" name="factoring" value="1" type="checkbox" class="form-input-styled" checked="checked">
-										</span>
+													<span class="checked">
+														<input id="factoring" name="factoring" value="1" type="checkbox" class="form-input-styled" checked="checked">
+													</span>
 												</td>
 												<td class="pl-1 pt-2">
 													<label for="factoring">Factoring</label>
@@ -51,9 +59,9 @@
 											</tr>
 											<tr>
 												<td>
-										<span class="checked">
-											<input id="geenfactoring" name="geenfactoring" value="1" type="checkbox" class="form-input-styled" checked="checked">
-										</span>
+													<span class="checked">
+														<input id="geenfactoring" name="geenfactoring" value="1" type="checkbox" class="form-input-styled" checked="checked">
+													</span>
 												</td>
 												<td class="pl-1 pt-2">
 													<label for="geenfactoring">Geen factoring</label>
@@ -228,8 +236,8 @@
 										<td>
 											<select class="form-control" name="type">
 												<option></option>
-												<option value="iban">IBAN Abering</option>
-												<option value="grekening">G-rekening Abering</option>
+												<option value="iban">IBAN FlexxOffice</option>
+												<option value="grekening">G-rekening FlexxOffice</option>
 												<option value="aankoop">Aankoop Factoring</option>
 												<option value="eind">Eind Factoring</option>
 												<option value="kosten">Kosten Factoring</option>
@@ -260,122 +268,153 @@
 					<!-- Basic card -->
 					<div class="card">
 
-						<!------------------------------------------------------ tabel ------------------------------------------------->
-						<table class="table table-striped text-nowrap table-facturen-overzicht" style="font-size: 12px">
-							<thead>
-								<tr>
-									<th style="width: 10px"></th>
-									<th style="width: 10px">
-										<i class="icon-file-excel export-factoring"></i>
-									</th>
-									<th style="width: 100px">Status</th>
-									<th style="width: 100px">Vervalt</th>
-									<th style="width: 25px;">Periode</th>
-									<th>Inlener</th>
-									<th style="width: 100px" class="text-right">Factuur nr</th>
-									<th style="width: 120px" class="text-right">Totaal (€)</th>
-									<th style="width: 120px" class="text-right">G-rekening (€)</th>
-									<th style="width: 100px">Factris</th>
-									<th style="width: 100px">Verzonden</th>
-									<th style="width: 10px"></th>
-								</tr>
-							</thead>
-                            {if $facturen != NULL}
-								<tbody>
-                                    {foreach $facturen as $f}
-										{if $f.verkoop.factoring == 1 || ($f.verkoop.factoring == 0 && $f.verkoop.send_on == NULL)}
-										<tr data-id="{$f.verkoop.factuur_id}">
-											<td class="td-selected p-0 m-0"></td>
-											<td class="check-factuur">
-                                                {if $f.verkoop.factoring == 1}
-                                                    {if $f.verkoop.to_factoring_on == NULL}
-														<input type="checkbox" name="select-factuur" value="{$f.verkoop.factuur_id}"/>
-                                                    {/if}
-                                                {/if}
-											</td>
-											<td>
-                                                {if $f.verkoop.voldaan == 0}
-													<span class="text-warning font-weight-bold">openstaand</span>
-                                                {else}
-													<span class="text-success font-weight-bold">voldaan</span>
-                                                {/if}
-											</td>
-											<td>({$f.verkoop.verval_dagen})</td>
-											<td>{$f.verkoop.periode}</td>
-											<td style="width: 1px; white-space: nowrap;">
-                                                {$f.verkoop.bedrijfsnaam}
-                                                {if $f.verkoop.project != NULL}
-													- {$f.verkoop.project}
-                                                {/if}
-											</td>
-											<td class="text-right">
-                                                {$f.verkoop.factuur_nr}
-											</td>
-											<td class="text-right">
-												€ {$f.verkoop.bedrag_incl|number_format:2:',':'.'}
-                                                {*/
-												{if $f.verkoop.bedrag_openstaand > 0}
-												   <span class="text-warning font-weight-bold">{$f.verkoop.bedrag_openstaand|number_format:2:',':'.'}</span>
-													{else}
-													-
-												{/if}*}
+                        {if !isset($smarty.get.exportbestanden)}
+							<!------------------------------------------------------ tabel ------------------------------------------------->
+							<table class="table table-striped text-nowrap table-facturen-overzicht" style="font-size: 12px">
+								<thead>
+									<tr>
+										<th style="width: 10px"></th>
+										<th style="width: 10px" class="px-1">
+											<i class="icon-file-excel export-factoring" data-title="Excel export genereren" data-popup="tooltip" data-placement="top" style="cursor:pointer"></i>
+										</th>
+										<th style="width: 55px" class="px-1">Vervalt</th>
+										<th style="width: 25px;" class="px-1" c>Periode</th>
+										<th>Inlener</th>
+										<th style="width: 80px" class="text-right px-0">Factuur nr</th>
+										<th style="width: 80px" class="text-right px-0">Bijlages</th>
+										<th style="width: 100px" class="text-right">Totaal (€)</th>
+										<th style="width: 100px" class="text-right">G-rekening (€)</th>
+										<th style="width: 100px">Factris</th>
+										<th style="width: 100px">Verzonden</th>
+										<th style="width: 10px"></th>
+									</tr>
+								</thead>
+                                {if $facturen != NULL}
+									<tbody>
+                                        {foreach $facturen as $f}
+                                            {if $f.verkoop.factoring == 1 || (($f.verkoop.factoring == 0 && $f.verkoop.send_on == NULL) && $f.verkoop.bedrag_incl != 0)}
+												<tr data-id="{$f.verkoop.factuur_id}">
+													<td class="td-selected p-0 m-0"></td>
+													<td class="check-factuur px-1">
+                                                        {if $f.verkoop.factoring == 1}
+                                                            {if $f.verkoop.to_factoring_on == NULL}
+																<input type="checkbox" name="select-factuur" value="{$f.verkoop.factuur_id}"/>
+                                                            {/if}
+                                                            {if $f.verkoop.export_file_id !== NULL}
+	                                                            <a target="_blank" href="overzichten/facturenexport/downloadexport/{$f.verkoop.export_file_id}">{$f.verkoop.export_file_id}</a>
+                                                            {/if}
+                                                        {/if}
+													</td>
+													<td class="px-1">({$f.verkoop.verval_dagen})</td>
+													<td class="px-1">{$f.verkoop.periode}</td>
+													<td style="width: 1px; white-space: nowrap;">
+                                                        {$f.verkoop.bedrijfsnaam}
+                                                        {if $f.verkoop.project != NULL}
+															- {$f.verkoop.project}
+                                                        {/if}
+													</td>
+													<td class="text-right px-0">
+                                                        {$f.verkoop.factuur_nr}
+													</td>
+													<td class="text-right px-0">
+                                                        {if !isset($f.verkoop.count_bijlages) || $f.verkoop.count_bijlages == 0}
+	                                                        <i class="icon-alert text-danger"></i> <span class="text-danger"> 0</span>
+	                                                    {else}
+                                                            {$f.verkoop.count_bijlages}
+                                                        {/if}
+
+													</td>
+													<td class="text-right">
+														€ {$f.verkoop.bedrag_incl|number_format:2:',':'.'}
+                                                        {*/
+														{if $f.verkoop.bedrag_openstaand > 0}
+														   <span class="text-warning font-weight-bold">{$f.verkoop.bedrag_openstaand|number_format:2:',':'.'}</span>
+															{else}
+															-
+														{/if}*}
 
 
-											</td>
-                                            {*
-											<td class="text-right">
-												€ {($f.verkoop.bedrag_incl-$f.verkoop.bedrag_grekening)|number_format:2:',':'.'}
-											</td>
-											*}
-											<td class="text-right">
-												€ {$f.verkoop.bedrag_grekening|number_format:2:',':'.'}
-											</td>
-											<td>
-                                                {if $f.verkoop.wachtrij == 0 || ($f.verkoop.wachtrij == 1 && $f.verkoop.wachtrij_akkoord == 1)}
-                                                    {if $f.verkoop.factoring == 1}
-                                                        {if $f.verkoop.to_factoring_on == NULL}
-															<span class="btn btn-outline-primary btn-factoring btn-sm px-1 py-0">
+													</td>
+                                                    {*
+													<td class="text-right">
+														€ {($f.verkoop.bedrag_incl-$f.verkoop.bedrag_grekening)|number_format:2:',':'.'}
+													</td>
+													*}
+													<td class="text-right">
+														€ {$f.verkoop.bedrag_grekening|number_format:2:',':'.'}
+													</td>
+													<td>
+                                                        {if $f.verkoop.wachtrij == 0 || ($f.verkoop.wachtrij == 1 && $f.verkoop.wachtrij_akkoord == 1)}
+                                                            {if $f.verkoop.factoring == 1}
+                                                                {if $f.verkoop.to_factoring_on == NULL}
+																	<span class="btn btn-outline-primary btn-factoring btn-sm px-1 py-0">
 														<i class="icon-check mr-1"></i> Geupload
 													</span>
+                                                                {else}
+                                                                    {$f.verkoop.to_factoring_on|date_format: '%d-%m-%Y'}
+                                                                {/if}
+                                                            {else}
+																Geen factoring
+                                                            {/if}
                                                         {else}
-                                                            {$f.verkoop.to_factoring_on|date_format: '%d-%m-%Y'}
+															<i class="icon-hour-glass mr-1"></i>
+															in wachtrij
                                                         {/if}
-                                                    {else}
-														Geen factoring
-                                                    {/if}
-                                                {else}
-	                                                <i class="icon-hour-glass mr-1"></i>
-	                                                in wachtrij
-                                                {/if}
 
-											</td>
-											<td>
-                                                {if $f.verkoop.wachtrij == 0 || ($f.verkoop.wachtrij == 1 && $f.verkoop.wachtrij_akkoord == 1)}
-                                                    {if $f.verkoop.send_on == NULL}
-	                                                    {if $f.verkoop.bedrag_incl != 0}
-														<a href="crm/uitzenders/dossier/facturen/{$f.verkoop.uitzender_id}?email={$f.verkoop.factuur_id}" target="_blank" class="btn btn-outline-primary btn-sm px-1 py-0">
-															<i class="icon-envelope mr-1"></i> Emailen
-														</a>
+													</td>
+													<td>
+                                                        {if $f.verkoop.wachtrij == 0 || ($f.verkoop.wachtrij == 1 && $f.verkoop.wachtrij_akkoord == 1)}
+                                                            {if $f.verkoop.send_on == NULL}
+                                                                {if $f.verkoop.bedrag_incl != 0}
+																	<a href="crm/uitzenders/dossier/facturen/{$f.verkoop.uitzender_id}?email={$f.verkoop.factuur_id}" target="_blank" class="btn btn-outline-primary btn-sm px-1 py-0">
+																		<i class="icon-envelope mr-1"></i> Emailen
+																	</a>
+                                                                {/if}
+                                                            {else}
+                                                                {$f.verkoop.send_on|date_format: '%d-%m-%Y'}
+                                                            {/if}
+                                                        {else}
+															<i class="icon-hour-glass mr-1"></i>
+															in wachtrij
                                                         {/if}
-                                                    {else}
-                                                        {$f.verkoop.send_on|date_format: '%d-%m-%Y'}
-                                                    {/if}
-                                                {else}
-													<i class="icon-hour-glass mr-1"></i>
-													in wachtrij
-                                                {/if}
-											</td>
-											<td class="p-0 m-0">
-												<a href="facturatie/factuur/details/{$f.verkoop.factuur_id}" target="_blank">
-													<i class="icon-file-text2 mr-1"></i> details
-												</a>
-											</td>
-										</tr>
-										{/if}
-                                    {/foreach}
+													</td>
+													<td class="p-0 m-0">
+														<a href="facturatie/factuur/details/{$f.verkoop.factuur_id}" target="_blank">
+															<i class="icon-file-text2 mr-1"></i> details
+														</a>
+													</td>
+												</tr>
+                                            {/if}
+                                        {/foreach}
+									</tbody>
+                                {/if}
+							</table>
+                        {else}
+							<table class="table table-striped text-nowrap table-facturen-overzicht" style="font-size: 12px">
+								<thead>
+									<tr>
+										<th style="width: 20px">ID</th>
+										<th style="width: 60px">Datum/tijd</th>
+										<th>Bestand</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+                                    {if isset($exportbestanden) && $exportbestanden !== NULL}
+                                        {foreach $exportbestanden as $b}
+											<tr>
+												<td>{$b.id}</td>
+												<td>{$b.timestamp|date_format: '%d-%m-%Y om %R:%S'}</td>
+												<td>
+													<a target="_blank" href="overzichten/facturenexport/downloadexport/{$b.id}">{$b.file_name}</a>
+												</td>
+												<td></td>
+											</tr>
+                                        {/foreach}
+                                    {/if}
 								</tbody>
-                            {/if}
-						</table>
+							</table>
+                        {/if}
 
 
 					</div><!-- /basic card -->

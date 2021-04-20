@@ -107,6 +107,7 @@ class InvoerUren extends Invoer
 		//nieuwe entry
 		if( $set['invoer_id'] == 0 )
 		{
+			
 			if( $this->user->werkgever_type == 'uitzenden' )
 			{
 				$plaatsingGroup = new \models\werknemers\PlaatsingGroup();
@@ -127,8 +128,8 @@ class InvoerUren extends Invoer
 			$this->db_user->insert( 'invoer_uren', $set );
 			
 			$set['invoer_id'] = $this->db_user->insert_id();
-			
-		} else
+		}
+		else
 		{
 			$oude_entry = $this->getRow( $set['invoer_id'] );
 			
@@ -142,6 +143,48 @@ class InvoerUren extends Invoer
 		
 		return $set;
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Standaard aantal uren invullen en verdelen
+	 *
+	 */
+	public function fillUren( $aantal ): bool
+	{
+		$per_dag = round($aantal / 5,2);
+		
+		$uren = $this->urenMatrix();
+		
+		$urentypesGroup = new UrentypesGroup();
+
+		if( $this->user->werkgever_type == 'uitzenden' )
+			$urentypes = $urentypesGroup->inlener(  $_POST['inlener_id'] )->urentypesWerknemer( $_POST['werknemer_id'] );
+
+		if( $this->user->werkgever_type == 'bemiddeling' )
+			$urentypes = $urentypesGroup->inlener(  $_POST['inlener_id'] )->urentypesZzp( $_POST['werknemer_id'] );
+
+		//standaard urentype er uit halen
+		$urentype_id = current(array_keys(array_combine(array_keys($urentypes), array_column($urentypes, 'default_urentype')),1));
+
+		foreach( $uren as $dag )
+		{
+			if( !isset($dag['rows']) && $dag['dag'] != 'za' && $dag['dag'] != 'zo' )
+			{
+				$row['invoer_id'] = 0;
+				$row['datum'] = $dag['datum'];
+				$row['aantal'] = $per_dag;
+				$row['urentype_id'] = $urentype_id;
+				$row['project_tekst'] = NULL;
+				$row['project_id'] = NULL;
+				$row['locatie_tekst'] = NULL;
+				
+				$this->setRow($row);
+			}
+		}
+		
+		return true;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -151,8 +194,14 @@ class InvoerUren extends Invoer
 	public function delRow( $row ): bool
 	{
 		$oude_entry = $this->getRow( $row['invoer_id'] );
-		$this->db_user->query( "DELETE FROM invoer_uren WHERE factuur_id IS NULL AND invoer_id = ? AND werknemer_id = ?", array( $row['invoer_id'], $this->_werknemer_id ) );
-		
+
+		if( $this->user->werkgever_type == 'uitzenden' )
+			$this->db_user->query( "DELETE FROM invoer_uren WHERE factuur_id IS NULL AND invoer_id = ? AND werknemer_id = ?", array( $row['invoer_id'], $this->_werknemer_id ) );
+
+		if( $this->user->werkgever_type == 'bemiddeling' )
+			$this->db_user->query( "DELETE FROM invoer_uren WHERE factuur_id IS NULL AND invoer_id = ? AND zzp_id = ?", array( $row['invoer_id'], $this->_zzp_id ) );
+
+
 		if( $this->db_user->affected_rows() != -1 )
 		{
 			$this->_logUrenActie( 'delete', $oude_entry );
@@ -162,6 +211,30 @@ class InvoerUren extends Invoer
 		return false;
 	}
 	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Rij verwijderen
+	 *
+	 */
+	public function delAll(): bool
+	{
+		$uren = $this->urenMatrix();
+		
+		foreach( $uren as $datum )
+		{
+			if( isset($datum['rows']) )
+			{
+				foreach( $datum['rows'] as $row )
+				{
+					$this->delRow($row);
+				}
+			}
+		}
+		
+		return true;
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * Log actie
@@ -169,7 +242,6 @@ class InvoerUren extends Invoer
 	 */
 	private function _logUrenActie( $action, $row )
 	{
-		
 		$insert['user_id'] = $this->user->user_id;
 		$insert['json'] = json_encode( $row );
 		$insert['action'] = $action;

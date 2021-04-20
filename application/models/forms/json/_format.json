@@ -11,7 +11,7 @@
     "fieldname": {
       "label" : "Label",
       "rules": {
-        "required" : true,
+        "required": true,
         "required": "conditional",
         "required_parent": "g_rekening",
         "required_value_true": "1",

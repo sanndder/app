@@ -2,6 +2,7 @@
 <table style="margin-left: 15px; width: 100%">
 	<tr>
 		<td style="font-size: 40px; color:#002E65">
+
 			FACTUUR
 		</td>
 		<td rowspan="2" style="text-align: right; padding-right: 25px; padding-top: 6px;">

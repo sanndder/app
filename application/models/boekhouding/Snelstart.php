@@ -7,6 +7,7 @@ use models\file\Excel;
 use models\inleners\InlenerGroup;
 use models\uitzenders\UitzenderGroup;
 use models\utils\DBhelper;
+use models\zzp\ZzpGroup;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 
@@ -155,6 +156,96 @@ class Snelstart extends Connector
 		
 		return $uitzenders;
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * export naar database
+	 *
+	 */
+	public function exportBoekingenZzp( $tm )
+	{
+		$dagboeken = $this->settings();
+		
+		//zzp facturen
+		$sql = "SELECT zzp_facturen.verval_datum, factuur_id, factuur_nr, zzp_id, bedrag_excl, bedrag_incl, bedrag_btw
+				FROM zzp_facturen
+				WHERE zzp_facturen.deleted = 0 AND bedrag_incl != 0 AND timestamp >= '2021-01-01 00:00:00' AND timestamp <= '2021-04-01 00:00:01'";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return false;
+		
+		$zzpers = ZzpGroup::list();
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $row['zzp_id'] !== NULL && $row['zzp_id'] != 0)
+				$row['zzp'] = $zzpers[$row['zzp_id']];
+			
+			$data[] = $row;
+		}
+		
+		
+		$excel = new Excel();
+		$excel->writeRow( ['fldDagboek','fldBoekingcode','fldDatum','fldGrootboeknummer','fldDebet','fldCredit','fldOmschrijving','fldRelatiecode','fldFactuurnummer'] );
+		
+		$i = 1;
+		
+		if( $data !== NULL)
+		{
+			foreach( $data as $factuur )
+			{
+				unset($rij_0);
+				unset($rij_1);
+				unset($rij_2);
+				
+				$creditdebet = 'debet';
+				
+				if( $factuur['bedrag_excl'] < 0)
+					$creditdebet = 'credit';
+				
+				$factuur['bedrag_excl'] = abs($factuur['bedrag_excl']);
+				$factuur['bedrag_btw'] = abs($factuur['bedrag_btw']);
+				$factuur['bedrag_incl'] = abs($factuur['bedrag_incl']);
+				
+				//zzp verkoop
+				if( $creditdebet == 'debet' )
+				{
+					$rij_0 = array( 1500, $i, $factuur['verval_datum'], 1500, 0, $factuur['bedrag_incl'], $factuur['zzp'], $factuur['zzp_id'], $factuur['factuur_nr'] );
+					
+					//met BTW
+					if( $factuur['bedrag_btw'] != 0 )
+					{
+						$rij_1 = array( 1500, $i, $factuur['verval_datum'], 7020, $factuur['bedrag_excl'],0, $factuur['zzp'], $factuur['zzp_id'], $factuur['factuur_nr'] );
+						$rij_2 = array( 1500, $i, $factuur['verval_datum'], 1612, $factuur['bedrag_btw'], 0, $factuur['zzp'], $factuur['zzp_id'], $factuur['factuur_nr'] );
+					} //btw verlegd
+					else
+					{
+						$rij_1 = array( 1500, $i, $factuur['verval_datum'], 7010, $factuur['bedrag_excl'], 0,  $factuur['zzp'], $factuur['zzp_id'], $factuur['factuur_nr'] );
+					}
+				}
+				
+				if(isset($rij_0))
+				{
+					$excel->writeRow( $rij_0 );
+					$excel->writeRow( $rij_1 );
+					if( isset( $rij_2 ) )
+						$excel->writeRow( $rij_2 );
+					
+					$i++;
+				}
+			}
+		}
+		
+		$excel->setAutoWidth();
+		$excel->inline( 'export_boekingen_zzp_' . date('Y_m_d_His') );
+		
+		die();
+		//return $this->db_user->insert_id();
+	}
+	
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -170,7 +261,14 @@ class Snelstart extends Connector
 		
 		$sql = "SELECT facturen.factuur_datum, factuur_id, factuur_nr, inlener_id, uitzender_id, bedrag_excl, bedrag_incl, bedrag_btw, marge
 				FROM facturen
-				WHERE facturen.deleted = 0 AND facturen.concept = 0 AND bedrag_incl != 0 AND factuur_nr > 1813 AND factuur_datum < '2021-01-01' ";
+				WHERE facturen.deleted = 0 AND facturen.concept = 0 AND bedrag_incl != 0 AND factuur_nr > 2483 AND factuur_datum < '2021-04-01' ";
+		
+		//show($sql);
+		//bemiddeling
+		/*
+		$sql = "SELECT facturen.factuur_datum, factuur_id, factuur_nr, inlener_id, uitzender_id, bedrag_excl, bedrag_incl, bedrag_btw, marge
+				FROM facturen
+				WHERE facturen.deleted = 0 AND facturen.concept = 0 AND bedrag_incl != 0 AND factuur_nr > 24 AND factuur_datum < '2021-01-01' ";*/
 				
 		if( $max_id !== NULL )
 			$sql .= " AND factuur_id > $max_id";

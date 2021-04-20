@@ -225,12 +225,16 @@ class FacturenGroup extends Connector
 	 *
 	 * alleen verkoopfacturen
 	 */
-	public function facturen() :?array
+	public function facturen( $jaar = NULL ) :?array
 	{
 		$sql = "SELECT *, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,  DATEDIFF(facturen.verval_datum,facturen.factuur_datum) AS betaaltermijn
 				FROM facturen
-				WHERE facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0 AND facturen.inlener_id = $this->_inlener_id
-				ORDER BY jaar DESC, periode DESC";
+				WHERE facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0 AND facturen.inlener_id = $this->_inlener_id";
+		
+		if( $jaar !== NULL )
+			$sql .= " AND facturen.jaar = " . intval($jaar);
+			
+ 		$sql .= " ORDER BY jaar DESC, periode DESC";
 		
 		$query = $this->db_user->query( $sql );
 		return DBhelper::toArray( $query, 'factuur_id', 'NULL' );
@@ -304,16 +308,22 @@ class FacturenGroup extends Connector
 	 * alle	facturen, marge en kosten ophalen
 	 * TODO beter maken
 	 */
-	public function facturenMatrix() :?array
+	public function facturenMatrix( $jaar = NULL ) :?array
 	{
 		//verkoop facturen
-		$sql = "SELECT facturen.*, inleners_factuurgegevens.factoring, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_bedrijfsgegevens.kvknr, inleners_bedrijfsgegevens.btwnr, inleners_projecten.omschrijving AS project, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,  DATEDIFF(facturen.verval_datum,facturen.factuur_datum) AS betaaltermijn
+		$sql = "SELECT facturen.*, inleners_factuurgegevens.factoring, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_bedrijfsgegevens.kvknr, inleners_bedrijfsgegevens.btwnr,
+       					inleners_projecten.omschrijving AS project, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,  DATEDIFF(facturen.verval_datum,facturen.factuur_datum) AS betaaltermijn,
+       					TIMESTAMPDIFF(MINUTE,facturen.timestamp,NOW()) AS age, factoring_export_facturen.file_id AS export_file_id
 				FROM facturen
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = facturen.inlener_id
 				LEFT JOIN inleners_projecten ON inleners_projecten.id = facturen.project_id
 				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = facturen.inlener_id
+				LEFT JOIN factoring_export_facturen ON factoring_export_facturen.factuur_id = facturen.factuur_id
 				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_factuurgegevens.deleted = 0 AND facturen.deleted = 0 AND facturen.concept = 0 AND facturen.marge = 0";
 				
+		if( $jaar !== NULL )
+			$sql .= " AND facturen.jaar = ". intval($jaar);
+		
 		if( $this->_uitzender_id != NULL )
 			$sql .= " AND facturen.uitzender_id = $this->_uitzender_id ";
 		
@@ -366,6 +376,19 @@ class FacturenGroup extends Connector
 			foreach( $query->result_array() as $row )
 				$data[$row['factuur_id']]['kosten'] = $row;
 		}
+		
+		//bijlages
+		//TODO vervangen door file_pages
+		$sql = "SELECT factuur_id, COUNT(factuur_id) AS count_bijlages FROM invoer_bijlages WHERE factuur_id IN (" . array_keys_to_string($data) . ") AND deleted = 0 GROUP BY factuur_id";
+		$query = $this->db_user->query( $sql );
+		
+		if ($query->num_rows() > 0)
+		{
+			foreach ($query->result_array() as $row)
+				$data[$row['factuur_id']]['verkoop']['count_bijlages'] = $row['count_bijlages'];
+		}
+		
+		
 
 		//TODO Dit moet anders, hij pakt alle facturen
 		//aankoopbetalingen erbij wanneer nodig
@@ -395,7 +418,7 @@ class FacturenGroup extends Connector
 				}
 			}
 		}
-		
+
 		return $data;
 	}
 	

@@ -22,7 +22,7 @@ class FactoringExportFactris extends FactoringExport
 	 *
 	 * constructor
 	 */
-	public function __construct( $facturen )
+	public function __construct( $facturen = NULL )
 	{
 		//call parent constructor for connecting to database
 		parent::__construct();
@@ -38,7 +38,7 @@ class FactoringExportFactris extends FactoringExport
 	 */
 	public function exportExcel()
 	{
-		$this->_file_name = 'export_factris_' . date('YmdHis') . '.xlsx';
+		$this->_file_name = 'export_factris_' . date('Y_m_d__His') . '.xlsx';
 		$this->_path = $this->_dir . '/' . $this->_file_name;
 		
 		$this->setHeader();
@@ -62,6 +62,8 @@ class FactoringExportFactris extends FactoringExport
 			$this->_error['error'] = 'Fout bij schrijven naar database';
 			return false;
 		}
+		
+		return true;
 	}
 	
 	

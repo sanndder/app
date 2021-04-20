@@ -138,6 +138,7 @@ class MY_Controller extends CI_Controller
 		{
 			$this->load->model('werknemer_model', 'werknemer');
 			$this->smarty->assign( 'werknemer_id', $this->user->werknemer_id );
+			$this->smarty->assign( 'menu_vcu', $this->werknemer->vcu );
 		}
 		if( $this->user->user_type == 'zzp' )
 		{
@@ -178,6 +179,7 @@ class EX_Controller extends CI_Controller
 
 		//base_url naar smarty
 		$this->smarty->assign( 'base_url' , BASE_URL );
+		$this->smarty->assign( 'time' , time() );
 		$this->smarty->assign( 'app_name' , APP_NAME);
 	}
 

@@ -51,9 +51,9 @@
 					<div class="card-body">
 						<div class="text-center mb-3">
 
-							<img src="{$base_url}/template/global_assets/images/abering_blauw_sm.png" style="width: 70px">
+							<img src="{$base_url}/template/global_assets/images/logo_zu.png" style="height: 35px; margin-bottom: 15px">
 
-							<h5 class="mb-0">Login bij Abering Online</h5>
+							<h5 class="mb-0">Login bij FlexxOffice Online</h5>
 							<span class="d-block text-muted">Vul je gegevens in</span>
 						</div>
 
@@ -74,7 +74,7 @@
 						</div>
 
 						<div class="form-group">
-							<button name="login" type="submit" style="background-color: #002E65" class="btn btn-primary btn-block">Inloggen <i class="icon-circle-right2 ml-2"></i></button>
+							<button name="login" type="submit" style="background-color: #2DA4DC" class="btn btn-primary btn-block">Inloggen <i class="icon-circle-right2 ml-2"></i></button>
 						</div>
 
 						<div class="text-center">

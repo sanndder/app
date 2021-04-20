@@ -40,7 +40,7 @@
 								<ul class="nav nav-tabs nav-tabs-bottom mb-0">
                                     {foreach $jaren as $j }
 										<li class="nav-item">
-											<a href="#card-toolbar-tab-{$j}" class="nav-link active show" data-toggle="tab">
+											<a href="crm/uitzenders/dossier/facturen/{$uitzender->uitzender_id}/{$j}" class="nav-link {if $jaar == NULL || $jaar == $j}active{/if}">
                                                 {$j}
 											</a>
 										</li>
@@ -50,7 +50,7 @@
 						</div>
 
 						<div class="card-body tab-content p-0">
-							<div class="tab-pane fade show active" id="card-toolbar-tab-">
+							<div class="tab-pane fade show active">
 
 								<table class="table table-striped table-hover">
 									<thead>

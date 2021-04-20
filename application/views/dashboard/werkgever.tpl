@@ -117,7 +117,7 @@
 				<!--------------------------------------------------------------------------- documenten inleners ------------------------------------------------->
 				<div class="card">
 					<div class="card-header bg-transparent header-elements-inline">
-						<span class="card-title font-weight-semibold">Documenten Abering</span>
+						<span class="card-title font-weight-semibold">Documenten FlexxOffice</span>
 						<div class="header-elements">
 							<div class="list-icons">
 								<a class="list-icons-item" data-action="collapse"></a>
@@ -326,7 +326,7 @@
 									</tr>
 									<tr>
 										<td class="text-uppercase font-weight-semibold" style="font-size: 22px; width: 50px">{$jaar}</td>
-										<td class="text-right font-weight-semibold" style="font-size: 20px">€ {$totaalOmzet|number_format:2:',':'.'}</td>
+										<td class="text-right font-weight-semibold" style="font-size: 20px">€ {($totaalOmzet*1)|number_format:2:',':'.'}</td>
 										<td></td>
 									</tr>
 									<tr>
@@ -336,7 +336,7 @@
                                         {if $week@key != 0}
 											<tr>
 												<td class="text-uppercase font-weight-semibold" style="font-size: 18px">{$week@key|string_format:"%02d"}</td>
-												<td class="text-right" style="font-size: 15px">€ {$week[0]|number_format:2:',':'.'}</td>
+												<td class="text-right" style="font-size: 15px">€ {($week[0]*1)|number_format:2:',':'.'}</td>
 												<td class="text-right" style="font-size: 15px">
                                                     {if $week[1] != 0}
                                                         {if $week[1] > 0}+{/if}{$week[1]|number_format:1:',':'.'}%
@@ -364,7 +364,7 @@
 									</tr>
 									<tr>
 										<td class="text-uppercase font-weight-semibold" style="font-size: 22px; width: 50px">{$jaar}</td>
-										<td class="text-right font-weight-semibold" style="font-size: 20px">{$totaalUren|number_format:0:',':'.'}</td>
+										<td class="text-right font-weight-semibold" style="font-size: 20px">{($totaalUren*1)|number_format:0:',':'.'}</td>
 										<td></td>
 									</tr>
 									<tr>
@@ -374,7 +374,7 @@
                                         {if $week@key != 0}
 											<tr>
 												<td class="text-uppercase font-weight-semibold" style="font-size: 18px">{$week@key|string_format:"%02d"}</td>
-												<td class="text-right" style="font-size: 15px">{$week[0]|number_format:0:',':'.'}</td>
+												<td class="text-right" style="font-size: 15px">{($week[0]*1)|number_format:0:',':'.'}</td>
 												<td class="text-right" style="font-size: 15px">
                                                     {if $week[1] != 0}
                                                         {if $week[1] > 0}+{/if}{$week[1]|number_format:1:',':'.'}%

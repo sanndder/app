@@ -7,6 +7,7 @@ use models\forms\Validator;
 use models\inleners\Inlener;
 use models\utils\DBhelper;
 use models\werknemers\WerknemerGroup;
+use models\zzp\ZzpGroup;
 
 if (!defined('BASEPATH'))exit('No direct script access allowed');
 
@@ -416,8 +417,11 @@ class Urentypes extends Connector
 			return false;
 		}
 		
-		//toevoegen aan werknemers
-		$this->addUrentypeToWerknemers( $inlener_id, $inlener_urentype_id, $insert );
+		//toevoegen aan werknemers of zzp
+		if( $this->user->werkgever_type == 'uitzenden' )
+			$this->addUrentypeToWerknemers( $inlener_id, $inlener_urentype_id, $insert );
+		if( $this->user->werkgever_type == 'bemiddeling' )
+			$this->addUrentypeToZZP( $inlener_id, $inlener_urentype_id, $insert );
 		
 		//show($result);
 	}
@@ -461,9 +465,47 @@ class Urentypes extends Connector
 		
 		$this->db_user->insert_batch( 'werknemers_urentypes', $insert_batch );
 	}
-
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Add urentype to werknemers, new and old
+	 * insert moet al gevalideerd zijn
+	 */
+	public function addUrentypeToZZP( $inlener_id, $inlener_urentype_id, $urentype )
+	{
+		//welke werknemers werken voor deze inlener
+		$zzpers = ZzpGroup::inlener( $inlener_id );
+		
+		//afbreken als er nog geen werknemers zijn
+		if( $zzpers === NULL )
+			return false;
+		
+		//TODO: list van maken
+		//voor elk van deze werknemers de uurlonen ophalen
+		$sql = "SELECT * FROM zzp_inleners WHERE deleted = 0 AND inlener_id = $inlener_id AND zzp_id IN (".array_keys_to_string($zzpers).")";
+		$query = $this->db_user->query( $sql );
+		
+		foreach( $query->result_array() as $row )
+		{
+			$insert['inlener_urentype_id'] = $inlener_urentype_id;
+			$insert['inlener_id'] = $inlener_id;
+			$insert['zzp_id'] = $row['zzp_id'];
+			$insert['plaatsing_id'] = $row['plaatsing_id'];
+			$insert['urentype_active'] = 1;
+			$insert['urentype_id'] = $urentype['urentype_id'];
+			$insert['user_id'] = $this->user->user_id;
+			if(isset($urentype['standaard_verkooptarief']))
+				$insert['verkooptarief'] = $urentype['standaard_verkooptarief'];
+			
+			$insert_batch[] = $insert;
+		}
+		
+		$this->db_user->insert_batch( 'zzp_urentypes', $insert_batch );
+	}
+	
+	
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * urentypes weghalen bij inlener voor bepaalde werknemer

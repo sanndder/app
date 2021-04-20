@@ -51,6 +51,8 @@ class LoonstrokenGroup extends Connector
 		
 		if( $this->_werknemer_id !== NULL )
 			$sql .= " AND werknemer_id = $this->_werknemer_id ";
+
+		$sql .= " ORDER BY jaaropgave DESC, jaar DESC, periode DESC";
 		
 		$query = $this->db_user->query( $sql );
 		

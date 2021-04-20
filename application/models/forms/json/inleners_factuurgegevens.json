@@ -1,203 +1,231 @@
- {
-  "remove": [
-    "set",
-    "id",
-    "user_id",
-    "inlerner_id",
-    "timestamp",
-    "deleted",
-    "deleted_by",
-    "deleted_on"
-  ],
-  "field": {
-    "iban": {
-      "label": "IBAN",
-      "rules": {
-        "required": false,
-        "minlength": 10,
-        "maxlength": 100,
-        "removespaces": true,
-        "removechars": "-,.,_",
-        "toupper" :true,
-        "type": "iban"
-      }
-    },
-    "tav": {
-      "label": "Ter attentie van",
-      "rules": {
-        "required": false,
-        "minlength": 3,
-        "maxlength": 50
-      }
-    },
-    "frequentie": {
-      "label": "Factuur frequentie",
-      "rules": {
-        "required": true
+{
+   "remove": [
+      "set",
+      "id",
+      "user_id",
+      "inlerner_id",
+      "timestamp",
+      "deleted",
+      "deleted_by",
+      "deleted_on"
+   ],
+   "field": {
+      "iban": {
+         "label": "IBAN",
+         "rules": {
+            "required": false,
+            "minlength": 10,
+            "maxlength": 100,
+            "removespaces": true,
+            "removechars": "-,.,_",
+            "toupper": true,
+            "type": "iban"
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "w": "Week",
-          "4w": "4 Weken",
-          "m": "Maand"
-        }
-      }
-    },
-    "termijn": {
-      "label": "Betaaltermijn",
-      "rules": {
-        "required": true
+      "tav": {
+         "label": "Ter attentie van",
+         "rules": {
+            "required": false,
+            "minlength": 3,
+            "maxlength": 50
+         }
       },
-      "list": {
-        "options": "betaaltermijnen"
-      }
-    },
-    "factuur_emailen": {
-      "label": "Factuur emailen",
-      "rules": {
-        "required": true
+      "frequentie": {
+         "label": "Factuur frequentie",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "w": "Week",
+               "4w": "4 Weken",
+               "m": "Maand"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "btw_verleggen": {
-      "label": "BTW verleggen",
-      "rules": {
-        "required": true
+      "termijn": {
+         "label": "Betaaltermijn",
+         "rules": {
+            "required": true
+         },
+         "list": {
+            "options": "betaaltermijnen"
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "factoring": {
-      "label": "Factoring",
-      "rules": {
-        "required": true
+      "factuur_emailen": {
+         "label": "Factuur emailen",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "g_rekening": {
-      "label": "G-rekening gebruiken",
-      "rules": {
-        "required": true
+      "btw_verleggen": {
+         "label": "BTW verleggen",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "g_rekening_percentage": {
-      "label": "Percentage G-rekening",
-      "rules": {
-        "required": "conditional",
-        "required_parent": "g_rekening",
-        "required_value_true": "1"
+      "btw_tarief": {
+         "label": "BTW tarief",
+         "rules": {
+            "required": "conditional",
+            "required_parent": "btw_verleggen",
+            "required_value_true": "0"
+         },
+         "list": {
+            "options": {
+               "21": "21%",
+               "0": "0%"
+            }
+         }
       },
-      "list": {
-        "options": {
-          "20": "20",
-          "25": "25",
-          "30": "30",
-          "35": "35"
-        }
-      }
-    },
-    "factuur_per_medewerker": {
-      "label": "Factuur per medewerker splitsen",
-      "rules": {
-        "required": true
+      "factoring": {
+         "label": "Factoring",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "factuur_per_project": {
-      "label": "Factuur per project splitsen",
-      "rules": {
-        "required": true
+      "eu_levering": {
+         "label": "Intracommunautaire levering",
+         "default": 0,
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "afgesproken_werk": {
-      "label": "Afgesprokenwerkfactuur gebruiken",
-      "rules": {
-        "required": true
+      "g_rekening": {
+         "label": "G-rekening gebruiken",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "bijlages_invoegen": {
-      "label": "Bijlages automatisch invoegen",
-      "rules": {
-        "required": true
+      "g_rekening_percentage": {
+         "label": "Percentage G-rekening",
+         "rules": {
+            "required": "conditional",
+            "required_parent": "g_rekening",
+            "required_value_true": "1"
+         },
+         "list": {
+            "options": {
+               "20": "20",
+               "25": "25",
+               "30": "30",
+               "35": "35"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "factuur_wachtrij": {
-      "label": "Factuur in wachtrij plaatsen",
-      "rules": {
-        "required": true
+      "factuur_per_medewerker": {
+         "label": "Factuur per medewerker splitsen",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
-      }
-    },
-    "verkoop_kosten_gelijk": {
-      "label": "Verkoopfactuur gelijk aan kosten",
-      "rules": {
-        "required": true
+      "factuur_per_project": {
+         "label": "Factuur per project splitsen",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
       },
-      "radio": {
-        "inline": true,
-        "options": {
-          "1": "Ja",
-          "0": "Nee"
-        }
+      "afgesproken_werk": {
+         "label": "Afgesprokenwerkfactuur gebruiken",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
+      },
+      "bijlages_invoegen": {
+         "label": "Bijlages automatisch invoegen",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
+      },
+      "factuur_wachtrij": {
+         "label": "Factuur in wachtrij plaatsen",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
+      },
+      "verkoop_kosten_gelijk": {
+         "label": "Verkoopfactuur gelijk aan kosten",
+         "rules": {
+            "required": true
+         },
+         "radio": {
+            "inline": true,
+            "options": {
+               "1": "Ja",
+               "0": "Nee"
+            }
+         }
       }
-    }
-  }
+   }
 }

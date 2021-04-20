@@ -142,7 +142,7 @@
 							<!-- Mail container -->
 							<div class="card-body">
 								<div class="overflow-auto mw-100">
-									<h4>Welkom bij Abering Uitzend B.V.</h4>
+									<h4>Welkom bij FlexxOffice Uitzend B.V.</h4>
 
 									In deze email vind u uw aanmeldlink voor onze online applicatie
 									<b>Devis Online</b>. Nadat u uw gegevens heeft ingevuld zullen wij binnen één werkdag uw gegevens controleren

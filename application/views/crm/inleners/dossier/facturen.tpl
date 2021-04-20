@@ -36,7 +36,7 @@
 								<ul class="nav nav-tabs nav-tabs-bottom mb-0">
                                     {foreach $jaren as $j }
 										<li class="nav-item">
-											<a href="#card-toolbar-tab-{$j}" class="nav-link active show" data-toggle="tab">
+											<a href="crm/inleners/dossier/facturen/{$inlener->inlener_id}/{$j}" class="nav-link {if $jaar == NULL || $jaar == $j}active{/if}">
                                                 {$j}
 											</a>
 										</li>

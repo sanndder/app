@@ -40,7 +40,10 @@ class Ajax extends MY_Controller
 		
 		//uitzender instellen
 		if( $this->user->user_type == 'inlener' )
+		{
 			$this->_inlener_id = $this->inlener->inlener_id;
+			$this->_uitzender_id = $this->inlener->uitzender();
+		}
 		
 		if( $this->user->user_type == 'werkgever' && isset($_POST['uitzender_id']) )
 			$this->_uitzender_id = intval($_POST['uitzender_id']);
@@ -225,6 +228,59 @@ class Ajax extends MY_Controller
 	}
 
 
+	//-----------------------------------------------------------------------------------------------------------------
+	// alle uren invoer verwijderen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function deluren()
+	{
+		$invoerUren = new InvoerUren( $this->invoer );
+		
+		if( $this->user->werkgever_type == 'uitzenden' ) $invoerUren->setWerknemer( $_POST['werknemer_id'] );
+		if( $this->user->werkgever_type == 'bemiddeling' ) $invoerUren->setZZP( $_POST['werknemer_id'] );
+		
+		if( $invoerUren->delAll())
+			$array['status'] = 'success';
+		else
+		{
+			$array['error'] = $invoerUren->errors();
+			$array['status'] = 'error';
+		}
+		
+		echo json_encode( $array );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// standaard aantal uren invullen en verdelen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function filluren( $aantal = NULL )
+	{
+		$aantal = intval($aantal);
+		
+		if( $aantal < 36 || $aantal > 40 )
+		{
+			$array['error'] = 'ongeldig aantal uren';
+			$array['status'] = 'error';
+			
+			echo json_encode( $array );
+			die();
+		}
+		
+		$invoerUren = new InvoerUren( $this->invoer );
+		
+		if( $this->user->werkgever_type == 'uitzenden' ) $invoerUren->setWerknemer( $_POST['werknemer_id'] );
+		if( $this->user->werkgever_type == 'bemiddeling' ) $invoerUren->setZZP( $_POST['werknemer_id'] );
+		
+		if( $invoerUren->fillUren( $aantal ))
+			$array['status'] = 'success';
+		else
+		{
+			$array['error'] = $invoerUren->errors();
+			$array['status'] = 'error';
+		}
+		
+		echo json_encode( $array );
+	}
+	
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// uren opslaan
@@ -429,20 +485,17 @@ class Ajax extends MY_Controller
 			$array['jaren'] = array( 2021 );
 			
 			
-		/*	$week = date( 'W' )-1;
+			$week = date( 'W' )-1;
+			
 			$array['periodes'] = array(
-				$week-5 => sprintf("%02d", $week-5),
-				$week-4 => sprintf("%02d", $week-4),
 				$week-3 => sprintf("%02d", $week-3),
 				$week-2 => sprintf("%02d", $week-2),
 				$week-1 => sprintf("%02d", $week-1),
 				$week => sprintf("%02d", $week)
-			);*/
+			);
 			
-			$array['periodes'] = array( 1 => '01', 2 => '02'  );
-			
-			
-			if( date('w') > 4 )
+			//vrijdag nieuwe week open
+			if( date('w') > 4 || date('w') == 0 )
 				$array['periodes'][$week+1] = sprintf("%02d", $week+1);
 		}
 		

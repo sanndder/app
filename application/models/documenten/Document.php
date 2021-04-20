@@ -134,7 +134,7 @@ class Document extends Connector {
 						'.$link.'</a>
 						<br /><br />
 						Mocht u problemen ondervinden, neem dan contact met ons op.
-						Met vriendelijke groet,<br />Abering HR Services');
+						Met vriendelijke groet,<br />FlexxOffice');
 		$email->useHtmlTemplate( 'devis' );
 		$email->delay( 0 );
 		

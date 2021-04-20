@@ -56,7 +56,7 @@
 							<div class="form-check form-check-inline">
 								<label class="form-check-label">
 									<span class="">
-										<input required value="0" type="radio" class="form-input-styled" name="doorbelasten_uitzender">
+										<input required value="0" type="radio" class="form-input-styled" name="doorbelasten_uitzender" checked>
 									</span>
 									Nee
 								</label>

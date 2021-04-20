@@ -119,9 +119,21 @@ class Formbuilder extends Json {
 		{
 			//set label
 			$this->_formdata[$field]['label'] = $info->label;
-
-			//set value, if no value, than empty
-			$this->_formdata[$field]['value'] = $this->_data[$field] ?? '';
+			
+			//default set?
+			if( isset($info->default) )
+				$this->_formdata[$field]['default'] = $info->default;
+			
+			//set value, if no value, than default
+			if( isset($this->_data[$field] ) )
+				$this->_formdata[$field]['value'] = $this->_data[$field];
+			else
+			{
+				if(  isset($info->default) )
+					$this->_formdata[$field]['value'] = $info->default;
+				else
+					$this->_formdata[$field]['value'] = '';
+			}
 
 			//maybe an error?
 			if( isset($this->_validation_errors[$field]) )

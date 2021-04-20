@@ -150,14 +150,14 @@ class Upload extends MY_Controller {
 		$this->uploadfiles->setDatabaseTable( 'factoring_facturen' );
 		$this->uploadfiles->setPrefix( 'factris_' );
 		$this->uploadfiles->uploadfiles();
-		
+	
 		if( $this->uploadfiles->errors() === false)
 		{
 			//save to database
 			$file_id = $this->uploadfiles->dataToDatabase();
-			
 			$file_array = $this->uploadfiles->getFileArray();
-			
+			$this->uploadfiles->removeIfDuplicate( array('factuur_id' => $file_id), 'file_name_display', true );
+
 			/*$preview[] = 'http://via.placeholder.com/150';
 			$config[] = array('url' => '/test', 'caption' => 'test.jpg', 'key' => 101, 'size' => 100);
 			$result = [ 'initialPreview' => $preview,'initialPreviewConfig' => $config, 'initialPreviewAsData' => true];*/
@@ -165,7 +165,7 @@ class Upload extends MY_Controller {
 		}
 		else
 			$result['error'] = $this->uploadfiles->errors();
-		
+
 		header('Content-Type: application/json'); // set json response headers
 		echo json_encode($result);
 		die();
@@ -264,7 +264,7 @@ class Upload extends MY_Controller {
 	public function uploadhantekeningwerkgever( $entiteit_id = NULL )
 	{
 		$this->load->model('upload_model', 'uploadfiles');
-		$this->uploadfiles->setAllowedFileTypes( 'jpg|png' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|jpeg|png' );
 		$this->uploadfiles->setDatabaseTable( 'werkgever_handtekening' );
 		$this->uploadfiles->setFieldId( 'entiteit_id', $entiteit_id );
 		$this->uploadfiles->uploadfilesToDatabase();
@@ -290,7 +290,7 @@ class Upload extends MY_Controller {
 	public function uploadhantekeninguitzender( $uitzender_id = NULL )
 	{
 		$this->load->model('upload_model', 'uploadfiles');
-		$this->uploadfiles->setAllowedFileTypes( 'jpg|png' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|jpeg|png' );
 		$this->uploadfiles->setDatabaseTable( 'uitzenders_handtekening' );
 		$this->uploadfiles->setFieldId( 'uitzender_id', $uitzender_id );
 		$this->uploadfiles->uploadfilesToDatabase();
@@ -382,10 +382,10 @@ class Upload extends MY_Controller {
 			}
 
 			//png en gif ook naar jpg, altijd alleen [1] want vanaf pdf wordt het al jpg
-			if( $file_array['file_ext'] == 'jpg' || $file_array['file_ext'] == 'png' || $file_array['file_ext'] == 'gif' )
+			if( $file_array['file_ext'] == 'jpg' || $file_array['file_ext'] == 'jpeg' || $file_array['file_ext'] == 'png' || $file_array['file_ext'] == 'gif' )
 			{
 				$img[1] = new Img( $file_array );
-				if(  $file_array['file_ext'] != 'jpg' )
+				if( $file_array['file_ext'] != 'jpg' && $file_array['file_ext'] != 'jpeg' )
 					$img[1]->toJpg();
 			}
 			
@@ -428,7 +428,7 @@ class Upload extends MY_Controller {
 	{
 		$this->load->model('upload_model', 'uploadfiles');
 		$this->uploadfiles->setUploadDir( 'zzp/uittrekselkvk' );
-		$this->uploadfiles->setAllowedFileTypes( 'jpg|pdf|JPG|PDF' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|jpeg|pdf|JPG|PDF' );
 		$this->uploadfiles->setDatabaseTable( 'zzp_kvk_inschrijving' );
 		$this->uploadfiles->setFieldId( 'zzp_id', $zzp_id );
 		$this->uploadfiles->setPrefix( 'kvk_' );
@@ -462,7 +462,7 @@ class Upload extends MY_Controller {
 	{
 		$this->load->model('upload_model', 'uploadfiles');
 		$this->uploadfiles->setUploadDir( 'werknemer/et/bsn' );
-		$this->uploadfiles->setAllowedFileTypes( 'jpg|pdf|JPG|PDF' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|jpeg|pdf|JPG|PDF' );
 		$this->uploadfiles->setDatabaseTable( 'werknemer_et_bsn' );
 		$this->uploadfiles->setFieldId( 'werknemer_id', $werknemer_id );
 		$this->uploadfiles->setPrefix( 'bsn_' );
@@ -493,11 +493,9 @@ class Upload extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function uploadlogowerkgever( $entiteit_id = NULL )
 	{
-		show($_POST);
-		
 		$this->load->model('upload_model', 'uploadfiles');
 		$this->uploadfiles->setUploadDir( 'werkgever/logo' );
-		$this->uploadfiles->setAllowedFileTypes( 'jpg|png' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|jpeg|png' );
 		$this->uploadfiles->setDatabaseTable( 'werkgever_logo' );
 		$this->uploadfiles->setFieldId( 'entiteit_id', $entiteit_id );
 		$this->uploadfiles->setPrefix( 'logo_' );
@@ -534,7 +532,7 @@ class Upload extends MY_Controller {
 	{
 		$this->load->model('upload_model', 'uploadfiles');
 		$this->uploadfiles->setUploadDir( 'uitzender/logo' );
-		$this->uploadfiles->setAllowedFileTypes( 'jpg|png' );
+		$this->uploadfiles->setAllowedFileTypes( 'jpg|jpeg|png' );
 		$this->uploadfiles->setDatabaseTable( 'uitzenders_logo' );
 		$this->uploadfiles->setFieldId( 'uitzender_id', $uitzender_id );
 		$this->uploadfiles->setPrefix( 'logo_' );

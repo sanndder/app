@@ -131,6 +131,9 @@ let invoervergoedingen = {
 		$tabel_vast = $('.vi-vergoedingen-vast').show();
 		$tabel_vast.find('tbody').html('');
 		
+		$tabel_dag = $('.vi-vergoedingen-dag').show();
+		$tabel_dag.find('tbody').html('');
+		
 		$tabel_variabel = $('.vi-vergoedingen-variabel').show();
 		$tabel_variabel.find('tbody').html('');
 		
@@ -141,6 +144,7 @@ let invoervergoedingen = {
 		if( json.info.projecten === null )
 		{
 			$tabel_vast.find('.th-project').hide();
+			$tabel_dag.find('.th-project').hide();
 			$tabel_variabel.find('.th-project').hide();
 		}
 
@@ -149,7 +153,7 @@ let invoervergoedingen = {
 			
 			for( let row of Object.values(json.invoer.vergoedingen) ){
 				
-				//vaste vergoeding
+				//vaste vergoeding per uur
 				if( row.vergoeding_type == 'vast' )
 				{
 					row.bedrag = parseFloat(row.bedrag).toFixed(2).replace('.',',');
@@ -161,6 +165,21 @@ let invoervergoedingen = {
 					
 					//goed zetten van select
 					$row = $(htmlTr).appendTo($tabel_vast.find('tbody'));
+					
+				}
+				
+				//vaste vergoeding per dag
+				if( row.vergoeding_type == 'dag' )
+				{
+					row.bedrag = parseFloat(row.bedrag).toFixed(2).replace('.',',');
+					
+					let htmlTr = replaceVars(tplVergoedingVastTr, row);
+					
+					//projecten er in
+					htmlTr = htmlTr.replace('{select_projecten}', htmlProjecten);
+					
+					//goed zetten van select
+					$row = $(htmlTr).appendTo($tabel_dag.find('tbody'));
 					
 				}
 				
@@ -207,6 +226,11 @@ let invoervergoedingen = {
 				$tabel_vast.hide();
 			else
 				$tabel_vast.show();
+			
+			if( $tabel_dag.find('tbody').html() == '' )
+				$tabel_dag.hide();
+			else
+				$tabel_dag.show();
 			
 			if( $tabel_variabel.find('tbody').html() == '' )
 				$tabel_variabel.hide();

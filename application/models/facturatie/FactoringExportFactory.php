@@ -20,7 +20,7 @@ class FactoringExportFactory extends Connector
 	 *
 	 * constructor
 	 */
-	static function init( $facturen )
+	static function init( $facturen = NULL )
 	{
 		$type = 'factris';
 		

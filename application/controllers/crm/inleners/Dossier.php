@@ -670,17 +670,20 @@ class Dossier extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// facturen pagina
 	//-----------------------------------------------------------------------------------------------------------------
-	public function facturen( $inlener_id = NULL )
+	public function facturen( $inlener_id = NULL, $jaar = NULL )
 	{
 		//init inlener object
 		$inlener = new Inlener( $inlener_id );
 		
+		$jaar = $jaar ?? date('Y');
+		
 		$facturengroep = new FacturenGroup();
-		$facturen = $facturengroep->setInlener( $inlener_id )->facturen();
+		$facturen = $facturengroep->setInlener( $inlener_id )->facturen( $jaar );
 
 		$this->smarty->assign('inlener', $inlener);
 		$this->smarty->assign('facturen', $facturen);
 		$this->smarty->assign( 'jaren', $facturengroep->jarenArray() );
+		$this->smarty->assign( 'jaar', $jaar );
 		$this->smarty->display('crm/inleners/dossier/facturen.tpl');
 	}
 

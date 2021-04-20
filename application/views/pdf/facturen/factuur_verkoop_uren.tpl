@@ -1,29 +1,37 @@
 <table style="margin-left: 15px; width: 100%">
 	<tr>
-		<td style="font-size: 40px; color:#002E65">
-            {if !isset($type) || $type == 'verkoop' || $type == 'zzp'} FACTUUR {/if}
-            {if $type == 'kosten'} KOSTENOVERZICHT {/if}
+		<td style="padding-top: 6px;">
+
+			<table style="font-size: 12px;">
+				<tr>
+					<td class="relatie-info"  style="font-size: 15px;">
+                        {$relatie_gegevens.bedrijfsnaam|default:''}
+					</td>
+				</tr>
+                {if $type == 'verkoop' || $type == 'zzp'}
+				<tr>
+					<td class="relatie-info">
+                        {$relatie_gegevens.straat}  {$relatie_gegevens.huisnummer}
+					</td>
+				</tr>
+				<tr>
+					<td class="relatie-info">
+                        {$relatie_gegevens.postcode}  {$relatie_gegevens.plaats}
+					</td>
+				</tr>
+				{/if}
+			</table>
+
 		</td>
 		<td rowspan="2" style="text-align: right; padding-right: 25px; padding-top: 6px;">
 
             {if $type == 'verkoop' || $type == 'zzp'}
 				<table style="font-size: 12px;">
 					<tr>
-						<td class="relatie">bedrijfsnaam</td>
+						<td class="relatie">relatienummer</td>
 						<td class="relatie-info">
-                            {$relatie_gegevens.bedrijfsnaam|default:''}
-						</td>
-					</tr>
-					<tr>
-						<td class="relatie">adres</td>
-						<td class="relatie-info">
-                            {$relatie_gegevens.straat}  {$relatie_gegevens.huisnummer}
-						</td>
-					</tr>
-					<tr>
-						<td class="relatie">plaats</td>
-						<td class="relatie-info">
-                            {$relatie_gegevens.postcode}  {$relatie_gegevens.plaats}
+                            {if isset($relatie_gegevens.inlener_id)}{$relatie_gegevens.inlener_id}{/if}
+                            {if isset($relatie_gegevens.uitzender_id)}{$relatie_gegevens.uitzender_id}{/if}
 						</td>
 					</tr>
 					<tr>
@@ -48,35 +56,24 @@
                             {/if}
 						</td>
 					</tr>
+                    {if isset($factuur.project) && $factuur.project !== NULL}
+	                    <tr>
+		                    <td class="relatie">project</td>
+		                    <td class="relatie-info">
+                                {if isset($vervaldatum)}
+                                    {$factuur.project}
+                                {/if}
+		                    </td>
+	                    </tr>
+                    {/if}
 				</table>
             {/if}
 
 		</td>
 	</tr>
-	<tr>
-		<td>
-			<table style="{if $type == 'kosten' }margin-top:0px;{else}margin-top: -35px;{/if} color:#002E65; font-size: 16px; font-weight: bold; font-style: italic">
-				<tr>
-					<td>
-                        {if $factuur.tijdvak == 'w'}Week {$periode} - {$jaar}{/if}
-                        {if $factuur.tijdvak == '4w'}Periode {$periode} - {$jaar}{/if}
-					</td>
-				</tr>
-                {if $type == 'kosten'}
-					<tr>
-						<td> {$relatie_gegevens.bedrijfsnaam|default:''} ({$relatie_gegevens.inlener_id|default:''})</td>
-					</tr>
-                {/if}
-                {if isset($factuur.project) && $factuur.project !== NULL}
-					<tr>
-						<td>{$factuur.project}</td>
-					</tr>
-                {/if}
-			</table>
-		</td>
-	</tr>
 </table>
 
+<br/>
 <br/>
 
 <table class="regels">
@@ -92,7 +89,7 @@
             {else}
 				<th colspan="5"></th>
             {/if}
-			<th class="text-right" style="width: 110px">bedrag</th>
+			<th class="text-right" style="width: 130px">bedrag</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -199,13 +196,16 @@
 			</td>
 		</tr>
 		<tr class="totaal">
-			<td colspan="6" class="text-right">BTW</td>
+			<td colspan="6" class="text-right">
+				BTW
+                {if ($type == 'verkoop' || $type == 'kosten') && $factuur.bedrag_btw != NULL}({$factuur.tarief_btw|number_format:0:',':'.'}%){/if}
+			</td>
 			<td class="text-right">
                 {if $factuur.bedrag_btw == NULL}
 					BTW verlegd
                 {else}
 					&euro;
-                    {if $type == 'verkoop'}{$factuur.bedrag_btw|number_format:2:',':'.'}{/if}
+                    {if $type == 'verkoop'} {$factuur.bedrag_btw|number_format:2:',':'.'} {/if}
                     {if $type == 'kosten'}{$factuur.kosten_btw|number_format:2:',':'.'}{/if}
                     {if $type == 'zzp'}{$factuur.bedrag_btw|number_format:2:',':'.'}{/if}
                 {/if}
@@ -226,12 +226,21 @@
 </table>
 
 {if $type == 'verkoop'}
+    {if isset($factuur.eu_levering) && $factuur.eu_levering == 1}
+	    <div class="grekening" style="font-weight: bold">
+			Factuur betreft  intracommunautaire levering: artikel 138, lid 1, Richtlijn 2006/112
+		</div>
+    {/if}
+
     {if isset($grekening_bedrag) && $grekening_bedrag != NULL && $grekening_bedrag != '' && $grekening_bedrag != 0}
 		<div class="grekening">
-			Er moet {$grekening_percentage|number_format:0:',':'.'}% (&euro; {$grekening_bedrag|number_format:2:',':'.'}) naar de G-rekening op IBAN: NL 93 INGB 0990 3336 20
-            {if isset($factoring) && $factoring == false}
-				<br/>
-				Het resterende bedrag (&euro; {($factuur.bedrag_incl - $grekening_bedrag)|number_format:2:',':'.'}) naar IBAN: {$bedrijfsgegevens.iban|default:''}
+			Er mag {$grekening_percentage|number_format:0:',':'.'}% (&euro; {$grekening_bedrag|number_format:2:',':'.'}) naar de G-rekening op IBAN: NL 93 INGB 0990 3336 20
+			<br/>
+			Het resterende bedrag (&euro; {($factuur.bedrag_incl - $grekening_bedrag)|number_format:2:',':'.'}) naar IBAN:
+            {if isset($iban_factoring) && $iban_factoring != NULL && $iban_factoring != ''}
+                {$iban_factoring}
+            {else}
+                {$bedrijfsgegevens.iban|default:''}
             {/if}
 		</div>
     {/if}

@@ -1,42 +1,40 @@
-<table style="background-color: #002E65; width: 100%">
+<table style="width: 100%">
 	<tr>
 		<td style="width: 55px;">
-			<img src="recources/img/logo-wit.png" style="max-height: 40px; margin-top: 7px; margin-left: 15px; margin-bottom: 10px" />
+            {if $werkgever_type == 'uitzenden'}
+				<img src="recources/img/logo-uitzenden.jpg" style="max-height: 40px; margin-top: 8px; margin-left: 15px; margin-bottom: 8px" />
+			{/if}
+            {if $werkgever_type == 'bemiddeling'}
+	            <img src="recources/img/logo-bemiddeling.jpg" style="max-height: 40px; margin-top: 8px; margin-left: 15px; margin-bottom: 8px" />
+			{/if}
 		</td>
 		<td style="font-size: 30px; color:#fff; padding-top: 2px; padding-left: 15px; vertical-align: middle">
-            {$bedrijfsgegevens.bedrijfsnaam}
 		</td>
-		<td style="text-align: right; vertical-align: text-top; padding-top: 8px;">
+		<td style="text-align: right; vertical-align: text-top; padding-top: 5px;">
 
-            {if $type == 'verkoop' || $type == 'marge'}
-			<table style="color: #FFF; margin-right: 25px;">
+			<table style="color: #555555; margin-right: 25px;">
 				<tr>
-					<td>Factuurnummer: </td>
-					<td style="font-weight: bold">
-						{$factuur_nr|default:'[CONCEPT]'}
+					<td style="text-align: right; font-size: 22px">
+                        {if !isset($type) || $type == 'verkoop' || $type == 'zzp'} FACTUUR <span style="font-weight: bold">{$factuur_nr|default:'[CONCEPT]'}</span> {/if}
+                        {if $type == 'marge'}MARGEFACTUUR <span style="font-weight: bold">{$factuur_nr|default:'[CONCEPT]'}</span> {/if}
+                        {if $type == 'kosten'} KOSTENOVERZICHT {/if}
 					</td>
 				</tr>
 				<tr>
-					<td>Relatienummer: </td>
-					<td style="font-weight: bold">
-						{if isset($relatie_gegevens.inlener_id)}{$relatie_gegevens.inlener_id}{/if}
-						{if isset($relatie_gegevens.uitzender_id)}{$relatie_gegevens.uitzender_id}{/if}
+					<td style="padding-top: -3px">
+                        {if $factuur.tijdvak == 'w'}Week {$periode} - {$jaar}{/if}
+                        {if $factuur.tijdvak == '4w'}Periode {$periode} - {$jaar}{/if}
 					</td>
 				</tr>
 			</table>
-			{/if}
-
-            {if $type == 'zzp'}
-				<table style="color: #FFF; margin-right: 25px;">
-					<tr>
-						<td>Factuurnummer: </td>
-						<td style="font-weight: bold">
-                            {$factuur_nr|default:'[CONCEPT]'}
-						</td>
-					</tr>
-				</table>
-            {/if}
 
 		</td>
 	</tr>
 </table>
+
+{if $werkgever_type == 'uitzenden'}
+	<div class="balk" style="width: 100%; height: 5px; background-color: #2DA4DC"></div>
+{/if}
+{if $werkgever_type == 'bemiddeling'}
+	<div class="balk" style="width: 100%; height: 5px; background-color: #22AF8F"></div>
+{/if}

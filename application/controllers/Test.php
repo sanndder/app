@@ -349,7 +349,13 @@ class Test extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
+		$this->load->model('test_model');
+		$this->test_model->inleners_emailadressen();
+		
+		
+		/*
 		$email = new Email();
+		
 		
 		//$email->test();
 		$email->debug();

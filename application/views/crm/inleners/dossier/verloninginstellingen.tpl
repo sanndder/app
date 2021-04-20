@@ -323,7 +323,7 @@
 										</tr>
 									</thead>
 									<tbody>
-                                        {if is_array($matrix)}
+                                        {if isset($matrix) && is_array($matrix)}
                                             {foreach $matrix as $urentype}
 												<tr data-id="{$urentype.inlener_urentype_id}">
 													<td>{$urentype.naam}</td>
@@ -377,6 +377,7 @@
 									<legend class="text-uppercase font-size-sm font-weight-bold text-primary mb-0">Urentypes per werknemer</legend>
 								</fieldset>
 
+                                {if isset($matrix) && is_array($matrix)}
                                 {foreach $matrix as $urentype}
 
 									<fieldset class="mb-0 mt-0">
@@ -424,7 +425,7 @@
 										</tbody>
 									</table>
                                 {/foreach}
-
+								{/if}
 							</div>
 							{/if}
 
@@ -457,7 +458,7 @@
 									</tr>
 								</thead>
 								<tbody>
-                                    {if is_array($werknemervergoedingen) && count($werknemervergoedingen) > 0}
+                                    {if isset($werknemervergoedingen) && is_array($werknemervergoedingen) && count($werknemervergoedingen) > 0}
                                         {foreach $werknemervergoedingen as $vergoeding}
 											<tr>
 												<td>{$vergoeding.naam}</td>

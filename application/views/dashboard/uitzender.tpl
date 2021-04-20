@@ -74,7 +74,7 @@
 					<!----------------- Documenten --------------------->
 					<div class="card">
 						<div class="card-header bg-transparent header-elements-inline">
-							<span class="card-title font-weight-semibold">Documenten Abering</span>
+							<span class="card-title font-weight-semibold">Documenten FlexxOffice</span>
 							<div class="header-elements">
 								<div class="list-icons">
 									<a class="list-icons-item" data-action="collapse"></a>

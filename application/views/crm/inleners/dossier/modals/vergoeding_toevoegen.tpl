@@ -85,6 +85,15 @@
 							<div class="form-check form-check">
 								<label class="form-check-label">
 									<span class="checked">
+										<input required value="dag" type="radio" class="form-input-styled" name="vergoeding_type">
+									</span>
+									Vast bedrag per dag
+								</label>
+							</div>
+
+							<div class="form-check form-check">
+								<label class="form-check-label">
+									<span class="checked">
 										<input required value="variabel" type="radio" class="form-input-styled" name="vergoeding_type">
 									</span>
 									Variabel (Vrij in te vullen bij invoer)
@@ -102,6 +111,17 @@
 						<div class="col-md-8 form-group">
 
 							<input style="width: 90px; text-align: right" name="bedrag_per_uur" type="text" class="form-control">
+
+						</div><!-- /col -->
+					</div><!-- /row -->
+
+					<!-- bedrag per uur -->
+					<div class="row row-dag" style="display: none">
+
+						<label class="col-md-4 pt-2 font-weight-bold">Bedrag per dag</label><!-- /col -->
+						<div class="col-md-8 form-group">
+
+							<input style="width: 90px; text-align: right" name="bedrag_per_dag" type="text" class="form-control">
 
 						</div><!-- /col -->
 					</div><!-- /row -->

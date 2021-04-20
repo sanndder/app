@@ -73,7 +73,7 @@
 									{if isset($errors.indienst)}
 										<div class="alert alert-warning alert-styled-left alert-arrow-left">{$errors.indienst}</div>
 									{/if}
-									<div class="mb-3">Vanaf wanneer verricht de werknemer werkzaamheden namens Abering Uitzend B.V. .</div>
+									<div class="mb-3">Vanaf wanneer verricht de werknemer werkzaamheden namens FlexxOffice Uitzend B.V. .</div>
 									<div class="input-group" style="width: 155px;">
 										<input name="indienst" value="{if $indienst !== NULL}{$indienst|date_format: '%d-%m-%Y'}{/if}" type="text" class="form-control pickadate-start-dienstverband" />
 									</div>

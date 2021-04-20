@@ -191,6 +191,7 @@ class Factuur extends Connector
 				return false;
 			}
 			
+			$this->db_user->query( "UPDATE facturen SET file_pages = file_pages + " . $pdf->bijlagePageCount() . " WHERE factuur_id = $this->_factuur_id LIMIT 1" );
 			$this->_log( 'Bijlage toegevoegd', '{bijlage_id:' . $bijlage_id . '}' );
 			
 			return true;
@@ -264,7 +265,9 @@ class Factuur extends Connector
 	 */
 	public function details()
 	{
-		$sql = "SELECT facturen.*,DATEDIFF(voldaan_op,factuur_datum) AS opengestaan, DATEDIFF(verval_datum,factuur_datum) AS betaaltermijn, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen, inleners_projecten.omschrijving AS project_label, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener
+		$sql = "SELECT facturen.*,DATEDIFF(voldaan_op,factuur_datum) AS opengestaan, DATEDIFF(verval_datum,factuur_datum) AS betaaltermijn, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,
+       					inleners_projecten.omschrijving AS project_label, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener,
+       					TIMESTAMPDIFF(MINUTE,facturen.timestamp,NOW()) AS age
 				FROM facturen
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = facturen.inlener_id
 				LEFT JOIN inleners_projecten ON inleners_projecten.id = facturen.project_id
@@ -573,8 +576,35 @@ class Factuur extends Connector
 	 * TODO beperkingen inbouwen (tijd user)
 	 * TODO transaction van maken
 	 */
-	public function delete()
+	public function delete() :bool
 	{
+		if( $this->user->user_type == 'inlener' || $this->user->user_type == 'werknemer' )
+			return  false;
+		
+		//checks bij uitzender
+		if( $this->user->user_type == 'uitzender' )
+		{
+			$factuur = $this->details();
+			
+			if( $factuur['to_factoring_on'] !== NULL )
+			{
+				$this->_error[] = 'Factuur kan niet worden verwijderd (1)';
+				return false;
+			}
+			
+			if( $factuur['send_on'] !== NULL )
+			{
+				$this->_error[] = 'Factuur kan niet worden verwijderd, de factuur is al verzonden (2)';
+				return false;
+			}
+			
+			if( $factuur['age'] > 60 )
+			{
+				$this->_error[] = 'Factuur kan niet worden verwijderd, de factuur is ouder dan 60 minuten (3)';
+				return false;
+			}
+		}
+		
 		$this->db_user->query( "UPDATE facturen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE (factuur_id = $this->_factuur_id OR parent_id = $this->_factuur_id) AND deleted = 0", array( $this->user->user_id ) );
 		$this->db_user->query( "UPDATE facturen_kostenoverzicht SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE factuur_id = $this->_factuur_id AND  deleted = 0", array( $this->user->user_id ) );
 		$this->db_user->query( "UPDATE zzp_facturen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE parent_id = $this->_factuur_id AND  deleted = 0", array( $this->user->user_id ) );
@@ -582,6 +612,10 @@ class Factuur extends Connector
 		$this->db_user->query( "UPDATE invoer_kilometers SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id" );
 		$this->db_user->query( "UPDATE invoer_vergoedingen SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id" );
 		$this->db_user->query( "UPDATE facturen_correcties SET factuur_id = NULL WHERE factuur_id = $this->_factuur_id" );
+		
+		$this->_log( 'Factuur verwijderd' );
+		
+		return true;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

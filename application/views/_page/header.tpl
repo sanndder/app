@@ -1,6 +1,6 @@
 <div class="navbar navbar-expand-md navbar-dark">
 	<div class="navbar-brand wmin-0 mr-5">
-		<img src="template/global_assets/images/logo_light.png" alt="">
+		<img src="template/global_assets/images/logo_light.png?2" alt="">
 	</div>
 
     {* verborgen, alleen voor mobile divices *}

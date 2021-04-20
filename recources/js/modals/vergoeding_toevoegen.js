@@ -56,6 +56,11 @@ document.addEventListener('DOMContentLoaded', function(){
 		    $('.row-bedrag').show(300);
 		else
             $('.row-bedrag').hide(300);
+		
+		if( $(this).val() == 'dag' )
+			$('.row-dag').show(300);
+		else
+			$('.row-dag').hide(300);
 	});
 	
 });

@@ -130,7 +130,7 @@ class UrentypesGroup extends Connector
 		if( !$include_not_active )
 			$sql .= " AND zzp_urentypes.urentype_active = 1 ";
 		
-		$sql .=	"ORDER BY urentypes.urentype_categorie_id, inleners_urentypes.inlener_urentype_id, urentypes.percentage";
+		$sql .=	" ORDER BY urentypes.urentype_categorie_id, inleners_urentypes.inlener_urentype_id, urentypes.percentage";
 		
 		$query = $this->db_user->query( $sql );
 		
@@ -224,7 +224,7 @@ class UrentypesGroup extends Connector
 		
 		//alle werknemers ophalen
 		$sql = "SELECT zzp_urentypes.id, zzp_urentypes.urentype_active, zzp_urentypes.zzp_id, zzp_urentypes.verkooptarief, zzp_urentypes.urentype_id, zzp_urentypes.plaatsing_id,
-       				   zzp_urentypes.inlener_urentype_id, zzp_bedrijfsgegevens.bedrijfsnaam, zzp_persoonsgegevens.voornaam, zzp_persoonsgegevens.voorletters, zzp_persoonsgegevens.tussenvoegsel
+       				   zzp_urentypes.inlener_urentype_id, zzp_bedrijfsgegevens.bedrijfsnaam, zzp_persoonsgegevens.voornaam, zzp_persoonsgegevens.voorletters, zzp_persoonsgegevens.tussenvoegsel, zzp_persoonsgegevens.achternaam
 				FROM zzp_urentypes
 				LEFT JOIN zzp_bedrijfsgegevens ON zzp_urentypes.zzp_id = zzp_bedrijfsgegevens.zzp_id
 				LEFT JOIN zzp_persoonsgegevens ON zzp_urentypes.zzp_id = zzp_persoonsgegevens.zzp_id

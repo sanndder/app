@@ -171,7 +171,16 @@ class LoonstrokenZip extends Connector
 				
 				if ('.' === $file) continue;
 				if ('..' === $file) continue;
-				
+
+				//jaaropgave
+				/*
+				$file_name = str_replace( 'JaarOpgave0000', '', $file);
+
+				$werkgever_id = intval(substr($file_name, 0, 2));
+				$werknemer_id = intval(substr($file_name, 3, 5));
+				$jaar = intval(substr($file_name, 9, 4));
+
+				*/
 				//info uit file
 				$file_name = str_replace( 'SalarisSpecificatie0000', '', $file);
 				
@@ -180,13 +189,15 @@ class LoonstrokenZip extends Connector
 				$jaar = intval(substr($file_name, 9, 4));
 				$periode = intval(substr($file_name, 13, 2));
 				
+
 				//tijdvak
 				if( $werkgever_id == 1 ) $tijdvak = 'w';
 				if( $werkgever_id == 2 ) $tijdvak = '4w';
 				if( $werkgever_id == 3 ) $tijdvak = 'm';
-				
+
 				$tijdvakObject = new Tijdvak( $tijdvak, $jaar, $periode);
-				
+
+
 				//naar andere map
 				$path_org = $temp_path . '/' . $file;
 				$dir_new = UPLOAD_DIR .'/werkgever_dir_'. $this->user->werkgever_id .'/loonstroken/' . $jaar . '/';
@@ -202,6 +213,7 @@ class LoonstrokenZip extends Connector
 				
 				//naar database
 				$insert['werknemer_id'] = $werknemer_id;
+				//$insert['jaaropgave'] = 1;
 				$insert['jaar'] = $jaar;
 				$insert['periode'] = $periode;
 				$insert['file_dir'] = 'loonstroken/' . $jaar;

@@ -200,7 +200,7 @@ class WerknemerGroup extends Connector {
 		//start query
 		$sql = "SELECT werknemers_status.*, werknemers_gegevens.*, cao.short_name,
        					werknemers_uitzenders.uitzender_id,
-       					werknemers_inleners.inlener_id, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender
+       					werknemers_inleners.inlener_id, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender, werknemers_inleners.deleted AS plaatsing_del
 				FROM werknemers_status
 				LEFT JOIN werknemers_gegevens ON werknemers_gegevens.werknemer_id = werknemers_status.werknemer_id
 				LEFT JOIN werknemers_uitzenders ON werknemers_status.werknemer_id = werknemers_uitzenders.werknemer_id
@@ -209,9 +209,8 @@ class WerknemerGroup extends Connector {
 				LEFT JOIN cao ON cao.id = werknemers_inleners. cao_id_intern
 				WHERE werknemers_gegevens.deleted = 0 AND (uitzenders_bedrijfsgegevens.deleted = 0 OR uitzenders_bedrijfsgegevens.deleted IS NULL)
 				  AND (werknemers_uitzenders.deleted = 0 OR werknemers_uitzenders.deleted IS NULL )
-				  AND (werknemers_inleners.deleted = 0 OR werknemers_inleners.deleted IS NULL )
 				";
-		
+
 		//beveiligen
 		if( $this->user->user_type == 'external' )
 			die('Geen toegand');

@@ -47,6 +47,9 @@
 				</tr>
 			</table>
 
+            {if isset($relatie_gegevens.inlener_id)}{$relatie_gegevens.inlener_id}{/if}
+            {if isset($relatie_gegevens.uitzender_id)}{$relatie_gegevens.uitzender_id}{/if}
+
 		</td>
 	</tr>
 	<tr>

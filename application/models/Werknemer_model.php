@@ -22,6 +22,7 @@ class Werknemer_model extends MY_Model
 	 */
 	public $werknemer_id = NULL;
 	public $id = NULL;
+	public $vcu = false;
 	
 	public $_redirect_url = NULL;
 	
@@ -51,8 +52,23 @@ class Werknemer_model extends MY_Model
 			$this->werknemer_id = $_SESSION['logindata']['main']['werknemer_id'];
 
 		$this->id = $this->werknemer_id;
+		
+		$this->_loadInfo();
 	}
-
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * gegevens over de werknemer laden
+	 *
+	 * @return string
+	 */
+	public function _loadInfo()
+	{
+		//vcu
+		$query = $this->db_user->query( "SELECT werknemer_id FROM werknemers_vcu WHERE werknemer_id = $this->werknemer_id AND deleted = 0 LIMIT 1" );
+		if( $query->num_rows() > 0 )
+			$this->vcu = true;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

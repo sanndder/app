@@ -119,8 +119,21 @@
                     {if $user_type == 'werkgever' || $user_type == 'uitzender'}
 						<ul class="nav nav-sidebar vi-list-inleners" data-nav-type="accordion">
 						</ul>
-                    {else}
+					{/if}
+                    {if $user_type == 'inlener'}
 						<input type="hidden" class="inlener-id" value="{$inlener_id}">
+                    {/if}
+                    {if $user_type == 'werknemer'}
+	                    <input type="hidden" class="uitzender-id" value="{$uitzender_id}">
+	                    <ul class="nav nav-sidebar vi-list-inleners" data-nav-type="accordion">
+		                    <li class="nav-item">
+			                    {if $inleners !== NULL}
+				                    {foreach $inleners as $i}
+			                             <span data-id="{$i@key}" data-inlener="Inlener E" class="nav-link" data-vi-action="setInlener"><span>{$i}</span></span>
+                                    {/foreach}
+                                {/if}
+		                    </li>
+	                    </ul>
                     {/if}
 				</div>
 				<!-- /main navigation -->
@@ -144,6 +157,7 @@
 				<div class="card-header header-elements-inline">
 					<h5 class="card-title vi-card-titel"><i>Geen invoer mogelijk</i></h5>
 
+                    {if $user_type != 'werknemer'}
 					<div class="header-elements vi-factuur-buttons" style="display: none !important">
 
 						<a target="_blank" href="ureninvoer/ureninvoer/factuur" class="btn btn-light mr-1 voorbeeld">
@@ -155,6 +169,7 @@
 						</button>
 
 					</div>
+					{/if}
 				</div>
 
 				<!------ tabs -------------------------------------------------------------------------------------------------------------------------------->
@@ -266,6 +281,7 @@
 												Kilometers
 											</a>
 										</li>
+										{if $user_type == 'uitzender' || $user_type == 'werkgever'}
 										<li class="nav-item">
 											<a href="#sub-vergoedingen" class="tab-sub nav-link" data-toggle="tab">
 												Vergoedingen
@@ -281,6 +297,7 @@
 												Reserveringen
 											</a>
 										</li>
+                                        {/if}
                                         {*
 										<li class="nav-item">
 											<a href="#sub-inhoudingen" class="tab-sub nav-link" data-toggle="tab">
@@ -305,6 +322,26 @@
 
                                         {****** Invoer: Uren *****************************************************}
 										<div class="tab-pane tab-pane-sub fade active show" id="sub-uren">
+
+											<div class="navbar navbar-expand-lg navbar-light navbar-component rounded navbar-vi-acties" id="navbar-filter">
+												<span class="navbar-text mr-2">Acties:</span>
+
+												<ul class="navbar-nav flex-wrap">
+													<li class="nav-item">
+														<a href="javascript:void(0)" class="navbar-nav-link vi-action-uren-fill" data-vi-fill-uren="40">
+															<i class="icon-sort-time-desc mr-1"></i>
+															8 uur per dag
+														</a>
+													</li>
+													<li class="nav-item">
+														<a href="javascript:void(0)" class="navbar-nav-link vi-action-del-uren" data-vi-fill-uren="40">
+															<i class="icon-trash mr-1"></i>
+															Ureninvoer wissen
+														</a>
+													</li>
+												</ul>
+
+											</div>
 
 											<table class="table-vi-uren vi-input mt-3" style="display: none">
 												<thead>
@@ -369,7 +406,19 @@
 											<table class="mt-2 vi-input vi-table-vergoedingen vi-vergoedingen-vast">
 												<thead>
 													<tr>
-														<th colspan="3">Vaste vergoedingen</th>
+														<th colspan="3">Vaste vergoedingen per uur</th>
+														<th>Doorbelasten</th>
+														<th class="th-project">Project</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+
+											<table class="mt-2 vi-input vi-table-vergoedingen vi-vergoedingen-dag">
+												<thead>
+													<tr>
+														<th colspan="3">Vaste vergoedingen per dag</th>
 														<th>Doorbelasten</th>
 														<th class="th-project">Project</th>
 													</tr>

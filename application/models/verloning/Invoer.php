@@ -442,8 +442,12 @@ class Invoer extends Connector
 		$query = $this->db_user->query( $sql );
 		
 		$inleners = InlenerGroup::list();
+		
+		$array = array();
+		
 		foreach( $query->result_array() as $row )
 		{
+			show($row);
 			$this->_inlener_id = $row['inlener_id'];
 			
 			$invoerUren = new InvoerUren( $this );

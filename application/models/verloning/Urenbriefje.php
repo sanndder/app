@@ -122,6 +122,7 @@ class Urenbriefje extends Connector
 		$invoer->setWerknemer( $this->_werknemer_id );
 		$uren = $invoer->invoerUrenbriefje();
 		
+		
 		$this->_pdf->setBody( $titel, $werknemer, $uren );
 	}
 	

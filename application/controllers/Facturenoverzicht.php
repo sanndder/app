@@ -41,15 +41,33 @@ class Facturenoverzicht extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	// Facturen en marge uitzender
 	//-----------------------------------------------------------------------------------------------------------------
-	public function uitzender()
+	public function uitzender( $jaar = NULL )
 	{
 		//beveiligen
 		if( $this->uri->segment( 2 ) != $this->user->user_type )
 			redirect( $this->config->item( 'base_url' ) . 'dashboard/' . $this->user->user_type, 'location' );
 		
-		$facturengroep = new FacturenGroup();
-		$facturen = $facturengroep->setUitzender( $this->uitzender->uitzender_id )->facturenMatrix();
+		$jaar = $jaar ?? date('Y');
 		
+		$facturengroep = new FacturenGroup();
+		$facturengroep->setUitzender( $this->uitzender->uitzender_id );
+		$jaren = $facturengroep->jarenArray();
+		$facturen = $facturengroep->facturenMatrix( $jaar );
+		
+		//verwijderen
+		if( isset($_GET['del']) )
+		{
+			$factuur = new \models\facturatie\Factuur( $_GET['del'] );
+			if( $factuur->delete() )
+				redirect($this->config->item('base_url') . '/facturenoverzicht/uitzender/' . $jaar . '?deleted', 'location');
+			else
+				$this->smarty->assign('msg', msg('warning', $factuur->errors()) );
+		}
+		
+		if( isset($_GET['deleted']) ) $this->smarty->assign('msg', msg('success', 'Factuur is verwijderd' ));
+		
+		$this->smarty->assign( 'jaar', $jaar );
+		$this->smarty->assign( 'jaren', $jaren );
 		$this->smarty->assign( 'facturen', $facturen );
 		$this->smarty->display( 'facturenoverzicht/uitzender.tpl' );
 	}

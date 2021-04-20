@@ -121,8 +121,10 @@ class PdfFactuurVerkoopUren extends PdfFactuur {
 	 * header voor de factuur
 	 * @return object
 	 */
-	public function setHeader() :PdfFactuurVerkoopUren
+	public function setHeader( $factuur ) :PdfFactuurVerkoopUren
 	{
+		$this->smarty->assign( 'factuur', $factuur);
+		
 		$header = $this->smarty->fetch('application/views/pdf/facturen/factuur_header.tpl');
 		$this->mpdf->SetHTMLHeader($header);
 		return $this;

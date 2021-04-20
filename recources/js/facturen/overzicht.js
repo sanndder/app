@@ -45,7 +45,9 @@ let factuuroverzicht = {
 	
 	exportExcel()
 	{
+		var $obj = $('.icon-file-excel');
 		var listFactuurIds = '';
+		
 		$('[name="select-factuur"]:checked').each(function(i,e)
 		{
 			listFactuurIds += $(e).val() + ',';
@@ -53,28 +55,37 @@ let factuuroverzicht = {
 		
 		if( listFactuurIds.length > 0 )
 		{
+			// spinner
+			$obj.removeClass('icon-file-excel').addClass('icon-spinner2 spinner');
+			
 			//download klaarmaken
-			xhr.url = base_url + 'overzichten/facturen/export/';
+			xhr.url = base_url + 'overzichten/facturenexport/export/';
 			xhr.data.facturen = listFactuurIds;
 			var response = xhr.call(true);
 			if( response !== false )
 			{
 				response.done(function(json)
 				{
-					
 					if( json.status == 'success' )
 					{
-						$(obj).find('i').addClass('icon-check ').removeClass('spinner icon-spinner3');
 						$('tr[data-id="' + $('.factuur-nr').html() + '"] td').trigger('click');
 					}
 					else
 						alert('Export kon niet worden gemaakt');
+					
+				}).fail(function(){
+					alert('Er gaat wat mis bij het genereren van de export');
+				}).always(function(){
+					//excel icon terug
+					$obj.addClass('icon-file-excel').removeClass('icon-spinner2 spinner');
 				});
 			}
 		}else
 		{
 			alert('Geen facturen geselecteerd');
 		}
+		
+		
 		
 	},
 	
@@ -94,7 +105,7 @@ let factuuroverzicht = {
 		
 		$(obj).find('i').removeClass('icon-check ').addClass('spinner icon-spinner3');
 		
-		xhr.url = base_url + 'overzichten/facturen/addbetaling/' + $('.factuur-nr').html();
+		xhr.url = base_url + 'overzichten/facturenexport/addbetaling/' + $('.factuur-nr').html();
 		var response = xhr.call( true );
 		if( response !== false ){
 			response.done(function(json){
@@ -116,7 +127,7 @@ let factuuroverzicht = {
 		
 		$(obj).find('i').removeClass('icon-check ').addClass('spinner icon-spinner3');
 		
-		xhr.url = base_url + 'overzichten/facturen/factuuruploaded/' + $tr.data('id');
+		xhr.url = base_url + 'overzichten/facturenexport/factuuruploaded/' + $tr.data('id');
 		var response = xhr.call( true );
 		if( response !== false ){
 			response.done(function(json){
@@ -156,7 +167,7 @@ let factuuroverzicht = {
 		
 		$('.factuur-nr').html( $tr.data('id') );
 		
-		xhr.url = base_url + 'overzichten/facturen/factuurdetails/' + $tr.data('id');
+		xhr.url = base_url + 'overzichten/facturenexport/factuurdetails/' + $tr.data('id');
 		var response = xhr.call( true );
 		if( response !== false ){
 			response.done(function(json){

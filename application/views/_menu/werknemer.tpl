@@ -30,6 +30,24 @@
 				</a>
 			</li>
 
+			{if $user_id == 240 || $user_id == 2}
+			<li class="nav-item">
+				<a href="ureninvoer" class="navbar-nav-link">
+					<i class="mi-timer mr-2" style="font-weight: bold"></i>
+					Ureninvoer
+				</a>
+			</li>
+            {/if}
+
+            {if isset($menu_vcu) && $menu_vcu == true}
+			<li class="nav-item">
+				<a href="vcu/werknemer" class="navbar-nav-link">
+					<i class="icon-file-check mr-2" style="font-weight: bold"></i>
+					VCU
+				</a>
+			</li>
+            {/if}
+
 		</ul>
 
 	</div>

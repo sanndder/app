@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Instellingen controller
  */
-class Facturen extends MY_Controller
+class Facturenexport extends MY_Controller
 {
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -34,12 +34,17 @@ class Facturen extends MY_Controller
 		$facturengroep = new FacturenGroup();
 
 		$_GET['factuur_aangekocht'] = 0;
-		
 		$facturen = $facturengroep->filter($_GET)->facturenMatrix();
+		
+		//exportbestanden
+		$factoringExport = FactoringExportFactory::init();
+		$exportbestanden = $factoringExport->bestanden( 20 );
+		
 		
 		$this->smarty->assign( 'inleners', InlenerGroup::list() );
 		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign( 'facturen', $facturen );
+		$this->smarty->assign( 'exportbestanden', $exportbestanden );
 		
 		$this->smarty->display('overzichten/facturen/overzicht.tpl');
 	}
@@ -97,7 +102,7 @@ class Facturen extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
-	// AJAX betaling toevoegen
+	// AJAX export maken
 	//-----------------------------------------------------------------------------------------------------------------
 	public function export()
 	{
@@ -114,12 +119,26 @@ class Facturen extends MY_Controller
 		$factoringExport = FactoringExportFactory::init( $facturen );
 		if( $factoringExport->exportExcel() )
 		{
-			echo $factoringExport->exportID();
-		}
+			$result['status'] = 'success';
+			$result['export_id'] = $factoringExport->exportID();
+		}	
 		else
 		{
-			echo 'error';
+			$result['status'] = 'error'; json_encode($factoringExport->errors());
+			$result['error'] = $factoringExport->errors();
 		}
 		
+		echo json_encode( $result );
+		
+		return true;
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// download file
+	//-----------------------------------------------------------------------------------------------------------------
+	public function downloadexport( $file_id = NULL )
+	{
+		$factoringExport = FactoringExportFactory::init();
+		$factoringExport->download( $file_id );
 	}
 }
