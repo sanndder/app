@@ -117,6 +117,23 @@
         "options": "nationaliteiten"
       }
     },
+    "burgelijke_staat": {
+      "label": "Burgelijkse staat",
+      "rules": {
+        "required": false
+      },
+      "list": {
+        "options": {
+          "0": "Onbekend",
+          "1": "Ongehuwd",
+          "2": "Gehuwd",
+          "3": "Gehuwd met kind(eren)",
+          "4": "Samenwonend",
+          "5": "Samenwonend met kind(eren)",
+          "6": "Alleenstaand met kind(eren)"
+        }
+      }
+    },
     "email": {
       "label": "Emailadres",
       "rules": {
@@ -140,7 +157,7 @@
     "mobiel": {
       "label": "Mobiel",
       "rules": {
-        "required": true,
+        "required": false,
         "minlength": 10,
         "maxlength": 20,
         "removespaces": false,

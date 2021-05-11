@@ -229,8 +229,21 @@ class File extends Connector {
 	{
 		$this->_download('attachment');
 	}
-
-
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * rename file
+	 * TODO: alle info aanpassen na rename
+	 */
+	public function rename( $new_name ) :bool
+	{
+		$old_path = $this->_file_path;
+		$new_path = str_replace( $this->_file_name, $new_name, $old_path );
+		
+		return rename( $old_path, $new_path);
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

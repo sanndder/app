@@ -30,11 +30,6 @@ class Werknemer extends Connector
 	public $leeftijd = NULL; // @var string
 	private $_uitzender_id_new = NULL; // @var int
 	
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
-
 	public $complete = NULL;
 	public $archief = NULL;
 	public $gegevens_complete = NULL;
@@ -216,7 +211,7 @@ class Werknemer extends Connector
 		//ET regeling ?
 		$query = $this->db_user->query( "SELECT et_regeling FROM werknemers_verloning_instellingen WHERE werknemer_id = $this->werknemer_id AND deleted = 0" );
 		$this->deelnemer_etregeling = DBhelper::toRow( $query, 'NULL', 'et_regeling' );
-
+		
 		//vorige volgende
 		$sql = "SELECT werknemers_status.werknemer_id, werknemers_gegevens.achternaam, werknemers_gegevens.voorletters, werknemers_gegevens.voornaam, werknemers_gegevens.tussenvoegsel
 				FROM werknemers_status
@@ -312,7 +307,7 @@ class Werknemer extends Connector
 	 */
 	public function _new()
 	{
-		$insert['complete'] = 0;
+		$insert['complete'] = NULL;
 		$this->db_user->insert('werknemers_status', $insert);
 
 		if ($this->db_user->insert_id() > 0)
@@ -322,7 +317,6 @@ class Werknemer extends Connector
 			//koppeling uitzender aanmaken indien gewenst
 			if( $this->_uitzender_id_new !== NULL )
 				$this->setUitzender( $this->_uitzender_id_new );
-
 			
 			return true;
 		}
@@ -461,7 +455,7 @@ class Werknemer extends Connector
 	 * Sla data op na controle
 	 * Oude gegevens worden als verwijderd aangemerkt
 	 * Geeft ingevoerde data terug
-	 * @return array
+	 * @return bool|array
 	 */
 	public function _set($table = '', $method = '', $where = NULL)
 	{
@@ -486,7 +480,7 @@ class Werknemer extends Connector
 		//geen fouten, nieuwe insert doen wanneer er wijzigingen zijn
 		if ($validator->success())
 		{
-			//nieuwe werknemer aanmaken? Alleen mogelijk vanaf method Bedrijfsgegevens
+			//nieuwe werknemer aanmaken? Alleen mogelijk vanaf method gegevens
 			if ($this->werknemer_id == 0 && $method == 'gegevens')
 			{
 				if (!$this->_new())
@@ -656,25 +650,42 @@ class Werknemer extends Connector
 		if ($this->$property === '0' && $this->user->user_type == 'werkgever')
 			$update_status[$property] = 1;//van controle naar compleet
 
-		//alleen uitvoeren wanneer nodig
-		if (isset($update_status))
-		{
+		if( isset($update_status[$property]) )
 			$this->$property = $update_status[$property];//update property
+			
+		//controle op alle sub statussen
+		if (
+			$this->gegevens_complete === NULL ||
+			$this->documenten_complete === NULL ||
+			$this->dienstverband_complete === NULL ||
+			$this->verloning_complete === NULL ||
+			$this->etregeling_complete === NULL
+		)
+			$update_status['complete'] = NULL;
+		
+		//controle op alle sub statussen
+		if (
+			$this->gegevens_complete == 1 &&
+			$this->documenten_complete == 1 &&
+			$this->dienstverband_complete == 1 &&
+			$this->verloning_complete == 1 &&
+			$this->etregeling_complete == 1
+		)
+			$update_status['complete'] = 1;
+		
+		if (
+			$this->gegevens_complete == 0 &&
+			$this->documenten_complete == 0 &&
+			$this->dienstverband_complete == 0 &&
+			$this->verloning_complete == 0 &&
+			$this->etregeling_complete != NULL
+		)
+			$update_status['complete'] = 0;
 
-			//controle op alle sub statussen
-			if (
-				$this->gegevens_complete == 1 &&
-				$this->documenten_complete == 1 &&
-				$this->dienstverband_complete == 1 &&
-				$this->verloning_complete == 1 &&
-				$this->etregeling_complete == 1
-			)
-				$update_status['complete'] = 1;
-
-			//update
-			$this->db_user->where('werknemer_id', $this->werknemer_id);
-			$this->db_user->update('werknemers_status', $update_status);
-		}
+		//update
+		$this->db_user->where('werknemer_id', $this->werknemer_id);
+		$this->db_user->update('werknemers_status', $update_status);
+		
 	}
 
 
@@ -754,6 +765,9 @@ class Werknemer extends Connector
 		
 		if( $this->user->user_type == 'werkgever' )
 		{
+			if(isset($_POST['werkgever_nummer']))
+				$insert['werkgever_nummer'] = intval( $_POST['werkgever_nummer'] );
+			
 			if(isset($_POST['vakantieuren_wettelijk_direct']))
 				$insert['vakantieuren_wettelijk_direct'] = intval( $_POST['vakantieuren_wettelijk_direct'] );
 			

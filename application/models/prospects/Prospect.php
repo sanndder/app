@@ -23,8 +23,7 @@ class Prospect extends Connector
 	private $_prospect_id = NULL; // @var int
 	private $_valid_data = array();
 	private $_insert_id = NULL;
-	
-	private $_error = NULL;
+
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

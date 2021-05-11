@@ -152,7 +152,7 @@ class ExportEasylon extends Connector
 	 */
 	public function export()
 	{
-		$periode = 14;
+		$periode = 18;
 		$jaar = 2021;
 		
 		$werknemers = array();
@@ -160,7 +160,10 @@ class ExportEasylon extends Connector
 		$tijdvak = new Tijdvak( 'w', $jaar, $periode );
 		
 		// Alleen royal DS
-		$sql = "SELECT werknemer_id FROM werknemers_uitzenders WHERE uitzender_id IN (100,105,108,109,117) AND werknemer_id NOT IN (20126)";
+		$sql = "SELECT werknemer_id
+				FROM werknemers_uitzenders
+				LEFT JOIN werknemers_verloning_instellingen ON werknemers_uitzenders.werknemer_id = werknemers_verloning_instellingen.werknemer_id
+				WHERE werknemers_uitzenders.uitzender_id IN (123) AND werknemers_verloning_instellingen.deleted = 0 AND werkgever_nummer = 1";
 		$query = $this->db_user->query( $sql );
 		
 		foreach( $query->result_array() as $row )

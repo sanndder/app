@@ -99,7 +99,11 @@
 													<td>
 
 													</td>
-													<td></td>
+													<td>
+														<a href="facturatie/factuur/details/{$f.factuur_id}" target="_blank">
+															<i class="icon-file-text2 mr-1"></i> details
+														</a>
+													</td>
 												</tr>
                                             {/foreach}
 										</tbody>

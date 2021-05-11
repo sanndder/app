@@ -17,11 +17,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  *
  */
 class ProspectGroup extends Connector {
-	
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
+
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

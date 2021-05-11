@@ -34,7 +34,7 @@ let invoerkm = {
 		});
 		
 		//alle kilometers weggooien
-		$(document).on('click', '[data-vi-action="clear"]', function(){
+		$(document).on('click', '[data-vi-action="km-clear"]', function(){
 			invoerkm.clearAll();
 		});
 		

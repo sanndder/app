@@ -138,7 +138,7 @@ class IDbewijs extends Connector {
 	 * delete ID
 	 * @return object
 	 */
-	public function deleteID( $side = '' ) :IDbewijs
+	public function deleteID( $side = '' ) :?IDbewijs
 	{
 		if( $side == 'voorkant' )
 			$side = 1;
@@ -178,7 +178,7 @@ class IDbewijs extends Connector {
 	 * save img object to database
 	 * @return object
 	 */
-	public function imgObjectToDatabase( string $side, object $img ) :IDbewijs
+	public function imgObjectToDatabase( string $side, object $img ) :?IDbewijs
 	{
 		if( $side == 'voorkant' )
 			$side = 1;
@@ -292,13 +292,13 @@ class IDbewijs extends Connector {
 		if( $data['file_1'] !== NULL )
 		{
 			$this->_file_voorkant = $data['file_1'];
-			$this->_url_voorkant = 'image/idbewijs/voorkant/werknemer/' . $this->_entity_id . '/' . $data['id'] . '/?' . time() ;
+			$this->_url_voorkant = 'image/idbewijs/voorkant/werknemer/' . $this->_entity_id . '/' . $data['id'] . '/?' . uniqid() ;
 		}
 		
 		if( $data['file_2'] !== NULL )
 		{
 			$this->_file_achterkant = $data['file_2'];
-			$this->_url_achterkant = 'image/idbewijs/achterkant/werknemer/' . $this->_entity_id . '/' . $data['id'] . '/?' . time();
+			$this->_url_achterkant = 'image/idbewijs/achterkant/werknemer/' . $this->_entity_id . '/' . $data['id'] . '/?' . uniqid();
 		}
 	
 	}

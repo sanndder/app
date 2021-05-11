@@ -1,23 +1,57 @@
 /* Waarschuwing dat email debug aanstaat */
-.email-debug-message{ z-index: 1000; background-color: #FFC; font-size: 11px; padding: 11px 15px; color: red; position: fixed; bottom:0; width: 100%}
+.email-debug-message {
+    z-index: 1000;
+    background-color: #FFC;
+    font-size: 11px;
+    padding: 11px 15px;
+    color: red;
+    position: fixed;
+    bottom: 0;
+    width: 100%
+}
 
-.override-msg{ z-index: 1000; background-color: #FFC; font-size: 12px; padding: 14px 15px; color: red; position: fixed; bottom:0; width: 100%}
+.override-msg {
+    z-index: 1000;
+    background-color: #FFC;
+    font-size: 12px;
+    padding: 14px 15px;
+    color: red;
+    position: fixed;
+    bottom: 0;
+    width: 100%
+}
 
 /* lijst items op laten lichten*/
-ul.list-hover li{padding: 3px 4px; margin-top: 1px; transition: all ease-in-out .20s}
-ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1875rem; cursor:pointer}
+ul.list-hover li {
+    padding: 3px 4px;
+    margin-top: 1px;
+    transition: all ease-in-out .20s
+}
+
+ul.list-hover li:hover {
+    background-color: #324148;
+    color: #FFF;
+    border-radius: .1875rem;
+    cursor: pointer
+}
 
 /*cursor pencil*/
 .cursor-pencil {
     cursor: url(../img/pencil.png) 0 28, auto;
 }
 
+/* tekst kopieren */
+.copy-text:hover {
+    cursor: pointer;
+    font-weight: bold;
+}
+
 /* sidebar */
-.page-wrapper{
+.page-wrapper {
     transition: margin-right .5s;
 }
 
-.sidebar-right{
+.sidebar-right {
     height: 100%;
     width: 0;
     position: fixed;
@@ -31,24 +65,31 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
 }
 
 
-.sidebar-header{
+.sidebar-header {
     background-color: #002E65;
 }
 
-.sidebar-content-custom .nav-item a{
+.sidebar-content-custom .nav-item a {
     padding: 1.26rem 1.25rem;
     font-size: 1.1em;
 }
 
 /* marge overzicht */
-.marge-data-per-week .td-week{ background-color: rgb(0,0,0,0.25)}
+.marge-data-per-week .td-week {
+    background-color: rgb(0, 0, 0, 0.25)
+}
 
-.marge-data-per-week td{ border: 1px solid #E1E2E3;}
-.marge-data-per-week .td-data{ font-size: 0.85em}
+.marge-data-per-week td {
+    border: 1px solid #E1E2E3;
+}
+
+.marge-data-per-week .td-data {
+    font-size: 0.85em
+}
 
 /* ID upload */
-.img-idbewijs{
-    border:1px solid rgba(0, 0, 0, 0.125);
+.img-idbewijs {
+    border: 1px solid rgba(0, 0, 0, 0.125);
     padding: 5px;
     border-radius: 3px;
     display: block;
@@ -56,31 +97,31 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
 }
 
 /*signature pad */
-#signature-pad{
+#signature-pad {
 }
 
-#signature-pad .stripe{
-    border:1px solid darkgrey;
+#signature-pad .stripe {
+    border: 1px solid darkgrey;
     width: 400px;
     margin: auto;
     top: 160px;
     position: relative;
 }
 
-#signature-pad .btn{
+#signature-pad .btn {
     margin: -7px 0 0 0;
     width: 226px;
     border: 1px solid #000;
 }
 
-#signature-pad .btn-success{
+#signature-pad .btn-success {
     margin-right: -2px;
     border-right: 0;
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
 }
 
-#signature-pad .btn-outline-danger{
+#signature-pad .btn-outline-danger {
     margin-left: -2px;
     border-left: 0;
     border-bottom-left-radius: 0;
@@ -88,20 +129,30 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
 }
 
 /* tr grey */
-.row-light-plus{
+.row-light-plus {
     background-color: #F3F3F3 !important;
     color: #333;
     padding: 8px 0 0 0;
 }
 
-.row-light-plus input{ margin-bottom: 8px;}
+.row-light-plus input {
+    margin-bottom: 8px;
+}
 
 /* fatcuren overzicht */
 
-.table-factuurdetails td{ padding: 4px 15px 4px 0}
+.table-factuurdetails td {
+    padding: 4px 15px 4px 0
+}
 
-.table-facturen-overzicht tr:hover td{cursor: pointer; background-color: #EEE }
-.table-facturen-overzicht tr.tr-focus{ background-color: #EEE !important;}
+.table-facturen-overzicht tr:hover td {
+    cursor: pointer;
+    background-color: #EEE
+}
+
+.table-facturen-overzicht tr.tr-focus {
+    background-color: #EEE !important;
+}
 
 .table-facturen-overzicht tr.tr-focus .td-selected:after {
     content: "";
@@ -117,23 +168,58 @@ ul.list-hover li:hover{background-color: #324148; color: #FFF; border-radius: .1
 }
 
 /* wachtrij */
-.card-hover-grey:hover{
+.card-hover-grey:hover {
     background-color: #F1F2F3;
 }
 
-.card-active{
+.card-active {
     background-color: #E1E2E3;
 }
 
-.card-keuze, .card-details{
+.card-keuze, .card-details {
     position: sticky;
     top: 65px;
 }
 
 
 /* bank transacties */
-.search-result-facturen{width: 100%;}
-.search-result-facturen tbody tr:first-of-type td{border-top:1px solid #333;}
-.search-result-facturen tbody tr:last-of-type td{border-bottom:1px solid #333;}
+.search-result-facturen {
+    width: 100%;
+}
 
-.tr-gekoppeld td{ padding: 4px 0; font-weight: bold}
+.search-result-facturen tbody tr:first-of-type td {
+    border-top: 1px solid #333;
+}
+
+.search-result-facturen tbody tr:last-of-type td {
+    border-bottom: 1px solid #333;
+}
+
+.tr-gekoppeld td {
+    padding: 4px 0;
+    font-weight: bold
+}
+
+
+/* nieuw */
+/*
+.table-transactiegegevens{
+    border-collapse:separate;
+    border-spacing:0 8px;
+    width: 100%;
+}
+
+.table-transactiegegevens thead th {
+    font-weight: normal;
+}
+.table-transactiegegevens thead th:first-of-type{ padding-left: 8px;}
+
+.table-transactiegegevens td {
+    vertical-align: text-top;
+    background-color: #EEEFF3;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+.table-transactiegegevens td:first-of-type{ padding-left: 8px; border-radius: 6px 0 0 6px}
+.table-transactiegegevens td:last-of-type{ right: 8px; border-radius: 0 6px 6px 0}
+*/

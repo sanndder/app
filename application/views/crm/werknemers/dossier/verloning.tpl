@@ -50,6 +50,21 @@
 								<fieldset class="mb-3">
 									<legend class="text-uppercase font-size-sm font-weight-bold">Instellingen verloning</legend>
 
+                                    {if $user_type == 'werkgever'}
+									<div class="row row-light-plus mb-3">
+										<label class="col-md-3 pt-2 pb-2">Werkgeversnummer</label>
+
+										<div class="col-md-8">
+
+											<select class="form-control" name="werkgever_nummer" style="width: auto">
+												<option value="1" {if (isset($verloning.werkgever_nummer) && $verloning.werkgever_nummer == 1)} selected{/if}>1 - weekverloning</option>
+												<option value="2" {if (isset($verloning.werkgever_nummer) && $verloning.werkgever_nummer == 2)} selected{/if}>2 - 4 wekelijkseverloning</option>
+												<option value="3" {if (isset($verloning.werkgever_nummer) && $verloning.werkgever_nummer == 3)} selected{/if}>3 - maandverloning</option>
+											</select>
+										</div>
+									</div>
+                                    {/if}
+
 									<div class="row ">
 										<label class="col-md-3">Loonheffingskorting toepassen</label>
 

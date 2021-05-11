@@ -36,7 +36,6 @@ class Inlener extends Connector
 	/*
 	 * @var array
 	 */
-	private $_error = NULL;
 
 	public $complete = NULL;
 	public $archief = NULL;
@@ -1176,30 +1175,6 @@ class Inlener extends Connector
 
 		return $input;
 	}
-
-
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	/*
-	 * Toon errors
-	 * @return array | bool
-	 */
-	public function errors()
-	{
-		//output for debug
-		if (isset($_GET['debug']))
-		{
-			if ($this->_error === NULL)
-				show('Geen errors');
-			else
-				show($this->_error);
-		}
-
-		if ($this->_error === NULL)
-			return false;
-
-		return $this->_error;
-	}
-	
 }
 
 

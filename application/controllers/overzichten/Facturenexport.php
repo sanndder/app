@@ -34,6 +34,7 @@ class Facturenexport extends MY_Controller
 		$facturengroep = new FacturenGroup();
 
 		$_GET['factuur_aangekocht'] = 0;
+		$_GET['datum_van'] = '2021-01-01';
 		$facturen = $facturengroep->filter($_GET)->facturenMatrix();
 		
 		//exportbestanden

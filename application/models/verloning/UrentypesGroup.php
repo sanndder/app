@@ -20,11 +20,6 @@ if (!defined('BASEPATH'))exit('No direct script access allowed');
 class UrentypesGroup extends Connector
 {
 
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
-	
 	/**
 	 * @var int
 	 */

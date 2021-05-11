@@ -12,7 +12,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  */
 class DocumentGroup extends Connector {
 
-	private $_error = NULL;
 	private $_werknemer_id = NULL;
 	private $_inlener_id = NULL;
 	private $_uitzender_id = NULL;

@@ -28,9 +28,9 @@ class Upload_model extends MY_Model
 	private $_id = NULL; //id voor table
 
 	private $_allowed_file_types = '*'; //allowed file types
-
+	
 	private $_error = NULL;
-
+	
 	/*
 	 * constructor
 	 * @return void

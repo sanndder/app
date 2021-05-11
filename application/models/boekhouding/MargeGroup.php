@@ -55,6 +55,55 @@ class MargeGroup extends Connector
 		//default dit jaar
 		$this->jaar( date('Y') );
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alle data
+	 *
+	 */
+	public function getUrenAlleUitzenders() :?array
+	{
+		$sql = "SELECT uitzender_id, SUM(aantal) AS uren, WEEK(datum,3) AS week FROM invoer_uren
+				WHERE factuur_id IS NOT NULL AND YEAR(datum) = YEAR(CURDATE()) AND uitzender_id > 0
+				GROUP BY uitzender_id, WEEK(datum,3)";
+		$query = $this->db_user->query( $sql );
+
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		//weken aanmaken
+		$tijdvak = new Tijdvak( 'w' );
+		$weken_array = $tijdvak->wekenArray( $this->_set_jaar, 0 );
+		
+		foreach( $query->result_array() as $row )
+		{
+			if(!isset($data[$row['uitzender_id']]['weken']))
+				$data[$row['uitzender_id']]['weken'] = $weken_array;
+			
+			$data[$row['uitzender_id']]['weken'][$row['week']] = round($row['uren']);
+		}
+		
+	
+		//0 vervangen door null
+		foreach($data as $uitzender_id => &$arr )
+		{
+			for( $i = 53; $i >= 0; $i-- )
+			{
+				if( !isset( $arr['weken'][$i] ) ) //week 53 bestaat niet elk jaar
+					continue;
+				
+				if( $arr['weken'][$i] == 0 )
+					$arr['weken'][$i] = 'null';
+				else
+					break;
+			}
+			
+			$data[$uitzender_id]['string'] = '['.implode(',',$arr['weken']) .']';
+		}
+
+		return $data;
+	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -562,7 +611,6 @@ class MargeGroup extends Connector
 	{
 		if($this->_set_inleners === NULL)
 			return false;
-
 		$sql = "SELECT SUM(aantal) as aantal, datum, WEEK(invoer_uren.datum, 3) AS week_nr, inlener_id, invoer_uren.werknemer_id, wg.voornaam, wg.tussenvoegsel, wg.voorletters, wg.achternaam
 				FROM invoer_uren
 				LEFT JOIN werknemers_gegevens wg ON invoer_uren.werknemer_id = wg.werknemer_id

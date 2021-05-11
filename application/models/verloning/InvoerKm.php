@@ -49,6 +49,8 @@ class InvoerKm extends Invoer
 		if( $invoer->uitzender() !== NULL )
 			$this->setUitzender( $invoer->uitzender()  );
 		
+		if( $invoer->werknemers() !== NULL )
+			$this->setWerknemers( $invoer->werknemers() );
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -199,6 +201,67 @@ class InvoerKm extends Invoer
 		
 		@$this->db_user->insert( 'invoer_kilometers_log', $insert );
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * samenvatting ophalen voor overzicht
+	 *
+	 */
+	public function getWerknemerKmSamenvatting() :?array
+	{
+		$totaalRows = $this->getWerknemersKilometerRijen();
+		$km = NULL;
+		
+		if( $totaalRows === NULL )
+			return $km;
+		
+		foreach( $totaalRows as $werknemer_id => $kmRows )
+		{
+			foreach( $kmRows as $row )
+			{
+				if( !isset($km[$werknemer_id][$row['doorbelasten']]) )
+					$km[$werknemer_id][$row['doorbelasten']] = 0;
+				
+				$km[$werknemer_id][$row['doorbelasten']] += $row['aantal'];
+			}
+		}
+		
+		return $km;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alle kilometers voor alle werknemers
+	 *
+	 */
+	public function getWerknemersKilometerRijen()
+	{
+		$sql = "SELECT invoer_id, aantal, datum, project_id, project_tekst, locatie_tekst, opmerking_tekst, doorbelasten, locatie_van, locatie_naar, uitkeren, werknemer_id
+				FROM invoer_kilometers WHERE werknemer_id IN (".array_keys_to_string($this->_werknemer_ids).") AND inlener_id = ? AND datum >= ? AND datum <= ?
+				ORDER BY datum";
+		
+		$query = $this->db_user->query( $sql, array( $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $row['project_tekst'] === NULL ) $row['project_tekst'] = '';
+			if( $row['locatie_tekst'] === NULL ) $row['locatie_tekst'] = '';
+			if( $row['opmerking_tekst'] === NULL ) $row['opmerking_tekst'] = '';
+			
+			$row['datum'] = reverseDate($row['datum']);
+			
+			$data[$row['werknemer_id']][$row['invoer_id']] = $row;
+		}
+		
+		return $data;
+	}
+	
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *

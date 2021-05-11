@@ -58,10 +58,55 @@ class Ajax extends MY_Controller
 		//set header voor hele controller
 		//header( 'Content-Type: application/json' );
 	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// instellingen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function settings()
+	{
+		$result['settings'] = $this->invoer->settings();
+		echo json_encode( $result );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// instellingen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function setsettings()
+	{
+		$this->invoer->setSettings( $_POST );
+		echo json_encode( ['status' => 'success'] );
+	}
 
-
-
-
+	//-----------------------------------------------------------------------------------------------------------------
+	// kijken of er bijlages zijn
+	//-----------------------------------------------------------------------------------------------------------------
+	public function checkforbijlages()
+	{
+		$result['hold'] = true;
+		
+		$inlener = new Inlener( $this->invoer->inlener() );
+		$factuurgegevens = $inlener->factuurgegevens();
+		
+		//check for factoring
+		if( $factuurgegevens['factoring'] == 0 )
+		{
+			$result['hold'] = false;
+			echo json_encode($result);
+			die();
+		}
+		else
+		{
+			//check for bijlages
+			if( count($this->invoer->getBijlages()) == 0 )
+				$result['hold'] = true;
+			else
+				$result['hold'] = false;
+			
+			echo json_encode($result);
+			die();
+		}
+	}
+	
 	//-----------------------------------------------------------------------------------------------------------------
 	// factuur genereren
 	//-----------------------------------------------------------------------------------------------------------------

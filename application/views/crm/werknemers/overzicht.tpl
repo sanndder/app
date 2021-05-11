@@ -225,13 +225,31 @@
 									<td>{$w.complete}</td>
 									<td>{$w.werknemer_id}</td>
 									<td>
-                                        {if $w.complete == 0}
-											<span class="badge bg-success  mr-1">NIEUW</span>
-                                        {/if}
-                                        {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
-	                                        <a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$w.werknemer_id}">{$w.naam}</a>
+                                        {* werkgever badges *}
+                                        {if $user_type == 'werkgever'}
+                                            {if $w.complete === NULL}
+		                                        <span class="badge bg-info  mr-1">
+			                                       ......  <i class="icon-pencil3" style="font-size: 11px"></i>
+		                                        </span>
+                                            {/if}
+	                                        {if $w.complete === '0'}
+		                                        <span class="badge bg-success  mr-1">NIEUW</span>
+                                            {/if}
+                                            {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
+		                                        <a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$w.werknemer_id}">{$w.naam}</a>
+                                            {else}
+                                                {$w.naam}
+                                            {/if}
                                         {else}
-                                            {$w.naam}
+	                                        {* uitzender heeft andere badges *}
+	                                        {if $w.complete === NULL}
+												<span class="badge bg-success  mr-1">NIEUW</span>
+	                                        {/if}
+	                                        {if $user_type == 'werkgever' ||  $user_type == 'uitzender'}
+		                                        <a style="{if $w.archief == 1}color: #F44336;{/if}" href="crm/werknemers/dossier/overzicht/{$w.werknemer_id}">{$w.naam}</a>
+	                                        {else}
+	                                            {$w.naam}
+	                                        {/if}
                                         {/if}
 									</td>
 									<td>

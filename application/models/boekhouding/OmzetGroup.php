@@ -196,17 +196,45 @@ class OmzetGroup extends Connector
 		for( $i = 1; $i <= 52; $i++)
 			$data[$i] = array('x' => $i, 'y' => NULL);
 		
-		if( $query->num_rows() == 0 )
-			return $data;
-		
-		foreach( $query->result_array() as $row )
+		//eerst week
+		if( $query->num_rows() > 0 )
 		{
-			$arr['x'] = $row['periode'];
-			$arr['y'] =  round($row['omzet']*2.5);
-			
-			$data[$row['periode']] = $arr;
+			foreach( $query->result_array() as $row )
+			{
+				$arr['x'] = $row['periode'];
+				$arr['y'] = round( $row['omzet'] * 1 );
+				
+				$data[$row['periode']] = $arr;
+			}
 		}
 		
+		//aanvullen met 4 weken
+		$sql = "SELECT periode, SUM(bedrag_excl) AS omzet FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND tijdvak = '4w' AND jaar = $this->_jaar GROUP BY periode ORDER BY periode";
+		$query = $this->db_user->query( $sql );
+	
+		if( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+			{
+				$periode = (($row['periode']) * 4) - 3;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['omzet'] / 4 );
+
+				$periode = (($row['periode']) * 4) - 2;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['omzet'] / 4 );
+
+				$periode = (($row['periode']) * 4) - 1;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['omzet'] / 4 );
+
+				$periode = (($row['periode']) * 4);
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['omzet'] / 4 );
+			
+			}
+		}
+
 		return $data;
 	}
 	
@@ -220,15 +248,41 @@ class OmzetGroup extends Connector
 		$sql = "SELECT periode, SUM(kosten_excl) AS kosten FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND tijdvak = 'w' AND jaar = $this->_jaar GROUP BY periode ORDER BY periode";
 		$query = $this->db_user->query( $sql );
 		
-		if( $query->num_rows() == 0 )
-			return array();
-		
-		foreach( $query->result_array() as $row )
+		if( $query->num_rows() > 0 )
 		{
-			$arr['x'] = $row['periode'];
-			$arr['y'] =  round($row['kosten']*2.5);
-			
-			$data[$row['periode']] = $arr;
+			foreach( $query->result_array() as $row )
+			{
+				$arr['x'] = $row['periode'];
+				$arr['y'] = round( $row['kosten'] * 1 );
+				
+				$data[$row['periode']] = $arr;
+			}
+		}
+		
+		$sql = "SELECT periode, SUM(kosten_excl) AS kosten FROM facturen WHERE concept = 0 AND deleted = 0 AND marge = 0 AND tijdvak = '4w' AND jaar = $this->_jaar GROUP BY periode ORDER BY periode";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+			{
+				$periode = (($row['periode']) * 4) - 3;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['kosten'] / 4 );
+				
+				$periode = (($row['periode']) * 4) - 2;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['kosten'] / 4 );
+				
+				$periode = (($row['periode']) * 4) - 1;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['kosten'] / 4 );
+				
+				$periode = (($row['periode']) * 4);
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['kosten'] / 4 );
+				
+			}
 		}
 		
 		$this->_omzetuitzenden = $data;
@@ -242,7 +296,7 @@ class OmzetGroup extends Connector
 	 */
 	public function loonkosten(): ?array
 	{
-		$sql = "SELECT * FROM overzicht_loonkosten WHERE jaar = $this->_jaar ORDER BY periode";
+		$sql = "SELECT * FROM overzicht_loonkosten WHERE jaar = $this->_jaar ORDER BY tijdvak DESC, periode";
 		$query = $this->db_user->query( $sql );
 		
 		if( $query->num_rows() == 0 )
@@ -250,11 +304,31 @@ class OmzetGroup extends Connector
 		
 		foreach( $query->result_array() as $row )
 		{
-			$arr['x'] = $row['periode'];
-			$arr['y'] = round($row['kosten']*2.5);
+			if( $row['tijdvak'] == 'w' )
+			{
+				$arr['x'] = $row['periode'];
+				$arr['y'] = round( $row['kosten'] * 1 );
+				
+				$data[$row['periode']] = $arr;
+			}
 			
-			$data[$row['periode']] = $arr;
+			if( $row['tijdvak'] == '4w' )
+			{
+				$periode = (($row['periode']) * 4) - 3;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['kosten'] / 4 );
+				$periode = (($row['periode']) * 4) - 2;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['kosten'] / 4 );
+				$periode = (($row['periode']) * 4) - 1;
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['kosten'] / 4 );
+				$periode = (($row['periode']) * 4);
+				$data[$periode]['x'] = $periode;
+				$data[$periode]['y'] = $data[$periode]['y'] + round( $row['kosten'] / 4 );
+			}
 		}
+		
 		$this->_loonkosten = $data;
 		return $data;
 	}

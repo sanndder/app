@@ -24,10 +24,6 @@ class Urentypes extends Connector
 
 	private $_inlener_id = NULL;
 	
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
 	
 	/**
 	 * @var int

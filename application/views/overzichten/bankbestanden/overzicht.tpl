@@ -248,38 +248,6 @@
 												<td colspan="2" style="height: 20px"></td>
 											</tr>
 											<tr>
-												<td class="pr-3 pt-1">Categorie</td>
-												<td class="font-weight-bolder pt-1">
-													<select class="form-control" name="categorie_id" style="height: 35px; padding: 1px 9px">
-														<option value="-1"></option>
-                                                        {foreach $categorien as $c}
-															<option class="px-2" value="{$c@key}">{$c.categorie}</option>
-                                                        {/foreach}
-													</select>
-												</td>
-												<td class="status-categorie">
-													<i></i><span></span>
-												</td>
-											</tr>
-											<tr>
-												<td colspan="2" class="h5 pt-4 pb-2 text-primary">
-													Opmerking
-												</td>
-											</tr>
-											<tr>
-												<td colspan="2" class="pt-1">
-													<textarea name="opmerking" class="form-control p-1" style="height: 60px;" data-lpignore="true"></textarea>
-												</td>
-											</tr>
-										</table>
-
-									</div><!-- /col -->
-
-									<div class="col-md-7 offset-md-1">
-
-										<!----- koppelen factuur -------------------------------------->
-										<table class="table-koppeling-factuur mt-3" style="display: none">
-											<tr>
 												<td colspan="3" class="h5 pb-2 text-primary">
 													Koppeling relatie
 												</td>
@@ -316,6 +284,39 @@
 													<i></i><span></span>
 												</td>
 											</tr>
+											<tr>
+												<td class="pr-3 pt-1">Categorie</td>
+												<td class="font-weight-bolder pt-1">
+													<select class="form-control" name="categorie_id" style="height: 35px; padding: 1px 9px">
+														<option value="-1"></option>
+                                                        {foreach $categorien as $c}
+															<option class="px-2" value="{$c@key}">{$c.categorie}</option>
+                                                        {/foreach}
+													</select>
+												</td>
+												<td class="status-categorie">
+													<i></i><span></span>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="h5 pt-4 pb-2 text-primary">
+													Opmerking
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="pt-1">
+													<textarea name="opmerking" class="form-control p-1" style="height: 60px;" data-lpignore="true"></textarea>
+												</td>
+											</tr>
+										</table>
+
+									</div><!-- /col -->
+
+									<div class="col-md-7 offset-md-1">
+
+										<!----- koppelen factuur -------------------------------------->
+										<table class="table-koppeling-factuur mt-3" style="display: none">
+
 											<tr>
 												<td colspan="3" style="height: 20px"></td>
 											</tr>

@@ -38,6 +38,8 @@ class Connector
 	/* @var \Werkgever_model */
 	protected $werkgever = NULL;
 	
+	protected $_error = NULL;
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * When werkgever_id is know, connect tot database

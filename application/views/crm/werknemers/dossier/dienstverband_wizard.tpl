@@ -8,7 +8,7 @@
 
 {block "content"}
 
-    {include file='crm/werknemers/dossier/_sidebar.tpl' active='algemeneinstellingen'}
+    {include file='crm/werknemers/dossier/_sidebar.tpl' active='dienstverband'}
 
 	<script>
 		$(function() {

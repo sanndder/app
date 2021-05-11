@@ -30,7 +30,7 @@ class Banktransacties extends MY_Controller
 	public function index()
 	{
 		$transactiesGroup = new TransactieGroup();
-		
+		$transactiesGroup->verwerken(); //onverwerkte betalingen verwerken
 		
 		$this->smarty->assign( 'categorien', $transactiesGroup->listCategorien() );
 		$this->smarty->display('overzichten/bankbestanden/overzicht.tpl');
@@ -41,7 +41,7 @@ class Banktransacties extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function transactiedetails( $transactie_id )
 	{
-		$transactie = new Transactie( $transactie_id );		
+		$transactie = new Transactie( $transactie_id );
 		$response['details'] = $transactie->details();
 		$response['facturen'] = NULL;
 		

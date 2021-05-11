@@ -20,6 +20,7 @@
 <script src="recources/js/scripts.js?{$time}"></script>
 <script src="recources/js/config.js?{$time}"></script>
 <script src="recources/js/development.js?{$time}"></script>
+<script src="recources/plugins/clipboard.min.js"></script>
 <!-- /theme JS files -->
 
 <!-- Theme JS files -->

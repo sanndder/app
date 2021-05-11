@@ -271,6 +271,36 @@
 										</div>
                                     {/if}
 
+									<!-- nationaltieit_id -->
+                                    {if isset($formdata.burgelijke_staat)}
+                                        {assign "field" "burgelijke_staat"}
+										<div class="form-group row">
+											<label class="col-lg-{$label_lg} col-form-label {if isset($formdata.$field.error)}text-danger{/if}">{$formdata.$field.label}
+												:
+											</label>
+											<div class="col-xl-{$div_xl} col-md-{$div_md}">
+												<select name="{$field}" class="form-control select-search{if isset($formdata.$field.error)}-error{/if}" id="div-{$field}">
+                                                    {if !isset($formdata.$field.list.empty)}
+														<option value="">Maak een keuze</option>
+                                                    {/if}
+                                                    {if is_array($formdata.$field.list.options)}
+                                                        {assign "options" $formdata.$field.list.options}
+                                                    {else}
+                                                        {assign "options" $list[$formdata.$field.list.options]}
+                                                    {/if}
+                                                    {foreach $options as $option}
+														<option {if $formdata.$field.value == $option@key}selected=""{/if} value="{$option@key}">{$option}</option>
+                                                    {/foreach}
+												</select>
+
+                                                {if isset($formdata.$field.error)}
+													<span class="form-text text-danger">{foreach $formdata.$field.error as $e}{$e}
+													<br/>
+                                                {/foreach}</span>{/if}
+											</div>
+										</div>
+                                    {/if}
+
 								</fieldset>
 
 								<fieldset class="mb-3">

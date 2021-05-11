@@ -16,7 +16,6 @@ class Ondernemingen extends Connector
 	private $_uitzender_id = NULL;
 	private $_inlener_id = NULL;
 	private $_onderneming = NULL;
-	private $_error = NULL;
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*

@@ -25,7 +25,7 @@ let tplOverzichtTabLoad = '<div class="p-4 font-italic"><i class="icon-spinner2 
 let tplOverzichtTabEmpty = '<div class="p-4 font-italic"><i class="icon-exclamation mr-1"></i> Geen ' + _werknemers + ' gevonden</li></div>';
 
 //overzicht tabel tr
-let tplTrOverzicht = `<tr>
+let tplTrOverzicht = `<tr data-vi-overzicht-row="{werknemer_id}">
 						<td class="pr-4" style="width: 400px">
 							<h6 class="media-title font-weight-semibold" style="font-size: 14px">
 								<a href="javascript:void(0)" data-id="{werknemer_id}" data-vi-action="gotoWerknemerInvoer">{werknemer_id} -  {naam}</a>
@@ -34,10 +34,11 @@ let tplTrOverzicht = `<tr>
 								<li class="list-inline-item">{msg}</li>
 							</ul>
 						</td>
-						<td><table class="vi-table-werknemer-detail"> <tr> <th colspan="2">UREN</th> </tr> </table></td>
-						<td><table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Kilometers</th> </tr> </table></td>
-						<td><table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Vergoedingen</th> </tr> </table></td>
-						<td><table class="vi-table-werknemer-detail"> <tr> <th colspan="2">Reserveringen</th> </tr> </table></td>
+						<td class="vi-td-overzicht"> <table class="vi-table-werknemer-overzicht-detail vi-table-werknemer-overzicht-detail-uren"><tr><th colspan="2">Uren</th></tr></table> </td>
+						<td class="vi-td-overzicht"> <table class="vi-table-werknemer-overzicht-detail vi-table-werknemer-overzicht-detail-kilometers"> <tr> <th colspan="2">Kilometers</th></tr> </table></td>
+						<td class="vi-td-overzicht"> <table class="vi-table-werknemer-overzicht-detail vi-table-werknemer-overzicht-detail-vergoedingen"> <tr> <th colspan="2">Vergoedingen</th></tr> </table></td>
+						<td class="vi-td-overzicht"> <table class="vi-table-werknemer-overzicht-detail vi-table-werknemer-overzicht-detail-reserveringen"> <tr> <th colspan="2">Reserveringen</th></tr> </table></td>
+						<td></td>
 					</tr>`;
 
 

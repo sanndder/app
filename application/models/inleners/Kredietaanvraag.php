@@ -20,11 +20,6 @@ class Kredietaanvraag extends Connector {
 
 	private $_aanvraag_id = NULL;
 	private $_inlener_id = NULL;
-	
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
 
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

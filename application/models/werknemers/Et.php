@@ -25,8 +25,7 @@ class Et extends Connector
 	private $_file_id = NULL;
 	private $_dagtekening = NULL;
 	private $_werknemer_id;
-	private $_error;
-	
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * constructor

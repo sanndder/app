@@ -44,7 +44,6 @@ class Upload extends MY_Controller {
 			$result['error'][] = 'Document niet gevonden';
 		else
 		{
-			
 			$this->load->model( 'upload_model', 'uploadfiles' );
 			$this->uploadfiles->setUploadDir( $details['file_dir'] );
 			$this->uploadfiles->setAllowedFileTypes( 'pdf|PDF' );

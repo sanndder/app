@@ -119,22 +119,27 @@
                     {if $user_type == 'werkgever' || $user_type == 'uitzender'}
 						<ul class="nav nav-sidebar vi-list-inleners" data-nav-type="accordion">
 						</ul>
-					{/if}
+                    {/if}
                     {if $user_type == 'inlener'}
 						<input type="hidden" class="inlener-id" value="{$inlener_id}">
                     {/if}
                     {if $user_type == 'werknemer'}
-	                    <input type="hidden" class="uitzender-id" value="{$uitzender_id}">
-	                    <ul class="nav nav-sidebar vi-list-inleners" data-nav-type="accordion">
-		                    <li class="nav-item">
-			                    {if $inleners !== NULL}
-				                    {foreach $inleners as $i}
-			                             <span data-id="{$i@key}" data-inlener="Inlener E" class="nav-link" data-vi-action="setInlener"><span>{$i}</span></span>
+						<input type="hidden" class="uitzender-id" value="{$uitzender_id}">
+						<ul class="nav nav-sidebar vi-list-inleners" data-nav-type="accordion">
+							<li class="nav-item">
+                                {if $inleners !== NULL}
+                                    {foreach $inleners as $i}
+										<span data-id="{$i@key}" data-inlener="Inlener E" class="nav-link" data-vi-action="setInlener"><span>{$i}</span></span>
                                     {/foreach}
                                 {/if}
-		                    </li>
-	                    </ul>
+							</li>
+						</ul>
                     {/if}
+					<div class="card-header bg-transparent" style="border-top: 1px solid rgba(0, 0, 0, 0.125); font-size: 11px;">
+						<span class="vi-settings-window" style="cursor: pointer">
+							<i class="icon-cog mr-1" style="font-size: 11px"></i> Invoer instellingen
+						</span>
+					</div>
 				</div>
 				<!-- /main navigation -->
 
@@ -158,18 +163,18 @@
 					<h5 class="card-title vi-card-titel"><i>Geen invoer mogelijk</i></h5>
 
                     {if $user_type != 'werknemer'}
-					<div class="header-elements vi-factuur-buttons" style="display: none !important">
+						<div class="header-elements vi-factuur-buttons" style="display: none !important">
 
-						<a target="_blank" href="ureninvoer/ureninvoer/factuur" class="btn btn-light mr-1 voorbeeld">
-							<i class="far fa-file-pdf mr-1"></i> Factuur voorbeeld
-						</a>
+							<a target="_blank" href="ureninvoer/ureninvoer/factuur" class="btn btn-light mr-1 voorbeeld">
+								<i class="far fa-file-pdf mr-1"></i> Factuur voorbeeld
+							</a>
 
-						<button type="button" class="btn btn-success" data-vi-action="factuurGenereren">
-							<i class="far fa-file-pdf mr-1"></i> Factuur genereren
-						</button>
+							<button type="button" class="btn btn-success" data-vi-action="factuurGenereren">
+								<i class="far fa-file-pdf mr-1"></i> Factuur genereren
+							</button>
 
-					</div>
-					{/if}
+						</div>
+                    {/if}
 				</div>
 
 				<!------ tabs -------------------------------------------------------------------------------------------------------------------------------->
@@ -281,22 +286,22 @@
 												Kilometers
 											</a>
 										</li>
-										{if $user_type == 'uitzender' || $user_type == 'werkgever'}
-										<li class="nav-item">
-											<a href="#sub-vergoedingen" class="tab-sub nav-link" data-toggle="tab">
-												Vergoedingen
-											</a>
-										</li>
-										<li class="nav-item nav-et">
-											<a href="#sub-et" class="tab-sub nav-link" data-toggle="tab">
-												ET-regeling
-											</a>
-										</li>
-										<li class="nav-item">
-											<a href="#sub-reserveringen" class="tab-sub nav-link" data-toggle="tab">
-												Reserveringen
-											</a>
-										</li>
+                                        {if $user_type == 'uitzender' || $user_type == 'werkgever'}
+											<li class="nav-item">
+												<a href="#sub-vergoedingen" class="tab-sub nav-link" data-toggle="tab">
+													Vergoedingen
+												</a>
+											</li>
+											<li class="nav-item nav-et">
+												<a href="#sub-et" class="tab-sub nav-link" data-toggle="tab">
+													ET-regeling
+												</a>
+											</li>
+											<li class="nav-item">
+												<a href="#sub-reserveringen" class="tab-sub nav-link" data-toggle="tab">
+													Reserveringen
+												</a>
+											</li>
                                         {/if}
                                         {*
 										<li class="nav-item">
@@ -334,7 +339,7 @@
 														</a>
 													</li>
 													<li class="nav-item">
-														<a href="javascript:void(0)" class="navbar-nav-link vi-action-del-uren" data-vi-fill-uren="40">
+														<a href="javascript:void(0)" class="navbar-nav-link vi-action-del-uren">
 															<i class="icon-trash mr-1"></i>
 															Ureninvoer wissen
 														</a>
@@ -372,10 +377,21 @@
 													Gewerkte dagen kopiëren
 												</button>
 												*}
-												<button type="button" class="btn alpha-warning text-warning-800 btn-icon ml-2 btn-sm" data-vi-action="clear">
-													<i class="icon-trash mr-1"></i>
-													Invoer wissen
-												</button>
+
+												<div class="navbar navbar-expand-lg navbar-light navbar-component rounded navbar-vi-acties" id="navbar-filter">
+													<span class="navbar-text mr-2">Acties:</span>
+
+													<ul class="navbar-nav flex-wrap">
+														<li class="nav-item">
+															<a href="javascript:void(0)" class="navbar-nav-link" data-vi-action="km-clear">
+																<i class="icon-trash mr-1"></i>
+																Kilometers wissen
+															</a>
+														</li>
+													</ul>
+
+												</div>
+
 											</div>
 
 											<table class="table-vi-km vi-input mt-3" style="display: none">
@@ -663,6 +679,61 @@
 			</div><!-- /basic card -->
 
 		</div><!-- /content area -->
+
+
+		<!-- instellingen scherm -->
+		<div id="modal_settings" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Instellingen voor ureninvoer</h5>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+
+						<form>
+
+							<div style="border: 1px solid #CCC;" class="px-3 py-2">
+								<div class="row">
+									<div class="col-md-12 font-weight-bold">
+										Bij wisselen van werknemer:
+									</div>
+								</div>
+
+								<div class="row mt-2">
+									<div class="col-md-12  form-inline">
+										<div class="form-check form-check-inline">
+											<label class="form-check-label">
+												<input type="radio" class="form-input-styled-primary" value="reset" name="werknemer_tab_wissel">
+												Terug naar uren tabblad
+											</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<label class="form-check-label">
+												<input type="radio" class="form-input-styled-primary" value="remain" name="werknemer_tab_wissel">
+												In hetzelfde tabblad blijven
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</form>
+
+					</div>
+					<div class="modal-footer mt-3">
+						<button class="btn btn-sm btn-success vi-btn-settings-save">
+							<i class="icon-check mr-1"></i>
+							Opslaan en herladen
+						</button>
+						<button class="btn btn-sm btn-light" data-dismiss="modal">
+							<i class="icon-cross mr-1"></i>
+							Annuleren
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<!-- /main content -->
 

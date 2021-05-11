@@ -15,10 +15,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  */
 class Usermanagement {
 
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
 
 	/*
 	 * @var user ID

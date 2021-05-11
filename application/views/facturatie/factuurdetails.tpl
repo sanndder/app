@@ -413,9 +413,9 @@
 
 					</div><!-- /card -->
 
-					      <!---------------------------------------------------------------------------------------------------------
-						  || Bijlages
-						  ---------------------------------------------------------------------------------------------------------->
+			        <!---------------------------------------------------------------------------------------------------------
+					|| Bijlages
+					---------------------------------------------------------------------------------------------------------->
 					<div class="card">
 						<div class="card-header bg-white header-elements-inline">
 							<h6 class="card-title py-0">Bijlages</h6>
@@ -507,6 +507,44 @@
 
 						</div>
 					</div><!-- /card -->
+
+
+			        <!---------------------------------------------------------------------------------------------------------
+				    || Vervangen
+				    ---------------------------------------------------------------------------------------------------------->
+                    {if $user_id == '2'}
+					<div class="card">
+						<div class="card-header bg-white header-elements-inline">
+							<h6 class="card-title py-0">Factuur vervangen</h6>
+						</div>
+
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-6">
+
+									<script>
+                                        {literal}
+										$(document).ready(function()
+										{
+											$('#fileupload2').fileinput('refresh', {uploadUrl:'facturatie/factuur/uploadvervangendefactuur/{/literal}{$factuur_id}{literal}'});
+											$('#fileupload2').on('fileuploaded', function()
+											{
+												window.location.reload();
+											});
+										});
+                                        {/literal}
+									</script>
+
+									<form action="#">
+										<input name="file" type="file" id="fileupload2" class="file-input">
+									</form>
+
+								</div><!-- /col -->
+							</div><!-- /row -->
+
+						</div>
+					</div><!-- /card -->
+                    {/if}
 
 
 				</div><!-- /col -->

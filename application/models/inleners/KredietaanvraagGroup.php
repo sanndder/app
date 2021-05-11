@@ -18,11 +18,6 @@ class KredietaanvraagGroup extends Connector {
 	private $_inlener_id = NULL;
 	private $_aanvraag_id;
 	
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
-
 	/* *----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * constructor

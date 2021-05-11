@@ -23,8 +23,6 @@ class PlaatsingGroup extends Connector
 	private $_werknemer_id = NULL;
 	private $_inlener_id = NULL;
 	
-	private $_error;
-	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * constructor

@@ -42,6 +42,8 @@ class FacturenGroup extends Connector
 	protected $_filter_factoring = 1;
 	protected $_filter_geen_factoring = 1;
 	protected $_filter_factuur_aangekocht = NULL;
+	protected $_filter_datum_van = NULL;
+	protected $_filter_datum_tot = NULL;
 
 	protected $_error = NULL;
 	
@@ -111,6 +113,12 @@ class FacturenGroup extends Connector
 
 		if( isset($filter['factuur_aangekocht']) )
 			$this->_filter_factuur_aangekocht = intval($filter['factuur_aangekocht']);
+		
+		if( isset($filter['datum_van']) )
+			$this->_filter_datum_van = $filter['datum_van'];
+		
+		if( isset($filter['datum_tot']) )
+			$this->_filter_datum_tot = $filter['datum_tot'];
 			
 		return $this;
 	}
@@ -341,6 +349,12 @@ class FacturenGroup extends Connector
 		
 		if( $this->_get_ids !== NULL )
 			$sql .= " AND facturen.factuur_id IN (".implode(',',$this->_get_ids).")";
+		
+		if( $this->_filter_datum_van !== NULL )
+			$sql .= " AND facturen.timestamp >= '".$this->_filter_datum_van."' ";
+		
+		if( $this->_filter_datum_tot !== NULL )
+			$sql .= " AND facturen.timestamp <= '".$this->_filter_datum_tot."' ";
 		
 		$sql .= " ORDER BY jaar DESC, periode DESC, to_factoring_on, inleners_bedrijfsgegevens.bedrijfsnaam ";
 		

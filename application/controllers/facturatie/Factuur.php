@@ -117,4 +117,44 @@ class Factuur extends MY_Controller
 		$factuur->download();
 	}
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// vervangende factuur uplaoden
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uploadvervangendefactuur( $factuur_id )
+	{
+		$factuur = new \models\facturatie\Factuur( $factuur_id );
+		
+		$details = $factuur->details();
+		
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'facturen/' . $details['jaar'] );
+		$this->uploadfiles->setAllowedFileTypes( 'pdf|PDF' );
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			
+			$file_array = $this->uploadfiles->getFileArray();
+			if( $factuur->setVervangendeFactuur( $file_array) )
+			{
+				$result['status'] = 'success';
+			}
+			else
+			{
+				$result['status'] = 'error';
+				$result['error'] = $factuur->errors();
+				
+			}
+		}
+		else
+		{
+			$result['status'] = 'error';
+			$result['error'] = $this->uploadfiles->errors();
+		}
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+		die();
+	}
+	
 }

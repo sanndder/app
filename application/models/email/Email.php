@@ -48,11 +48,6 @@ class Email extends Connector {
 	private $_html = true;
 
 	/*
-	 * @var array
-	 */
-	private $_error = NULL;
-
-	/*
 	 * PHPMailer object
 	 * @var array
 	 */

@@ -20,11 +20,6 @@ class InlenerGroup extends Connector {
 	private $_uitzender_id = NULL;
 	private $_exclude_ids = NULL;
 	
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
-
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -61,6 +56,7 @@ class InlenerGroup extends Connector {
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
 	 * lijst voor ureninvoer, minder data via ajax sturen
+	 * Alleen met plaatsing
 	 */
 	public function listForUreninvoer()
 	{
@@ -73,8 +69,11 @@ class InlenerGroup extends Connector {
 				LEFT JOIN inleners_bedrijfsgegevens ON inleners_bedrijfsgegevens.inlener_id = inleners_status.inlener_id
 				LEFT JOIN inleners_factuurgegevens ON inleners_factuurgegevens.inlener_id = inleners_status.inlener_id
 				LEFT JOIN inleners_uitzenders ON inleners_status.inlener_id = inleners_uitzenders.inlener_id
+				LEFT JOIN werknemers_inleners ON inleners_status.inlener_id = werknemers_inleners.inlener_id
+				LEFT JOIN zzp_inleners ON inleners_status.inlener_id = zzp_inleners.inlener_id
 				WHERE inleners_bedrijfsgegevens.deleted = 0 AND inleners_status.archief = 0 AND inleners_status.complete = 1 AND inleners_factuurgegevens.deleted = 0
-				AND inleners_uitzenders.deleted = 0 AND inleners_status.hide_ureninvoer = 0 ";
+				AND inleners_uitzenders.deleted = 0 AND inleners_status.hide_ureninvoer = 0 AND
+				((werknemers_inleners.deleted = 0 AND werknemers_inleners.inlener_id IS NOT NULL) OR (zzp_inleners.deleted = 0 AND zzp_inleners.inlener_id IS NOT NULL))";
 		
 		//beveiligen
 		if( $this->user->user_type == 'uitzender' )
@@ -85,7 +84,7 @@ class InlenerGroup extends Connector {
 			$sql .= " AND inleners_uitzenders.uitzender_id = $this->_uitzender_id ";
 		
 		//sort
-		$sql .= " ORDER BY inleners_factuurgegevens.frequentie DESC, inleners_bedrijfsgegevens.bedrijfsnaam ";
+		$sql .= " GROUP BY inlener_id ORDER BY inleners_factuurgegevens.frequentie DESC, inleners_bedrijfsgegevens.bedrijfsnaam";
 		
 		//go
 		$query = $this->db_user->query($sql);

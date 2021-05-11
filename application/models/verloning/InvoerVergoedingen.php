@@ -52,8 +52,10 @@ class InvoerVergoedingen extends Invoer
 			$this->setInlener( $invoer->inlener()  );
 		
 		if( $invoer->uitzender() !== NULL )
-			$this->setUitzender( $invoer->uitzender()  );
+			$this->setUitzender( $invoer->uitzender() );
 		
+		if( $invoer->werknemers() !== NULL )
+			$this->setWerknemers( $invoer->werknemers() );
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -206,6 +208,52 @@ class InvoerVergoedingen extends Invoer
 	public function getVergoedingInsertId()
 	{
 		return $this->_insert_id;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * samenvatting ophalen voor overzicht
+	 *
+	 */
+	public function getWerknemerVergoedingenSamenvatting() :?array
+	{
+		return $this->getWerknemersVergoedingenRijen();
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Vergoedingen voor werknemer ophalen voor facturatie
+	 *
+	 */
+	public function getWerknemersVergoedingenRijen()
+	{
+		//nu bedragen er bij halen
+		$sql = "SELECT invoer_vergoedingen.invoer_id, invoer_vergoedingen.werknemer_id, invoer_vergoedingen.zzp_id, invoer_vergoedingen.bedrag, invoer_vergoedingen.doorbelasten, invoer_vergoedingen.project_id,
+       					inleners_vergoedingen.vergoeding_type, inleners_vergoedingen.uitkeren_werknemer, inleners_vergoedingen.doorbelasten AS doorbelasten_default,
+       					vergoedingen.naam, vergoedingen.belast, invoer_vergoedingen.werknemer_id
+				FROM invoer_vergoedingen
+				LEFT JOIN werknemers_vergoedingen ON werknemers_vergoedingen.id = invoer_vergoedingen.werknemer_vergoeding_id
+				LEFT JOIN inleners_vergoedingen ON inleners_vergoedingen.inlener_vergoeding_id = werknemers_vergoedingen.inlener_vergoeding_id
+				LEFT JOIN vergoedingen ON vergoedingen.vergoeding_id = inleners_vergoedingen.vergoeding_id
+				WHERE inleners_vergoedingen.deleted = 0 AND invoer_vergoedingen.uitzender_id = ? AND invoer_vergoedingen.inlener_id = ?
+				  AND invoer_vergoedingen.werknemer_id IN (".array_keys_to_string($this->_werknemer_ids).") AND invoer_vergoedingen.tijdvak = ? AND invoer_vergoedingen.jaar = ? AND invoer_vergoedingen.periode = ?";
+		
+		$query = $this->db_user->query( $sql, array( $this->_uitzender_id, $this->_inlener_id, $this->_tijdvak, $this->_jaar, $this->_periode ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( $row['belast'] == 0 )
+				$row['factor'] = 1;
+			
+			$data[$row['werknemer_id']][$row['invoer_id']] = $row;
+		}
+		
+		return $data;
 	}
 	
 	

@@ -27,12 +27,7 @@ class Uitzender extends Connector
 	public $bedrijfsnaam = NULL; // @var string
 
 	public $contacten = NULL; // @var string
-
-
-	/*
-	 * @var array
-	 */
-	private $_error = NULL;
+	
 
 	public $complete = NULL;
 	public $archief = NULL;

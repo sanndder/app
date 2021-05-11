@@ -51,6 +51,9 @@ class InvoerUren extends Invoer
 		if( $invoer->uitzender() !== NULL )
 			$this->setUitzender( $invoer->uitzender() );
 		
+		if( $invoer->werknemers() !== NULL )
+			$this->setWerknemers( $invoer->werknemers() );
+		
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -263,7 +266,7 @@ class InvoerUren extends Invoer
 			$matrix[$datum]['datum'] = reverseDate( $datum );
 			$matrix[$datum]['week'] = Tijdvak::weeknr( $datum );
 			$matrix[$datum]['dag'] = Tijdvak::dagAfkorting( $datum );
-			$matrix[$datum]['class'] = '';
+			$matrix[$datum]['class'] = 'tr-'.$matrix[$datum]['dag'];
 			if( Tijdvak::isWeekend( $datum ) )
 				$matrix[$datum]['class'] = 'tr-weekend';
 		}
@@ -306,24 +309,31 @@ class InvoerUren extends Invoer
 	 */
 	public function getWerknemerUrenSamenvatting()
 	{
-		$urenRows = $this->getWerknemerUrenRijen();
+		$totaalRows = $this->getWerknemersUrenRijen();
 		$uren = NULL;
-		
-		if( $urenRows === NULL )
+
+		if( $totaalRows === NULL )
 			return $uren;
-		
-		foreach( $urenRows as $row )
+
+		foreach( $totaalRows as $werknemer_id => $urenRows )
 		{
-			$label = $row['label'];
-			
-			if( !isset($uren[$label]) )
-				$uren[$label] = 0;
-			
-			$uren[$label] += $row['aantal'];
+			foreach( $urenRows as $row )
+			{
+				$label = strtolower($row['label']);
+				
+				if( !isset($uren[$werknemer_id][$row['urentype_id']]) )
+				{
+					$uren[$werknemer_id][$row['urentype_id']]['label'] = $label;
+					$uren[$werknemer_id][$row['urentype_id']]['aantal'] = 0;
+				}
+				
+				$uren[$werknemer_id][$row['urentype_id']]['aantal'] += $row['aantal'];
+			}
 		}
 		
 		return $uren;
 	}
+	
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -399,6 +409,47 @@ class InvoerUren extends Invoer
 		
 		return $data;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * totalen ophalen voor overzichten
+	 *
+	 */
+	public function getWerknemersUrenRijen()
+	{
+		$sql = "SELECT  invoer_uren.invoer_id, invoer_uren.werknemer_id, invoer_uren.zzp_id, invoer_uren.datum, invoer_uren.aantal, invoer_uren.plaatsing_id, invoer_uren.doorbelasten, invoer_uren.project_id, invoer_uren.project_tekst, invoer_uren.locatie_tekst,
+       					DAYOFWEEK(invoer_uren.datum) AS dag_nr, WEEK(invoer_uren.datum, 3) AS week_nr,
+       					urentypes.naam, urentypes.percentage, urentypes.urentype_id,
+       					urentypes_categorien.naam AS categorie,
+						inleners_urentypes.doorbelasten_uitzender, inleners_urentypes.label
+				FROM invoer_uren
+				LEFT JOIN werknemers_urentypes ON invoer_uren.uren_type_id_werknemer = werknemers_urentypes.id
+				LEFT JOIN inleners_urentypes ON werknemers_urentypes.inlener_urentype_id = inleners_urentypes.inlener_urentype_id
+				LEFT JOIN urentypes ON inleners_urentypes.urentype_id = urentypes.urentype_id
+				LEFT JOIN urentypes_categorien ON urentypes.urentype_categorie_id = urentypes_categorien.urentype_categorie_id
+				LEFT JOIN werknemers_inleners ON werknemers_inleners.plaatsing_id = werknemers_urentypes.plaatsing_id
+				WHERE werknemers_inleners.deleted = 0 AND invoer_uren.verloning_id IS NULL
+				  AND invoer_uren.werknemer_id IN (".array_keys_to_string($this->_werknemer_ids).") AND invoer_uren.inlener_id = ? AND invoer_uren.datum >= ? AND invoer_uren.datum <= ?";
+		
+		//run query
+		$query = $this->db_user->query( $sql, array( $this->_inlener_id, $this->_periode_start, $this->_periode_einde ) );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		foreach( $query->result_array() as $row )
+		{
+			//naam naar label
+			if( $row['label'] == '' )
+				$row['label'] = $row['naam'];
+			
+			$data[$row['werknemer_id']][$row['invoer_id']] = $row;
+		}
+
+		return $data;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *

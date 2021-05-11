@@ -28,6 +28,7 @@ class Invoer extends Connector
 	protected $_uitzender_id = NULL;
 	protected $_inlener_id = NULL;
 	protected $_werknemer_id = NULL;
+	protected $_werknemer_ids = NULL;
 	protected $_zzp_id = NULL;
 	
 	protected $_periode_start = NULL;
@@ -46,6 +47,49 @@ class Invoer extends Connector
 		//call parent constructor for connecting to database
 		parent::__construct();
 	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * settings voor user
+	 *
+	 */
+	public function settings() :?array
+	{
+		$query = $this->db_user->query( "SELECT werknemer_tab_wissel FROM invoer_settings WHERE user_id = ".$this->user->user_id." LIMIT 1" );
+		return DBhelper::toRow($query, 'NULL');
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * uitzender ID
+	 *
+	 */
+	public function setSettings( $post = NULL )
+	{
+		if( !isset($post['settings']) )
+			return NULL;
+		
+		if( isset($post['settings']['werknemer_tab_wissel']))
+			$update['werknemer_tab_wissel'] = $post['settings']['werknemer_tab_wissel'];
+		
+		$query = $this->db_user->query( "SELECT user_id FROM invoer_settings WHERE user_id = ".$this->user->user_id." LIMIT 1" );
+		
+		if( $query->num_rows() == 0 )
+		{
+			$update['user_id'] = $this->user->user_id;
+			$this->db_user->insert( 'invoer_settings', $update );
+		}
+		else
+		{
+			$update['user_id'] = $this->user->user_id;
+			$this->db_user->where( 'user_id', $this->user->user_id );
+			$this->db_user->update( 'invoer_settings', $update );
+		}
+		
+	}
+
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -103,7 +147,32 @@ class Invoer extends Connector
 	public function setWerknemer( $werknemer_id )
 	{
 		$this->_werknemer_id = intval($werknemer_id);
+		return $this;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * werknemer IDs als array
+	 *
+	 * @return object
+	 */
+	public function setWerknemers( $werknemer_ids )
+	{
+		$this->_werknemer_ids = $werknemer_ids;
+		return $this;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * get werknemer IDs
+	 *
+	 * @return array
+	 */
+	public function werknemers()
+	{
+		return $this->_werknemer_ids;
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
@@ -241,12 +310,31 @@ class Invoer extends Connector
 		$werknemers = $this->listWerknemers();
 		
 		foreach( $werknemers as &$werknemer )
-		{
-			$invoerUren = new InvoerUren( $this );
-			$invoerUren->setWerknemer( $werknemer['id'] );
+			$werknemer_ids[$werknemer['id']] = 1;
 		
-			$werknemer['samenvatting']['uren'] = $invoerUren->getWerknemerUrenSamenvatting();
+		$this->setWerknemers( $werknemer_ids );
+		
+		$invoerUren = new InvoerUren( $this );
+		$invoerKm = new InvoerKm( $this );
+		$invoerVergoedingen = new InvoerVergoedingen( $this );
+		$werknemersUren = $invoerUren->getWerknemerUrenSamenvatting();
+		$werknemersKm = $invoerKm->getWerknemerKmSamenvatting();
+		$werknemersVergoedingen = $invoerVergoedingen->getWerknemerVergoedingenSamenvatting();
+		
+		foreach( $werknemers as &$werknemer )
+		{
+			$id = $werknemer['id'];
+			
+			if( isset($werknemersUren[$id]) )
+				$werknemer['samenvatting']['uren'] = $werknemersUren[$id];
+			
+			if( isset($werknemersKm[$id]) )
+				$werknemer['samenvatting']['km'] = $werknemersKm[$id];
+			
+			if( isset($werknemersVergoedingen[$id]) )
+				$werknemer['samenvatting']['vergoedingen'] = $werknemersVergoedingen[$id];
 		}
+		
 		
 		return $werknemers;
 	}

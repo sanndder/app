@@ -393,6 +393,28 @@ var Select2Selects = function() {
     }
 }();
 
+// Setup module
+// ------------------------------
+
+var JsCopy = function() {
+    
+   
+    var _componentJsCopy = function() {
+        // Initialize
+        new ClipboardJS('.copy-text', {
+            target: function(trigger) {
+                return trigger;
+            }
+        });
+    };
+    
+    return {
+        init: function() {
+            _componentJsCopy();
+        }
+    }
+}();
+
 
 // Setup module
 // ------------------------------
@@ -430,4 +452,5 @@ document.addEventListener('DOMContentLoaded', function ()
     Datepickers.init();
     Select2Selects.init();
     NavbarMultipleSticky.init();
+    JsCopy.init();
 });

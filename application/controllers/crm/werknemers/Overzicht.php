@@ -41,7 +41,7 @@ class Overzicht extends MY_Controller
 			$werknemer->del($_GET['del']);
 		}
 
-		//show($werknemers);
+		//vshow($werknemers);
 		
 		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
 		$this->smarty->assign('werknemers', $werknemers);

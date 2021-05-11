@@ -40,7 +40,6 @@
 							<fieldset class="mb-3">
 								<legend class="text-uppercase font-size-sm font-weight-bold">ID bewijs uploaden</legend>
 
-
 								<div class="row">
 
 									<!-- voorkant -->
@@ -101,6 +100,7 @@
                                                     $( '#fileupload2' ).fileinput( 'clear' );
                                                     $( '#form2' ).hide();
                                                     $( '.img-achterkant' ).show().find( 'img' ).attr( 'src', data.response.url );
+													location.reload();
                                                 } );
                                             } );
                                             {/literal}

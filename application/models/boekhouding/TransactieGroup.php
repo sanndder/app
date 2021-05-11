@@ -20,6 +20,7 @@ class TransactieGroup extends Connector
 	protected $_limit = 50;
 	protected $_count = 0;
 	
+	protected $_filter_inlener_id = NULL;
 	protected $_filter_van = NULL;
 	protected $_filter_tot = NULL;
 	protected $_filter_min = NULL;
@@ -44,6 +45,39 @@ class TransactieGroup extends Connector
 		parent::__construct();
 	}
 
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * betalingen zo veel mogelijk verwerken
+	 *
+	 */
+	public function verwerken()
+	{
+		$sql = "SELECT * FROM bank_transacties WHERE verwerkt = 0 AND deleted = 0 AND hidden = 0";
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() == 0 )
+			return NULL;
+		
+		$hide = array();
+		
+		foreach( $query->result_array() as $row )
+		{
+			$omschrijving = strtolower( $row['omschrijving'] );
+			
+			//eerst op woorden zoeken en verbergen
+			if( strpos( $omschrijving, 'salaris ' ) !== false )
+				$hide[$row['transactie_id']] = 1;
+			
+			//eerst op woorden zoeken en verbergen
+			if( strpos( $omschrijving, 'marge ' ) !== false )
+				$hide[$row['transactie_id']] = 1;
+		}
+		
+		if( count($hide) > 0 )
+			$this->db_user->query( "UPDATE bank_transacties SET hidden = 1 WHERE deleted = 0 AND transactie_id IN (".array_keys_to_string($hide).")" );
+
+	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -95,6 +129,17 @@ class TransactieGroup extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
+	 * filter inlener
+	 *
+	 */
+	public function inlener( $inlener_id = NULL )
+	{
+		if( $inlener_id !== NULL ) $this->_filter_inlener_id = intval($inlener_id);
+		return $this;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
 	 * Lijst met alle facturen
 	 *
 	 */
@@ -103,7 +148,7 @@ class TransactieGroup extends Connector
 		$sql = "SELECT bank_transacties.*, bank_transactiebestanden.grekening FROM bank_transacties
 				LEFT JOIN bank_transactiebestanden ON bank_transactiebestanden.bestand_id = bank_transacties.bestand_id
 				LEFT JOIN bank_transacties_facturen ON bank_transacties_facturen.transactie_id = bank_transacties.transactie_id
-				WHERE bank_transacties.deleted = 0 ";
+				WHERE bank_transacties.deleted = 0 AND hidden = 0";
 		
 		//filters
 		
@@ -131,6 +176,8 @@ class TransactieGroup extends Connector
 		if( $this->_filter_tot !== NULL )
 			$sql .= " AND bank_transacties.datum <= '$this->_filter_tot' ";
 		
+		if( $this->_filter_inlener_id !== NULL )
+			$sql .= " AND bank_transacties.inlener_id = $this->_filter_inlener_id ";
 
 		if( $this->_filter_grekening !== NULL )
 		{

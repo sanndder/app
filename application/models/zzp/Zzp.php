@@ -33,8 +33,6 @@ class Zzp extends Connector
 
 	private $_jaren_array_facturen = NULL; // @var int
 	
-	private $_error = NULL;
-
 	public $complete = NULL;
 	public $archief = NULL;
 	public $bedrijfsgegevens_complete = NULL;

@@ -269,7 +269,34 @@
 								|| sepa bestanden
 								-------------------------------------------------------------------------------------------------------------------------------------------------->
 								<div class="tab-pane fade {if isset($smarty.get.tab) && $smarty.get.tab == 'tab-sepa'}show active{/if}" id="tab-sepa">
-									sepa
+
+									<table class="table">
+										<thead>
+											<th style="width: 40px">ID</th>
+											<th>Bestand</th>
+											<th style="width: 140px">Betalingen</th>
+											<th style="width: 140px">Bedrag</th>
+											<th>Aangemaakt</th>
+											<th>Door</th>
+											<th></th>
+										</thead>
+										<tbody>
+											{foreach $sepas as $sepa}
+												<tr>
+													<td>{$sepa.file_id}</td>
+													<td>
+														<a target="_blank" href="overzichten/margebetalingen/downloadsepa/{$sepa.file_id}">sepa_marge_{$sepa.timestamp|date_format: '%Y_%m_%d'}.xml</a>
+													</td>
+													<td>{$sepa.sepa_entries}</td>
+													<td>€ {$sepa.sepa_totaal|number_format:2:',':'.'}</td>
+													<td>{$sepa.timestamp|date_format: '%d-%m-%Y om %R:%S'}</td>
+													<td>{$sepa.user}</td>
+												</tr>
+											{/foreach}
+										</tbody>
+
+									</table>
+
 								</div><!-- /col -->
 
 							</div>

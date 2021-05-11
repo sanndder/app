@@ -4,6 +4,7 @@ namespace models\facturatie;
 
 use models\Connector;
 use models\email\Email;
+use models\file\File;
 use models\file\Pdf;
 use models\forms\Validator;
 use models\inleners\Inlener;
@@ -48,8 +49,6 @@ class Factuur extends Connector
 	protected $_file_dir = NULL;
 	
 	protected $_kosten = false;
-	
-	protected $_error = NULL;
 	private $_betaling_id = NULL;
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -200,6 +199,58 @@ class Factuur extends Connector
 		$this->_error[] = 'Wegschrijven naar database is mislukt';
 		return false;
 	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * geuploade nieuwe factuur afhandelen
+	 *
+	 */
+	public function setVervangendeFactuur( array $file_info ): bool
+	{
+		$details = $this->details();
+		
+		$org_name = $details['file_name_org'];
+
+		//eerst orgineel naar ander veld, maar alleen de eerste keer
+		if( $details['file_name_org'] === NULL )
+		{
+			$this->db_user->query( "UPDATE facturen SET file_name_org = file_name WHERE factuur_id = $this->_factuur_id LIMIT 1" );
+			
+			if( $this->db_user->affected_rows() < 1 )
+			{
+				$this->_error = 'Origineeld kon niet worden gekopieerd';
+				return false;
+			}
+			
+			$org_name = $details['file_name'];
+		}
+
+		//originele naam aanpassen
+		$org_name = str_replace('.pdf', '', $org_name);
+		$new_name = $org_name . '_r_' . generateRandomString(4) . '.pdf';
+		
+		$file = new File($file_info);
+		if( !$file->rename( $new_name ) )
+		{
+			$this->_error = 'Bestand kon niet worden hernoemd';
+			return false;
+		}
+		
+		//naar database
+		$this->db_user->query( "UPDATE facturen SET file_name = '$new_name' WHERE factuur_id = $this->_factuur_id LIMIT 1" );
+		if( $this->db_user->affected_rows() < 1 )
+		{
+			$this->_error = 'Nieuw bestand niet weggeschreven naar database!';
+			return false;
+		}
+		
+		$this->_log( 'Vervangende factuur geupload', '' );
+		return true;
+	}
+
+	
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *

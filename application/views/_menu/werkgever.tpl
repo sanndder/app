@@ -61,7 +61,7 @@
 
 				<div class="dropdown-menu">
 
-					<a href="debiteru/facturen/index" class="dropdown-item d-flex justify-content-between">
+					<a href="debiteurbeheer/facturen/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="icon-list-unordered mr-2"></i>Facturen</div>
 					</a>
 
@@ -94,6 +94,9 @@
 					</a>
 					<a href="overzichten/omzet/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="icon-chart mr-2"></i>Omzet & Kosten</div>
+					</a>
+					<a href="overzichten/uitzenderuren/index" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-stats-bars mr-2"></i>Uitzenders uren</div>
 					</a>
 					<a href="overzichten/caos/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="icon-bubbles4 mr-2"></i>CAO's</div>

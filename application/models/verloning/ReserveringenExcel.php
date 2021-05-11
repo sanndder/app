@@ -24,8 +24,7 @@ class ReserveringenExcel extends Connector
 	private $_file_path = NULL;
 	private $_type = NULL;
 	private $_excel_data = NULL;
-
-	private $_error = NULL;
+	
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
