@@ -201,7 +201,52 @@ class Werkgever extends MY_Controller
 		
 		$this->smarty->display('instellingen/werkgever/feestdagen.tpl');
 	}
-
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Documenten en certificaten
+	//-----------------------------------------------------------------------------------------------------------------
+	public function denc()
+	{
+		//nieuw veld
+		if( isset($_POST['submit']) )
+		{
+			if( $this->werkgever->addDocumentVeld($_POST['naam'],$_POST['geldigheid']) )
+				redirect( $this->config->item( 'base_url' ) . '/instellingen/werkgever/denc'  ,'location' );
+			else
+				$this->smarty->assign('msg', msg('warning', $this->werkgever->errors()));
+		}
+		
+		//veld weg
+		if( isset($_GET['del']) )
+		{
+			if( $this->werkgever->delDocumentVeld($_GET['del']) )
+				redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/denc'  ,'location' );
+			else
+				$this->smarty->assign('msg', msg('warning', $this->werkgever->errors()));
+		}
+		
+		//document weg
+		if( isset($_GET['delfile']) )
+		{
+			if( $this->werkgever->delDocument($_GET['delfile']) )
+				redirect( $this->config->item( 'base_url' ) . 'instellingen/werkgever/denc'  ,'location' );
+			else
+				$this->smarty->assign('msg', msg('warning', $this->werkgever->errors()));
+		}
+		
+		//show($this->werkgever->documenten());
+		$this->smarty->assign('documenten', $this->werkgever->documenten());
+		$this->smarty->assign('velden', $this->werkgever->documentVelden());
+		$this->smarty->display('instellingen/werkgever/denc.tpl');
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// Document dagtekening
+	//-----------------------------------------------------------------------------------------------------------------
+	public function updatedagtekening( $file_id = NULL, $dagtekening = NULL)
+	{
+		return $this->werkgever->updateDagtekening( $file_id, $dagtekening);
+	}
 
 	//-----------------------------------------------------------------------------------------------------------------
 	// aanpassen bedrijfsgegevens

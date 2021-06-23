@@ -44,6 +44,7 @@ class Factuur extends Connector
 	
 	protected $_betaald_vrij = 0;
 	protected $_betaald_g = 0;
+	protected $_betaald_voorfinanciering = 0;
 	
 	protected $_file_name = NULL;
 	protected $_file_dir = NULL;
@@ -63,6 +64,22 @@ class Factuur extends Connector
 		if( $factuur_id !== NULL )
 			$this->setFactuurID( $factuur_id );
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * factuur ID
+	 *
+	 */
+	static function NRtoID( $factuur_nr = NULL )
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		
+		$query = $db_user->query( "SELECT factuur_id FROM facturen WHERE factuur_nr = ".intval($factuur_nr)." LIMIT 1" );
+		
+		return DBhelper::toRow( $query, 'NULL', 'factuur_id' );
+	}
+	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -316,6 +333,9 @@ class Factuur extends Connector
 	 */
 	public function details()
 	{
+		$this->_updateBedragenNaBetaling();
+		$this->_updateVoorfinancieringNaBetaling();
+		
 		$sql = "SELECT facturen.*,DATEDIFF(voldaan_op,factuur_datum) AS opengestaan, DATEDIFF(verval_datum,factuur_datum) AS betaaltermijn, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen,
        					inleners_projecten.omschrijving AS project_label, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener,
        					TIMESTAMPDIFF(MINUTE,facturen.timestamp,NOW()) AS age
@@ -502,6 +522,7 @@ class Factuur extends Connector
 		$this->db_user->insert( 'facturen_betalingen', $insert );
 		
 		$this->_updateBedragenNaBetaling();
+		$this->_updateVoorfinancieringNaBetaling();
 		
 		$this->_log( 'Betaling toegevoegd', json_encode( $insert ) );
 		
@@ -528,12 +549,22 @@ class Factuur extends Connector
 	 */
 	public function delBetaling( int $betaling_id )
 	{
+		//is er een tegenboeking
+		$query = $this->db_user->query( "SELECT tegen_factuur_id FROM facturen_betalingen WHERE id = " . intval( $betaling_id ) . " LIMIT 1" );
+		$tegen_factuur_id = DBhelper::toRow( $query, 'NULL', 'tegen_factuur_id' );
+		
 		$this->db_user->query( "UPDATE facturen_betalingen SET deleted = 1, deleted_on = NOW(),  deleted_by = " . $this->user->user_id . " WHERE deleted = 0 AND id = " . intval( $betaling_id ) . " LIMIT 1" );
-		
-		$this->_updateBedragenNaBetaling();
-		
 		$this->_log( 'Betaling verwijderd', '{betaling_id:' . $betaling_id . '}' );
 		
+		if( $tegen_factuur_id !== NULL )
+		{
+			$this->db_user->query( "UPDATE facturen_betalingen SET deleted = 1, deleted_on = NOW(),  deleted_by = " . $this->user->user_id . " WHERE deleted = 0 AND tegen_factuur_id = " . intval( $tegen_factuur_id ) . " LIMIT 1" );
+			$this->_log( 'Bijbehorende credit betaling verwijderd', '{betaling_id:' . $betaling_id . ', factuur_id: '.$tegen_factuur_id.'}' );
+		}
+		
+		$this->_updateBedragenNaBetaling();
+		$this->_updateVoorfinancieringNaBetaling();
+
 		return true;
 	}
 	
@@ -544,7 +575,12 @@ class Factuur extends Connector
 	 */
 	public function _updateBedragenNaBetaling()
 	{
-		$query = $this->db_user->query( "SELECT SUM(bedrag) AS betaald FROM facturen_betalingen WHERE factuur_id = $this->_factuur_id AND deleted = 0 ORDER BY betaald_op DESC" );
+		$sql = "SELECT SUM(facturen_betalingen.bedrag) AS betaald
+				FROM facturen_betalingen
+				LEFT JOIN facturen_betalingen_categorien ON facturen_betalingen.categorie_id = facturen_betalingen_categorien.categorie_id
+				WHERE facturen_betalingen.factuur_id = $this->_factuur_id AND facturen_betalingen.deleted = 0 AND facturen_betalingen_categorien.voorfinanciering = 0 ORDER BY facturen_betalingen.betaald_op DESC";
+		
+		$query = $this->db_user->query( $sql );
 		$data = DBhelper::toRow( $query, 'NULL' );
 		
 		if( $data['betaald'] === NULL ) $data['betaald'] = 0;
@@ -565,9 +601,31 @@ class Factuur extends Connector
 	 * betalingen
 	 *
 	 */
+	public function _updateVoorfinancieringNaBetaling()
+	{
+		$sql = "SELECT SUM(facturen_betalingen.bedrag) AS betaald
+				FROM facturen_betalingen
+				LEFT JOIN facturen_betalingen_categorien ON facturen_betalingen.categorie_id = facturen_betalingen_categorien.categorie_id
+				WHERE facturen_betalingen.factuur_id = $this->_factuur_id AND facturen_betalingen.deleted = 0 AND facturen_betalingen_categorien.voorfinanciering = 1 ORDER BY facturen_betalingen.betaald_op DESC";
+		
+		$query = $this->db_user->query( $sql );
+		$data = DBhelper::toRow( $query, 'NULL' );
+		
+		if( $data['betaald'] === NULL )
+			return;
+		
+		if( $data !== NULL )
+			$this->db_user->query( "UPDATE facturen SET bedrag_voorfinanciering = ".$data['betaald']." WHERE factuur_id =  $this->_factuur_id LIMIT 1" );
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * betalingen
+	 *
+	 */
 	public function betalingen( $show_deleted = false )
 	{
-		$sql = "SELECT facturen_betalingen.*, facturen_betalingen_categorien.g_rekening
+		$sql = "SELECT facturen_betalingen.*, facturen_betalingen_categorien.g_rekening, facturen_betalingen_categorien.voorfinanciering
 				FROM facturen_betalingen
 				LEFT JOIN facturen_betalingen_categorien ON facturen_betalingen_categorien.categorie_id = facturen_betalingen.categorie_id
 				WHERE facturen_betalingen.factuur_id = $this->_factuur_id";
@@ -589,10 +647,15 @@ class Factuur extends Connector
 		{
 			if( $betaling['deleted'] == 0 )
 			{
-				if( $betaling['g_rekening'] == 1 )
-					$this->_betaald_g += $betaling['bedrag'];
+				if( $betaling['voorfinanciering'] == 0 )
+				{
+					if( $betaling['g_rekening'] == 1 )
+						$this->_betaald_g += $betaling['bedrag'];
+					else
+						$this->_betaald_vrij += $betaling['bedrag'];
+				}
 				else
-					$this->_betaald_vrij += $betaling['bedrag'];
+					$this->_betaald_voorfinanciering += $betaling['bedrag'];
 			}
 		}
 		
@@ -609,6 +672,23 @@ class Factuur extends Connector
 		return $this->_betaald_vrij;
 	}
 	
+	public function openVrij()
+	{
+		$details = $this->details();
+		return $details['bedrag_incl'] - $details['bedrag_grekening'] - $this->_betaald_vrij;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * totaalbedrag
+	 *
+	 */
+	public function totaalbedrag()
+	{
+		$details = $this->details();
+		return $details['bedrag_incl'];
+	}
+	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * betalingen totaal G
@@ -617,6 +697,22 @@ class Factuur extends Connector
 	public function betaaldG()
 	{
 		return $this->_betaald_g;
+	}
+	
+	public function openG()
+	{
+		$details = $this->details();
+		return $details['bedrag_grekening'] - $this->_betaald_g;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * betalingen totaal Vrij
+	 *
+	 */
+	public function betaaldVoorfinanciering()
+	{
+		return $this->_betaald_voorfinanciering;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -704,14 +800,13 @@ class Factuur extends Connector
 		$email->setSubject( 'Nieuwe factuur' );
 		$email->setTitel( 'Nieuwe factuur voor ' . $inlener->bedrijfsnaam );
 		$email->setAttechment( 'facturen', 'factuur_id', $factuur, 'factuur_' . $factuur['factuur_nr'] . '.pdf' );
-		$email->setBody( 'Er staat een nieuwe factuur voor u klaar. U vind de factuur als bijlage bij de email en in uw portal.
+		$email->setBody( 'Er staat een nieuwe factuur voor u klaar. U vind de factuur als bijlage bij de email en in uw portal. <br /> Al onze bedrijfsinformatie inclusief <b>verklaring betalingsgedrag</b> vindt u op
+						<a href="https://www.devisonline.nl/flexxoffice">https://www.devisonline.nl/flexxoffice</a>.
 						<br /><br />
 						<table>
 						<tr><th style="padding-right: 20px; text-align: right">Factuur nr</th><th style="text-align: right">Bedrag Incl BTW</th></tr>
 						<tr><td style="padding-right: 20px; text-align: right">' . $factuur['factuur_nr'] . '</td><td style="text-align: right">€ ' . number_format( $factuur['bedrag_incl'], 2, ',', '.' ) . '</td></tr>
-						</table>
-						<br /><br />
-						Met vriendelijke groet,<br />' . $this->werkgever->bedrijfsnaam() );
+						</table>');
 		$email->useHtmlTemplate( 'default' );
 		$email->delay( 0 );
 		

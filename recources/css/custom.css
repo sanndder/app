@@ -21,6 +21,33 @@
     width: 100%
 }
 
+/* document explorer */
+
+.fm-sidebar-left{width: 200px; border-right: 1px solid rgba(0, 0, 0, 0.125)}
+.fm-sidebar-right{width: 300px; border-left: 1px solid rgba(0, 0, 0, 0.125)}
+.fm-content, .fm-sidebar-left, .fm-sidebar-right{ }
+
+.fm-maps .nav-link-2{ padding-left: 30px;}
+
+.fm-toolbar{ padding: 8px 0}
+
+.fm-toolbar .fm-btn{ padding: 12px 12px; cursor: pointer;}
+.fm-toolbar .fm-btn:hover{ background-color: #EDEDED; }
+
+table.fm-files{width: 100%;}
+table.fm-files thead th{ font-weight: bold; font-size: 11px; color: #999 }
+table.fm-files .icon-checkbox-unchecked{font-size: 13px;}
+table.fm-files td { padding: 8px 1px }
+table.fm-files td .icon-checkbox-unchecked{color: #999 }
+
+.fm-sidebar-right .nav-tabs-bottom .nav-link{ padding: 18px 15px }
+.fm-sidebar-right .nav-tabs-bottom .nav-link.active:before{ background-color: #2196F3;}
+
+/* aanvulling */
+
+.btn-teal{ background-color: #26a69a; color: #FFF; border-color: #26a69a}
+.btn-teal:hover{ background-color: #219187; color: #FFF; border-color: #219187}
+
 /* lijst items op laten lichten*/
 ul.list-hover li {
     padding: 3px 4px;
@@ -199,6 +226,11 @@ ul.list-hover li:hover {
     padding: 4px 0;
     font-weight: bold
 }
+
+.set-bedrag{cursor: pointer}
+
+.gekoppelde-facturen thead th{background-color: #2DA4DC; color: #FFF; border-bottom: 2px solid #FFF}
+.gekoppelde-facturen tbody td{background-color: #F6F6F6; border-bottom: 2px solid #FFF}
 
 
 /* nieuw */

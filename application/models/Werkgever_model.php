@@ -58,7 +58,7 @@ class Werkgever_model extends MY_Model
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		//change ID if GET is set
 		if( isset($_GET['entity_id']) )
 			$this->setEntiteitID( $_GET['entity_id'] );
@@ -186,6 +186,160 @@ class Werkgever_model extends MY_Model
 			$this->_wid = $data['wid'];
 			$this->_hash = $data['wg_hash'];
 		}
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * extra document veld
+	 *
+	 */
+	public function addDocumentVeld( $naam = NULL, $geldigheid = NULL ) :bool
+	{
+		if( $naam === NULL || strlen($naam) == 0)
+		{
+			$this->_error[] = 'Ongeldige naam';
+			return false;
+		}
+		
+		if( $geldigheid === NULL )
+		{
+			$this->_error[] = 'Ongeldige geldigheid';
+			return false;
+		}
+		
+		$naam_clean = str_replace( ' ', '_', $naam);
+		$naam_clean = str_replace( array('@','#','$','%','&','*',"'",'"','/','\\'), '', $naam_clean);
+		
+		
+		$insert['naam'] = $naam;
+		$insert['naam_clean'] = $naam_clean;
+		$insert['geldigheid'] = $geldigheid;
+		$insert['user_id'] = $this->user->user_id;
+		
+		$this->db_user->insert( 'werkgever_documenten_instellingen', $insert );
+		
+		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * velden ophalen
+	 *
+	 */
+	public function documentVelden()
+	{
+		$query = $this->db_user->query( "SELECT * FROM werkgever_documenten_instellingen WHERE deleted = 0 ORDER BY naam" );
+		return DBhelper::toArray( $query, 'document_id', 'NULL' );
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * del document veld
+	 *
+	 */
+	public function delDocumentVeld( $id = NULL ) :bool
+	{
+		$this->db_user->query( "UPDATE werkgever_documenten_instellingen SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE deleted = 0 AND document_id = ?", array( $this->user->user_id, intval($id) ) );
+		return true;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * del document veld
+	 *
+	 */
+	public function delDocument( $id = NULL ) :bool
+	{
+		$this->db_user->query( "UPDATE werkgever_documenten SET deleted = 1, deleted_on = NOW(), deleted_by = ? WHERE deleted = 0 AND document_id = ?", array( $this->user->user_id, intval($id) ) );
+		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * document ophalen
+	 *
+	 */
+	public function document( $file_id = NULL ) :?array
+	{
+		$query = $this->db_user->query( "SELECT * FROM werkgever_documenten WHERE deleted = 0 AND file_id = ? LIMIT 1", array($file_id) );
+		return DBhelper::toRow( $query, 'NULL' );
+	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * documenten ophalen
+	 *
+	 */
+	public function documenten( ) :?array
+	{
+		$query = $this->db_user->query( "SELECT werkgever_documenten.*, werkgever_documenten_instellingen.*
+											FROM werkgever_documenten
+											LEFT JOIN werkgever_documenten_instellingen ON werkgever_documenten.document_id = werkgever_documenten_instellingen.document_id
+											WHERE werkgever_documenten.deleted = 0 AND werkgever_documenten_instellingen.deleted = 0 ORDER BY werkgever_documenten_instellingen.naam" );
+		return DBhelper::toArray( $query, 'document_id', 'NULL' );
+	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * geupload document afhandelen
+	 *
+	 */
+	public function updateDagtekening( $file_id, $dagtekening ) :bool
+	{
+		if( $file_id === NULL || $dagtekening === NULL )
+			return false;
+		
+		$dagtekening = reverseDate($dagtekening);
+		
+		$query = $this->db_user->query( "SELECT werkgever_documenten_instellingen.geldigheid
+										 	FROM werkgever_documenten
+											LEFT JOIN werkgever_documenten_instellingen ON werkgever_documenten_instellingen.document_id = werkgever_documenten.document_id
+											WHERE file_id = $file_id AND werkgever_documenten.deleted = 0 LIMIT 1" );
+		$geldigheid =  DBhelper::toRow( $query, 'NULL', 'geldigheid');
+		$geldigheid = intval($geldigheid);
+
+		if( $geldigheid == 0)
+			$update['geldig_tot'] = NULL;
+		else
+			$update['geldig_tot'] = date('Y-m-d', strtotime("+$geldigheid months", strtotime($dagtekening) ));
+		
+		$update['dagtekening'] = $dagtekening;
+		$this->db_user->where( 'file_id', $file_id );
+		$this->db_user->update( 'werkgever_documenten', $update );
+		
+		if( $this->db_user->affected_rows() > 0 )
+			return true;
+		return false;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * geupload document afhandelen
+	 *
+	 */
+	public function handleUploadedDocument( $file_id, $document_id ) :bool
+	{
+		$query = $this->db_user->query( "SELECT geldigheid FROM werkgever_documenten_instellingen WHERE document_id = $document_id AND deleted = 0 LIMIT 1" );
+		$geldigheid =  DBhelper::toRow( $query, 'NULL', 'geldigheid');
+		
+		if( $geldigheid == 0)
+			$update['geldig_tot'] = NULL;
+		else
+			$update['geldig_tot'] = date('Y-m-d', strtotime("+$geldigheid months"));
+		
+		$update['dagtekening'] = date('Y-m-d');
+		$update['document_id'] = $document_id;
+		$this->db_user->where( 'file_id', $file_id );
+		$this->db_user->update( 'werkgever_documenten', $update );
+		
+		if( $this->db_user->affected_rows() > 0 )
+			return true;
+		return false;
 	}
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

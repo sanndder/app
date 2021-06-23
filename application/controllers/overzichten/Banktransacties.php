@@ -32,6 +32,7 @@ class Banktransacties extends MY_Controller
 		$transactiesGroup = new TransactieGroup();
 		$transactiesGroup->verwerken(); //onverwerkte betalingen verwerken
 		
+		$this->smarty->assign( 'inleners', inlenerGroup::list() );
 		$this->smarty->assign( 'categorien', $transactiesGroup->listCategorien() );
 		$this->smarty->display('overzichten/bankbestanden/overzicht.tpl');
 	}
@@ -44,20 +45,51 @@ class Banktransacties extends MY_Controller
 		$transactie = new Transactie( $transactie_id );
 		$response['details'] = $transactie->details();
 		$response['facturen'] = NULL;
-		
-		if( $response['details']['cat_factuur'] == 1 )
-			$response['facturen'] = $transactie->facturen();
+		$response['facturen'] = $transactie->facturen();
 		
 		echo json_encode( $response );
 	}
 	
 	
 	//-----------------------------------------------------------------------------------------------------------------
+	// AJAX negeren
+	//-----------------------------------------------------------------------------------------------------------------
+	public function ignore()
+	{
+		$transactie = new Transactie( $_POST['transactie_id'] );
+		$response = $transactie->ignore( $_POST['all'] );
+		echo json_encode( $response );
+	}
+	
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// AJAX link iban aan inlener
+	//-----------------------------------------------------------------------------------------------------------------
+	public function linkiban()
+	{
+		$transactie = new Transactie( $_POST['transactie_id'] );
+		$response = $transactie->linkIban( $_POST['inlener_id'] );
+		echo json_encode( $response );
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// AJAX link verwijderen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function unlinkiban()
+	{
+		$transactie = new Transactie( $_POST['transactie_id'] );
+		$response = $transactie->unlinkIban( $_POST['inlener_id'] );
+		echo json_encode( $response );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
 	// AJAX facturen koppelen
 	//-----------------------------------------------------------------------------------------------------------------
-	public function koppelfacturen()
+	public function koppelfactuur()
 	{
-		if( !isset($_POST['facturen']) || !is_array($_POST['facturen']))
+		if( !isset($_POST['factuur_id']))
 		{
 			$response['status'] = 'error';
 			$response['error'] = 'Geen facturen om te koppelen';
@@ -66,7 +98,25 @@ class Banktransacties extends MY_Controller
 		}
 		
 		$transactie = new Transactie( $_POST['transactie_id'] );
-		$response = $transactie->koppelFacturen( $_POST['facturen'] );
+		$response = $transactie->koppelFactuur( $_POST['factuur_id'], $_POST['screentype'], $_POST['bedrag'] );
+		echo json_encode( $response );
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// AJAX facturen ontkoppelen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function ontkoppelfactuur()
+	{
+		if( !isset($_POST['factuur_id']))
+		{
+			$response['status'] = 'error';
+			$response['error'] = 'Geen facturen om te ontkoppelen';
+			echo json_encode( $response );
+			die();
+		}
+		
+		$transactie = new Transactie( $_POST['transactie_id'] );
+		$response = $transactie->ontkoppelFactuur( $_POST['factuur_id'] );
 		echo json_encode( $response );
 	}
 	
@@ -91,9 +141,6 @@ class Banktransacties extends MY_Controller
 		$details = $transactie->details();
 		
 		$facturen = $transactie->facturen();
-		
-		$_POST['inlener_id'] = $details['inlener_id'];
-		$_POST['uitzender_id'] = $details['uitzender_id'];
 		
 		$facturenGroup = new FacturenGroup();
 		$facturen = $facturenGroup->searchForBankTransacties( $_POST, $facturen );

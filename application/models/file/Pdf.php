@@ -189,7 +189,7 @@ class Pdf extends File
 				$tplidx = $this->_fpdi->importPage( $i );
 				$specs = $this->_fpdi->getTemplateSize( $tplidx );
 				$this->_fpdi->addPage( $specs['orientation'] );
-				$this->_fpdi->useTemplate( $tplidx );
+				$this->_fpdi->useTemplate( $tplidx, NULL, NULL, NULL, NULL, true );
 			}
 		}
 		

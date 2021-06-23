@@ -50,7 +50,7 @@ class WerknemerGroup extends Connector {
 				WHERE werknemers_gegevens.deleted = 0";
 		
 		if( $uitzender_id !== NULL )
-			$sql .= " AND werknemers_uitzenders.uitzender_id = ". intval($uitzender_id);
+			$sql .= " AND werknemers_uitzenders.uitzender_id = ". intval($uitzender_id) . " AND werknemers_uitzenders.deleted = 0 ";
 		
 		$sql .= " ORDER BY werknemers_gegevens.achternaam";
 		
@@ -208,7 +208,7 @@ class WerknemerGroup extends Connector {
 
 		//beveiligen
 		if( $this->user->user_type == 'external' )
-			die('Geen toegand');
+			die('Geen toegang');
 		
 		//beveiligen
 		if( $this->user->user_type == 'uitzender' )

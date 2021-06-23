@@ -55,7 +55,7 @@
 
 			<li class="nav-item dropdown">
 				<a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
-					<i class=icon-folder-minus2 mr-2"></i>
+					<i class="icon-folder-minus2 mr-2"></i>
 					Debiteurbeheer {*<span class="badge badge-pill badge-warning ml-2" style="position: relative">3</span>*}
 				</a>
 
@@ -63,6 +63,9 @@
 
 					<a href="debiteurbeheer/facturen/index" class="dropdown-item d-flex justify-content-between">
 						<div><i class="icon-list-unordered mr-2"></i>Facturen</div>
+					</a>
+					<a href="debiteurbeheer/voorfinanciering/index" class="dropdown-item d-flex justify-content-between">
+						<div><i class="icon-coin-euro mr-2"></i>Voorfinanciering</div>
 					</a>
 
 				</div>

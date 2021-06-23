@@ -65,6 +65,43 @@ class Upload extends MY_Controller {
 			die();
 		}
 	}
+
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// upload excel met stand reserveringen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function uploadwerkgeverdocument()
+	{
+		$this->load->model('upload_model', 'uploadfiles');
+		$this->uploadfiles->setUploadDir( 'werkgever/documenten' );
+		$this->uploadfiles->setAllowedFileTypes( 'pdf|PDF' );
+		$this->uploadfiles->setDatabaseTable( 'werkgever_documenten' );
+		
+		//document ID er uit
+		$document_id = key($_FILES['file']['name']);
+		
+		//goede array maken
+		$array = $_FILES['file'];
+		unset($_FILES['file']);
+		foreach( $array as $key => $arr )
+			$_FILES['file'][$key] = current($arr);
+
+		$this->uploadfiles->uploadfiles();
+		
+		if( $this->uploadfiles->errors() === false)
+		{
+			$file_id = $this->uploadfiles->dataToDatabase();
+			$this->werkgever->handleUploadedDocument($file_id,$document_id);
+			$result = [];
+		}
+		else
+			$result['error'] = $this->uploadfiles->errors();
+		
+		header('Content-Type: application/json'); // set json response headers
+		echo json_encode($result);
+		die();
+	}
+	
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// upload excel met stand reserveringen
@@ -83,7 +120,7 @@ class Upload extends MY_Controller {
 			$path = $this->uploadfiles->getFilePath();
 			
 			$reserveringenExcel = new ReserveringenExcel( $path );
-			$reserveringenExcel->setType( $_POST['type'] );
+			$reserveringenExcel->setType( $this->uploadfiles->getFileArray() );
 			$reserveringenExcel->extractData();
 			$result = [];
 			
@@ -568,7 +605,7 @@ class Upload extends MY_Controller {
 	public function index()
 	{
 		//init uitzender object
-		$uitzender = new \models\uitzenders\Inlener( 256 );
+		//$uitzender = new \models\uitzenders\Inlener( 256 );
 
 
 		/*

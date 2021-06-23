@@ -25,7 +25,8 @@ class MY_Model extends CI_Model
 			$this->_connect();//try to connect to user database based on logged in user
 
 		//init user
-		$this->load->model('user_model', 'user');
+		if( !defined('EXTERNAL_CONN'))
+			$this->load->model('user_model', 'user');
 
 		//always load werkgever
 		$this->load->model('werkgever_model', 'werkgever');
@@ -87,17 +88,16 @@ class MY_Model extends CI_Model
 			die('WID not set');
 
 		//get database credentials
-		$sql = "SELECT wid, db_name, db_user, AES_DECRYPT( werkgevers.db_password, UNHEX(SHA2('".DB_SECRET."' ,512)) ) AS db_password
+		$sql = "SELECT werkgever_id, wid, db_name, db_user, wg_hash, AES_DECRYPT( werkgevers.db_password, UNHEX(SHA2('".DB_SECRET."' ,512)) ) AS db_password
 		 		FROM werkgevers WHERE wid = ?
 		 		LIMIT 1";
-
+		
 		$query = $this->db_admin->query($sql, array($_GET['wid']));
 
 		if ($query->num_rows() == 0)
 			die('WID invallid');
 
 		$werkgever = $query->row_array();
-
 
 		$config['hostname'] = 'localhost';
 		$config['username'] = $werkgever['db_user'];
@@ -125,8 +125,15 @@ class MY_Model extends CI_Model
 		else
 		{
 			$this->load->database($config, false, '', 'db_user');//load db_user
-			//$this->db_user = $CI->db_user;// first time also copy
+			$this->db_user = $CI->db_user;// first time also copy
 		}
+		
+		$session['logindata']['werkgever_id'] = $werkgever['werkgever_id'];
+		$session['logindata']['wid'] = $werkgever['wid'];
+		$session['logindata']['wg_hash'] = $werkgever['wg_hash'];
+		$session['logindata']['user_type'] = 'external';
+		
+		$this->session->set_userdata( $session );
 
 	}
 

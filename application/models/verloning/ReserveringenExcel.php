@@ -56,9 +56,13 @@ class ReserveringenExcel extends Connector
 	 * set path
 	 *
 	 */
-	public function setType( $type ) :void
+	public function setType( $file_array = NULL ) :void
 	{
-		$this->_type = $type;
+		if( !isset($file_array['file_name_display']) )
+			return;
+		
+		$filename = strtolower( $file_array['file_name_display'] );
+		$this->_type = str_replace( array('.xls', '.xlsx' ), '',$filename);
 	}
 	
 	
@@ -104,12 +108,12 @@ class ReserveringenExcel extends Connector
 			{
 				$werknemers[] = $row['A'];
 				
-				$sql = "INSERT INTO werknemers_reserveringen ( werknemer_id, datum, $this->_type, user_id )
-							VALUES ( ?, ?, ?, ? )
+				$sql = "INSERT INTO werknemers_reserveringen ( werknemer_id, datum, $this->_type, user_id, timestamp )
+							VALUES ( ?, ?, ?, ?, ? )
 							ON DUPLICATE KEY UPDATE
-							$this->_type = ?;";
+							$this->_type = ?, timestamp = ?;";
 				
-				$this->db_user->query($sql, array($row['A'], date('Y-m-d'), $row['F'], $this->user->user_id, $row['F'] ));
+				$this->db_user->query($sql, array($row['A'], date('Y-m-d'), $row['F'], $this->user->user_id, date( 'Y-m-d H:i:s' ), $row['F'], date( 'Y-m-d H:i:s' ) ));
 			}
 		}
 		
@@ -117,6 +121,21 @@ class ReserveringenExcel extends Connector
 		$this->db_user->query( "UPDATE werknemers_reserveringen SET deleted = 1 WHERE datum < '". date('Y-m-d')."' AND werknemer_id IN (".implode(',',$werknemers).") " );
 	
 		return true;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * stand van reserveringen ophalen
+	 *
+	 */
+	static function lastUpdate() :?string
+	{
+		$CI =& get_instance();
+		$db_user = $CI->db_user;
+		$query = $db_user->query( "SELECT timestamp FROM werknemers_reserveringen WHERE deleted = 0 ORDER BY  timestamp DESC LIMIT 1" );
+		
+		return DBhelper::toRow( $query, 'NULL', 'timestamp' );
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -135,29 +154,6 @@ class ReserveringenExcel extends Connector
 		$query = $db_user->query( $sql );
 		
 		return DBhelper::toRow( $query, 'NULL' );
-	}
-	
-	
-	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	 *
-	 * Toon errors
-	 * @return array|boolean
-	 */
-	public function errors()
-	{
-		//output for debug
-		if (isset($_GET['debug']))
-		{
-			if ($this->_error === NULL)
-				show('Geen errors');
-			else
-				show($this->_error);
-		}
-
-		if ($this->_error === NULL)
-			return false;
-
-		return $this->_error;
 	}
 }
 

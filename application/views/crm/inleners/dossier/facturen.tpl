@@ -84,13 +84,18 @@
 															€ {$f.bedrag_grekening|number_format:2:',':'.'}
 													</td>
 													<td class="text-right">
-                                                        {if $f.voldaan != 1}{$f.verval_dagen}{/if}
+                                                        {if $f.voldaan != 1 &&  $f.bedrag_incl != 0}{$f.verval_dagen}{/if}
 													</td>
 													<td class="text-right">
-                                                        {if $f.voldaan == 1}
+                                                        {if $f.voldaan == 1 || $f.bedrag_incl == 0}
 															<span class="text-success font-weight-bold">
 							                                <i class="icon-check mr-1"></i>
-							                                {$f.voldaan_op|date_format: '%d-%m-%Y'}
+																{if $f.bedrag_incl == 0}
+                                                                    {$f.factuur_datum|date_format: '%d-%m-%Y'}
+																{else}
+                                                                    {$f.voldaan_op|date_format: '%d-%m-%Y'}
+																{/if}
+
 						                                 </span>
                                                         {else}
 															-

@@ -133,6 +133,10 @@ class UserGroup extends Connector {
 				$user_ids[] = $a['created_by'];
 			if( isset($a['deleted_by']) )
 				$user_ids[] = $a['deleted_by'];
+			if( isset($a['verwerkt_user_id']) )
+				$user_ids[] = $a['verwerkt_user_id'];
+			if( isset($a['betermelding_user_id']) )
+				$user_ids[] = $a['betermelding_user_id'];
 		}
 		if( count($user_ids) == 0)
 			return $input_array;
@@ -147,6 +151,10 @@ class UserGroup extends Connector {
 				$a['user'] = $users[$a['created_by']];
 			if( isset($a['deleted_by']) && isset($users[$a['deleted_by']]) )
 				$a['user'] = $users[$a['deleted_by']];
+			if( isset($a['verwerkt_user_id']) && isset($users[$a['verwerkt_user_id']]) )
+				$a['user'] = $users[$a['verwerkt_user']];
+			if( isset($a['betermelding_user_id']) && isset($users[$a['betermelding_user_id']]) )
+				$a['user'] = $users[$a['betermelding_user']];
 		}
 		
 		if(is_array($el) === false)

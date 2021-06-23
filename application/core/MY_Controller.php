@@ -105,7 +105,6 @@ class MY_Controller extends CI_Controller
 			$this->smarty->assign( '_werknemer' , "ZZP'er" );
 		}
 		
-		
 		//deze classes niet redirecten
 		$no_redirect[] = 'welkom';
 		$no_redirect[] = 'ajax';

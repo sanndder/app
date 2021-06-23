@@ -33,7 +33,6 @@ class Factuur extends MY_Controller
 			$this->session->set_userdata( 'ref', $this->agent->referrer() );
 		
 		$factuur = new \models\facturatie\Factuur( $factuur_id );
-		
 		$betaling = new FactuurBetaling();
 		
 		//betaling toevoegen
@@ -52,6 +51,38 @@ class Factuur extends MY_Controller
 					$this->smarty->assign( 'msg', msg( 'warning', $factuur->errors() ) );
 			} else
 				$this->smarty->assign( 'msg', msg( 'warning', $betaling->errors() ) );
+		}
+		
+		//credit wegboeken op andere factuur
+		if( isset( $_POST['verwerk_credit'] ) )
+		{
+			//welk factuur ID valt er tegen weg
+			$tegenFactuurID = \models\facturatie\Factuur::NRtoID( $_POST['tegen_factuur_nr'] );
+			
+			$betaling->bedrag( $_POST['bedrag'] )->creditTegen( $tegenFactuurID )->categorie( 1 )->datum( $_POST['datum'] );
+			if( $betaling->valid() )
+			{
+				if( $factuur->addBetaling( $betaling ) )
+				{
+					
+					$betalingCredit = new FactuurBetaling();
+					$betalingCredit->bedrag( $_POST['bedrag'] )->creditTegen( $tegenFactuurID )->categorie( 1 )->datum( $_POST['datum'] );
+					if( $betalingCredit->valid() )
+					{
+						//de factuur die tegen geboekt wordt
+						$tegenFactuur = new \models\facturatie\Factuur( $tegenFactuurID );
+						if( $tegenFactuur->addBetaling( $betalingCredit ) )
+							redirect( $this->config->item( 'base_url' ) . 'facturatie/factuur/details/' . $factuur_id, 'location' );
+						else
+							$this->smarty->assign( 'msg', msg( 'warning', $factuur->errors() ) );
+					} else
+						$this->smarty->assign( 'msg', msg( 'warning', $betaling->errors() ) );
+				}
+				else
+					$this->smarty->assign( 'msg', msg( 'warning', $factuur->errors() ) );
+			} else
+				$this->smarty->assign( 'msg', msg( 'warning', $betaling->errors() ) );
+			
 		}
 		
 		//betaling verwijderen
@@ -78,6 +109,7 @@ class Factuur extends MY_Controller
 		$this->smarty->assign( 'betalingen', $factuur->betalingen( true ) );
 		$this->smarty->assign( 'betaald_vrij', $factuur->betaaldVrij() );
 		$this->smarty->assign( 'betaald_g', $factuur->betaaldG() );
+		$this->smarty->assign( 'betaald_voor', $factuur->betaaldVoorfinanciering() );
 		$this->smarty->assign( 'betaling_categorien', $betaling->categorien() );
 		$this->smarty->assign( 'marge_id', $factuur->getMargeFactuurID() );
 		$this->smarty->assign( 'invoer_bijlages', $factuur->getInvoerBijlages() );

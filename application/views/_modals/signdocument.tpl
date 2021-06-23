@@ -7,7 +7,7 @@
 </style>
 
 <script src="recources/plugins/pdfobject.min.js"></script>
-<script src="recources/js/modals/documenten/sign_document.js?2" type="text/javascript"></script>
+<script src="recources/js/modals/documenten/sign_document.js?5" type="text/javascript"></script>
 <script src="recources/plugins/signature-html5/signature.min.js" type="text/javascript"></script>
 
 <!-- Contactpersonen form -->

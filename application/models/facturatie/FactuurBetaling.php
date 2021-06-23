@@ -36,6 +36,7 @@ class FactuurBetaling extends Connector
 	protected $_iban = NULL;
 	protected $_factor_factuur_regel_id = NULL;
 	protected $_transactie_id = NULL;
+	protected $_tegen_factuur_id = NULL;
 	
 	protected $_categorien = NULL;
 
@@ -66,7 +67,7 @@ class FactuurBetaling extends Connector
 			$this->_error[] = 'Bedrag is niet opgegeven of ongeldig';
 		
 		if( $this->_categorie_id === NULL )
-			$this->_error[] = 'Categroie is niet opgegeven of ongeldig';
+			$this->_error[] = 'Categorie is niet opgegeven of ongeldig';
 		
 		if( $this->_datum === NULL )
 			$this->_error[] = 'Datum is niet opgegeven of ongeldig';
@@ -90,6 +91,7 @@ class FactuurBetaling extends Connector
 		$array['betaald_op'] = $this->_datum;
 		$array['factor_factuur_regel_id'] = $this->_factor_factuur_regel_id;
 		$array['transactie_id'] = $this->_transactie_id;
+		$array['tegen_factuur_id'] = $this->_tegen_factuur_id;
 
 		return $array;
 	}
@@ -123,6 +125,43 @@ class FactuurBetaling extends Connector
 		
 		return $this;
 	}
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * set categorie
+	 *
+	 */
+	public function grekening( $grekening = false ) :FactuurBetaling
+	{
+		if( !$grekening )
+			$sql = "SELECT categorie_id FROM facturen_betalingen_categorien WHERE g_rekening = 1 LIMIT 1";
+		else
+			$sql = "SELECT categorie_id FROM facturen_betalingen_categorien WHERE categorie_id = 1 LIMIT 1";
+		
+		$query = $this->db_user->query( $sql );
+		
+		$this->_categorie_id = DBhelper::toRow( $query, 'NULL', 'categorie_id');
+		
+		return $this;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * is het voorfinanciering?
+	 *
+	 */
+	public function voorfinanciering( $voorfinanciering = false ) :FactuurBetaling
+	{
+		if( !$voorfinanciering )
+			return $this;
+		
+		$query = $this->db_user->query( "SELECT categorie_id FROM facturen_betalingen_categorien WHERE voorfinanciering = 1 LIMIT 1" );
+		$this->_categorie_id = DBhelper::toRow( $query, 'NULL', 'categorie_id');
+		
+		return $this;
+	}
+
 
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -177,6 +216,23 @@ class FactuurBetaling extends Connector
 		
 		return $this;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * factuur voor tegenboeking
+	 *
+	 */
+	public function creditTegen( $factuur_id = NULL ) :FactuurBetaling
+	{
+		if( $factuur_id === NULL )
+			return $this;
+		
+		if( is_numeric($factuur_id))
+			$this->_tegen_factuur_id = $factuur_id;
+		
+		return $this;
+	}
+
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

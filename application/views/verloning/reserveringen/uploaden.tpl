@@ -44,23 +44,7 @@
 											$('#fileupload').on('fileuploaded', function(){
 												window.location.reload();
 											});
-
-											$('[name="type"]').on('change',function(){
-												if( $(this).val() == '' ){
-													data.type = null;
-													$('.empty').show();
-													$('.upload').hide();
-												}
-												else{
-													data.type = $(this).val();
-													$('.empty').hide();
-													$('.upload').show();
-												}
-
-												$('#fileupload').fileinput('refresh', {uploadExtraData:data});
-											});
-
-
+											$('#fileupload').fileinput('refresh', {uploadExtraData:data});
 										});
                                         {/literal}
 									</script>
@@ -69,24 +53,10 @@
 
 										<table style="width: 100%">
 											<tr>
-												<td class="align-bottom" style="width: 200px">
-
-													<select class="form-control" name="type">
-														<option></option>
-														<option value="vakantiegeld">Vakantiegeld</option>
-														<option value="vakantieuren">Vakantieuren</option>
-														<option value="vakantieuren_F12">Vakantieuren Fase 12</option>
-														<option value="feestdagen">Feestdagen</option>
-														<option value="kort_verzuim">Kort verzuim</option>
-														<option value="atv_uren">ATV uren</option>
-													</select>
-
-												</td>
 												<td>
 
-													<div class="empty pl-3">Selecteer een type reservering</div>
-													<div class="upload" style="display: none">
-														<input name="file" type="file" id="fileupload" class="file-input">
+													<div class="upload">
+														<input name="file" type="file" multiple id="fileupload" class="file-input">
 													</div>
 
 												</td>
@@ -106,7 +76,7 @@
 					-------------------------------------------------------------------------------------------------------------------------------------------------->
 					<div class="card">
 						<div class="card-header header-elements-inline">
-							<h5 class="card-title text-primary">Stand reserveringen</h5>
+							<h5 class="card-title text-primary">Stand reserveringen per {$last_update|date_format: '%d-%m-%Y'}</h5>
 						</div>
 
 						<div class="card-body">

@@ -210,7 +210,7 @@ class Inlener extends Connector
 	public function del( $id )
 	{
 		if( ENVIRONMENT != 'development' )
-			die('Geen toegand');
+			die('Geen toegang');
 		
 		$this->db_user->query( "DELETE FROM inleners_bedrijfsgegevens WHERE inlener_id = $id" );
 		$this->db_user->query( "DELETE FROM inleners_cao WHERE inlener_id = $id" );

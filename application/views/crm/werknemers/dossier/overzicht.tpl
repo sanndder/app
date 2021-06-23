@@ -43,6 +43,7 @@
 												<li>{$gegevens.postcode} {$gegevens.plaats}</li>
 												<li class="mt-2"></li>
 												<li>{$gegevens.telefoon}</li>
+												<li>{$gegevens.mobiel}</li>
 												<li>{$gegevens.email}</li>
 											</ul>
 

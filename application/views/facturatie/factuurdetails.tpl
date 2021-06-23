@@ -60,6 +60,30 @@
 						<div class="card-body">
 
 							<table>
+                                {** excl **}
+								<tr>
+									<td class="pr-5 pt-1 font-weight-bold">Totaal excl.:</td>
+									<td class=" pr-3 pt-1 text-right">€ {$factuur.bedrag_excl|number_format:2:',':'.'}</td>
+									<td></td>
+									<td></td>
+								</tr>
+                                {** btw **}
+								<tr>
+									<td class="pr-5 pt-1 font-weight-bold">Totaal btw:</td>
+									<td class=" pr-3 pt-1 text-right">{if $factuur.bedrag_btw === NULL}verlegd{else}€ {$factuur.bedrag_btw|number_format:2:',':'.'}{/if} </td>
+									<td></td>
+									<td></td>
+								</tr>
+                                {** incl **}
+								<tr>
+									<td class="pr-5 pt-1 font-weight-bold">Totaal:</td>
+									<td class=" pr-3 pt-1 text-right">€ {$factuur.bedrag_incl|number_format:2:',':'.'}</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td colspan="4" style="height: 25px;"></td>
+								</tr>
 								<tr>
 									<th></th>
 									<th class="text-right pr-3">Factuur</th>
@@ -67,8 +91,8 @@
 									<th class="text-right">Openstaand</th>
 								</tr>
                                 {** incl **}
-								<tr>
-									<td class="pr-5 pt-1 font-weight-bold">Totaal incl.:</td>
+								<tr style="border-bottom: 1px solid #666">
+									<td class="pr-5 pt-1 font-weight-bold">Totaal:</td>
 									<td class=" pr-3 pt-1 text-right {if $factuur.bedrag_incl == ($factuur.bedrag_incl - $factuur.bedrag_openstaand)} text-success font-weight-bold{/if}">€ {$factuur.bedrag_incl|number_format:2:',':'.'}</td>
 									<td class=" pr-3 pt-1 text-right">€ {abs($factuur.bedrag_incl) - $factuur.bedrag_openstaand|number_format:2:',':'.'}</td>
 									<td class="pt-1 text-right">€ {$factuur.bedrag_openstaand|number_format:2:',':'.'}</td>
@@ -87,24 +111,18 @@
 									<td class="pt-1 text-right">€ {$factuur.bedrag_grekening - $betaald_g|number_format:2:',':'.'}</td>
 								</tr>
 
-								<tr>
-									<td colspan="4" style="height: 15px;"></td>
-								</tr>
+								{if $betaald_voor > 0}
+									<tr>
+										<td colspan="4" style="height: 15px;"></td>
+									</tr>
+									<tr>
+										<td class="pr-5 pt-1 font-weight-bold">Voorfinanciering:</td>
+										<td class="pr-3 pt-1 text-right">€ {$betaald_voor|number_format:2:',':'.'}</td>
+										<td class="pr-3 pt-1 text-right"></td>
+										<td class="pt-1 text-right"></td>
+									</tr>
+								{/if}
 
-                                {** excl **}
-								<tr>
-									<td class="pr-5 pt-1 font-weight-bold">Totaal excl.:</td>
-									<td class=" pr-3 pt-1 text-right">€ {$factuur.bedrag_excl|number_format:2:',':'.'}</td>
-									<td></td>
-									<td></td>
-								</tr>
-                                {** btw **}
-								<tr>
-									<td class="pr-5 pt-1 font-weight-bold">Totaal btw:</td>
-									<td class=" pr-3 pt-1 text-right">{if $factuur.bedrag_btw === NULL}verlegd{else}€ {$factuur.bedrag_btw|number_format:2:',':'.'}{/if} </td>
-									<td></td>
-									<td></td>
-								</tr>
 							</table>
 
 						</div>
@@ -346,6 +364,7 @@
 													<td class="text-right">€ {$b.bedrag|number_format:2:',':'.'}</td>
 													<td>
                                                         {if isset($betaling_categorien[$b.categorie_id])}{$betaling_categorien[$b.categorie_id]}{/if}
+                                                        {if $b.tegen_factuur_id != NULL} - creditfactuur{/if}
 													</td>
 													<td>
                                                         {$b.transactie_id}
@@ -367,6 +386,39 @@
 
 							    <!--- Toevoegen ------------------------------------------------------------------------------------------------------>
 								<div class="col-lg-4 offset-lg-1">
+
+									{if $factuur.bedrag_incl < 0}
+										<form method="post" action="">
+											<table class="mb-3">
+												<tr>
+													<td class="pr-3 pb-1">Factuur nr</td>
+													<td class="pb-1">
+														<input type="text" class="form-control" name="tegen_factuur_nr" data-lpignore="true">
+													</td>
+												</tr>
+												<tr>
+													<td class="pr-3 pb-1">Bedrag</td>
+													<td class="pb-1">
+														<input name="bedrag" value="{$factuur.bedrag_incl * -1}" type="text" class="form-control text-right" />
+													</td>
+												</tr>
+												<tr>
+													<td class="pr-3 pb-1">Datum</td>
+													<td class="pb-1">
+														<input name="datum" value="{$factuur.factuur_datum|date_format: '%d-%m-%Y'}" type="text" class="form-control" placeholder="dd-mm-jjjj" data-mask="99-99-9999" required />
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2">
+														<button name="verwerk_credit" type="submit" class="btn btn-success btn-sm">
+															<i class="icon-check mr-1"></i>Afboeken
+														</button>
+													</td>
+												</tr>
+											</table>
+										</form>
+									{/if}
+
 
 									<form method="post" action="">
 										<table>

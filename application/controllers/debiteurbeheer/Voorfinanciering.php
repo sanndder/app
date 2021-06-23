@@ -1,7 +1,7 @@
 <?php
 
+use models\boekhouding\VoorfinancieringOverzicht;
 use models\debiteurbeheer\OpenstaandeFacturen;
-use models\uitzenders\UitzenderGroup;
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Instellingen controller
  */
-class Facturen extends MY_Controller
+class Voorfinanciering extends MY_Controller
 {
 
 	//-----------------------------------------------------------------------------------------------------------------
@@ -27,20 +27,13 @@ class Facturen extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
-		$openstaandeFacturen = new OpenstaandeFacturen();
-		$facturen = $openstaandeFacturen->facturen( $_POST );
+		$voorfinanciering = new VoorfinancieringOverzicht();
 		
 		
-		$eigenfacturen = $openstaandeFacturen->eigenvermogen();
-
-		//show($facturen);
-		
-		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );
-		$this->smarty->assign( 'eigenfacturen', $eigenfacturen );
-		$this->smarty->assign( 'totaal', $openstaandeFacturen->totaaleigenvermogen() );
-		$this->smarty->assign( 'totaal_uitzenders', $openstaandeFacturen->totaaluitzenders() );
-		$this->smarty->assign( 'facturen', $facturen );
-		$this->smarty->display('debiteurbeheer/facturen.tpl');
+		$this->smarty->assign( 'openstaand', $voorfinanciering->openstaandefinanciering() );
+		$this->smarty->assign( 'terug', $voorfinanciering->terugtebetalen() );
+		$this->smarty->assign( 'facturen', $voorfinanciering->facturen() );
+		$this->smarty->display('debiteurbeheer/voorfinanciering.tpl');
 	}
 	
 }

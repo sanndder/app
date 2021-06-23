@@ -341,7 +341,7 @@ class Ajax extends MY_Controller
 		if( $this->user->werkgever_type == 'bemiddeling' ) $invoerUren->setZZP( $_POST['werknemer_id'] );
 		
 		//welke actie
-		if( $_POST['urenrow']['invoer_id'] != '' && ( $_POST['urenrow']['aantal'] == '' || $_POST['urenrow']['aantal'] == 0 ) )
+		if( $_POST['urenrow']['invoer_id'] != '' && ( $_POST['urenrow']['aantal'] == '' || strcmp($_POST['urenrow']['aantal'], 0) === 0 ) )
 		{
 			if( $invoerUren->delRow( $_POST['urenrow'] ))
 				$array['status'] = 'deleted';
@@ -594,7 +594,7 @@ class Ajax extends MY_Controller
 	public function listInleners()
 	{
 		$inlenerGroup = new InlenerGroup();
-		$array['inleners'] = $inlenerGroup->uitzender( $this->_uitzender_id )->listForUreninvoer();
+		$array['inleners'] = $inlenerGroup->uitzender( $this->_uitzender_id )->listForUreninvoer( $this->invoer->tijdvakinfo() );
 		
 		echo json_encode( $array );
 	}

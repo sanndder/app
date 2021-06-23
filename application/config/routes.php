@@ -53,8 +53,10 @@ $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['klantkaart/(:any)'] 	= 'klantkaart/index/$1';
+$route['bedrijfsinformatie/(:any)'] 	= 'bedrijfsinformatie/index/$1';
+$route['flexxoffice'] 			= 'bedrijfsinformatie/index';
 
+$route['klantkaart/(:any)'] 	= 'klantkaart/index/$1';
 $route['klantenkaart/(:any)/(:any)/(:any)'] 	= 'klantenkaart/index/$1/$2/$3';
 
 $route['crm/uitzenders(:any)'] 					= 'crm/uitzenders/overzicht/$1';

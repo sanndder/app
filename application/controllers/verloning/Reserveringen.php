@@ -35,6 +35,7 @@ class Reserveringen extends MY_Controller {
 	//-----------------------------------------------------------------------------------------------------------------
 	public function uploaden()
 	{
+		$this->smarty->assign( 'last_update', ReserveringenExcel::lastUpdate() );
 		$this->smarty->assign( 'stand', ReserveringenExcel::stand() );
 		$this->smarty->display('verloning/reserveringen/uploaden.tpl');
 	}

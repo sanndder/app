@@ -387,7 +387,7 @@ class Email extends Connector {
 			
 			$this->_mail->Username = "sander.m.app1@gmail.com";
 			$this->_mail->Password = "Yutmoza86!";
-	
+
 		}
 		if( ENVIRONMENT == 'production' )
 		{

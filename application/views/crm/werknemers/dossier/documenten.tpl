@@ -91,6 +91,10 @@
 								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren (RO)
 							</a>
 							<br />
+							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?contracten">
+								<i class="icon-file-plus mr-2"></i>Arbeidsovereenkomst genereren (EN)
+							</a>
+							<br />
 							<a href="{$base_url}/crm/werknemers/dossier/documenten/{$werknemer->id}?et">
 								<i class="icon-file-plus mr-2"></i>ET-addendum genereren
 							</a>

@@ -35,12 +35,11 @@ class Facturenexport extends MY_Controller
 
 		$_GET['factuur_aangekocht'] = 0;
 		$_GET['datum_van'] = '2021-01-01';
-		$facturen = $facturengroep->filter($_GET)->facturenMatrix();
+		$facturen = $facturengroep->filter($_GET)->facturenMatrix( date('Y') );
 		
 		//exportbestanden
 		$factoringExport = FactoringExportFactory::init();
 		$exportbestanden = $factoringExport->bestanden( 20 );
-		
 		
 		$this->smarty->assign( 'inleners', InlenerGroup::list() );
 		$this->smarty->assign( 'uitzenders', UitzenderGroup::list() );

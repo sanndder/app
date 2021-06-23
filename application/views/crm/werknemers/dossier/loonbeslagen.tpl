@@ -3,7 +3,7 @@
 {block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
 {assign "datatable" "true"}
-
+{assign "datamask" "true"}
 {block "content"}
 
     {include file='crm/werknemers/dossier/_sidebar.tpl' active='loonbeslagen'}
@@ -53,17 +53,21 @@
 		                                </td>
 	                                </tr>
 	                                <tr>
-		                                <th>ID</th>
-		                                <th>Beslaglegger</th>
-		                                <th>Dossiernummer</th>
-		                                <th>Hoofdsom</th>
+		                                <th class="pr-4">ID</th>
+		                                <th class="pr-4">Dagtekening</th>
+		                                <th class="pr-4">Beslaglegger</th>
+		                                <th class="pr-4">Dossiernummer</th>
+		                                <th class="pr-4">Hoofdsom</th>
+		                                <th class="pr-4">Voldaan</th>
 	                                </tr>
                                     {foreach $loonbeslagen[NULL] as $l}
 										<tr>
-											<td>{$l.loonbeslag_id}</td>
-											<td>{$l.beslaglegger}</td>
-											<td>{$l.dossiernummer}</td>
-											<td>€ {$l.hoofdsom}</td>
+											<td class="pr-4">{$l.loonbeslag_id}</td>
+											<td class="pr-4">{$l.dagtekening|date_format: '%d-%m-%Y'}</td>
+											<td class="pr-4">{$l.beslaglegger}</td>
+											<td class="pr-4">{$l.dossiernummer}</td>
+											<td class="pr-4">€ {$l.hoofdsom|number_format:2:',':'.'}</td>
+											<td class="pr-4">€ {$l.voldaan|number_format:2:',':'.'}</td>
 										</tr>
                                     {/foreach}
                                 {/if}
@@ -116,6 +120,14 @@
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 					</div>
 					<div class="modal-body pt-4">
+
+						<!-- Dagtekening -->
+						<div class="form-group row mb-3">
+							<label class="col-form-label col-sm-3">Dagtekening</label>
+							<div class="col-sm-7">
+								<input name="dagtekening" type="text" class="form-control" data-mask="99-99-9999" required style="width:100px">
+							</div>
+						</div>
 
 						<!-- Beslaglegger -->
 						<div class="form-group row mb-3">

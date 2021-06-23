@@ -42,7 +42,7 @@ class User_model extends MY_Model
 
 		//user as global var
 		$logindata = $this->session->userdata('logindata');
-
+		
 		//main user
 		if( isset($logindata['main']['user_id']) && $logindata['main']['user_id'] != NULL )
 		{

@@ -37,6 +37,9 @@ class DocumentFactory extends Connector {
 			case 'uitzendbevestiging':
 				$document = new DocumentUitzendbevestiging( $templateObject );
 				break;
+			case 'opdrachtbevestiging':
+				$document = new DocumentOpdrachtbevestiging( $templateObject );
+				break;
 			case 'inlenersbeloning':
 				$document = new DocumentInlenersbeloning( $templateObject );
 				break;

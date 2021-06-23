@@ -118,6 +118,7 @@ class Dashboard extends MY_Controller {
 		$this->smarty->assign('count_inleners', $inlenergroup->count());
 		$this->smarty->assign('count_werknemers', $werknemergroup->count());
 		$this->smarty->assign('count_zzp', $zzpgroup->count());
+		$this->smarty->assign('werknemers', $werknemergroup->list( $this->uitzender->id ) );
 
 		$this->smarty->display('dashboard/uitzender.tpl');
 	}

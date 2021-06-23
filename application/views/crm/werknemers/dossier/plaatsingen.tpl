@@ -323,6 +323,10 @@
 																<img src="recources/img/icons/pdf.svg" style="height: 25px"> Uitzendbevestiging bekijken
 															</a>
 														{/if}
+														<br />
+														<a class="btn btn-primary btn-sm mt-2" href="crm/werknemers/dossier/plaatsingen/{$p.werknemer_id}/?opdrachtbevestiging={$p.plaatsing_id}">
+															<i class="icon-file-plus mr-1"></i> Opdrachtbevestiging maken
+														</a>
 
 													</td>
 												</tr>

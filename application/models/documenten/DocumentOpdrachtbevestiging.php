@@ -10,10 +10,11 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  * Documenten maken
  *
  */
-class DocumentUitzendbevestiging extends Document implements DocumentInterface {
+class DocumentOpdrachtbevestiging extends Document implements DocumentInterface {
 
 	protected $_template_object = NULL;
 	protected $_plaatsing = NULL;
+	protected $_uurtarieven = NULL;
 	
 	/*
 	 * @var array
@@ -175,12 +176,12 @@ class DocumentUitzendbevestiging extends Document implements DocumentInterface {
 	 *
 	 * @return void
 	 */
-	public function replacePlaatsingVars() :DocumentUitzendbevestiging
+	public function replacePlaatsingVars() :DocumentOpdrachtbevestiging
 	{
 		//show( $this->_plaatsing );
 
 		$this->_html = str_replace( '{{plaatsing.cao}}', $this->_plaatsing['cao']['cao_name'], $this->_html );
-		
+
 		foreach( $this->_plaatsing as $field => $value )
 		{
 			if( $field == 'start_plaatsing' )
@@ -188,6 +189,16 @@ class DocumentUitzendbevestiging extends Document implements DocumentInterface {
 			
 			if( !is_array( $value ) )
 				$this->_html = str_replace( '{{plaatsing.' . $field . '}}', $value, $this->_html );
+		}
+		
+		//tarieven
+		if( isset($this->_uurtarieven) && is_array($this->_uurtarieven) )
+		{
+			$tarieven_html = '';
+			foreach( $this->_uurtarieven as $tarief )
+				$tarieven_html .=  $tarief['label'] . ': €' . $tarief['verkooptarief'] .'  <br />';
+		
+			$this->_html = str_replace( '{{plaatsing.tarieven}}', $tarieven_html, $this->_html );
 		}
 		
 		$urentypes['overuren'] = array();
@@ -244,9 +255,10 @@ class DocumentUitzendbevestiging extends Document implements DocumentInterface {
 	 *
 	 * @return void
 	 */
-	public function setPlaatsing( $plaatsing ) :DocumentUitzendbevestiging
+	public function setPlaatsing( $plaatsing, $uurtarieven ) :DocumentOpdrachtbevestiging
 	{
 		$this->_plaatsing = $plaatsing;
+		$this->_uurtarieven = $uurtarieven;
 		return $this;
 	}
 	

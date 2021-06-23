@@ -147,6 +147,14 @@
 		                        </a>
 	                        </li>
 
+                            {if $user_id == '2'}
+		                        <li class="nav-item">
+			                        <a {if $werknemer->gegevens_complete != NULL}href="crm/werknemers/dossier/documentenn/{$werknemer->werknemer_id}"{/if} class="nav-link {if $active == 'documenten'}active{/if}">
+				                        <i class="icon-file-text2 mr-2"></i>Documenten nieuw
+			                        </a>
+		                        </li>
+                            {/if}
+
 	                        <!-- li Plaatsingen -->
 	                        <li class="nav-item">
 		                        <a href="crm/werknemers/dossier/plaatsingen/{$werknemer->werknemer_id}" class="nav-link {if $active == 'plaatsingen'}active{/if}">

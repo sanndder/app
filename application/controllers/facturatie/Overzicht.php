@@ -40,7 +40,7 @@ class Overzicht extends MY_Controller
 	public function index()
 	{
 		$facturengroep = new FacturenGroup();
-		$facturen = $facturengroep->facturenMatrix();
+		$facturen = $facturengroep->facturenMatrix( date('Y') );
 		
 		$this->smarty->assign( 'facturen', $facturen );
 		

@@ -290,8 +290,14 @@ class Invoer extends Connector
 			}
 			else
 				$werknemer['uren_werkweek'] = 999;
-			
-			$werknemers[] = $werknemer;
+
+			if( $this->user->user_type == 'werknemer' )
+			{
+				if( $this->werknemer->id == $werknemer['id'] )
+					$werknemers[] = $werknemer;
+			}
+			else
+				$werknemers[] = $werknemer;
 		}
 
 		return $werknemers;

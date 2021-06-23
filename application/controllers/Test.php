@@ -6,6 +6,7 @@ use models\cao\CAO;
 use models\cao\CAOGroup;
 use models\documenten\IDbewijs;
 use models\email\Email;
+use models\email\EmailHtmlTemplates;
 use models\facturatie\FactuurFactory;
 use models\file\Excel;
 use models\file\File;
@@ -38,6 +39,33 @@ class Test extends MY_Controller {
 		
 		//show( $this->user->user_type );
 		
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// emailfactuur
+	//-----------------------------------------------------------------------------------------------------------------
+	public function template()
+	{
+		$template = new EmailHtmlTemplates('default');
+		$html = $template->html();
+		echo $html;
+		
+	}
+	
+	//-----------------------------------------------------------------------------------------------------------------
+	// emailfactuur
+	//-----------------------------------------------------------------------------------------------------------------
+	public function emailfactuur()
+	{
+		$email = new Email();
+		$email->debug();
+		$email->setSubject('Testmail');
+		$email->setTitel('Welkom bij Abering Uitzend B.V.');
+		$email->setBody('In deze email vind u uw aanmeldlink voor onze online applicatie <b>Devis Online</b>. Nadat u uw gegevens heeft ingevuld zullen wij binnen één werkdag uw gegevens controleren
+						en uw account activeren. Daarna kunt u volledig gebruik maken van alle mogelijkheden van <b>Devis Online</b>.
+						<br /><br /> <a href="https://www.devisonline.nl/aanmelden/uitzender?wid=3">https://www.devisonline.nl/aanmelden/uitzender?wid=3</a><br /><br />Wij hopen op een fijne samenwerking!<br /><br />Abering Uitzend B.V.');
+		$email->useHtmlTemplate( 'default' );
+		$email->test();
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------

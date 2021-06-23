@@ -2,7 +2,7 @@
 {block "title"}Werknemer{/block}
 {block "header-icon"}icon-user{/block}
 {block "header-title"}Werknemer - {$werknemer->naam}{/block}
-
+{assign "datamask" "true"}
 {block "content"}
 
     {include file='crm/werknemers/dossier/_sidebar.tpl' active='loonbeslagen'}
@@ -34,6 +34,8 @@
 
 						<!-- card  body-->
 						<div class="card-body">
+
+
 
 
 						</div>

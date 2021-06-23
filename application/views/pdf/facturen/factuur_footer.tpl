@@ -24,7 +24,7 @@
 				<span style="color: #2DA4DC; font-weight: bold">|</span>
 				IBAN:
                 {if isset($iban_factoring) && $iban_factoring != NULL && $iban_factoring != ''}
-                    {$iban_factoring}
+	                <span style="background-color: yellow;"> {$iban_factoring}</span>
                 {else}
                     {$bedrijfsgegevens.iban|default:''}
                 {/if}

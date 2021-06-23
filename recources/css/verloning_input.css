@@ -24,6 +24,11 @@
     background-color: #2196f3;
 }
 
+/* inlener list */
+.vi-list-inleners .vi-icon-file{ font-size: 13px}
+.vi-list-inleners .icon-file-check2{ color: #25b372 }
+.vi-list-inleners .icon-file-empty2{ color: #DEDEDE }
+
 /* werknemer naam */
 .vi-title-name {
     width: 250px;
@@ -68,7 +73,7 @@
 
 .vi-table-werknemer-overzicht-detail th{font-size: 12px}
 .vi-table-werknemer-overzicht-detail td{padding: 0; font-size: 12px;}
-.vi-table-werknemer-overzicht-detail .td-overzicht-label{width: 130px;}
+.vi-table-werknemer-overzicht-detail .td-overzicht-label{ width: 130px;}
 
 .vi-table-werknemer-overzicht td:first-of-type {
     padding-left: 10px;

@@ -170,6 +170,53 @@ class Plaatsing extends Connector
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/*
+	 * uitzendbevestiging maken
+	 *
+	 */
+	public function generateOpdrachtbevestiging()
+	{
+		$plaatsing = $this->info();
+		$uurtarieven = $this->uurtarieven( $plaatsing );
+		
+		$template = new Template( 18 ); //18 is opdrachtbevestiging
+		$document = DocumentFactory::createFromTemplateObject( $template );
+		
+		$pdf = $document->setWerknemerID( $plaatsing['werknemer_id'] )->setInlenerId( $plaatsing['inlener_id'] )->setPlaatsing( $plaatsing, $uurtarieven )->build()->pdf()->download();
+		
+		if( $document->documentID() !== NULL )
+		{
+			$update['document_id'] = $document->documentID();
+			$this->db_user->where( 'plaatsing_id', $plaatsing['plaatsing_id'] );
+			$this->db_user->update( 'werknemers_inleners', $update );
+		}
+		
+		return true;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
+	 * Uurtarief standaard uren
+	 */
+	public function uurtarieven( $plaatsing = NULL )
+	{
+		if( $plaatsing === NULL )
+			$plaatsing = $this->info();
+		
+		$urentypesGroup = new UrentypesGroup();
+		$urentypes =  $urentypesGroup->inlener( $plaatsing['inlener_id'] )->urentypesWerknemer( $plaatsing['werknemer_id'], true );
+		
+		foreach( $urentypes as $type )
+		{
+			if( $type['urentype_active'] == 1 AND $type['verkooptarief'] > 0 &&  $type['doorbelasten_uitzender'] == 0 )
+				$active[] = $type;
+		}
+
+		return $active;
+	}
+	
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	/*
 	 * delete
 	 */
 	public function delete()

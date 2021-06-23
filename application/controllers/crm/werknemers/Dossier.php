@@ -22,6 +22,9 @@ use models\werknemers\LoonbeslagGroup;
 use models\werknemers\Plaatsing;
 use models\werknemers\PlaatsingGroup;
 use models\werknemers\Werknemer;
+use models\werknemers\WerknemerGroup;
+use models\werknemers\Ziekmelding;
+use models\werknemers\ZiekmeldingGroup;
 
 defined( 'BASEPATH' ) or exit( 'No direct script access allowed' );
 
@@ -41,6 +44,19 @@ class Dossier extends MY_Controller
 		//Deze pagina mag alleen bezocht worden door werkgever TODO werknemer beveiliging
 		//if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' && $this->user->user_type != 'werknemer')
 		//forbidden();
+		
+		//beveiligen
+		if( $this->user->user_type == 'werknemer' )
+			forbidden();
+		
+		if( $this->user->user_type == 'uitzender' && is_numeric($this->uri->segment(5)) )
+		{
+			$werknemergroup = new WerknemerGroup();
+			$list = $werknemergroup->list( $this->uitzender->id );
+			if( !array_key_exists( $this->uri->segment(5), $list))
+				forbidden();
+		}
+		
 		
 		//method naar smarty
 		$this->smarty->assign( 'method', $this->router->method );
@@ -273,6 +289,15 @@ class Dossier extends MY_Controller
 			
 			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
 		}
+
+		if( isset( $_GET['contracten'] ) )
+		{
+			$template = new Template( 19 ); //4 is samenwerkingsovereenkomst
+			$document = DocumentFactory::createFromTemplateObject( $template );
+			$document->setUitzenderID( $werknemer->uitzenderID() )->setWerknemerID( $werknemer_id )->build()->pdf();
+
+			redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/documenten/' . $werknemer_id, 'location' );
+		}
 		
 		if( isset( $_GET['et'] ) )
 		{
@@ -360,6 +385,19 @@ class Dossier extends MY_Controller
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
+	// documenten pagina
+	//-----------------------------------------------------------------------------------------------------------------
+	public function documentenn( $werknemer_id = NULL )
+	{
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/documentenn.tpl' );
+	}
+	
+	
+	//-----------------------------------------------------------------------------------------------------------------
 	// document details
 	//-----------------------------------------------------------------------------------------------------------------
 	public function documentdetails( $werknemer_id = NULL, $document_id = NULL )
@@ -410,7 +448,7 @@ class Dossier extends MY_Controller
 			$plaatsing->delete();
 		}
 		
-		//plaatsing verwijderen
+		//uitzendbevestiging maken
 		if( isset( $_GET['uitzendbevestiging'] ) )
 		{
 			$plaatsing = new Plaatsing( $_GET['uitzendbevestiging'] );
@@ -419,6 +457,18 @@ class Dossier extends MY_Controller
 			else
 				$this->smarty->assign( 'msg', msg( 'warning', 'Uitzendbevestiging kan niet worden gemaakt' ) );
 		}
+		
+		//opdrachtbevestiging maken
+		if( isset( $_GET['opdrachtbevestiging'] ) )
+		{
+			$plaatsing = new Plaatsing( $_GET['opdrachtbevestiging'] );
+			if( $plaatsing->generateOpdrachtbevestiging() )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/plaatsingen/' . $werknemer->werknemer_id, 'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'warning', 'Opdrachtbevestiging kan niet worden gemaakt' ) );
+		}
+		
+		
 		
 		$inleners = $inlenerGroup->uitzender( $werknemer->uitzenderID() )->all( array( 'complete' => 1 ) );
 		
@@ -540,11 +590,45 @@ class Dossier extends MY_Controller
 		
 		//init werknemer object
 		$werknemer = new Werknemer( $werknemer_id );
+		$ziekmeldingGroup = new ZiekmeldingGroup();
+		$ziekmeldingGroup->werknemer( $werknemer_id );
 		
+		//voor uitzender
+		if( $this->user->user_type == 'uitzender' )
+			$ziekmeldingGroup->uitzender($this->uitzender->id);
+		
+		$this->smarty->assign( 'ziekmeldingen', $ziekmeldingGroup->all() );
 		$this->smarty->assign( 'werknemer', $werknemer );
 		$this->smarty->display( 'crm/werknemers/dossier/ziekmeldingen.tpl' );
 	}
 	
+	//-----------------------------------------------------------------------------------------------------------------
+	// ziekmelding doen
+	//-----------------------------------------------------------------------------------------------------------------
+	public function ziekmelding( $werknemer_id = NULL )
+	{
+		if( $this->user->user_type != 'werkgever' && $this->user->user_type != 'uitzender' )
+			forbidden();
+		
+		//init werknemer object
+		$werknemer = new Werknemer( $werknemer_id );
+		$ziekmelding = new Ziekmelding();
+		$ziekmelding->werknemer( $werknemer_id );
+		
+		//melding opslaan
+		if( isset($_POST['opslaan']) )
+		{
+			if( $ziekmelding->set( $_POST ) )
+				redirect( $this->config->item( 'base_url' ) . 'crm/werknemers/dossier/ziekmeldingen/' . $werknemer_id, 'location' );
+			else
+				$this->smarty->assign( 'msg', msg( 'danger', $ziekmelding->errors()));
+			
+		}
+		
+		$this->smarty->assign( 'vandaag', date('d-m-Y') );
+		$this->smarty->assign( 'werknemer', $werknemer );
+		$this->smarty->display( 'crm/werknemers/dossier/ziekmelding.tpl' );
+	}
 	
 	//-----------------------------------------------------------------------------------------------------------------
 	// notities pagina

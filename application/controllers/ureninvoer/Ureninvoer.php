@@ -32,6 +32,23 @@ class Ureninvoer extends MY_Controller
 	//-----------------------------------------------------------------------------------------------------------------
 	public function index()
 	{
+		//TODO beter regelen en voor alle tijdvakken maken
+		$periodedata['jaren'] = array( 2021 );
+		
+		$week = date( 'W' )-1;
+		
+		$periodedata['periodes'] = array(
+			$week-3 => sprintf("%02d", $week-3),
+			$week-2 => sprintf("%02d", $week-2),
+			$week-1 => sprintf("%02d", $week-1),
+			$week => sprintf("%02d", $week)
+		);
+		
+		//vrijdag nieuwe week open
+		if( date('w') > 4 || date('w') == 0 )
+			$periodedata['periodes'][$week+1] = sprintf("%02d", $week+1);
+		
+		
 		//inlener
 		if( $this->user->user_type == 'inlener' )
 		{
@@ -47,6 +64,7 @@ class Ureninvoer extends MY_Controller
 			$this->smarty->assign( 'werknemer_id', $this->werknemer->id );
 		}
 		
+		$this->smarty->assign('default_periode', array_key_last($periodedata['periodes']) ); // cola bedragen
 		$this->smarty->assign('cola', ETregeling::colBebedragen() ); // cola bedragen
 		$this->smarty->assign('uitzenders', UitzenderGroup::list()); //uitzenders voor werkgever ophalen
 		

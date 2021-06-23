@@ -1,5 +1,4 @@
 <!-- load custom javascript -->
-<!-- Contactpersonen form -->
 <div id="modal_copy" class="modal fade" tabindex="-1">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">

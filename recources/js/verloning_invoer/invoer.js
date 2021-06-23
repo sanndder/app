@@ -26,6 +26,11 @@ let invoer = {
 		
 		//settings laden
 		this.settings();
+		
+		//default periode en jaar
+		data.periode = $('.vi-list-periodes a').first().data('value');
+		data.jaar = $('.vi-jaar').html();
+		data.tijdvak = 'w';
 	},
 	
 	//-- settings ophalen ----------------------------------------------------------------------------------------------------------------------------
@@ -36,9 +41,7 @@ let invoer = {
 		if( response !== false ){
 			response.done(function(json){
 				if( json.settings !== null )
-				{
 					invoer.settings.werknemer_tab_wissel = json.settings.werknemer_tab_wissel;
-				}
 			}).always(function(){
 				//form goed zetten
 				$('[name="werknemer_tab_wissel"][value='+invoer.settings.werknemer_tab_wissel+']').click();
@@ -53,7 +56,7 @@ let invoer = {
 			$('#modal_settings').modal('show');
 		});
 		
-		//inlener instellen
+		//config instellen
 		$(document).on('click', '.vi-btn-settings-save', function(){
 			invoer.setSettings();
 		});
@@ -244,6 +247,9 @@ let invoer = {
 					});
 					//reload
 					invoer.buildInvoerSchermen();
+					
+					//bij inlener groen vinke plaatsen
+					$(document).find( '.vi-list-inleners [data-id="'+data.inlener_id+'"] .vi-icon-file').removeClass('icon-file-empty2').addClass('icon-file-check2');
 				}
 				
 			}).fail(function()
@@ -365,6 +371,7 @@ let invoer = {
 		//juiste inlener op actief
 		$('[data-vi-action="setInlener"]').find('.badge').remove();
 		$('.vi-list-item-active').removeClass('vi-list-item-active');
+		$click.find('.vi-icon-file').hide();
 		$click.addClass('vi-list-item-active').append('<span class="badge ml-auto p-0"><i class="icon-spinner2 spinner mr-0 p-0"></i></span>');
 		
 		//set tijdvak select
@@ -425,9 +432,18 @@ let invoer = {
 							var set_inlener_id = inlener.inlener_id; //enige inlener key opslaan
 							count++;
 							var element = tplInlenersLi.replace(/{inlener}/g, inlener.bedrijfsnaam);
-							var element = element.replace('{key}', inlener.inlener_id);
+							element = element.replace('{key}', inlener.inlener_id);
+							
+							if( inlener.facturen > 0)
+								icon = 'icon-file-check2';
+							else
+								icon = 'icon-file-empty2';
+							
+							element = element.replace('{icon}', icon);
+							
 							html += element;
 						}
+						
 						html += '</li>';
 					}
 					$(html).appendTo('.vi-list-inleners');
@@ -627,6 +643,7 @@ let invoer = {
 				
 				//eerst loaders stoppen
 				$('[data-vi-action="setInlener"]').find('.badge').remove();//ook zijmenu stoppen
+				$click.find('.vi-icon-file').show(); //icon terug
 				$tab.find('div').remove();//in de tab stoppen
 				
 				//leeg
@@ -746,15 +763,20 @@ document.addEventListener('DOMContentLoaded', function(){
 	
 	//wanneer user inlener, gelijk werknemers laden
 	if( document.getElementsByClassName('vi-list-inleners').length == 0 )
-		invoer.setInlener( $('.inlener-id').val() );
+	{
+		setTimeout(function(){
+			invoer.setInlener( $('.inlener-id').val() );
+		}, 700);
+	}
+	
 	
 	//$('.uitzender-id').val(101).trigger('change');
 	/*
 	setTimeout(function(){
-		$('.uitzender-id').val(100).trigger('change');
+		$('.uitzender-id').val(383).trigger('change');
 		
 		setTimeout(function(){
-			$('[data-vi-action="setInlener"][data-id="3051"]').trigger('click');
+			$('[data-vi-action="setInlener"][data-id="24"]').trigger('click');
 			/*
 			setTimeout(function(){
 				$('[href="#tab-ureninvoer"]').trigger('click');

@@ -78,7 +78,7 @@ class LoonbeslagGroup extends Connector
 		{
 			$data[$row['status_id']][$row['loonbeslag_id']] = $row;
 		}
-		
+
 		return $data;
 	}
 	

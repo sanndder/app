@@ -236,6 +236,7 @@
 		<div class="grekening">
 			Er mag {$grekening_percentage|number_format:0:',':'.'}% (&euro; {$grekening_bedrag|number_format:2:',':'.'}) naar de G-rekening op IBAN: NL 93 INGB 0990 3336 20
 			<br/>
+			{if isset($iban_factoring) && $iban_factoring != NULL && $iban_factoring != ''}<span style="background-color: yellow; font-style: normal">LET OP, NIEUW REKENINGNUMMER!</span> {/if}
 			Het resterende bedrag (&euro; {($factuur.bedrag_incl - $grekening_bedrag)|number_format:2:',':'.'}) naar IBAN:
             {if isset($iban_factoring) && $iban_factoring != NULL && $iban_factoring != ''}
                 {$iban_factoring}
@@ -243,6 +244,10 @@
                 {$bedrijfsgegevens.iban|default:''}
             {/if}
 		</div>
+    {else}
+	    <div class="grekening">
+        {if isset($iban_factoring) && $iban_factoring != NULL && $iban_factoring != ''}<span style="background-color: yellow; font-style: normal; font-size: 14px">LET OP, NIEUW REKENINGNUMMER!</span> {/if}
+	    </div>
     {/if}
 
     {if !isset($factoring) || $factoring == true}

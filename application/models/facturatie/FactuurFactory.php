@@ -1726,7 +1726,7 @@ class FactuurFactory extends Connector
 								$bedragen_error = true;
 							}
 							
-							if( $urengroep['marge'] === NULL || $urengroep['marge'] == '' || $urengroep['marge'] < 1 )
+							if( $urengroep['marge'] === NULL || $urengroep['marge'] == '' || $urengroep['marge'] < 0 )
 							{
 								$this->_error[] = 'Ongeldige marge voor ' . $this->_inlener_werknemers[$werknemer_id]['naam'] . ' (' . $werknemer_id . ') - [' . $categorie . ']';
 								$this->_sessieLog( 'error', "ongeldige factor bij $werknemer_id" );
@@ -1857,7 +1857,7 @@ class FactuurFactory extends Connector
 				else
 					$uren_werkweek = $this->_inlener_werknemers[$werknemer_id]['uren_werkweek'];
 				
-				$uren_werkweek = 45;
+				$uren_werkweek = 48;
 				
 				if( $this->user->werkgever_type == 'bemiddeling' )
 					$uren_werkweek = 80;

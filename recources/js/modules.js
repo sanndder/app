@@ -319,7 +319,18 @@ var Datepickers = function() {
             close: '',
             selectYears: 10
         });
-
+    
+        // ziekte
+        var minSick = new Date();
+        minSick.setDate(minSick.getDate() - 7);
+        $( '.pickadate-sick' ).pickadate({
+            selectYears: false,
+            selectMonths: true,
+            close: '',
+            min: minSick,
+        });
+    
+    
         var d = new Date();
         var year = d.getFullYear();
 
@@ -406,6 +417,7 @@ var JsCopy = function() {
                 return trigger;
             }
         });
+        
     };
     
     return {

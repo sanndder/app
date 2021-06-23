@@ -134,7 +134,7 @@ class Document extends Connector {
 						'.$link.'</a>
 						<br /><br />
 						Mocht u problemen ondervinden, neem dan contact met ons op.
-						Met vriendelijke groet,<br />FlexxOffice');
+						');
 		$email->useHtmlTemplate( 'devis' );
 		$email->delay( 0 );
 		
@@ -583,6 +583,7 @@ class Document extends Connector {
 
 		$this->_werknemer_info = DBhelper::toRow($query);
 		$this->_werknemer_info['gb_datum'] = reverseDate($this->_werknemer_info['gb_datum']);
+		$this->_werknemer_info['naam'] = make_name($this->_werknemer_info);
 		
 	}
 	
@@ -641,6 +642,11 @@ class Document extends Connector {
 		$sql = "SELECT * FROM inleners_factuurgegevens WHERE deleted = 0 AND inlener_id = $this->_inlener_id LIMIT 1";
 		$query = $this->db_user->query( $sql );
 		$this->_inlener_info['factuurgegevens'] = DBhelper::toRow($query);
+		
+		//email
+		$sql = "SELECT standaard FROM inleners_emailadressen WHERE deleted = 0 AND inlener_id = $this->_inlener_id LIMIT 1";
+		$query = $this->db_user->query( $sql );
+		$this->_inlener_info['email'] = DBhelper::toRow($query,'NULL','standaard');
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -715,6 +721,7 @@ class Document extends Connector {
 		$this->_inlener_info['plaats'] = 'Enschede';
 		$this->_inlener_info['kvknr'] = '87654321';
 		$this->_inlener_info['btwnr'] = 'NL123456789B01';
+		$this->_inlener_info['email'] = 'info@inlener.nl';
 		
 		$this->_inlener_info['factuurgegevens']['termijn'] = '30';
 		$this->_inlener_info['factuurgegevens']['g_rekening_percentage'] = '30';
@@ -734,6 +741,7 @@ class Document extends Connector {
 		$this->_werknemer_info['postcode'] = '5589OP';
 		$this->_werknemer_info['plaats'] = 'Apeldoorn';
 		$this->_werknemer_info['iban'] = 'NL87RABO13245678';
+		$this->_werknemer_info['naam'] = make_name($this->_werknemer_info);
 		
 		/*
 		$this->_werknemer_info['gb_datum'] = '04-09-1974';

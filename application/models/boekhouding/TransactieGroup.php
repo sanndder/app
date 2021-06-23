@@ -59,11 +59,26 @@ class TransactieGroup extends Connector
 		if( $query->num_rows() == 0 )
 			return NULL;
 		
+		//ignore list ophalen
+		$ignoreList = $this->_ignoreList();
+		
+		//init
 		$hide = array();
 		
 		foreach( $query->result_array() as $row )
 		{
 			$omschrijving = strtolower( $row['omschrijving'] );
+			$relatie = strtolower( $row['relatie'] );
+			
+			//eigen transacties
+			if( strpos( $relatie, 'abering ' ) !== false )
+				$hide[$row['transactie_id']] = 1;
+			
+			if( strpos( $relatie, 'flexxoffice ' ) !== false )
+				$hide[$row['transactie_id']] = 1;
+			
+			if( strpos( $relatie, 'belastingdienst ' ) !== false )
+				$hide[$row['transactie_id']] = 1;
 			
 			//eerst op woorden zoeken en verbergen
 			if( strpos( $omschrijving, 'salaris ' ) !== false )
@@ -72,12 +87,64 @@ class TransactieGroup extends Connector
 			//eerst op woorden zoeken en verbergen
 			if( strpos( $omschrijving, 'marge ' ) !== false )
 				$hide[$row['transactie_id']] = 1;
+			
+			if( $ignoreList !== NULL )
+			{
+				if( in_array( $row['relatie_iban'], $ignoreList ) )
+					$hide[$row['transactie_id']] = 1;
+			}
+			
+			//ING kosten
+			if( strpos( $omschrijving, 'kosten zakelijk betalingsverkeer' ) !== false )
+				$hide[$row['transactie_id']] = 1;
+			
+			//SEPA's ook niet
+			if( preg_match("/SEPA[0-9]{8,}/i", $omschrijving) == 1)
+				$hide[$row['transactie_id']] = 1;
+			
+			//aankoop/eind factris
+			if( preg_match("/PN-[0-9]{4,}/i", $omschrijving) == 1)
+				$hide[$row['transactie_id']] = 1;
+			if( preg_match("/CN-[0-9]{4,}/i", $omschrijving) == 1)
+				$hide[$row['transactie_id']] = 1;
 		}
 		
 		if( count($hide) > 0 )
 			$this->db_user->query( "UPDATE bank_transacties SET hidden = 1 WHERE deleted = 0 AND transactie_id IN (".array_keys_to_string($hide).")" );
-
+		
+		//koppel gelijk inleners
+		$this->_koppelInleners();
+		
 	}
+
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * inlener via koppelingen updaten
+	 *
+	 */
+	private function _koppelInleners() :void
+	{
+		$sql = "UPDATE bank_transacties INNER JOIN bank_transacties_koppeling
+				SET bank_transacties.inlener_id = bank_transacties_koppeling.inlener_id
+				WHERE bank_transacties_koppeling.relatie_iban = bank_transacties.relatie_iban AND bank_transacties.verwerkt = 0 AND bank_transacties.inlener_id IS NULL";
+		
+		$query = $this->db_user->query( $sql );
+		
+		return;
+	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * welke ibans negeren
+	 *
+	 */
+	public function _ignoreList()
+	{
+		$query = $this->db_user->query( "SELECT koppeling_id, relatie_iban FROM bank_transacties_koppeling WHERE  action = 'ignore' AND deleted = 0 GROUP BY relatie_iban" );
+		return DBhelper::toList( $query, array( 'koppeling_id' => 'relatie_iban') );
+	}
+	
 
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
@@ -195,7 +262,7 @@ class TransactieGroup extends Connector
 						|| bank_transacties.relatie_iban LIKE '%".$this->_filter_zoek."%' ) ";
 		
 		
-		$sql .= " ORDER BY bank_transacties.datum DESC LIMIT $this->_limit";
+		$sql .= " ORDER BY bank_transacties.datum DESC, transactie_id DESC LIMIT $this->_limit";
 		//show($sql);
 		$query = $this->db_user->query( $sql );
 		
@@ -211,6 +278,9 @@ class TransactieGroup extends Connector
 		if( is_array($data))
 			$this->_count = count($data);
 		
+		//automatisch verwerken
+		$this->autoVerwerk();
+		
 		return $data;
 	}
 
@@ -224,7 +294,99 @@ class TransactieGroup extends Connector
 	{
 		return $this->_count;
 	}
+	
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Automatisch koppelen
+	 *
+	 */
+	public function autoVerwerk()
+	{
+		//voorfinanciering
+		$sql = "SELECT transactie_id, bedrag, bank_transactiebestanden.grekening, omschrijving
+				FROM bank_transacties
+				LEFT JOIN bank_transactiebestanden ON bank_transacties.bestand_id = bank_transactiebestanden.bestand_id
+				WHERE bank_transacties.deleted = 0 AND (omschrijving LIKE '%oorfinancie%' OR omschrijving LIKE 'terug%') AND verwerkt = 0 AND auto_koppeling IS NULL ";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+			{
+				$omschrijving = str_replace( array('.','2021'), '', $row['omschrijving']);
+				preg_match_all( '!\d{4,}!', $omschrijving, $matches );
+				$factuur_nr = implode( ',', $matches[0] );
+				
+				$query = $this->db_user->query( "SELECT factuur_id, bedrag_incl FROM facturen WHERE deleted = 0 AND factuur_nr = '$factuur_nr' LIMIT 1" );
+				$factuur = DBhelper::toRow( $query, 'NULL' );
+				
+				$auto_koppeling = 0;
+				$verwerkt = 0;
+				//boeken
+				if( $factuur['bedrag_incl'] == abs($row['bedrag']) )
+				{
+					$transactie = new Transactie( $row['transactie_id'] );
+					$transactie->koppelFactuur( $factuur['factuur_id'], 'voorfinanciering', $factuur['bedrag_incl'] );
+					
+					$verwerkt = 1;
+					$auto_koppeling = 1;
+				}
+				
+				$this->db_user->query( "UPDATE bank_transacties SET auto_koppeling = '$auto_koppeling', verwerkt = '$verwerkt' WHERE transactie_id = ".$row['transactie_id']." LIMIT 1" );
+			}
+		}
+		
+		//enkele betalingen
+		$sql = "SELECT transactie_id, bedrag, bank_transactiebestanden.grekening, omschrijving, inlener_id
+				FROM bank_transacties
+				LEFT JOIN bank_transactiebestanden ON bank_transacties.bestand_id = bank_transactiebestanden.bestand_id
+				WHERE bank_transacties.deleted = 0 AND inlener_id IS NOT NULL AND verwerkt = 0 AND auto_koppeling IS NULL ";
+		
+		$query = $this->db_user->query( $sql );
+		
+		if( $query->num_rows() > 0 )
+		{
+			foreach( $query->result_array() as $row )
+			{
+				$omschrijving = str_replace( array('.','2021', $row['inlener_id']), '', $row['omschrijving']);
+				preg_match_all( '!\d{4,}!', $omschrijving, $matches );
 
+				if(count($matches[0]) == 1)
+				{
+					$factuur_nr = $matches[0][0];
+					$koppel = false;
+					$verwerkt = 0;
+					$auto_koppeling = 0;
+					
+					$query = $this->db_user->query( "SELECT factuur_id, bedrag_incl, bedrag_grekening, (bedrag_incl - bedrag_grekening) AS bedrag_vrij FROM facturen WHERE inlener_id = '" . $row['inlener_id'] . "' AND deleted = 0 AND factuur_nr = '$factuur_nr' LIMIT 1" );
+					$factuur = DBhelper::toRow( $query, 'NULL' );
+					
+					if( $row['grekening'] == 0 )
+					{
+						if( abs(($factuur['bedrag_vrij']-$row['bedrag'])/$row['bedrag']) < 0.00001 )
+							$koppel = true;
+					}
+					if( $row['grekening'] == 1 )
+					{
+						if( abs(($factuur['bedrag_grekening']-$row['bedrag'])/$row['bedrag']) < 0.00001 && $factuur['bedrag_grekening'] > 0 )
+							$koppel = true;
+					}
+					
+					if($koppel)
+					{
+						$transactie = new Transactie( $row['transactie_id'] );
+						$transactie->koppelFactuur( $factuur['factuur_id'], 'betaling', $row['bedrag'] );
+						
+						$verwerkt = 1;
+						$auto_koppeling = 1;
+					}
+					
+					$this->db_user->query( "UPDATE bank_transacties SET auto_koppeling = '$auto_koppeling', verwerkt = '$verwerkt' WHERE transactie_id = ".$row['transactie_id']." LIMIT 1" );
+				}
+			}
+		}
+	}
 	
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

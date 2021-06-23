@@ -6,6 +6,7 @@ use models\cao\CAOGroup;
 use models\Connector;
 use models\documenten\DocumentFactory;
 use models\documenten\Template;
+use models\forms\Valid;
 use models\inleners\Inlener;
 use models\utils\DBhelper;
 use models\verloning\Urentypes;
@@ -127,6 +128,12 @@ class Loonbeslag extends Connector
 			return false;
 		}
 		
+		if( strlen(trim($data['dagtekening'])) < 3 || !Valid::date(reverseDate($data['dagtekening'])) )
+		{
+			$this->_error[] = 'Ongeldige dagtekening';
+			return false;
+		}
+		
 		if( strlen(trim($data['dossiernummer'])) < 3 )
 		{
 			$this->_error[] = 'Geen dossiernummer';
@@ -135,7 +142,9 @@ class Loonbeslag extends Connector
 		
 		$insert['loonbeslag_id'] = $this->lastID( 'werknemers_loonbeslag', 'loonbeslag_id' ) + 1;
 		$insert['beslaglegger'] = trim($data['beslaglegger']);
+		$insert['dagtekening'] = reverseDate($data['dagtekening']);
 		$insert['dossiernummer'] = trim($data['dossiernummer']);
+		$insert['werknemer_id'] = $this->_werknemer_id;
 		$insert['user_id'] = $this->user->id;
 		
 		$this->db_user->insert( 'werknemers_loonbeslag', $insert );

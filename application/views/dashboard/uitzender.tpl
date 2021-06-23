@@ -17,6 +17,23 @@
 				<!--------------------------------------------------------------------------- left ------------------------------------------------->
 				<div class="col-md-3">
 
+					<!--------------------------------------------------------------------------- snelknoppen ------------------------------------------------->
+					<div class="card">
+						<div class="card-body">
+
+							<div class="row">
+								<div class="col">
+									<button style="width: 140px" type="button" class="btn btn-teal btn-block btn-float" data-toggle="modal" data-target="#modal_werknemers_ziekmelding">
+										<i class="icon-folder-plus2 icon-2x"></i>
+										<span>Ziekmelding</span>
+									</button>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+
 					<!--------------------------------------------------------------------------- aantallen ------------------------------------------------->
 					<div class="card">
 						<div class="card-body">
@@ -379,7 +396,61 @@
 				</div>
 				<!-- /col -->
 			</div><!-- /row -->
-			      <!--------------------------------------------------------------------------- /right ------------------------------------------------->
+		      <!--------------------------------------------------------------------------- /right ------------------------------------------------->
+
+
+			<div id="modal_werknemers_ziekmelding" class="modal fade" tabindex="-1">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Selecteer een werknemer om ziek te melden <span class="var-action"></span></h5>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+
+						<form method="post" action="">
+
+							<div class="modal-body pt-4">
+
+
+								{if $werknemers != NULL}
+									<select class="form-control list-werknemers">
+										<option></option>
+		                                {foreach $werknemers as $w}
+			                                <option value="{$w@key}">{$w@key} - {$w}</option>
+		                                {/foreach}
+									</select>
+                                {/if}
+
+							</div>
+
+							<div class="modal-footer">
+								<a href="" onclick="return verderZiekmelding()" data-link="crm/werknemers/dossier/ziekmelding/" class="btn bg-primary btn-verder">
+									<i class="icon-arrow-right5 mr-1"></i>Verder
+								</a>
+								<button type="button" class="btn btn-link" data-dismiss="modal">Annuleren</button>
+							</div>
+
+						</form>
+
+						{literal}
+						<script>
+							function verderZiekmelding()
+							{
+								$btn = $('.btn-verder');
+								id = $('.list-werknemers').val();
+
+								if( id == '' )
+									return false;
+
+								$btn.attr('href', $btn.data('link') +  id );
+								return true;
+							}
+
+						</script>
+						{/literal}
+					</div>
+				</div>
+			</div>
 
 
 		</div>

@@ -174,7 +174,7 @@ class Uitzender extends Connector
 	public function del( $id )
 	{
 		if( $this->user->user_id != 2 )
-			die('Geen toegand');
+			die('Geen toegang');
 		
 
 		$this->db_user->query( "DELETE FROM inleners_uitzenders WHERE uitzender_id = $id" );

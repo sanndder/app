@@ -99,7 +99,7 @@ class DBhelper{
 				if( $multi_level_array )
 					$data[$key][] = $row;
 				else
-					$data[$key] = $row;;
+					$data[$key] = $row;
 				
 			}
 			else

@@ -26,6 +26,9 @@ if (!defined('BASEPATH'))exit('No direct script access allowed');
 
 class OpenstaandeFacturen extends Connector
 {
+	protected $_totaal = 0;
+	protected $_totaal_uitzender = array();
+
 	protected $_tijdvak = NULL;
 	protected $_jaar = NULL;
 	protected $_periode = NULL;
@@ -43,7 +46,7 @@ class OpenstaandeFacturen extends Connector
 	
 	protected $_filter_factoring = false;
 	protected $_filter_geen_factoring = false;
-	
+	protected $__filter_wachtrij = false;
 	protected $_filter_factuur_aangekocht = NULL;
 
 	protected $_error = NULL;
@@ -60,9 +63,73 @@ class OpenstaandeFacturen extends Connector
 		
 		$this->_jaar = date('Y');
 	}
+
+
+
+	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 *
+	 * alleen verkoopfacturen
+	 *
+	 */
+	public function eigenvermogen() :?array
+	{
+		$sql = "SELECT ib.inlener_id, ib.bedrijfsnaam, facturen.factuur_id, facturen.factuur_nr, facturen.bedrag_incl, facturen.factuur_datum, facturen.verval_datum, facturen.jaar, facturen.periode, facturen.bedrag_openstaand,
+       					factoring_facturen_regels.factuur_nr AS koppel_nr, DATEDIFF(NOW(),facturen.verval_datum) AS betaaltermijn, facturen.uitzender_id
+				FROM facturen
+				LEFT JOIN inleners_bedrijfsgegevens ib ON facturen.inlener_id = ib.inlener_id
+				LEFT JOIN factoring_facturen_regels ON facturen.factuur_nr = factoring_facturen_regels.factuur_nr
+				WHERE ib.deleted = 0 AND facturen.deleted = 0 AND marge = 0 AND concept = 0 AND voldaan = 0 AND factuur_datum <= '2021-06-18' AND jaar > 2020
+				AND factoring_facturen_regels.factuur_nr IS NULL AND bedrag_voorfinanciering IS NULL AND bedrag_incl != 0 AND (facturen.inlener_id NOT IN(3078) || DATEDIFF(NOW(),facturen.verval_datum) < 0 )
+				ORDER BY bedrijfsnaam, facturen.factuur_nr ASC";
+		
+		$query = $this->db_user->query( $sql );
+		
+		
+		
+		foreach( $query->result_array() as $row )
+		{
+			if( !isset($data[$row['inlener_id']]['totaal']))
+			{
+				$data[$row['inlener_id']]['totaal'] = 0;
+				$data[$row['inlener_id']]['inlener'] = $row['bedrijfsnaam'];
+				$data[$row['inlener_id']]['inlener_id'] = $row['inlener_id'];
+			}
+			if(!isset($this->_totaal_uitzender[$row['uitzender_id']]))
+				$this->_totaal_uitzender[$row['uitzender_id']] = 0;
+			
+			$data[$row['inlener_id']]['facturen'][] = $row;
+
+
+			if( $row['bedrag_incl'] < 0 )
+			{
+				$this->_totaal_uitzender[$row['uitzender_id']] -= $row['bedrag_openstaand'];
+				$this->_totaal -= $row['bedrag_openstaand'];
+				$data[$row['inlener_id']]['totaal'] -= $row['bedrag_openstaand'];
+			}
+			else
+			{
+				$this->_totaal_uitzender[$row['uitzender_id']] += $row['bedrag_openstaand'];
+				$this->_totaal += $row['bedrag_openstaand'];
+				$data[$row['inlener_id']]['totaal'] += $row['bedrag_openstaand'];
+			}
+		}
+		
+		return $data;
+	}
 	
 	
-	
+	public function totaaleigenvermogen()
+	{
+		return $this->_totaal;
+	}
+
+
+	public function totaaluitzenders()
+	{
+		return $this->_totaal_uitzender;
+	}
+
+
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 *
 	 * alleen verkoopfacturen

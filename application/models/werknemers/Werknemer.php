@@ -125,7 +125,7 @@ class Werknemer extends Connector
 	public function del( $id )
 	{
 		if( ENVIRONMENT != 'development' )
-			die('Geen toegand');
+			die('Geen toegang');
 		
 		$this->db_user->query( "DELETE FROM werknemers_dienstverband_cao WHERE werknemer_id = $id" );
 		$this->db_user->query( "DELETE FROM werknemers_dienstverband_duur WHERE werknemer_id = $id" );

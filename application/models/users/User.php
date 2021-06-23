@@ -716,7 +716,7 @@ class User extends Connector
 						Wachtwoord opnieuw instellen</a>
 						<br /><br />
 						Heeft u niet verzocht om uw wachtwoord te herstellen? Neem dan contact met ons op, mogelijk probeert iemand uw account te misbruiken.
-						Met vriendelijke groet,<br />FlexxOffice');
+						');
 		$email->useHtmlTemplate( 'devis' );
 		$email->delay( 0 );
 		$email->send();
@@ -749,7 +749,7 @@ class User extends Connector
 						'.$link.'</a>
 						<br /><br />
 						Gebruikt de bovenstaande link om uw wachtwoord aan te maken en uw account te activeren. Deze link verloopt over 5 dagen.
-						<br /><br />Wanneer u vragen heeft kunt u contact met ons opnemen.<br /><br />Met vriendelijke groet,<br />FlexxOffice');
+						<br /><br />Wanneer u vragen heeft kunt u contact met ons opnemen.<br />');
 		$email->useHtmlTemplate( 'default' );
 		$email->delay( 0 );
 		$email->send();
@@ -783,7 +783,7 @@ class User extends Connector
 						Gebruikt de bovenstaande link om uw wachtwoord aan te maken en uw account te activeren. Deze link verloopt over 5 dagen.
 						<br /><br />
 						Met uw online account kunt u al uw gegevens inzien, loonstroken downloaden, zich ziekmelden en uw instellingen aanpassen.
-						<br /><br />Wanneer u vragen heeft kunt u contact met ons opnemen.<br /><br />Met vriendelijke groet,<br />FlexxOffice Uitzend B.V.');
+						<br /><br />Wanneer u vragen heeft kunt u contact met ons opnemen.<br />');
 		$email->useHtmlTemplate( 'default' );
 		$email->delay( 0 );
 		$email->send();

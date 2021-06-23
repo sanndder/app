@@ -292,7 +292,7 @@
                                 {if $facturen != NULL}
 									<tbody>
                                         {foreach $facturen as $f}
-                                            {if $f.verkoop.factoring == 1 || (($f.verkoop.factoring == 0 && $f.verkoop.send_on == NULL) && $f.verkoop.bedrag_incl != 0)}
+                                            {if $f.verkoop.voldaan == 0 AND $f.verkoop.factoring == 1 || (($f.verkoop.factoring == 0 && $f.verkoop.send_on == NULL) && $f.verkoop.bedrag_incl != 0)}
 												<tr data-id="{$f.verkoop.factuur_id}">
 													<td class="td-selected p-0 m-0"></td>
 													<td class="check-factuur px-1">

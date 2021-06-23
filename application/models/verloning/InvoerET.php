@@ -65,7 +65,12 @@ class InvoerET extends Invoer
 	 */
 	public function maxUitruil()
 	{
-		return $this->_sumUren() * 12.50 * 0.3;
+		$query = $this->db_user->query( "SELECT bruto_loon FROM werknemers_inleners WHERE werknemer_id = $this->_werknemer_id AND inlener_id = $this->_inlener_id" );
+		$bruto = DBhelper::toRow( $query, 'NULL', 'bruto_loon');
+		
+		if( $bruto === NULL ) $bruto = 12.50;
+		
+		return $this->_sumUren() * $bruto * 0.3;
 	}
 	
 	/**----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -210,7 +215,7 @@ class InvoerET extends Invoer
 		{
 			foreach( $this->_uren as $row )
 			{
-				if( $row['urentype_categorie_id'] == 1 )
+				if( $row['urentype_categorie_id'] == 1 || $row['urentype_categorie_id'] == 2 )
 					$aantal += $row['decimaal'];
 			}
 		}

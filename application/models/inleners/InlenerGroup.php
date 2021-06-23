@@ -58,11 +58,11 @@ class InlenerGroup extends Connector {
 	 * lijst voor ureninvoer, minder data via ajax sturen
 	 * Alleen met plaatsing
 	 */
-	public function listForUreninvoer()
+	public function listForUreninvoer( $tijdvakinfo = NULL)
 	{
 		//init
 		$data = array();
-		
+
 		//start query
 		$sql = "SELECT inleners_bedrijfsgegevens.inlener_id, inleners_bedrijfsgegevens.bedrijfsnaam, inleners_factuurgegevens.frequentie
 				FROM inleners_status
@@ -94,11 +94,37 @@ class InlenerGroup extends Connector {
 		
 		foreach ($query->result_array() as $row)
 		{
+			$row['facturen'] = 0;
+			
 			if( $row['frequentie'] == 'w') $f = 'week';
 			if( $row['frequentie'] == 'm') $f = 'maand';
 			if( $row['frequentie'] == '4w') $f = '4 weken';
 			
 			$data[$f][] = $row;
+			
+			$inlener_ids[$row['inlener_id']] = $f;
+		}
+		
+		//facturen erbij
+		$sql = "SELECT COUNT(factuur_id) AS aantal, inlener_id
+				FROM facturen WHERE tijdvak = ? AND jaar = ? AND periode = ? AND deleted = 0 AND marge = 0 AND concept = 0 AND credit = 0 AND inlener_id IN (".array_keys_to_string($inlener_ids).")
+				GROUP BY inlener_id";
+		
+		$query = $this->db_user->query($sql, array($tijdvakinfo['tijdvak'], $tijdvakinfo['jaar'], $tijdvakinfo['periode']));
+		
+		if ($query->num_rows() == 0)
+			return $data;
+		
+		foreach( $query->result_array() as $row )
+			$facturen[$row['inlener_id']] = $row['aantal'];
+		
+		foreach( $data as &$arr )
+		{
+			foreach( $arr as &$inlener )
+			{
+				if( isset($facturen[$inlener['inlener_id']]) )
+					$inlener['facturen'] = $facturen[$inlener['inlener_id']];
+			}
 		}
 		
 		return $data;

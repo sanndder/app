@@ -66,7 +66,16 @@ function modalSignDocument( document_id, callback )
     $modal.modal('show');
 
     //pdf laden
-    PDFObject.embed( "documenten/pdf/view/" + document_id, "#pdfviewer" );
+    var options = {
+        pdfOpenParams: {
+            navpanes: 0,
+            toolbar: 0,
+            statusbar: 0
+        },
+        forcePDFJS: true,
+        PDFJS_URL: "recources/plugins/pdfjs/web/viewer.html"
+    };
+    PDFObject.embed( base_url + "/documenten/pdf/view/" + document_id, "#pdfviewer", options );
 
     //signature pad aanmaken -> https://github.com/szimek/signature_pad
 

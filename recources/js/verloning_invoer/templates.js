@@ -15,7 +15,7 @@ let tplInlenersListLoad = '<li class="nav-item"><a href="javascript:void(0)" cla
 
 //inlener lijst
 let tplInlenersTitle = '<li class="nav-item-header font-weight-bolder mt-0 mb-0 pb-1"> <div class="text-uppercase font-size-xs line-height-xs">Inleners {frequentie}</div></li>';
-let tplInlenersLi = '<span data-id="{key}" data-inlener="{inlener}" class="nav-link" data-vi-action="setInlener"><span>{inlener}</span></span>';
+let tplInlenersLi = '<span data-id="{key}" data-inlener="{inlener}" class="nav-link d-flex justify-content-between" data-vi-action="setInlener"><span>{inlener}</span><i class="vi-icon-file mr-0 {icon}"></i></span>';
 
 //periode dropdown
 let tplPeriodeList = '<a href="javascript:void(0)" class="dropdown-item" data-value="{key}" data-vi-action="setPeriode">{value}</a>';

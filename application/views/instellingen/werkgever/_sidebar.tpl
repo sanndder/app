@@ -74,6 +74,11 @@
 								<span>Bankrekeningen</span>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="instellingen/werkgever/denc" class="nav-link {if $active == 'denc'}active{/if}">
+								<span>Documenten & Certificaten</span>
+							</a>
+						</li>
 						<!-- /main -->
 					</ul>
 				</div>

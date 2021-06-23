@@ -257,22 +257,16 @@ class FacturenGroup extends Connector
 	 */
 	public function searchForBankTransacties( $param, $exclude = NULL ) :?array
 	{
-		$sql = "SELECT facturen.*, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener, uitzenders_bedrijfsgegevens.bedrijfsnaam AS uitzender
+		$sql = "SELECT facturen.*, DATEDIFF(NOW(),facturen.verval_datum) AS verval_dagen, inleners_bedrijfsgegevens.bedrijfsnaam AS inlener, (facturen.bedrag_incl - facturen.bedrag_grekening) AS bedrag_vrij
 				FROM facturen
 				LEFT JOIN inleners_bedrijfsgegevens ON facturen.inlener_id = inleners_bedrijfsgegevens.inlener_id
-				LEFT JOIN uitzenders_bedrijfsgegevens ON facturen.uitzender_id = uitzenders_bedrijfsgegevens.uitzender_id
 				WHERE facturen.deleted = 0 AND facturen.concept = 0 ";
 		
 		if( isset($param['inlener_id']) && $param['inlener_id'] !== NULL && $param['filter_relatie'] == 'true' )
 			$sql .= " AND (inleners_bedrijfsgegevens.deleted = 0 AND inleners_bedrijfsgegevens.inlener_id = ".intval($param['inlener_id']).") ";
 		else
 			$sql .= " AND (inleners_bedrijfsgegevens.deleted = 0 OR facturen.inlener_id IS NULL) ";
-		
-		if( isset($param['uitzender_id']) && $param['uitzender_id'] !== NULL && $param['filter_relatie'] == 'true' )
-			$sql .= " AND (uitzenders_bedrijfsgegevens.deleted = 0 AND uitzenders_bedrijfsgegevens.uitzender_id = ".intval($param['uitzender_id']).") AND facturen.marge = 1";
-		else
-			$sql .= " AND (uitzenders_bedrijfsgegevens.deleted = 0 OR facturen.uitzender_id IS NULL) ";
-		
+
 		if( isset($param['factuur_nrs']) && strlen($param['factuur_nrs'] > 0 ) )
 			$sql .= " AND facturen.factuur_nr IN (".$param['factuur_nrs'].")";
 		
@@ -281,6 +275,9 @@ class FacturenGroup extends Connector
 		
 		if( isset($param['bedrag_tot']) && strlen($param['bedrag_tot'] > 0 ) )
 			$sql .= " AND facturen.bedrag_incl <= ". prepareAmountForDatabase($param['bedrag_tot']) ." ";
+		
+		if( isset($param['filter_openstaand']) && $param['filter_openstaand'] == 1 )
+			$sql .= " AND facturen.voldaan = 0  ";
 		
 		if( $exclude !== NULL && is_array($exclude) )
 			$sql .= " AND facturen.factuur_id NOT IN ( ". array_keys_to_string($exclude) .")";
@@ -293,8 +290,17 @@ class FacturenGroup extends Connector
 			return NULL;
 		
 		foreach( $query->result_array() as $row )
+		{
+			//aanpassen voor javascript
+			if( $row['bedrag_grekening'] === NULL )
+			{
+				$row['bedrag_grekening'] = 0;
+				$row['bedrag_vrij'] = $row['bedrag_incl'];
+			}
+			
 			$data[] = $row;
-
+		}
+		
 		return $data;
 	}
 	
